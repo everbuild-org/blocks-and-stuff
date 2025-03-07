@@ -3,14 +3,16 @@ plugins {
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.0-SNAPSHOT"
+version = parent!!.version
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    compileOnly(libs.minestom)
+
+    testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
 }
 
