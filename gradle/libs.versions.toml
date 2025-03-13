@@ -3,6 +3,7 @@ minestom = "1_21_4-bb14804d42"
 tinylog = "2.7.0"
 junit = "5.10.0"
 mockito = "5.16.0"
+mockito-kotlin = "5.4.0"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom-snapshots", version.ref = "minestom" }
@@ -11,4 +12,5 @@ tinylog-impl = { group = "org.tinylog", name = "tinylog-impl", version.ref = "ti
 tinylog-slf4j = { group = "org.tinylog", name = "slf4j-tinylog", version.ref = "tinylog" }
 
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
-mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }

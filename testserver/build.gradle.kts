@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("application")
+    kotlin("jvm")
 }
 
 group = "org.everbuild.blocksandstuff"
@@ -21,6 +22,7 @@ dependencies {
 
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 application {
@@ -29,4 +31,7 @@ application {
 
 tasks.test {
     useJUnitPlatform()
+}
+kotlin {
+    jvmToolchain(23)
 }
