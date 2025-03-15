@@ -23,3 +23,13 @@ fun PlacementState.getHorizontalPlacementDirection(): Direction? {
         else -> null
     }
 }
+
+fun Direction.rotateR(): Direction {
+    return when (this) {
+        Direction.NORTH -> Direction.EAST
+        Direction.EAST -> Direction.SOUTH
+        Direction.SOUTH -> Direction.WEST
+        Direction.WEST -> Direction.NORTH
+        else -> this
+    }
+}

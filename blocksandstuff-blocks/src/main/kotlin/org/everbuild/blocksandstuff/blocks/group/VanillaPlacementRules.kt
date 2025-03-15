@@ -10,6 +10,7 @@ import org.everbuild.blocksandstuff.blocks.group.block.BlockBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.VanillaTagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
+import org.everbuild.blocksandstuff.blocks.placement.InverseWorkstationPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.RotatedPillarPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.SlabPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.WorkstationPlacementRule
@@ -56,17 +57,26 @@ object VanillaPlacementRules {
             byBlock(Block.JACK_O_LANTERN),
             byBlock(Block.BEEHIVE),
             byBlock(Block.STONECUTTER),
-            byBlock(Block.GRINDSTONE),
+//            byBlock(Block.GRINDSTONE),
             byBlock(Block.LOOM),
+//            byBlock(Block.ANVIL), - rotate placement
+//            byBlock(Block.CHIPPED_ANVIL),
+//            byBlock(Block.DAMAGED_ANVIL),
+            byBlock(Block.BEE_NEST),
+//            byBlock(Block.JUKEBOX),
+            byBlock(Block.END_PORTAL_FRAME),
+//            byBlock(Block.CRAFTER),
+        ),
+        ::WorkstationPlacementRule
+    )
+
+    val ROTATED_WORKSTATIONS = group(
+        all(
             byBlock(Block.ANVIL),
             byBlock(Block.CHIPPED_ANVIL),
             byBlock(Block.DAMAGED_ANVIL),
-            byBlock(Block.BEE_NEST),
-            byBlock(Block.JUKEBOX),
-            byBlock(Block.END_PORTAL_FRAME),
-            byBlock(Block.CRAFTER),
         ),
-        ::WorkstationPlacementRule
+        ::InverseWorkstationPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
