@@ -12,11 +12,12 @@ import org.everbuild.blocksandstuff.blocks.group.block.VanillaTagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.RotatedPillarPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.SlabPlacementRule
+import org.everbuild.blocksandstuff.blocks.placement.WorkstationPlacementRule
 
 object VanillaPlacementRules {
     val ALL: ArrayList<PlacementGroup> = ArrayList()
 
-    val ROTATED_PILLARS: PlacementGroup = group(
+    val ROTATED_PILLARS = group(
         all(
             byTag("minecraft:logs"),
             byBlock(Block.MUDDY_MANGROVE_ROOTS),
@@ -31,14 +32,41 @@ object VanillaPlacementRules {
             byBlock(Block.INFESTED_DEEPSLATE),
             byBlock(Block.OCHRE_FROGLIGHT),
             byBlock(Block.VERDANT_FROGLIGHT),
-            byBlock(Block.PEARLESCENT_FROGLIGHT)
+            byBlock(Block.PEARLESCENT_FROGLIGHT),
+            byBlock(Block.HAY_BLOCK),
         ),
         ::RotatedPillarPlacementRule
     )
 
-    val SLAB: PlacementGroup = group(
+    val SLAB = group(
         byTag("minecraft:slabs"),
         ::SlabPlacementRule
+    )
+
+    val WORKSTATIONS = group(
+        all(
+            byBlock(Block.FURNACE),
+            byBlock(Block.BLAST_FURNACE),
+            byBlock(Block.SMOKER),
+            byBlock(Block.LECTERN),
+//            byBlock(Block.CHEST), TODO: special handling
+            byBlock(Block.ENDER_CHEST),
+            byBlock(Block.CHISELED_BOOKSHELF),
+            byBlock(Block.CARVED_PUMPKIN),
+            byBlock(Block.JACK_O_LANTERN),
+            byBlock(Block.BEEHIVE),
+            byBlock(Block.STONECUTTER),
+            byBlock(Block.GRINDSTONE),
+            byBlock(Block.LOOM),
+            byBlock(Block.ANVIL),
+            byBlock(Block.CHIPPED_ANVIL),
+            byBlock(Block.DAMAGED_ANVIL),
+            byBlock(Block.BEE_NEST),
+            byBlock(Block.JUKEBOX),
+            byBlock(Block.END_PORTAL_FRAME),
+            byBlock(Block.CRAFTER),
+        ),
+        ::WorkstationPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
