@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compileOnly(libs.minestom)
+    implementation(libs.gson)
 
     testImplementation(platform(libs.junit.bom))
     testImplementation("org.junit.jupiter:junit-jupiter")

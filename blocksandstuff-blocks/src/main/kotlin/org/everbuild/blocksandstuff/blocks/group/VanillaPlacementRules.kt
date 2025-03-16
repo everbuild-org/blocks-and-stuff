@@ -8,9 +8,10 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.blocks.group.block.AggregateTagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
-import org.everbuild.blocksandstuff.blocks.group.block.VanillaTagBlockGroup
+import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.AmethystPlacementRules
+import org.everbuild.blocksandstuff.blocks.placement.BambooPlantPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.InverseWorkstationPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.RotatedPillarPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.SlabPlacementRule
@@ -83,6 +84,14 @@ object VanillaPlacementRules {
         ::AmethystPlacementRules
     )
 
+    val BAMBOO = group(
+        all(
+            byBlock(Block.BAMBOO),
+            byBlock(Block.BAMBOO_SAPLING),
+        ),
+        ::BambooPlantPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
@@ -94,7 +103,7 @@ object VanillaPlacementRules {
     }
 
     private fun byTag(@KeyPattern tag: String): BlockGroup {
-        return VanillaTagBlockGroup(Key.key(tag))
+        return TagBlockGroup(Key.key(tag))
     }
 
     private fun byBlock(block: Block): BlockGroup {
