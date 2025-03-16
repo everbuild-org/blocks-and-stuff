@@ -39,10 +39,18 @@ fun PlacementState.canAttach(): Boolean {
     return anchorBlock.registry().collisionShape().isFaceFull(this.blockFace!!)
 }
 
+fun PlacementState.getNearestLookingDirection(allowedDirections: Collection<Direction>): Direction {
+    return allowedDirections.minBy { it.vec().scalarProduct(this.playerPosition!!.direction().normalize()) }
+}
+
 fun PlacementState.getNearestLookingDirection(): Direction {
     this.playerPosition ?: return Direction.EAST
-    val playerViewVector = this.playerPosition!!.direction().normalize()
-    return Direction.entries.minBy { it.vec().scalarProduct(playerViewVector) }
+    return this.getNearestLookingDirection(Direction.entries)
+}
+
+fun PlacementState.getNearestHorizontalLookingDirection(): Direction {
+    this.playerPosition ?: return Direction.EAST
+    return this.getNearestLookingDirection(Direction.HORIZONTAL.iterator().asSequence().toList())
 }
 
 fun Vec.scalarProduct(rhs: Vec): Double {
