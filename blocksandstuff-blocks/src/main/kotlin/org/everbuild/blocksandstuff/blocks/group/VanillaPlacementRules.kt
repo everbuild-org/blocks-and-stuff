@@ -10,12 +10,7 @@ import org.everbuild.blocksandstuff.blocks.group.block.BlockBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
-import org.everbuild.blocksandstuff.blocks.placement.AmethystPlacementRules
-import org.everbuild.blocksandstuff.blocks.placement.BambooPlantPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.InverseWorkstationPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.RotatedPillarPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.SlabPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.WorkstationPlacementRule
+import org.everbuild.blocksandstuff.blocks.placement.*
 
 object VanillaPlacementRules {
     val ALL: ArrayList<PlacementGroup> = ArrayList()
@@ -81,7 +76,7 @@ object VanillaPlacementRules {
             byBlock(Block.MEDIUM_AMETHYST_BUD),
             byBlock(Block.LARGE_AMETHYST_BUD),
         ),
-        ::AmethystPlacementRules
+        ::AmethystPlacementRule
     )
 
     val BAMBOO = group(
@@ -90,6 +85,13 @@ object VanillaPlacementRules {
             byBlock(Block.BAMBOO_SAPLING),
         ),
         ::BambooPlantPlacementRule
+    )
+
+    val BANNER = group(
+        all(
+            byTag("minecraft:banners"),
+        ),
+        ::BannerPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {

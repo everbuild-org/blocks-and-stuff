@@ -24,6 +24,19 @@ fun PlacementState.getHorizontalPlacementDirection(): Direction? {
     }
 }
 
+fun PlacementState.sixteenStepRotation(): Int {
+    var yaw = this.playerPosition?.yaw ?: return 0
+    yaw += 22.5f / 2.0f
+    if (yaw < 0) yaw += 360f
+    return (yaw / 22.5f).toInt().coerceIn(0, 15)
+}
+
+fun PlacementState.canAttach(): Boolean {
+    val anchor = this.placePosition.sub((this.blockFace ?: return false).toDirection().vec())
+    val anchorBlock = this.instance.getBlock(anchor)
+    return anchorBlock.registry().collisionShape().isFaceFull(this.blockFace!!)
+}
+
 fun Direction.rotateR(): Direction {
     return when (this) {
         Direction.NORTH -> Direction.EAST

@@ -2,13 +2,12 @@ package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.common.utils.canAttach
 import org.everbuild.blocksandstuff.common.utils.isWater
 
-class AmethystPlacementRules(block: Block) : BlockPlacementRule(block) {
+class AmethystPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        val anchor = placementState.placePosition.sub((placementState.blockFace ?: return null).toDirection().vec())
-        val anchorBlock = placementState.instance.getBlock(anchor)
-        if (!anchorBlock.registry().collisionShape().isFaceFull(placementState.blockFace!!)) return null
+        if (!placementState.canAttach()) return null
         val currentBlock = placementState.instance.getBlock(placementState.placePosition)
         val waterlogged = currentBlock.isWater()
 
