@@ -17,7 +17,7 @@ class DefaultDroppedItemFactory : DroppedItemFactory {
         entity.scheduleRemove(5, TimeUnit.MINUTE)
         entity.velocity = Vec(
             Random.nextDouble() * 2 - 1,
-            4.0,
+            2.0,
             Random.nextDouble() * 2 - 1
         )
         entity.setInstance(instance, position.add(0.5, 0.5, 0.5))
