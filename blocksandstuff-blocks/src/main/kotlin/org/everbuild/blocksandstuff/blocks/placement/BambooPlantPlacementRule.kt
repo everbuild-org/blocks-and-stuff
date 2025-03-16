@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.placement
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 
 class BambooPlantPlacementRule(block: Block) : BlockPlacementRule(block) {
@@ -26,5 +27,24 @@ class BambooPlantPlacementRule(block: Block) : BlockPlacementRule(block) {
         }
 
         return null
+    }
+
+    override fun blockUpdate(updateState: UpdateState): Block {
+        val below = updateState.instance.getBlock(updateState.blockPosition.sub(0.0, 1.0, 0.0))
+        if (plantableOn.none { it.compare(below) }) {
+            if (DROP_ITEMS) {
+                val instance = updateState.instance as Instance
+                DroppedItemFactory.current.spawn(instance, updateState.blockPosition, updateState.currentBlock)
+            }
+            return Block.AIR
+        }
+
+        return updateState.currentBlock
+    }
+
+    override fun maxUpdateDistance(): Int = 500
+
+    companion object {
+        var DROP_ITEMS = true
     }
 }
