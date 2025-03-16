@@ -94,6 +94,13 @@ object VanillaPlacementRules {
         ::BannerPlacementRule
     )
 
+    val FACING = group(
+        all(
+            byBlock(Block.BARREL)
+        ),
+        ::FacingPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)

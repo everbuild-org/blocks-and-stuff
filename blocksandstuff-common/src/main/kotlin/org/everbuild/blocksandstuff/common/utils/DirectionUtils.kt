@@ -1,5 +1,7 @@
 package org.everbuild.blocksandstuff.common.utils
 
+import kotlin.enums.EnumEntries
+import net.minestom.server.coordinate.Vec
 import net.minestom.server.instance.block.rule.BlockPlacementRule.PlacementState
 import net.minestom.server.utils.Direction
 
@@ -35,6 +37,17 @@ fun PlacementState.canAttach(): Boolean {
     val anchor = this.placePosition.sub((this.blockFace ?: return false).toDirection().vec())
     val anchorBlock = this.instance.getBlock(anchor)
     return anchorBlock.registry().collisionShape().isFaceFull(this.blockFace!!)
+}
+
+fun PlacementState.getNearestLookingDirection(): Direction {
+    this.playerPosition ?: return Direction.EAST
+    val playerViewVector = this.playerPosition!!.direction().normalize()
+    return Direction.entries.minBy { it.vec().scalarProduct(playerViewVector) }
+}
+
+fun Vec.scalarProduct(rhs: Vec): Double {
+    val componentsMultiplied = this.mul(rhs)
+    return componentsMultiplied.x + componentsMultiplied.y + componentsMultiplied.z
 }
 
 fun Direction.rotateR(): Direction {
