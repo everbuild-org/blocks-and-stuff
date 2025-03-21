@@ -54,12 +54,12 @@ fun setupFluidPlacementEvent() {
                 }
                 if (itemInMainHand == ItemStack.of(Material.WATER_BUCKET)) {
                     val blockFace = event.blockFace
-                    var block = Block.WATER
+                    val block: Block?
                     val updated = instance.getBlock(event.blockPosition)
                     var placePosition: Pos = event.blockPosition.relative(blockFace).asVec().asPosition()
 
                     if (isWaterloggable(updated)) {
-                        block = updated.withProperty("waterlogged", "true");
+                        block = updated.withProperty("waterlogged", "true")
                         placePosition = event.blockPosition.asVec().asPosition()
                     } else {
                         block = Block.WATER
@@ -78,7 +78,9 @@ fun setupFluidPlacementEvent() {
                         )
                     )
                     if (block != Block.WATER) {
+                        // Schedule update for the current block
                         MinestomFluids.scheduleTick(instance, placePosition, Block.WATER)
+
                         // Schedule updates for adjacent blocks (ensures fluid spreads properly)
                         for (face in BlockFace.entries) {
                             val neighbor = placePosition.relative(face)
@@ -88,7 +90,7 @@ fun setupFluidPlacementEvent() {
                             }
                         }
                     }
-                    event.player.refreshPosition(placePosition)
+                    event.player.refreshPosition(placePosition, false, true)
                 }
             }
         }
@@ -96,26 +98,36 @@ fun setupFluidPlacementEvent() {
 
 fun isWaterloggable(block: Block): Boolean {
     val tags = MinecraftServer.getTagManager()
-    if (block.compare(Block.LADDER)
-        || block.compare(Block.SUGAR_CANE)
-        || block.compare(Block.BUBBLE_COLUMN)
-        || block.compare(Block.NETHER_PORTAL)
-        || block.compare(Block.END_PORTAL)
-        || block.compare(Block.END_GATEWAY)
-        || block.compare(Block.KELP)
-        || block.compare(Block.KELP_PLANT)
-        || block.compare(Block.SEAGRASS)
-        || block.compare(Block.TALL_SEAGRASS)
-        || block.compare(Block.SEA_PICKLE)
-        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:signs")!!.contains(block.namespace())
-        || block.name().contains("door")
-        || block.name().contains("coral")
+    if (tags.getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.namespace())
+        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:slabs")!!.contains(block.namespace())
+        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:fences")!!.contains(block.namespace())
+        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:trapdoors")!!.contains(block.namespace())
+//    if (block.compare(Block.LADDER)
+//        || block.compare(Block.SUGAR_CANE)
+//        || block.compare(Block.BUBBLE_COLUMN)
+//        || block.compare(Block.NETHER_PORTAL)
+//        || block.compare(Block.END_PORTAL)
+//        || block.compare(Block.END_GATEWAY)
+//        || block.compare(Block.KELP)
+//        || block.compare(Block.KELP_PLANT)
+//        || block.compare(Block.SEAGRASS)
+//        || block.compare(Block.TALL_SEAGRASS)
+//        || block.compare(Block.SEA_PICKLE)
+//        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:signs")!!.contains(block.namespace())
+//        || block.name().contains("door")
+//        || block.name().contains("coral")
     ) {
-        println("not")
-        return false
+        println("is")
+        return true
+    }
+    println("not")
+    return false
+    if (tags.getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.namespace())) {
+        println("stairs")
+        return true
     }
     println("waterlogged")
-    return !block.isSolid || block.isAir
+    return !block.isSolid || !block.isAir
 }
 
 

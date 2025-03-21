@@ -24,11 +24,11 @@ class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultB
     }
 
     override fun getLevelDecreasePerBlock(instance: Instance?): Int {
-        return 2
+        return 1
     }
 
     override fun getTickRate(instance: Instance?): Int {
-        return 5 * (MinecraftServer.TICK_PER_SECOND / 20)
+        return 10 * (MinecraftServer.TICK_PER_SECOND / 20)
     }
 
     override fun getHeight(block: Block?, instance: Instance?, point: Point?): Double {

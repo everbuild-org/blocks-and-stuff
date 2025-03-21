@@ -1,13 +1,12 @@
 package org.everbuild.averium.worlds.fluid.listener
 
 import net.minestom.server.MinecraftServer
-import net.minestom.server.entity.PlayerHand
-import net.minestom.server.event.player.PlayerBlockInteractEvent
 import net.minestom.server.event.player.PlayerUseItemEvent
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler.PlayerPlacement
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import org.everbuild.blocksandstuff.common.utils.eyePosition
 import org.everbuild.blocksandstuff.fluids.findBlockFace
 import org.everbuild.blocksandstuff.fluids.raycastForFluid
 
@@ -18,15 +17,18 @@ fun setupFluidPickupEvent() {
         run {
             val instance = event.player.instance
             val itemInMainHand = event.player.itemInMainHand
-                val liquidBlock =
-                    raycastForFluid(
-                        event.player,
-                        event.player.position.withY(event.player.eyeHeight),
-                        event.player.position.direction(),
-                        5.0
-                    ) ?: return@run
+            println("PlayerUseItemEvent")
+            val liquidBlock =
+                raycastForFluid(
+                    event.player,
+                    event.player.eyePosition(),
+                    event.player.position.direction(),
+                    5.0
+                ) ?: return@run
             if (itemInMainHand == ItemStack.of(Material.BUCKET)) {
+                println("PlayerUseItemEvent: BUCKET")
                 val blockFace = findBlockFace(player = event.player, liquidBlock) ?: return@run
+                println("PlayerUseItemEvent: BUCKET: blockFace")
                 instance.placeBlock(
                     PlayerPlacement(
                         Block.AIR,
@@ -44,9 +46,9 @@ fun setupFluidPickupEvent() {
         }
     }
 
-    MinecraftServer.getGlobalEventHandler().addListener(PlayerBlockInteractEvent::class.java) {
-        event: PlayerBlockInteractEvent -> if (event.isCancelled) return@addListener
-    }
+//    MinecraftServer.getGlobalEventHandler().addListener(PlayerBlockInteractEvent::class.java) {
+//        event: PlayerBlockInteractEvent -> if (event.isCancelled) return@addListener
+//    }
 
 //    listen<PlayerBlockInteractEvent> {
 //        val instance = it.player.instance

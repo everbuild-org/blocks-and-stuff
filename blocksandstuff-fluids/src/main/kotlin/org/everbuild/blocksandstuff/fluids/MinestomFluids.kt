@@ -5,8 +5,10 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.event.Event
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
+import net.minestom.server.gamedata.tags.Tag
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.predicate.BlockTypeFilter.Blocks
 import net.minestom.server.item.Material
 import org.everbuild.averium.worlds.fluid.EmptyFluid
 import org.everbuild.averium.worlds.fluid.Fluid
@@ -68,6 +70,7 @@ object MinestomFluids {
 
     private fun init() {
         MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.WATER))
+        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.LAVA))
         MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.AIR))
     }
 
@@ -77,6 +80,23 @@ object MinestomFluids {
         setupFluidPlacementEvent()
         setupFluidPickupEvent()
         return node
+    }
+
+//    breaking water logging
+    private fun registerWaterloggedPlacementRules() {
+        Block.values().forEach { block ->
+            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.namespace())) {
+                block.possibleStates().forEach { state ->
+                    val property = state.getProperty("waterlogged")
+                    if (property != null && property == "true") {
+                        println("registered ${block.name()}")
+                        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(block))
+                    } else {
+                        println("property is null")
+                    }
+                }
+            }
+        }
     }
 
     @JvmStatic
