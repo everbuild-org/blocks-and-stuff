@@ -9,11 +9,11 @@ object MinestomBlockTagProvider : TagProvider<Block> {
 
     override fun hasTag(element: Block, tag: String): Boolean {
         val data = tags.getTag(Tag.BasicType.BLOCKS, tag) ?: return false
-        return data.contains(element.namespace())
+        return data.contains(element.key())
     }
 
     override fun getTaggedWith(tag: String): Set<Block> {
         val data = tags.getTag(Tag.BasicType.BLOCKS, tag) ?: return setOf()
-        return data.values.mapNotNull(Block::fromNamespaceId).toSet()
+        return data.values.mapNotNull(Block::fromKey).toSet()
     }
 }
