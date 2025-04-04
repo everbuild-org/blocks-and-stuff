@@ -7,6 +7,7 @@ import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.generator.GenerationUnit
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 
 class TestServer {
@@ -19,6 +20,7 @@ class TestServer {
         }
 
         BlockPlacementRuleRegistrations.registerDefault()
+        MinestomFluids.registerFluids()
 
         MinecraftServer.getGlobalEventHandler().addListener(
             AsyncPlayerConfigurationEvent::class.java
