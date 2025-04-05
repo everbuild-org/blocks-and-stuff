@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.fluids
 
+import net.minestom.server.collision.BoundingBox
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Player
@@ -9,6 +10,7 @@ fun raycastForFluid(player: Player, startPosition: Point, direction: Vec, maxDis
     var currentPosition = startPosition
     val stepSize = 0.1 // Smaller steps give more precision, but increase computational cost
     var distance = 0.0
+    val box = BoundingBox(0.001, 0.001, 0.001)
 
     while (distance < maxDistance) {
         currentPosition = currentPosition.add(direction.mul(stepSize))
@@ -20,8 +22,9 @@ fun raycastForFluid(player: Player, startPosition: Point, direction: Vec, maxDis
                 return currentPosition // Found a fluid block, return it
         }
 
-        if (block.isSolid) {
-            break // Hit a solid block, stop the raycast
+        val shape = block.registry().collisionShape()
+        if (shape.intersectBox(currentPosition, box)) {
+            break
         }
 
         distance += stepSize

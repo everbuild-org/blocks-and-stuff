@@ -1,4 +1,4 @@
-package org.everbuild.averium.worlds.fluid
+package org.everbuild.blocksandstuff.fluids
 
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance

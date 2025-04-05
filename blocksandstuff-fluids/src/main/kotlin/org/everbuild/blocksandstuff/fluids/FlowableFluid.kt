@@ -1,4 +1,4 @@
-package org.everbuild.averium.worlds.fluid
+package org.everbuild.blocksandstuff.fluids
 
 import it.unimi.dsi.fastutil.shorts.Short2BooleanFunction
 import it.unimi.dsi.fastutil.shorts.Short2BooleanMap
@@ -10,7 +10,6 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
-import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import java.util.*
 import kotlin.collections.iterator
 import kotlin.math.max

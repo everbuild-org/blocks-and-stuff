@@ -6,8 +6,6 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
-import org.everbuild.averium.worlds.fluid.FlowableFluid
-import org.everbuild.averium.worlds.fluid.Fluid
 
 class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
 

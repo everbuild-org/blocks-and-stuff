@@ -8,13 +8,10 @@ import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.gamedata.tags.Tag
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.predicate.BlockTypeFilter.Blocks
 import net.minestom.server.item.Material
-import org.everbuild.averium.worlds.fluid.EmptyFluid
-import org.everbuild.averium.worlds.fluid.Fluid
-import org.everbuild.averium.worlds.fluid.listener.setupFluidPickupEvent
-import org.everbuild.blocksandstuff.fluids.listener.setupFluidPlacementEvent
 import java.util.concurrent.ConcurrentHashMap
+import org.everbuild.blocksandstuff.fluids.listener.setupFluidPlacementEvent
+import org.everbuild.blocksandstuff.fluids.pickup.getFluidPickupEventNode
 
 object MinestomFluids {
 
@@ -74,18 +71,19 @@ object MinestomFluids {
         MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.AIR))
     }
 
-    private fun events(): EventNode<Event> {
-        val node = EventNode.all("fluid-events")
-        node.addListener(InstanceTickEvent::class.java, MinestomFluids::tick)
-        setupFluidPlacementEvent()
-        setupFluidPickupEvent()
-        return node
-    }
+    private fun events(): EventNode<Event> = EventNode.all("fluid-events")
+        .addListener(InstanceTickEvent::class.java, MinestomFluids::tick)
+        .addChild(getFluidPickupEventNode())
+        .also {
+            setupFluidPlacementEvent() // TODO
+        }
 
-//    breaking water logging
+    //    breaking water logging
     private fun registerWaterloggedPlacementRules() {
         Block.values().forEach { block ->
-            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.key())) {
+            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!
+                    .contains(block.key())
+            ) {
                 block.possibleStates().forEach { state ->
                     val property = state.getProperty("waterlogged")
                     if (property != null && property == "true") {
