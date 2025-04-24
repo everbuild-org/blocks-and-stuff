@@ -45,7 +45,7 @@ fun setupFluidPlacementEvent() {
                         for (face in BlockFace.entries) {
                             val neighbor = placePosition.relative(face)
                             val neighborBlock = instance.getBlock(neighbor)
-                            if (MinestomFluids.get(neighborBlock) !== MinestomFluids.EMPTY) {
+                            if (MinestomFluids.getFluidOnBlock(neighborBlock) !== MinestomFluids.EMPTY) {
                                 MinestomFluids.scheduleTick(instance, neighbor, neighborBlock)
                             }
                         }
@@ -85,7 +85,7 @@ fun setupFluidPlacementEvent() {
                         for (face in BlockFace.entries) {
                             val neighbor = placePosition.relative(face)
                             val neighborBlock = instance.getBlock(neighbor)
-                            if (MinestomFluids.get(neighborBlock) !== MinestomFluids.EMPTY) {
+                            if (MinestomFluids.getFluidOnBlock(neighborBlock) !== MinestomFluids.EMPTY) {
                                 MinestomFluids.scheduleTick(instance, neighbor, neighborBlock)
                             }
                         }

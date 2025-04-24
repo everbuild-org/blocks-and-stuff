@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.fluids
+package org.everbuild.blocksandstuff.fluids.impl
 
 import it.unimi.dsi.fastutil.shorts.Short2BooleanFunction
 import it.unimi.dsi.fastutil.shorts.Short2BooleanMap
@@ -13,17 +13,23 @@ import net.minestom.server.utils.Direction
 import java.util.*
 import kotlin.collections.iterator
 import kotlin.math.max
+import net.minestom.server.coordinate.BlockVec
+import net.minestom.server.event.EventDispatcher
+import net.minestom.server.event.EventHandler
+import net.minestom.server.event.GlobalEventHandler
+import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
+import org.everbuild.blocksandstuff.fluids.asBlockFace
+import org.everbuild.blocksandstuff.fluids.event.BlockFluidReplacementEvent
 
-abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
-    Fluid(defaultBlock, bucket) {
+abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defaultBlock, bucket) {
     override fun onTick(instance: Instance, point: Point, block: Block) {
         var varBlock = block
 
         if (!isSource(varBlock)) {
             val updated = getUpdatedState(instance, point, varBlock)
-            if (MinestomFluids.get(updated) == MinestomFluids.EMPTY) {
+            if (MinestomFluids.getFluidOnBlock(updated) == MinestomFluids.EMPTY) {
                 varBlock = updated
-
                 instance.setBlock(point, Block.AIR, true)
             } else if (updated !== varBlock) {
                 varBlock = updated
@@ -33,12 +39,8 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         tryFlow(instance, point, varBlock)
     }
 
-    override fun getNextTickDelay(instance: Instance?, point: Point?, block: Block?): Int {
-        return getTickRate(instance)
-    }
-
     protected fun tryFlow(instance: Instance, point: Point, block: Block) {
-        val fluid: Fluid = MinestomFluids.get(block)
+        val fluid: Fluid = MinestomFluids.getFluidInstanceOnBlock(block)
         if (fluid == MinestomFluids.EMPTY) return
 
         val down = point.add(0.0, -1.0, 0.0)
@@ -52,6 +54,10 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         } else if (isSource(block) || !canFlowDown(instance, updatedDownFluid, point, block, down, downBlock)) {
             flowSides(instance, point, block)
         }
+    }
+
+    override fun isInTile(block: Block): Boolean {
+        return block.compare(defaultBlock)
     }
 
     /**
@@ -78,7 +84,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
     /**
      * Gets the updated state of a source block by taking into account its surrounding blocks.
      */
-     fun getUpdatedState(instance: Instance, point: Point, block: Block): Block {
+    fun getUpdatedState(instance: Instance, point: Point, block: Block): Block {
         var highestLevel = 0
         var stillCount = 0
         for (direction in Direction.HORIZONTAL) {
@@ -88,7 +94,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
                 direction.normalZ().toDouble()
             )
             val directionBlock = instance.getBlock(directionPos)
-            val directionFluid: Fluid = MinestomFluids.get(directionBlock)
+            val directionFluid: Fluid = MinestomFluids.getFluidInstanceOnBlock(directionBlock)
             if (directionFluid !== this || !receivesFlow(
                     direction,
                     instance,
@@ -116,7 +122,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
 
         val above = point.add(0.0, 1.0, 0.0)
         val aboveBlock = instance.getBlock(above)
-        val aboveFluid: Fluid = MinestomFluids.get(aboveBlock)
+        val aboveFluid: Fluid = MinestomFluids.getFluidInstanceOnBlock(aboveBlock)
         if (aboveFluid != MinestomFluids.EMPTY && aboveFluid == this && receivesFlow(
                 Direction.UP,
                 instance,
@@ -135,32 +141,32 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
     }
 
     private fun receivesFlow(
-        face: Direction, instance: Instance, point: Point,
-        block: Block, fromPoint: Point, fromBlock: Block
+        face: Direction,
+        instance: Instance,
+        point: Point,
+        block: Block,
+        fromPoint: Point,
+        fromBlock: Block
     ): Boolean {
         // Vanilla seems to check if the adjacent block shapes cover the same square, but this seems to work as well
         // (Might not work with some special blocks)
         // If there is anything wrong it is most likely this method :D
 
-        if (block.isLiquid) {
-            if (face == Direction.UP) {
-                if (fromBlock.isLiquid) return true
-                return block.isSolid || block.isAir
+        return if (block.isLiquid) {
+            when (face) {
                 //return isSource(block) || getLevel(block) == 8;
-            } else if (face == Direction.DOWN) {
-                if (fromBlock.isLiquid) return true
-                return fromBlock.isSolid || fromBlock.isAir
+                Direction.UP -> fromBlock.isLiquid || block.isSolid || block.isAir
+
                 //return isSource(fromBlock) || getLevel(fromBlock) == 8;
-            } else {
-                return true
+                Direction.DOWN -> fromBlock.isLiquid || fromBlock.isSolid || fromBlock.isAir
+
+                else -> true
             }
         } else {
-            return if (face == Direction.UP) {
-                block.isSolid || block.isAir
-            } else if (face == Direction.DOWN) {
-                block.isSolid || block.isAir
-            } else {
-                block.isSolid || block.isAir
+            when (face) {
+                Direction.UP -> block.isSolid || block.isAir
+                Direction.DOWN -> block.isSolid || block.isAir
+                else -> block.isSolid || block.isAir
             }
         }
     }
@@ -170,7 +176,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
      * If a hole is found within `getHoleRadius()` blocks, the water will only flow in that direction.
      * A weight is used to determine which hole is the closest.
      */
-     fun getSpread(instance: Instance, point: Point, block: Block): Map<Direction, Block> {
+    fun getSpread(instance: Instance, point: Point, block: Block): Map<Direction, Block> {
         var weight = 1000
         val map = EnumMap<Direction, Block>(
             Direction::class.java
@@ -220,7 +226,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         return map
     }
 
-     fun getWeight(
+    fun getWeight(
         instance: Instance, point: Point, initialWeight: Int, skipCheck: Direction,
         block: Block, originalPoint: Point, short2BooleanMap: Short2BooleanMap
     ): Int {
@@ -281,34 +287,18 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
      * Returns whether the fluid can flow through a specific block
      */
     private fun canFill(instance: Instance, point: Point, block: Block, flowing: Block): Boolean {
-        //TODO check waterloggable
-        val tags = MinecraftServer.getTagManager()
-        if (block.compare(Block.LADDER)
-            || block.compare(Block.SUGAR_CANE)
-            || block.compare(Block.BUBBLE_COLUMN)
-            || block.compare(Block.NETHER_PORTAL)
-            || block.compare(Block.END_PORTAL)
-            || block.compare(Block.END_GATEWAY)
-            || block.compare(Block.KELP)
-            || block.compare(Block.KELP_PLANT)
-            || block.compare(Block.SEAGRASS)
-            || block.compare(Block.TALL_SEAGRASS)
-            || block.compare(Block.SEA_PICKLE)
-            || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:signs")!!.contains(block.key())
-            || block.name().contains("door")
-            || block.name().contains("coral")
-        ) {
-            return false
-        }
-        return !block.isSolid
+        val event = BlockFluidReplacementEvent(instance, block, BlockVec(point))
+        EventDispatcher.call(event)
+        return block.isAir || block.registry().isReplaceable || !event.isCancelled
     }
 
     private fun canFlowDown(
         instance: Instance, flowing: Block, point: Point,
         block: Block, fromPoint: Point, fromBlock: Block
     ): Boolean {
+        if (!getDirections(flowing).contains(Direction.DOWN)) return false
         if (!this.receivesFlow(Direction.DOWN, instance, point, block, fromPoint, fromBlock)) return false
-        if (MinestomFluids.get(fromBlock) === this) return true
+        if (MinestomFluids.getFluidOnBlock(fromBlock) === this) return true
         return this.canFill(instance, fromPoint, fromBlock, flowing)
     }
 
@@ -316,6 +306,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         instance: Instance, flowing: Block, point: Point, block: Block,
         face: Direction, fromPoint: Point, fromBlock: Block
     ): Boolean {
+        if (!getDirections(flowing).contains(face)) return false
         return !isMatchingAndStill(fromBlock) && receivesFlow(face, instance, point, block, fromPoint, fromBlock)
                 && canFill(instance, fromPoint, fromBlock, flowing)
     }
@@ -324,8 +315,10 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         instance: Instance, fluidPoint: Point, flowingBlock: Block,
         flowDirection: Direction, flowTo: Point, flowToBlock: Block, newFlowing: Block
     ): Boolean {
-        return MinestomFluids.get(flowToBlock)
-            .canBeReplacedWith(instance, flowTo, MinestomFluids.get(newFlowing), flowDirection)
+        if (!getDirections(flowingBlock).contains(flowDirection)) return false
+
+        return MinestomFluids.getFluidInstanceOnBlock(flowToBlock)
+            .canBeReplacedWith(instance, flowTo, MinestomFluids.getFluidInstanceOnBlock(newFlowing), flowDirection)
                 && receivesFlow(flowDirection, instance, fluidPoint, flowingBlock, flowTo, flowToBlock)
                 && canFill(instance, flowTo, flowToBlock, newFlowing)
     }
@@ -336,18 +329,13 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
     protected fun flow(instance: Instance, point: Point, block: Block, direction: Direction?, newBlock: Block) {
         if (block == newBlock) return  // Prevent unnecessary updates
 
-
         //TODO waterloggable check
-        var cancel = false
-        if (!block.isAir) {
-            if (!onBreakingBlock(instance, point, block)) cancel = true
-        }
 
-        if (!cancel && point.y() >= -64) instance.setBlock(point, newBlock)
+        if (point.y() >= instance.cachedDimensionType.minY()) instance.setBlock(point, newBlock)
     }
 
     private fun isMatchingAndStill(block: Block): Boolean {
-        return MinestomFluids.get(block) === this && isSource(block)
+        return MinestomFluids.getFluidOnBlock(block) === this && isSource(block)
     }
 
     fun getFlowing(level: Int, falling: Boolean): Block {
@@ -364,19 +352,19 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
 
     protected abstract fun getHoleRadius(instance: Instance?): Int
 
-    /**
-     * Returns whether the block can be broken
-     */
-    protected abstract fun onBreakingBlock(instance: Instance?, point: Point?, block: Block?): Boolean
-
-    abstract fun getTickRate(instance: Instance?): Int
-
     override fun getHeight(block: Block?, instance: Instance?, point: Point?): Double {
         return if (isFluidAboveEqual(block!!, instance!!, point!!)) 1.0 else getHeight(block)
     }
 
     override fun getHeight(block: Block?): Double {
         return getLevel(block!!) / 9.0
+    }
+
+    protected open fun getDirections(block: Block): Collection<Direction> {
+        if (block.isLiquid) return Direction.entries
+        return Direction.entries.filter {
+            !block.registry().collisionShape().isFaceFull(it.asBlockFace())
+        }
     }
 
     companion object {
@@ -390,7 +378,15 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) :
         }
 
         private fun isFluidAboveEqual(block: Block, instance: Instance, point: Point): Boolean {
-            return MinestomFluids.get(block) === MinestomFluids.get(instance.getBlock(point.add(0.0, 1.0, 0.0)))
+            return MinestomFluids.getFluidOnBlock(block) === MinestomFluids.getFluidOnBlock(
+                instance.getBlock(
+                    point.add(
+                        0.0,
+                        1.0,
+                        0.0
+                    )
+                )
+            )
         }
     }
 }

@@ -1,21 +1,17 @@
-package org.everbuild.blocksandstuff.fluids
+package org.everbuild.blocksandstuff.fluids.impl
 
-import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
+import org.everbuild.blocksandstuff.fluids.relativeTicks
 
-class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
-
-
+open class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
     override val isInfinite: Boolean
         get() = true
 
-    override fun onBreakingBlock(instance: Instance?, point: Point?, block: Block?): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun getNextTickDelay(instance: Instance, point: Point, block: Block): Int = 10.relativeTicks
 
     override fun getHoleRadius(instance: Instance?): Int {
         return 4
@@ -25,10 +21,6 @@ class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultB
         return 1
     }
 
-    override fun getTickRate(instance: Instance?): Int {
-        return 10 * (MinecraftServer.TICK_PER_SECOND / 20)
-    }
-
     override fun getHeight(block: Block?, instance: Instance?, point: Point?): Double {
         TODO("Not yet implemented")
     }
@@ -36,13 +28,11 @@ class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultB
     override val blastResistance: Double
         get() = 100.0
 
-    override fun canBeReplacedWith(
-        instance: Instance?,
-        point: Point?,
-        other: Fluid?,
-        direction: Direction?
-    ): Boolean {
-
+    override fun canBeReplacedWith(instance: Instance?, point: Point?, other: Fluid?, direction: Direction?): Boolean {
         return direction == Direction.DOWN && this === other
+    }
+
+    override fun isInTile(block: Block): Boolean {
+        return super.isInTile(block) || block.getProperty("waterlogged") == "true"
     }
 }

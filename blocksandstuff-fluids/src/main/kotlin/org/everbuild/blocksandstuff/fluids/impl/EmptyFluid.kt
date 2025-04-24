@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.fluids
+package org.everbuild.blocksandstuff.fluids.impl
 
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
@@ -16,9 +16,11 @@ class EmptyFluid : Fluid(Block.AIR, Material.BUCKET) {
         return true
     }
 
-    override fun getNextTickDelay(instance: Instance?, point: Point?, block: Block?): Int {
-        return -1
-    }
+    override fun getNextTickDelay(
+        instance: Instance,
+        point: Point,
+        block: Block
+    ): Int = -1
 
     override val isEmpty: Boolean
         get() = true
@@ -32,5 +34,9 @@ class EmptyFluid : Fluid(Block.AIR, Material.BUCKET) {
 
     override fun getHeight(block: Block?): Double {
         return 0.0
+    }
+
+    override fun isInTile(block: Block): Boolean {
+        return false
     }
 }

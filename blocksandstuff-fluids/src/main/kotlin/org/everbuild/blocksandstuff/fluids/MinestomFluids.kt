@@ -10,75 +10,74 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import java.util.concurrent.ConcurrentHashMap
+import net.minestom.server.registry.DynamicRegistry
+import org.everbuild.blocksandstuff.fluids.impl.EmptyFluid
+import org.everbuild.blocksandstuff.fluids.impl.Fluid
+import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
+import org.everbuild.blocksandstuff.fluids.impl.WaterFluid
 import org.everbuild.blocksandstuff.fluids.listener.setupFluidPlacementEvent
 import org.everbuild.blocksandstuff.fluids.pickup.getFluidPickupEventNode
 
 object MinestomFluids {
-
-    val WATER: Fluid = WaterFluid(Block.WATER, Material.WATER_BUCKET)
-    val LAVA: Fluid = LavaFluid(Block.LAVA, Material.LAVA_BUCKET)
-    val EMPTY: Fluid = EmptyFluid()
-
+    private var enabled = false
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
-    fun get(block: Block): Fluid {
-        return if (block.compare(Block.WATER)) {
-            WATER
-        } else if (block.compare(Block.LAVA)) {
-            LAVA
-        } else {
-            EMPTY
-        }
+    val registry = DynamicRegistry.create<Fluid>("blocksandstuff:fluids")
+        @JvmStatic get
+
+    val EMPTY = registry.register("minecraft:empty", EmptyFluid())
+
+    fun getFluidOnBlock(block: Block): DynamicRegistry.Key<Fluid> {
+        return registry.values().firstOrNull { it.isInTile(block) }?.let { registry.getKey(it) } ?: EMPTY
     }
 
-    fun tick(event: InstanceTickEvent) {
-        val currentUpdate: Set<Point>? =
-            UPDATES.computeIfAbsent(event.instance) { i: Instance? -> ConcurrentHashMap<Long, MutableSet<Point>>() }[event.instance.worldAge]
+    fun getFluidInstanceOnBlock(block: Block): Fluid {
+        return registry.values().firstOrNull { it.isInTile(block) } ?: registry[EMPTY]!!
+    }
+
+    fun onTick(event: InstanceTickEvent) {
+        val currentUpdate: Set<Point>? = UPDATES
+            .computeIfAbsent(event.instance) {
+                ConcurrentHashMap<Long, MutableSet<Point>>()
+            }[event.instance.worldAge]
+
         if (currentUpdate == null) return
+
         for (point in currentUpdate) {
-            tick1(event.instance, point)
+            processFluidTick(event.instance, point)
         }
+
         UPDATES[event.instance]!!.remove(event.instance.worldAge)
     }
 
-    fun tick1(instance: Instance, point: Point) {
+    fun processFluidTick(instance: Instance, point: Point) {
         val block = instance.getBlock(point)
-        val fluid = get(block)
+        val fluid = registry[getFluidOnBlock(block)]!!
 
-        // Process fluid behavior
         fluid.onTick(instance, point, block)
-
-        // Schedule the next tick to ensure continuous flow
         scheduleTick(instance, point, block)
     }
 
     fun scheduleTick(instance: Instance, point: Point, block: Block) {
-        val tickDelay = get(block).getNextTickDelay(instance, point, block)
+        val tickDelay = registry[getFluidOnBlock(block)]!!
+            .getNextTickDelay(instance, point, block)
+
         if (tickDelay == -1) return
 
         val newAge = instance.worldAge + tickDelay
-
-        // Ensure the instance exists in UPDATES
-        UPDATES.computeIfAbsent(instance) { i: Instance? -> ConcurrentHashMap<Long, MutableSet<Point>>() }
-            .computeIfAbsent(newAge) { _: Long? -> HashSet() }
+        UPDATES.computeIfAbsent(instance) { ConcurrentHashMap<Long, MutableSet<Point>>() }
+            .computeIfAbsent(newAge) { HashSet() }
             .add(point)
     }
 
-
-    private fun init() {
-        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.WATER))
-        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.LAVA))
-        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.AIR))
-    }
-
     private fun events(): EventNode<Event> = EventNode.all("fluid-events")
-        .addListener(InstanceTickEvent::class.java, MinestomFluids::tick)
+        .addListener(InstanceTickEvent::class.java, MinestomFluids::onTick)
         .addChild(getFluidPickupEventNode())
         .also {
             setupFluidPlacementEvent() // TODO
         }
 
-    //    breaking water logging
+    // breaking water logging
     private fun registerWaterloggedPlacementRules() {
         Block.values().forEach { block ->
             if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!
@@ -98,8 +97,19 @@ object MinestomFluids {
     }
 
     @JvmStatic
-    fun registerFluids() {
-        init()
+    fun enableFluids() {
+        if (enabled) return
+        enabled = true
+        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.WATER))
+        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.LAVA))
+        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(Block.AIR))
         MinecraftServer.getGlobalEventHandler().addChild(events())
+    }
+
+    @JvmStatic
+    fun enableVanillaFluids() {
+        if (!enabled) enableFluids()
+        registry.register("minecraft:water", WaterFluid(Block.WATER, Material.WATER_BUCKET))
+        registry.register("minecraft:lava", LavaFluid(Block.LAVA, Material.LAVA_BUCKET))
     }
 }

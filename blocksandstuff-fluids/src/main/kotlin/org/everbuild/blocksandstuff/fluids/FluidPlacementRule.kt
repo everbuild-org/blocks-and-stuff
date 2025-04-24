@@ -30,7 +30,7 @@ internal class FluidPlacementRule(block: Block) : BlockPlacementRule(block) {
         for (face in BlockFace.entries) {
             val neighbor = point.relative(face)
             val neighborBlock = instance.getBlock(neighbor)
-            if (MinestomFluids.get(neighborBlock) !== MinestomFluids.EMPTY) {
+            if (MinestomFluids.getFluidOnBlock(neighborBlock) !== MinestomFluids.EMPTY) {
                 MinestomFluids.scheduleTick(instance, neighbor, neighborBlock)
             }
         }

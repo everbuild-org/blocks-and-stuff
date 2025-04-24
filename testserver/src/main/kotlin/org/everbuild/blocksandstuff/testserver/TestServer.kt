@@ -20,7 +20,8 @@ class TestServer {
         }
 
         BlockPlacementRuleRegistrations.registerDefault()
-        MinestomFluids.registerFluids()
+        MinestomFluids.enableFluids()
+        MinestomFluids.enableVanillaFluids()
 
         MinecraftServer.getGlobalEventHandler().addListener(
             AsyncPlayerConfigurationEvent::class.java

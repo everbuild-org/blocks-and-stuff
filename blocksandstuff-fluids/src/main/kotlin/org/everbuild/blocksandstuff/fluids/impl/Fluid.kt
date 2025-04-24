@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.fluids
+package org.everbuild.blocksandstuff.fluids.impl
 
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
@@ -15,7 +15,7 @@ abstract class Fluid(val defaultBlock: Block, bucket: Material) {
         other: Fluid?, direction: Direction?
     ): Boolean
 
-    abstract fun getNextTickDelay(instance: Instance?, point: Point?, block: Block?): Int
+    abstract fun getNextTickDelay(instance: Instance, point: Point, block: Block): Int
 
     open fun onTick(instance: Instance, point: Point, block: Block) {}
 
@@ -26,6 +26,7 @@ abstract class Fluid(val defaultBlock: Block, bucket: Material) {
 
     abstract fun getHeight(block: Block?, instance: Instance?, point: Point?): Double
     abstract fun getHeight(block: Block?): Double
+    abstract fun isInTile(block: Block): Boolean
 
     companion object {
         fun isSource(block: Block): Boolean {
