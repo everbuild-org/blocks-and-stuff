@@ -19,7 +19,7 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
     }
 
     override fun tick(tick: BlockHandler.Tick) {
-        if (ThreadLocalRandom.current().nextInt(1000) > 2) return
+        if (ThreadLocalRandom.current().nextInt(10000) > 1) return
 
         val instance = tick.instance
         val blockPosition = tick.blockPosition
