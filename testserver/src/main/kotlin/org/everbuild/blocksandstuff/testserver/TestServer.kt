@@ -9,6 +9,8 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.generator.GenerationUnit
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
+import org.everbuild.blocksandstuff.blocks.behavior.BlockBehaviorRuleRegistrations
+import org.everbuild.blocksandstuff.blocks.behavior.CopperOxidationRule
 
 class TestServer {
     private val server: MinecraftServer = MinecraftServer.init()
@@ -20,6 +22,7 @@ class TestServer {
         }
 
         BlockPlacementRuleRegistrations.registerDefault()
+        BlockBehaviorRuleRegistrations.registerDefault()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
 
