@@ -156,6 +156,11 @@ object VanillaPlacementRules {
         ::FacedFacingPlacementRule
     )
 
+    val CACTUS = group(
+        byBlock(Block.CACTUS),
+        ::CactusPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
