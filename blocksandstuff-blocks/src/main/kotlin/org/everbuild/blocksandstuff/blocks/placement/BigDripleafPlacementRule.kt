@@ -47,14 +47,12 @@ class BigDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (block.compare(Block.BIG_DRIPLEAF_STEM)
             && !(blockAbove.compare(Block.BIG_DRIPLEAF_STEM) || blockAbove.compare(Block.BIG_DRIPLEAF))
         ) {
-            println("block above check failed: $blockAbove")
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
 
         val blockBelow = updateState.instance.getBlock(updateState.blockPosition.sub(0.0, 1.0, 0.0))
         if (!blockBelow.compare(Block.BIG_DRIPLEAF_STEM) && plantableOn.none { it.compare(blockBelow) }) {
-            println("block below check failed: $blockBelow ${!blockBelow.compare(Block.BIG_DRIPLEAF_STEM)} ${plantableOn.none { it.compare(blockBelow) }}")
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

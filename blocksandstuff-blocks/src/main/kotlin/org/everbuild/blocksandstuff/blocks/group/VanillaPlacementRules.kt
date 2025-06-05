@@ -135,6 +135,20 @@ object VanillaPlacementRules {
         ::BigDripleafPlacementRule
     )
 
+    val BOTTOM_SUPPORTED = group(
+        all(
+            byTag("minecraft:pressure_plates"),
+        ),
+        ::SupportedBelowPlacementRule
+    )
+
+    val PIN_BOTTOM_SUPPORTED = group(
+        all(
+            byTag("minecraft:wool_carpets"),
+        ),
+        ::PinSupportedBelowPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
