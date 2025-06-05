@@ -115,16 +115,24 @@ object VanillaPlacementRules {
         ::BedPlacementRule
     )
 
-    val PLANTS = group(
+    val CROPS = group(
         all(
             byTag("minecraft:crops")
         ),
-        ::PlantPlacementRule
+        ::CropPlacementRule
     )
 
     val BELL = group(
         byBlock(Block.BELL),
         ::BellPlacementRule
+    )
+    
+    val BIG_DRIPLEAF = group(
+        all(
+            byBlock(Block.BIG_DRIPLEAF),
+            byBlock(Block.BIG_DRIPLEAF_STEM),
+        ),
+        ::BigDripleafPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
