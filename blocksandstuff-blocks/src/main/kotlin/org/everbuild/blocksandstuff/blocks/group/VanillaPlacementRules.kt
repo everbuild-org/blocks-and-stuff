@@ -138,6 +138,7 @@ object VanillaPlacementRules {
     val BOTTOM_SUPPORTED = group(
         all(
             byTag("minecraft:pressure_plates"),
+            byBlock(Block.CAKE),
         ),
         ::SupportedBelowPlacementRule
     )
