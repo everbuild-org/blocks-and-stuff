@@ -162,6 +162,11 @@ object VanillaPlacementRules {
         ::CactusPlacementRule
     )
 
+    val CAMPFIRE = group(
+        byBlock(Block.CAMPFIRE),
+        ::CampfireBlockPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
