@@ -1,5 +1,5 @@
 [versions]
-minestom = "1_21_5-0473b41b2a"
+minestom = "1_21_5-4d91778331"
 tinylog = "2.7.0"
 gson = "2.12.1"
 junit = "5.10.0"

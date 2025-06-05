@@ -122,6 +122,11 @@ object VanillaPlacementRules {
         ::PlantPlacementRule
     )
 
+    val BELL = group(
+        byBlock(Block.BELL),
+        ::BellPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
