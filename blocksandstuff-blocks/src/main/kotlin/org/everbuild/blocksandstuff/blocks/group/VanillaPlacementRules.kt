@@ -126,7 +126,7 @@ object VanillaPlacementRules {
         byBlock(Block.BELL),
         ::BellPlacementRule
     )
-    
+
     val BIG_DRIPLEAF = group(
         all(
             byBlock(Block.BIG_DRIPLEAF),
@@ -170,6 +170,16 @@ object VanillaPlacementRules {
     val CANDLES = group(
         byBlock(Block.CANDLE),
         ::CandleBlockPlacementRule
+    )
+
+    val VINES_TOP = group(
+        all(
+            byBlock(Block.CAVE_VINES),
+            byBlock(Block.CAVE_VINES),
+            byBlock(Block.WEEPING_VINES),
+            byBlock(Block.WEEPING_VINES_PLANT),
+        ),
+        ::TopAttachedVinePlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
