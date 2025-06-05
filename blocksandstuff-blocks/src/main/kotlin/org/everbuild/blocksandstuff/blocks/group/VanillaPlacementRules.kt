@@ -167,6 +167,11 @@ object VanillaPlacementRules {
         ::CampfireBlockPlacementRule
     )
 
+    val CANDLES = group(
+        byBlock(Block.CANDLE),
+        ::CandleBlockPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
