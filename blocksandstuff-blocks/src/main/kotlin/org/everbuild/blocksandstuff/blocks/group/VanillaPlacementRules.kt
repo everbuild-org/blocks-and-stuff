@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.group
 
-import java.util.function.Function
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.key.KeyPattern
 import net.minestom.server.instance.block.Block
@@ -11,6 +10,7 @@ import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
+import java.util.function.Function
 
 object VanillaPlacementRules {
     val ALL: ArrayList<PlacementGroup> = ArrayList()
@@ -180,6 +180,27 @@ object VanillaPlacementRules {
             byBlock(Block.WEEPING_VINES_PLANT),
         ),
         ::TopAttachedVinePlacementRule
+    )
+
+    val TRAPDOOR = group(
+        all(
+            byTag("minecraft:trapdoors"),
+        ),
+        ::TrapdoorPlacementRule
+    )
+
+    val FENCE = group(
+        all(
+            byTag("minecraft:fences"),
+        ),
+        ::FencePlacementRule
+    )
+
+    val STAIRS = group(
+        all(
+            byTag("minecraft:stairs"),
+        ),
+        ::StairsPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
