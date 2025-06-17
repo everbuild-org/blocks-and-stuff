@@ -1,38 +1,190 @@
-name: Gradle Test and Build
+name: Build, Test & Publish
 
 on:
   push:
-    branches:
-      - main
+    branches: ["*"]
   pull_request:
-    branches:
-      - main
+    branches: ["*"]
+
+env:
+  JAVA_VERSION: '23'
 
 jobs:
   build:
-    name: Test and Build with Gradle
+    name: Build and Test
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v3
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '21'
+          java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Cache Gradle dependencies
-        uses: actions/cache@v3
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
         with:
-          path: ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          cache-disabled: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
       - name: Build Project
-        run: ./gradlew build --no-daemon
+        run: ./gradlew build --no-daemon --stacktrace
 
       - name: Run Tests
-        run: ./gradlew test --no-daemon
+        run: ./gradlew test --no-daemon --stacktrace
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: build-artifacts-${{ github.sha }}
+          path: |
+            **/build/libs/*.jar
+            !**/build/libs/*-plain.jar
+          retention-days: 30
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ github.sha }}
+          path: |
+            **/build/test-results/
+            **/build/reports/tests/
+          retention-days: 7
+
+  publish-everbuild:
+    name: Publish to Everbuild Maven
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    environment:
+      name: everbuild-maven
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK ${{ env.JAVA_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-disabled: false
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Verify Everbuild Maven Credentials
+        run: |
+          if [[ -z "${{ secrets.EVERBUILD_MAVEN_URL }}" ]]; then
+            echo "❌ EVERBUILD_MAVEN_URL secret not configured"
+            exit 1
+          fi
+          if [[ -z "${{ secrets.EVERBUILD_MAVEN_USERNAME }}" ]]; then
+            echo "❌ EVERBUILD_MAVEN_USERNAME secret not configured"
+            exit 1
+          fi
+          if [[ -z "${{ secrets.EVERBUILD_MAVEN_PASSWORD }}" ]]; then
+            echo "❌ EVERBUILD_MAVEN_PASSWORD secret not configured"
+            exit 1
+          fi
+          echo "✅ All Everbuild Maven credentials are configured"
+
+      - name: Configure Everbuild Maven Repository
+        run: |
+          echo "📝 Configuring Everbuild Maven Repository..."
+          cat >> gradle.properties << EOF
+          everbuildMavenUrl=${{ secrets.EVERBUILD_MAVEN_URL }}
+          everbuildMavenUsername=${{ secrets.EVERBUILD_MAVEN_USERNAME }}
+          everbuildMavenPassword=${{ secrets.EVERBUILD_MAVEN_PASSWORD }}
+          EOF
+          echo "✅ Configuration complete"
+
+      - name: Build for Publishing
+        run: |
+          echo "🔧 Building project for publishing..."
+          ./gradlew build --no-daemon --stacktrace
+          echo "✅ Build successful"
+
+      - name: Publish to Everbuild Maven Repository
+        run: |
+          echo "📦 Publishing to Everbuild Maven Repository..."
+          echo "Repository: ${{ secrets.EVERBUILD_MAVEN_URL }}"
+          echo "Username: ${{ secrets.EVERBUILD_MAVEN_USERNAME }}"
+          ./gradlew publish --no-daemon --stacktrace --info
+          echo "✅ Publishing completed successfully"
+
+      - name: Verify Publication
+        if: success()
+        run: |
+          echo "🔍 Verifying publication..."
+          VERSION=$(./gradlew properties --no-daemon -q | grep "^version:" | cut -d' ' -f2)
+          GROUP=$(./gradlew properties --no-daemon -q | grep "^group:" | cut -d' ' -f2)
+          
+          echo "📋 Publication Summary:"
+          echo "  ├─ Group ID: $GROUP"
+          echo "  ├─ Version: $VERSION"
+          echo "  ├─ Repository: Everbuild Maven"
+          echo "  ├─ Modules Published:"
+          find . -name "build.gradle.kts" -not -path "./build.gradle.kts" | while read -r file; do
+            module=$(dirname "$file" | sed 's|^\./||')
+            echo "  │  └─ $module"
+          done
+          echo "  └─ Artifacts: JAR, Sources, Javadoc, POM"
+          echo ""
+          echo "✅ Publication to Everbuild Maven Repository verified"
+          echo "🏠 Library is now available in your Maven repository"
+
+  notify-status:
+    name: Notify Build Status
+    runs-on: ubuntu-latest
+    needs: [build, publish-everbuild]
+    if: always()
+
+    steps:
+      - name: Build Success Notification
+        if: needs.build.result == 'success' && needs.publish-everbuild.result == 'skipped'
+        run: |
+          echo "✅ Build and tests completed successfully!"
+          echo "ℹ️  Publishing skipped (not main branch or not a push event)"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Event: ${{ github.event_name }}"
+
+      - name: Publish Success Notification
+        if: needs.build.result == 'success' && needs.publish-everbuild.result == 'success'
+        run: |
+          echo "🎉 Build, tests, and publishing completed successfully!"
+          echo "📦 Blocks and Stuff library has been published to Everbuild Maven Repository"
+          echo "🏠 The library is now available for use"
+          echo ""
+          echo "📋 Build Details:"
+          echo "  ├─ Branch: ${{ github.ref_name }}"
+          echo "  ├─ Commit: ${{ github.sha }}"
+          echo "  ├─ Build: ✅ Success"
+          echo "  ├─ Tests: ✅ Passed"
+          echo "  └─ Publishing: ✅ Success"
+
+      - name: Failure Notification
+        if: needs.build.result == 'failure' || needs.publish-everbuild.result == 'failure'
+        run: |
+          echo "❌ Workflow failed!"
+          echo ""
+          echo "📋 Failure Details:"
+          echo "  ├─ Branch: ${{ github.ref_name }}"
+          echo "  ├─ Commit: ${{ github.sha }}"
+          echo "  ├─ Build: ${{ needs.build.result == 'success' && '✅ Success' || '❌ Failed' }}"
+          echo "  └─ Publishing: ${{ needs.publish-everbuild.result == 'success' && '✅ Success' || needs.publish-everbuild.result == 'failure' && '❌ Failed' || '⏭️ Skipped' }}"
+          echo ""
+          echo "🔍 Check the workflow logs for detailed error information"
+          exit 1
