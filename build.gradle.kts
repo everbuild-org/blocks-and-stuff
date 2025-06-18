@@ -1,24 +1,11 @@
 plugins {
-    id("java")
-    kotlin("jvm")
+    kotlin("jvm") version "2.1.10" apply false
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.0-SNAPSHOT"
+version = "1.0.1-SNAPSHOT"
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    implementation(kotlin("stdlib-jdk8"))
-}
-
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(23)
+allprojects {
+    group = rootProject.group
+    version = rootProject.version
 }

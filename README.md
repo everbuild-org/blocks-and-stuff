@@ -32,7 +32,9 @@ See the sections below for installation instructions, versioning details, and co
 
 # Installation & Usage
 
-> This library is not yet released to a maven repo. Usage will follow when this is done
+> This library is not yet considered stable
+
+The latest version is always published to our maven repository at [mvn.everbuild.org](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff). On the page of the maven repo. you can easily check the latest version and inclusion information.
 
 # Versioning
 
