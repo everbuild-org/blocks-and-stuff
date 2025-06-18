@@ -5,12 +5,13 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.event.Event
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
-import net.minestom.server.gamedata.tags.Tag
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import java.util.concurrent.ConcurrentHashMap
+import net.kyori.adventure.key.Key
 import net.minestom.server.registry.DynamicRegistry
+import net.minestom.server.registry.RegistryKey
 import org.everbuild.blocksandstuff.fluids.impl.EmptyFluid
 import org.everbuild.blocksandstuff.fluids.impl.Fluid
 import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
@@ -22,12 +23,12 @@ object MinestomFluids {
     private var enabled = false
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
-    val registry = DynamicRegistry.create<Fluid>("blocksandstuff:fluids")
+    val registry = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
         @JvmStatic get
 
     val EMPTY = registry.register("minecraft:empty", EmptyFluid())
 
-    fun getFluidOnBlock(block: Block): DynamicRegistry.Key<Fluid> {
+    fun getFluidOnBlock(block: Block): RegistryKey<Fluid> {
         return registry.values().firstOrNull { it.isInTile(block) }?.let { registry.getKey(it) } ?: EMPTY
     }
 
@@ -78,23 +79,23 @@ object MinestomFluids {
         }
 
     // breaking water logging
-    private fun registerWaterloggedPlacementRules() {
-        Block.values().forEach { block ->
-            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!
-                    .contains(block.key())
-            ) {
-                block.possibleStates().forEach { state ->
-                    val property = state.getProperty("waterlogged")
-                    if (property != null && property == "true") {
-                        println("registered ${block.name()}")
-                        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(block))
-                    } else {
-                        println("property is null")
-                    }
-                }
-            }
-        }
-    }
+//    private fun registerWaterloggedPlacementRules() {
+//        Block.values().forEach { block ->
+//            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!
+//                    .contains(block.key())
+//            ) {
+//                block.possibleStates().forEach { state ->
+//                    val property = state.getProperty("waterlogged")
+//                    if (property != null && property == "true") {
+//                        println("registered ${block.name()}")
+//                        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(block))
+//                    } else {
+//                        println("property is null")
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     @JvmStatic
     fun enableFluids() {

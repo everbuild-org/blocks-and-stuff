@@ -1,10 +1,10 @@
 package org.everbuild.blocksandstuff.fluids.listener
 
+import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.event.player.PlayerBlockInteractEvent
-import net.minestom.server.gamedata.tags.Tag
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler.PlayerPlacement
@@ -97,11 +97,11 @@ fun setupFluidPlacementEvent() {
 }
 
 fun isWaterloggable(block: Block): Boolean {
-    val tags = MinecraftServer.getTagManager()
-    if (tags.getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.key())
-        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:slabs")!!.contains(block.key())
-        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:fences")!!.contains(block.key())
-        || tags.getTag(Tag.BasicType.BLOCKS, "minecraft:trapdoors")!!.contains(block.key())
+    val tags = Block.staticRegistry()
+    if (tags.getTag(Key.key("minecraft:stairs"))!!.contains(block)
+        || tags.getTag(Key.key("minecraft:slabs"))!!.contains(block)
+        || tags.getTag(Key.key("minecraft:fences"))!!.contains(block)
+        || tags.getTag(Key.key("minecraft:trapdoors"))!!.contains(block)
 //    if (block.compare(Block.LADDER)
 //        || block.compare(Block.SUGAR_CANE)
 //        || block.compare(Block.BUBBLE_COLUMN)
@@ -117,18 +117,13 @@ fun isWaterloggable(block: Block): Boolean {
 //        || block.name().contains("door")
 //        || block.name().contains("coral")
     ) {
-        println("is")
-        
         return true
     }
-    println("not")
     return false
-    if (tags.getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!.contains(block.key())) {
-        println("stairs")
-        return true
-    }
-    println("waterlogged")
-    return !block.isSolid || !block.isAir
+//    if (tags.getTag(Key.key("minecraft:stairs"))!!.contains(block)) {
+//        return true
+//    }
+//    return !block.isSolid || !block.isAir
 }
 
 
