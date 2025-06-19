@@ -213,6 +213,13 @@ object VanillaPlacementRules {
         ),
         ::VerticalSlimBlockPlacementRule
     )
+    
+    val LADDERS = group(
+        all(
+            byBlock(Block.LADDER),
+        ),
+        ::LadderPlacementRule
+    )
 
     val TORCHES = group(
         all(
