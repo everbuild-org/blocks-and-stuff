@@ -78,7 +78,7 @@ fun updateReadme() {
     val version = getVersion()
 
     val statsContent =
-        "[${generateBadge("Supported Blocks", "$supportedPercentage%25")})[TODO.md] [${
+        "[${generateBadge("Supported Blocks", "$supportedPercentage%25")}](TODO.md) [${
             generateBadge(
                 "Latest Version",
                 version

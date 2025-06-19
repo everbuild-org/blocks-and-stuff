@@ -125,6 +125,3 @@ fun isWaterloggable(block: Block): Boolean {
 //    }
 //    return !block.isSolid || !block.isAir
 }
-
-
-

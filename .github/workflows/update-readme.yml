@@ -1,0 +1,81 @@
+name: Auto Update Blocks Documentation
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches:
+      - main
+    paths-ignore:
+      - 'README.md'
+      - 'TODO.md'
+
+jobs:
+  update-blocks-documentation:
+    runs-on: ubuntu-latest
+
+    if: github.head_ref == 'dev'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '23'
+          distribution: 'temurin'
+
+      - name: Set up Kotlin
+        uses: fwilhe2/setup-kotlin@main
+        with:
+          version: '2.1.0'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Execute blocks utility script
+        run: kotlin blocksandstuff_util.main.kts
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions"
+          git add README.md TODO.md .github/list-producer
+          git commit -m "chore: auto-update blocks documentation [skip ci]"
+          git push
+
+      - name: Comment on PR
+        if: steps.verify-changed-files.outputs.changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 Blocks documentation has been automatically updated based on the latest changes.'
+            })

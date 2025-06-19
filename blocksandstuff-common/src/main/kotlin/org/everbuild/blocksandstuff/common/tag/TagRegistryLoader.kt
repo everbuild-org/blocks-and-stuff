@@ -12,7 +12,6 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.stream.Stream
 
-
 object TagRegistryLoader {
     private val gson = Gson()
 
@@ -28,7 +27,6 @@ object TagRegistryLoader {
         val walk: Stream<Path> = Files.walk(myPath)
         walk.forEach(action)
     }
-
 
     fun loadTags(folder: String, type: String, module: Class<*>): Map<String, Set<String>> {
         val map = hashMapOf<String, HashSet<String>>()

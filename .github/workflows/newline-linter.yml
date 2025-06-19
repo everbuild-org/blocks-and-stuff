@@ -1,0 +1,109 @@
+name: Kotlin Double Newline Check
+
+on:
+  pull_request:
+    branches: [main, dev]
+    paths:
+      - '**/*.kt'
+      - '**/*.kts'
+  push:
+    branches: [main, dev]
+    paths:
+      - '**/*.kt'
+      - '**/*.kts'
+
+jobs:
+  check-double-newlines:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Find Kotlin files with double newlines
+        id: check-newlines
+        run: |
+          echo "Checking for double newlines in Kotlin files..."
+          violations=""
+          violation_details=""
+          
+          while IFS= read -r -d '' file; do
+            if grep -Pzq '\n[ \t]*\n[ \t]*\n' "$file"; then
+              echo "❌ Found double newlines in: $file"
+              violations="${violations}${file}\n"
+            fi
+          done < <(find . -name "*.kt" -print0)
+          
+          if [ -n "$violations" ]; then
+            echo "violations_found=true" >> $GITHUB_OUTPUT
+            echo "violation_files<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$violations" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            echo "violation_details<<EOF" >> $GITHUB_OUTPUT
+            echo -e "$violation_details" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "violations_found=false" >> $GITHUB_OUTPUT
+            echo "✅ No double newlines found in Kotlin files"
+          fi
+
+      - name: Detailed analysis with context
+        if: steps.check-newlines.outputs.violations_found == 'true'
+        run: |
+          echo "## Detailed Analysis of Double Newlines"
+          echo "The following files contain consecutive empty lines (double newlines):"
+          echo ""
+          
+          while IFS= read -r -d '' file; do
+            if grep -Pq '\n\n\n' "$file"; then
+              echo "### File: $file"
+              echo "\`\`\`kotlin"
+              # Show context around violations (3 lines before and after)
+              grep -Pn -B3 -A3 '\n\n\n' "$file" | head -20
+              echo "\`\`\`"
+              echo ""
+            fi
+          done < <(find . -name "*.kt" -o -name "*.kts" -print0)
+
+      - name: Comment on PR with violations
+        if: steps.check-newlines.outputs.violations_found == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const violations = `${{ steps.check-newlines.outputs.violation_files }}`.split('\n').filter(f => f.trim());
+            const fileList = violations.map(file => `- \`${file}\``).join('\n');
+            
+            const body = `## ❌ Kotlin Code Style Issue: Double Newlines Detected
+            
+            The following Kotlin files contain consecutive empty lines (double newlines), which violates our code style guidelines:
+            
+            ${fileList}
+            
+            **Why we avoid double newlines:**
+            - Improves code readability and consistency
+            - Reduces unnecessary whitespace
+            - Follows Kotlin coding conventions
+            - Keeps files more compact
+            
+            **How to fix:**
+            - Replace any occurrence of two consecutive empty lines with a single empty line
+            - Use your IDE's code formatter or manually remove extra blank lines
+            
+            **Valid exceptions (rare cases):**
+            - Separating major file sections (file header, imports, main code)
+            - Between different logical groups in very large files
+            - Before/after large comment blocks explaining complex logic
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
+
+      - name: Fail if violations found
+        if: steps.check-newlines.outputs.violations_found == 'true'
+        run: |
+          echo "::error::Double newlines detected in Kotlin files. Please remove consecutive empty lines."
+          exit 1
