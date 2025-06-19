@@ -29,7 +29,7 @@ abstract class AbstractConnectingBlockPlacementRule(block: Block) : BlockPlaceme
         val west = placePos.relative(BlockFace.WEST)
 
         return updateState.currentBlock().withProperties(
-            java.util.Map.of<String, String>(
+            Map.of<String, String>(
                 States.NORTH, canConnect(instance, north, BlockFace.SOUTH).toString(),
                 States.EAST, canConnect(instance, east, BlockFace.WEST).toString(),
                 States.SOUTH, canConnect(instance, south, BlockFace.NORTH).toString(),
@@ -45,7 +45,6 @@ abstract class AbstractConnectingBlockPlacementRule(block: Block) : BlockPlaceme
         val east = placePos.relative(BlockFace.EAST)
         val south = placePos.relative(BlockFace.SOUTH)
         val west = placePos.relative(BlockFace.WEST)
-
 
         return placementState.block().withProperties(
             Map.of<String, String>(
