@@ -27,7 +27,6 @@ internal class RotatedPillarPlacementRuleTest {
             )
         )!!
 
-
         Assertions.assertNotNull(result)
         Assertions.assertEquals(expectedAxis, result.getProperty("axis"))
     }

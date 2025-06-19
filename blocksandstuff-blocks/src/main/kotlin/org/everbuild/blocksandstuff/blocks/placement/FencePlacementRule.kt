@@ -14,7 +14,6 @@ class FencePlacementRule(block: Block) : AbstractConnectingBlockPlacementRule(bl
     private val woodenFences = tagManager.getTag(Key.key("minecraft:wooden_fences"))!!
     private val fenceGates = tagManager.getTag(Key.key("minecraft:fence_gates"))!!
 
-
     override fun canConnect(instance: Block.Getter, pos: Point, blockFace: BlockFace): Boolean {
         val instanceBlock = instance.getBlock(pos)
         val isBlockNetherBrickFence: Boolean = block.name().endsWith("_brick_fence")
