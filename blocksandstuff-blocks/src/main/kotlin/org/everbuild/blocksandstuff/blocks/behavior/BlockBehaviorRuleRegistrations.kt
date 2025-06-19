@@ -35,12 +35,10 @@ object BlockBehaviorRuleRegistrations {
                 }
             }
         }
-
         val copperBlocks = CopperOxidationRule.getOxidizableBlocks()
         for (copperBlock in copperBlocks) {
             val copperOxidationRule = CopperOxidationRule(copperBlock)
             manager.registerHandler(copperBlock.key()) { copperOxidationRule }
         }
-
     }
 }

@@ -6,9 +6,7 @@ import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 
-
 class GenericWorkStationRule(private val block: Block, private val type: InventoryType, private val title: String) : BlockHandler {
-
     override fun getKey(): Key {
         return block.key()
     }
@@ -18,5 +16,4 @@ class GenericWorkStationRule(private val block: Block, private val type: Invento
         interaction.player.openInventory(Inventory(type, title))
         return false
     }
-
 }

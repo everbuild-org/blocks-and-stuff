@@ -4,7 +4,6 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
-import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 
 class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
@@ -14,7 +13,6 @@ class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (!placementState.instance.getBlock(supporting).registry().collisionShape().isFaceFull(blockFace)) {
             return null
         }
-
         return block
             .withProperty("facing", blockFace.name.lowercase())
     }
@@ -27,7 +25,6 @@ class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
-
         return updateState.currentBlock
     }
 }
