@@ -163,7 +163,10 @@ object VanillaPlacementRules {
     )
 
     val CAMPFIRE = group(
-        byBlock(Block.CAMPFIRE),
+        all(
+            byBlock(Block.CAMPFIRE),
+            byBlock(Block.SOUL_CAMPFIRE),
+        ),
         ::CampfireBlockPlacementRule
     )
 
