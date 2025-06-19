@@ -29,7 +29,6 @@ class VerticalSlimBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
                 + listOf(Block.IRON_BARS)
     )
 
-
     override fun blockUpdate(updateState: UpdateState): Block {
         val instance = updateState.instance()
         val placePos = updateState.blockPosition()
@@ -73,5 +72,4 @@ class VerticalSlimBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
 
         return !cannotConnect.contains(instanceBlock) && isFaceFull || canConnect.contains(instanceBlock) || instanceBlock.key().equals(this.block.key())
     }
-
 }

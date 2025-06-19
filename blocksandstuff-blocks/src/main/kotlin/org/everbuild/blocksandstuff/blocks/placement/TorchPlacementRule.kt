@@ -1,15 +1,13 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
 import net.kyori.adventure.key.Key
+import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.registry.RegistryTag
-import org.everbuild.blocksandstuff.common.tag.BlockTags
-import kotlin.collections.plus
-import net.minestom.server.coordinate.Point
-import net.minestom.server.instance.Instance
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.tag.BlockTags
 
 class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     private val tagManager = Block.staticRegistry()
@@ -68,8 +66,12 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
             ?.let { BlockFace.valueOf(it.uppercase()).oppositeFace }
             ?: BlockFace.BOTTOM
 
-
-        if (!canSupportTorch(updateState.instance, updateState.blockPosition.add(supporting.toDirection().vec()), supporting)) {
+        if (!canSupportTorch(
+                updateState.instance,
+                updateState.blockPosition.add(supporting.toDirection().vec()),
+                supporting
+            )
+        ) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
