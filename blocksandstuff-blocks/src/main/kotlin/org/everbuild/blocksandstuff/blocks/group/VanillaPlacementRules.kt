@@ -206,6 +206,14 @@ object VanillaPlacementRules {
         ::StairsPlacementRule
     )
 
+    val VERTICAL_SLIM = group(
+        all(
+            byBlock(Block.IRON_BARS),
+            byTag("blocksandstuff:glass_panes"),
+        ),
+        ::VerticalSlimBlockPlacementRule
+    )
+    
     val LADDERS = group(
         all(
             byBlock(Block.LADDER),
