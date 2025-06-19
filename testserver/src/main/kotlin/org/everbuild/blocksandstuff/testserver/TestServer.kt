@@ -1,5 +1,7 @@
 package org.everbuild.blocksandstuff.testserver
 
+import java.io.File
+import kotlin.system.exitProcess
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.GameMode
@@ -10,9 +12,9 @@ import net.minestom.server.instance.generator.GenerationUnit
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.behavior.BlockBehaviorRuleRegistrations
-import org.everbuild.blocksandstuff.blocks.behavior.CopperOxidationRule
+import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 
-class TestServer {
+class TestServer(generateElements: Boolean) {
     private val server: MinecraftServer = MinecraftServer.init()
 
     init {
@@ -25,6 +27,16 @@ class TestServer {
         BlockBehaviorRuleRegistrations.registerDefault()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+
+        if (generateElements) {
+            val allPlacementRuleBlockKeys = VanillaPlacementRules.ALL
+                .flatMap { it.blockGroup.allMatching() }
+                .map { it.key().asString() }
+
+            File("../.github/list-producer/supported-blocks.txt").writeText(allPlacementRuleBlockKeys.joinToString("\n"))
+            println("Written ${allPlacementRuleBlockKeys.size} block keys to file .github/list-producer/supported-blocks.txt")
+            exitProcess(0)
+        }
 
         MinecraftServer.getGlobalEventHandler().addListener(
             AsyncPlayerConfigurationEvent::class.java
@@ -42,7 +54,7 @@ class TestServer {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            TestServer().bind()
+            TestServer(args.contains("gen-elements")).bind()
         }
     }
 }

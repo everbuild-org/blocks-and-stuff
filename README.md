@@ -5,9 +5,12 @@
 
 ---
 
+<!-- TAG_REPLACEMENT -->
+[![Supported Blocks](https://img.shields.io/badge/Supported_Blocks-52%25-green?style=for-the-badge))[TODO.md] [![Latest Version](https://img.shields.io/badge/Latest_Version-1.1.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
+<!-- /TAG_REPLACEMENT -->
+
 > This library is still in heavy development and API is subject to change in a breaking way at any time, even without a
 > major release. See the [Versioning](#versioning) section for more details
-
 
 This library provides a set of common implementations for blocks and fluids tailored for the Minestom framework. Its
 purpose is to simplify and standardize the management of these entities in Minestom projects. By using this
