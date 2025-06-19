@@ -163,7 +163,10 @@ object VanillaPlacementRules {
     )
 
     val CAMPFIRE = group(
-        byBlock(Block.CAMPFIRE),
+        all(
+            byBlock(Block.CAMPFIRE),
+            byBlock(Block.SOUL_CAMPFIRE),
+        ),
         ::CampfireBlockPlacementRule
     )
 
@@ -211,6 +214,17 @@ object VanillaPlacementRules {
         ::VerticalSlimBlockPlacementRule
     )
 
+    val TORCHES = group(
+        all(
+            byBlock(Block.TORCH),
+            byBlock(Block.SOUL_TORCH),
+            byBlock(Block.REDSTONE_TORCH),
+            byBlock(Block.WALL_TORCH),
+            byBlock(Block.SOUL_WALL_TORCH),
+            byBlock(Block.SOUL_FIRE),
+        ),
+        ::TorchPlacementRule
+    )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
