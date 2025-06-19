@@ -5,9 +5,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.tag.Tag
 
-
 class WoodenTrapDoorOpenRule(private val block: Block?) : BlockHandler {
-
     override fun getKey(): Key {
         return block?.key() ?: key.key()
     }
@@ -23,5 +21,4 @@ class WoodenTrapDoorOpenRule(private val block: Block?) : BlockHandler {
         interaction.instance.setBlock(interaction.blockPosition, interaction.block.withProperty("open", bool))
         return false
     }
-
 }

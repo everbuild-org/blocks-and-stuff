@@ -70,6 +70,6 @@ class VerticalSlimBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
         val instanceBlock = instance.getBlock(pos)
         val isFaceFull = instanceBlock.registry().collisionShape().isFaceFull(blockFace)
 
-        return !cannotConnect.contains(instanceBlock) && isFaceFull || canConnect.contains(instanceBlock) || instanceBlock.key().equals(this.block.key())
+        return !cannotConnect.contains(instanceBlock) && isFaceFull || canConnect.contains(instanceBlock) || instanceBlock.key() == this.block.key()
     }
 }
