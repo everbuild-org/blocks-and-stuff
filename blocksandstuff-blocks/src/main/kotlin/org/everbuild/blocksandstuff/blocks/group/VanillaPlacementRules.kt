@@ -206,6 +206,18 @@ object VanillaPlacementRules {
         ::StairsPlacementRule
     )
 
+    val TORCHES = group(
+        all(
+            byBlock(Block.TORCH),
+            byBlock(Block.SOUL_TORCH),
+            byBlock(Block.REDSTONE_TORCH),
+            byBlock(Block.WALL_TORCH),
+            byBlock(Block.SOUL_WALL_TORCH),
+            byBlock(Block.SOUL_FIRE),
+        ),
+        ::TorchPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
