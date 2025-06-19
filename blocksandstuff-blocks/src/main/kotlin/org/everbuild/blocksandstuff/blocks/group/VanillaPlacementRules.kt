@@ -196,6 +196,13 @@ object VanillaPlacementRules {
         ::FencePlacementRule
     )
 
+    val IRON_BARS = group(
+        all(
+            byBlock(Block.IRON_BARS),
+        ),
+        ::IronBarPlacementRule
+    )
+
     val STAIRS = group(
         all(
             byTag("minecraft:stairs"),
