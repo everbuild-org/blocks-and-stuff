@@ -208,6 +208,9 @@ object VanillaPlacementRules {
             byBlock(Block.TORCH),
             byBlock(Block.SOUL_TORCH),
             byBlock(Block.REDSTONE_TORCH),
+            byBlock(Block.WALL_TORCH),
+            byBlock(Block.SOUL_WALL_TORCH),
+            byBlock(Block.SOUL_FIRE),
         ),
         ::TorchPlacementRule
     )
