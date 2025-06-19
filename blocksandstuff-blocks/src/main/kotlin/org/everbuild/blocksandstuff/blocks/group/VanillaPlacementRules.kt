@@ -196,6 +196,13 @@ object VanillaPlacementRules {
         ::FencePlacementRule
     )
 
+    val STAIRS = group(
+        all(
+            byTag("minecraft:stairs"),
+        ),
+        ::StairsPlacementRule
+    )
+
     val IRON_BARS = group(
         all(
             byBlock(Block.IRON_BARS),
@@ -203,11 +210,11 @@ object VanillaPlacementRules {
         ::IronBarPlacementRule
     )
 
-    val STAIRS = group(
+    val LADDER = group(
         all(
-            byTag("minecraft:stairs"),
+            byBlock(Block.LADDER),
         ),
-        ::StairsPlacementRule
+        ::LadderPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
