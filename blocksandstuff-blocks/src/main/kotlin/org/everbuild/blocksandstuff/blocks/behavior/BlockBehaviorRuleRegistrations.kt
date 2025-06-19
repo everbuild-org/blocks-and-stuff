@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.event.player.PlayerBlockPlaceEvent
 import net.minestom.server.instance.block.Block
@@ -10,6 +11,7 @@ object BlockBehaviorRuleRegistrations {
     fun registerDefault() {
         val handler = MinecraftServer.getGlobalEventHandler()
         val manager = MinecraftServer.getBlockManager()
+        val blockRegistry = Block.staticRegistry();
         handler.addListener(PlayerBlockPlaceEvent::class.java) {
             val handler = MinecraftServer.getBlockManager().getHandler(it.block.key().asString())
             if (it.block.handler() != handler) it.block = it.block.withHandler(handler)
@@ -24,6 +26,15 @@ object BlockBehaviorRuleRegistrations {
         manager.registerHandler(Block.CARTOGRAPHY_TABLE.key()) { GenericWorkStationRule(Block.CARTOGRAPHY_TABLE, InventoryType.CARTOGRAPHY, "Cartography Table") }
         manager.registerHandler(Block.STONECUTTER.key()) { GenericWorkStationRule(Block.STONECUTTER, InventoryType.STONE_CUTTER, "Stonecutter") }
         manager.registerHandler(Block.ENCHANTING_TABLE.key()) { GenericWorkStationRule(Block.ENCHANTING_TABLE, InventoryType.ENCHANTMENT, "Enchant") }
+
+      val woodenTrapDoors = blockRegistry.getTag(Key.key("minecraft:wooden_trapdoors"))
+        if (woodenTrapDoors != null) {
+            for (trapDoor in woodenTrapDoors) {
+                manager.registerHandler(trapDoor.key()) {
+                    WoodenTrapDoorOpenRule(blockRegistry.get(trapDoor))
+                }
+            }
+        }
 
         val copperBlocks = CopperOxidationRule.getOxidizableBlocks()
         for (copperBlock in copperBlocks) {
