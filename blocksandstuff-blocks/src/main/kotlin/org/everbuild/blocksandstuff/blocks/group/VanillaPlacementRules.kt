@@ -203,6 +203,13 @@ object VanillaPlacementRules {
         ::StairsPlacementRule
     )
 
+    val LADDERS = group(
+        all(
+            byBlock(Block.LADDER),
+        ),
+        ::LadderPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
