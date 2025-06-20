@@ -82,3 +82,14 @@ fun Direction.rotateR(): Direction {
 fun Direction.rotateL(): Direction {
     return this.opposite().rotateR()
 }
+
+fun Direction.getYaw(): Float {
+    return when (this) {
+        Direction.UP -> 0f
+        Direction.DOWN -> 0f
+        Direction.NORTH -> 180f
+        Direction.EAST -> -90f
+        Direction.SOUTH -> 0f
+        Direction.WEST -> 90f
+    }
+}
