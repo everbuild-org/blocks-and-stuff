@@ -67,3 +67,7 @@ fun Direction.rotateR(): Direction {
         else -> this
     }
 }
+
+fun Direction.rotateL(): Direction {
+    return this.opposite().rotateR()
+}

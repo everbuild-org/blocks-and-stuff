@@ -199,6 +199,13 @@ object VanillaPlacementRules {
         ::FencePlacementRule
     )
 
+    val FENCE_GATE = group(
+        all(
+            byTag("minecraft:fence_gates"),
+        ),
+        ::FenceGatePlacementRule
+    )
+
     val STAIRS = group(
         all(
             byTag("minecraft:stairs"),
