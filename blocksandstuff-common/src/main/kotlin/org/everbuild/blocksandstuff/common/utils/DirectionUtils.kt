@@ -1,7 +1,10 @@
 package org.everbuild.blocksandstuff.common.utils
 
+import net.minestom.server.coordinate.Point
+import net.minestom.server.coordinate.Pos
 import kotlin.enums.EnumEntries
 import net.minestom.server.coordinate.Vec
+import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.instance.block.rule.BlockPlacementRule.PlacementState
 import net.minestom.server.utils.Direction
 
@@ -39,8 +42,12 @@ fun PlacementState.canAttach(): Boolean {
     return anchorBlock.registry().collisionShape().isFaceFull(this.blockFace!!)
 }
 
+private fun getNearestLookingDirection(position: Pos, allowedDirections: Collection<Direction>): Direction {
+    return allowedDirections.minBy { it.vec().scalarProduct(position.direction().normalize()) }
+}
+
 fun PlacementState.getNearestLookingDirection(allowedDirections: Collection<Direction>): Direction {
-    return allowedDirections.minBy { it.vec().scalarProduct(this.playerPosition!!.direction().normalize()) }
+    return getNearestLookingDirection(this.playerPosition!!, allowedDirections)
 }
 
 fun PlacementState.getNearestLookingDirection(): Direction {
@@ -51,6 +58,10 @@ fun PlacementState.getNearestLookingDirection(): Direction {
 fun PlacementState.getNearestHorizontalLookingDirection(): Direction {
     this.playerPosition ?: return Direction.EAST
     return this.getNearestLookingDirection(Direction.HORIZONTAL.iterator().asSequence().toList())
+}
+
+fun BlockHandler.Interaction.getNearestHorizontalLookingDirection(): Direction {
+    return getNearestLookingDirection(this.player.position, Direction.HORIZONTAL.iterator().asSequence().toList())
 }
 
 fun Vec.scalarProduct(rhs: Vec): Double {
