@@ -7,8 +7,10 @@ import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.GameMode
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.Instance
+import net.minestom.server.instance.LightingChunk
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.generator.GenerationUnit
+import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.behavior.BlockBehaviorRuleRegistrations
@@ -19,6 +21,8 @@ class TestServer(generateElements: Boolean) {
 
     init {
         val instance: Instance = MinecraftServer.getInstanceManager().createInstanceContainer()
+        instance.chunkSupplier = ChunkSupplier { inst, x, z -> LightingChunk(inst, x, z) }
+
         instance.setGenerator { unit: GenerationUnit ->
             unit.modifier().fillHeight(0, 65, Block.GRASS_BLOCK)
         }

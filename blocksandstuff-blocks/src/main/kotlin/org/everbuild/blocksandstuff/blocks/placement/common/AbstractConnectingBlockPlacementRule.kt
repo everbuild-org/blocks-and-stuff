@@ -23,38 +23,39 @@ abstract class AbstractConnectingBlockPlacementRule(block: Block) : BlockPlaceme
     override fun blockUpdate(updateState: UpdateState): Block {
         val instance = updateState.instance()
         val placePos = updateState.blockPosition()
-        val north = placePos.relative(BlockFace.NORTH)
-        val east = placePos.relative(BlockFace.EAST)
-        val south = placePos.relative(BlockFace.SOUTH)
-        val west = placePos.relative(BlockFace.WEST)
-
-        return updateState.currentBlock().withProperties(
-            Map.of<String, String>(
-                States.NORTH, canConnect(instance, north, BlockFace.SOUTH).toString(),
-                States.EAST, canConnect(instance, east, BlockFace.WEST).toString(),
-                States.SOUTH, canConnect(instance, south, BlockFace.NORTH).toString(),
-                States.WEST, canConnect(instance, west, BlockFace.EAST).toString()
-            )
-        )
+        return transmute(instance, placePos, getProperty(updateState.currentBlock, instance, placePos))
     }
 
     override fun blockPlace(placementState: PlacementState): Block? {
         val instance = placementState.instance()
         val placePos = placementState.placePosition()
+        return transmute(instance, placePos,getProperty(placementState.block, instance, placePos))
+    }
+
+    private fun getProperty(
+        block: Block,
+        instance: Block.Getter,
+        placePos: Point
+    ): Block {
         val north = placePos.relative(BlockFace.NORTH)
         val east = placePos.relative(BlockFace.EAST)
         val south = placePos.relative(BlockFace.SOUTH)
         val west = placePos.relative(BlockFace.WEST)
 
-        return placementState.block().withProperties(
+        return block.withProperties(
             Map.of<String, String>(
-                States.NORTH, canConnect(instance, north, BlockFace.SOUTH).toString(),
-                States.EAST, canConnect(instance, east, BlockFace.WEST).toString(),
-                States.SOUTH, canConnect(instance, south, BlockFace.NORTH).toString(),
-                States.WEST, canConnect(instance, west, BlockFace.EAST).toString()
+                States.NORTH, stringify(canConnect(instance, north, BlockFace.SOUTH), instance, north, BlockFace.SOUTH),
+                States.EAST, stringify(canConnect(instance, east, BlockFace.WEST), instance, east, BlockFace.WEST),
+                States.SOUTH, stringify(canConnect(instance, south, BlockFace.NORTH), instance, south, BlockFace.NORTH),
+                States.WEST, stringify(canConnect(instance, west, BlockFace.EAST), instance, west, BlockFace.EAST)
             )
         )
     }
 
     abstract fun canConnect(instance: Block.Getter, pos: Point, blockFace: BlockFace): Boolean
+
+    open fun stringify(connect: Boolean, instance: Block.Getter, pos: Point, direction: BlockFace): String =
+        connect.toString()
+
+    open fun transmute(instance: Block.Getter, pos: Point, block: Block): Block = block
 }
