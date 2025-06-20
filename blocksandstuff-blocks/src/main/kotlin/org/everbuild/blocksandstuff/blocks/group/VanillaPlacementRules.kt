@@ -245,6 +245,11 @@ object VanillaPlacementRules {
         ::WallBlockPlacementRule
     )
 
+    val DOORS = group(
+        byTag("minecraft:doors"),
+        ::DoorPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)

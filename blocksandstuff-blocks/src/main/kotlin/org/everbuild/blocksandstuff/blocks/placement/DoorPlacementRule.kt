@@ -115,7 +115,6 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         }
     }
 
-
     override fun blockPlace(placementState: PlacementState): Block? {
         val instance = placementState.instance
         val placePos = placementState.placePosition

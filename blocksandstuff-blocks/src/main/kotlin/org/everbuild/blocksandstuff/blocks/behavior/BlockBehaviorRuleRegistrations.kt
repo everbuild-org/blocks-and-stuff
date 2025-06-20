@@ -90,5 +90,11 @@ object BlockBehaviorRuleRegistrations {
             val copperOxidationRule = CopperOxidationRule(copperBlock)
             manager.registerHandler(copperBlock.key()) { copperOxidationRule }
         }
+        for (door in blockRegistry.getTag(Key.key("minecraft:doors"))!!) {
+            if (door.key().asString().contains("iron")) continue
+            manager.registerHandler(door.key()) {
+                DoorOpenRule(blockRegistry.get(door))
+            }
+        }
     }
 }
