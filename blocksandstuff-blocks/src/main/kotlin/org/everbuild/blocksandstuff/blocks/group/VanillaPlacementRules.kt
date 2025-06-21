@@ -250,6 +250,29 @@ object VanillaPlacementRules {
         ::DoorPlacementRule
     )
 
+    val GLAZED_TERRACOTTA = group(
+        all(
+            byBlock(Block.MAGENTA_GLAZED_TERRACOTTA),
+            byBlock(Block.WHITE_GLAZED_TERRACOTTA),
+            byBlock(Block.LIGHT_GRAY_GLAZED_TERRACOTTA),
+            byBlock(Block.GRAY_GLAZED_TERRACOTTA),
+            byBlock(Block.BLACK_GLAZED_TERRACOTTA),
+            byBlock(Block.BROWN_GLAZED_TERRACOTTA),
+            byBlock(Block.RED_GLAZED_TERRACOTTA),
+            byBlock(Block.ORANGE_GLAZED_TERRACOTTA),
+            byBlock(Block.YELLOW_GLAZED_TERRACOTTA),
+            byBlock(Block.LIME_GLAZED_TERRACOTTA),
+            byBlock(Block.GREEN_GLAZED_TERRACOTTA),
+            byBlock(Block.CYAN_GLAZED_TERRACOTTA),
+            byBlock(Block.LIGHT_BLUE_GLAZED_TERRACOTTA),
+            byBlock(Block.BLUE_GLAZED_TERRACOTTA),
+            byBlock(Block.PURPLE_GLAZED_TERRACOTTA),
+            byBlock(Block.MAGENTA_GLAZED_TERRACOTTA),
+            byBlock(Block.PINK_GLAZED_TERRACOTTA)
+        ),
+        ::GlazedTerracottaPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
