@@ -36,3 +36,12 @@ minecraft:jungle_wall_sign
 minecraft:mangrove_wall_sign
 minecraft:oak_wall_sign
 minecraft:spruce_wall_sign
+minecraft:target
+minecraft:copper_bulb
+minecraft:waxed_copper_bulb
+minecraft:exposed_copper_bulb
+minecraft:waxed_exposed_copper_bulb
+minecraft:weathered_copper_bulb
+minecraft:waxed_weathered_copper_bulb
+minecraft:oxidized_copper_bulb
+minecraft:waxed_oxidized_copper_bulb
