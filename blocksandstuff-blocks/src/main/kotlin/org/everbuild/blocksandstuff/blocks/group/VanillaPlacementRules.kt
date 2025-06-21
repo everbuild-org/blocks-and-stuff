@@ -220,7 +220,7 @@ object VanillaPlacementRules {
         ),
         ::VerticalSlimBlockPlacementRule
     )
-    
+
     val LADDERS = group(
         all(
             byBlock(Block.LADDER),
@@ -248,6 +248,14 @@ object VanillaPlacementRules {
     val DOORS = group(
         byTag("minecraft:doors"),
         ::DoorPlacementRule
+    )
+
+    val LANTERNS = group(
+        all(
+            byBlock(Block.LANTERN),
+            byBlock(Block.SOUL_LANTERN)
+        ),
+        ::LanternPlacementRule
     )
 
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
