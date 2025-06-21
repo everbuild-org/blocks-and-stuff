@@ -22,7 +22,6 @@ object BlockBehaviorRuleRegistrations {
             for (block in blockGroup.allMatching()) {
                 count++
                 val handler = group.createHandler(block)
-                println("Registering handler for ${block.key()}: ${handler.javaClass.simpleName}")
                 blockManager.registerHandler(block.key().asString()) { handler }
             }
         }

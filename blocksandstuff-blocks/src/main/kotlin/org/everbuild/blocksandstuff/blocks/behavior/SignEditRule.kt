@@ -28,7 +28,6 @@ class SignEditRule(private val block: Block) : BlockHandler {
     }
 
     override fun onPlace(placement: BlockHandler.Placement) {
-        println("SignEditRule: onPlace")
         if (placement !is BlockHandler.PlayerPlacement) return
         if (placement.player.isSneaking) return
         val player = placement.player
@@ -43,7 +42,6 @@ class SignEditRule(private val block: Block) : BlockHandler {
     }
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
-        println("SignEditRule: onInteract")
         if (interaction.player.isSneaking) return super.onInteract(interaction)
         val block = interaction.block
         val position = interaction.blockPosition
