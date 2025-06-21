@@ -250,6 +250,14 @@ object VanillaPlacementRules {
         ::DoorPlacementRule
     )
 
+    val LANTERNS = group(
+        all(
+            byBlock(Block.LANTERN),
+            byBlock(Block.SOUL_LANTERN)
+        ),
+        ::LanternPlacementRule
+    )
+
     val GLAZED_TERRACOTTA = group(
         all(
             byBlock(Block.MAGENTA_GLAZED_TERRACOTTA),
