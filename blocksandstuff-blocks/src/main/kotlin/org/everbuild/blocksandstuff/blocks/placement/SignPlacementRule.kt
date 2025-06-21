@@ -19,14 +19,21 @@ class SignPlacementRule(block: Block) : BlockPlacementRule(block) {
             return supportedOrNull(
                 placementState.instance,
                 placementState.placePosition,
-                block.withProperty("rotation", direction).withProperty("waterlogged", currentBlock.isWater().toString())
+                placementState.block
+                    .withProperty("rotation", direction)
+                    .withProperty("waterlogged", currentBlock.isWater().toString())
             )
         } else if (placementState.blockFace!!.toDirection().horizontal()) {
             val facing = placementState.blockFace!!.toString().lowercase()
+            val handler = placementState.block.handler()
+            val nbt = placementState.block.nbt()
             return supportedOrNull(
                 placementState.instance,
                 placementState.placePosition,
-                WALL_SIGNS[block]!!.withProperty("facing", facing)
+                WALL_SIGNS[block]!!
+                    .withHandler(handler)
+                    .withNbt(nbt)
+                    .withProperty("facing", facing)
                     .withProperty("waterlogged", currentBlock.isWater().toString())
             )
         } else return null

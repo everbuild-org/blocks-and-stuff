@@ -12,8 +12,7 @@ import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
 import java.util.function.Function
 
-object VanillaPlacementRules {
-    val ALL: ArrayList<PlacementGroup> = ArrayList()
+object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, BlockPlacementRule>>() {
 
     val ROTATED_PILLARS = group(
         all(
@@ -322,21 +321,10 @@ object VanillaPlacementRules {
         ::ChestPlacementRule
     )
 
-    private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
-        val result = PlacementGroup(blockGroup, valueFunction)
-        ALL.add(result)
-        return result
-    }
-
-    private fun all(vararg blockGroups: BlockGroup): BlockGroup {
-        return AggregateTagBlockGroup(*blockGroups)
-    }
-
-    private fun byTag(@KeyPattern tag: String): BlockGroup {
-        return TagBlockGroup(Key.key(tag))
-    }
-
-    private fun byBlock(block: Block): BlockGroup {
-        return BlockBlockGroup(block)
+    override fun createGroup(
+        blockGroup: BlockGroup,
+        valueFunction: Function<Block, BlockPlacementRule>
+    ): PlacementGroup {
+        return PlacementGroup(blockGroup, valueFunction)
     }
 }

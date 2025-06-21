@@ -4,9 +4,9 @@ import net.kyori.adventure.key.Key
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 
-class DoorOpenRule(private val baseDoorBlock: Block?) : BlockHandler {
+class DoorOpenRule(private val baseDoorBlock: Block) : BlockHandler {
     override fun getKey(): Key {
-        return baseDoorBlock?.key() ?: key.key()
+        return baseDoorBlock.key()
     }
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         val instance = interaction.instance
@@ -34,7 +34,7 @@ class DoorOpenRule(private val baseDoorBlock: Block?) : BlockHandler {
 
         val otherHalfBlock = instance.getBlock(otherHalfPos)
 
-        if (!otherHalfBlock.compare(baseDoorBlock!!) || otherHalfBlock.getProperty("half") == half) {
+        if (!otherHalfBlock.compare(baseDoorBlock) || otherHalfBlock.getProperty("half") == half) {
             return false
         }
 

@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.text.Component
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.Inventory
@@ -13,7 +14,7 @@ class GenericWorkStationRule(private val block: Block, private val type: Invento
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         if (interaction.player.isSneaking && !interaction.player.itemInMainHand.isAir) return super.onInteract(interaction)
-        interaction.player.openInventory(Inventory(type, title))
+        interaction.player.openInventory(Inventory(type, Component.translatable(title)))
         return false
     }
 }
