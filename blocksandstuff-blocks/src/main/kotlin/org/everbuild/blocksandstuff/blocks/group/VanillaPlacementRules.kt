@@ -172,7 +172,7 @@ object VanillaPlacementRules {
 
     val CANDLES = group(
         byBlock(Block.CANDLE),
-        ::CandleBlockPlacementRule
+        ::CandlePlacementRule
     )
 
     val VINES_TOP = group(
