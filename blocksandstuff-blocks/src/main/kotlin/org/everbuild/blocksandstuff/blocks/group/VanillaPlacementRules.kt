@@ -294,6 +294,18 @@ object VanillaPlacementRules {
         ::ChainPlacementRule
     )
 
+    val TALL_FLOWERS = group(
+        all(
+            byBlock(Block.PEONY),
+            byBlock(Block.TALL_GRASS),
+            byBlock(Block.LARGE_FERN),
+            byBlock(Block.SUNFLOWER),
+            byBlock(Block.LILAC),
+            byBlock(Block.ROSE_BUSH)
+        ),
+        ::TallFlowerPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)
