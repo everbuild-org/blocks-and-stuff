@@ -306,6 +306,13 @@ object VanillaPlacementRules {
         ::TallFlowerPlacementRule
     )
 
+    val SIGNS = group(
+        all(
+            byTag("minecraft:all_signs"),
+        ),
+        ::SignPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)

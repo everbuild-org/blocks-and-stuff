@@ -26,6 +26,16 @@ minecraft:green_candle_cake
 minecraft:red_candle_cake
 minecraft:black_candle_cake
 minecraft:cake
+minecraft:acacia_wall_sign
+minecraft:azalea_wall_sign
+minecraft:birch_wall_sign
+minecraft:cherry_wall_sign
+minecraft:dark_oak_wall_sign
+minecraft:flowering_azalea_wall_sign
+minecraft:jungle_wall_sign
+minecraft:mangrove_wall_sign
+minecraft:oak_wall_sign
+minecraft:spruce_wall_sign
 minecraft:target
 minecraft:copper_bulb
 minecraft:waxed_copper_bulb
