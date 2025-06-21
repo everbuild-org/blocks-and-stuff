@@ -516,3 +516,4 @@ minecraft:mangrove_wall_hanging_sign
 minecraft:bamboo_wall_hanging_sign
 minecraft:chest
 minecraft:trapped_chest
+minecraft:hopper
