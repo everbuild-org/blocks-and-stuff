@@ -103,7 +103,15 @@ object VanillaPlacementRules {
 
     val SIMPLE_WATERLOGGABLE = group(
         all(
-            byBlock(Block.BARRIER)
+            byBlock(Block.BARRIER),
+            byBlock(Block.COPPER_GRATE),
+            byBlock(Block.EXPOSED_COPPER_GRATE),
+            byBlock(Block.WEATHERED_COPPER_GRATE),
+            byBlock(Block.OXIDIZED_COPPER_GRATE),
+            byBlock(Block.WAXED_COPPER_GRATE),
+            byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
+            byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
+            byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
         ),
         ::SimpleWaterloggablePlacementRule
     )
