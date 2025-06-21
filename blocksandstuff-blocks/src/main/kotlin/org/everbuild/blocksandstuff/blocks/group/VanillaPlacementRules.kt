@@ -313,6 +313,15 @@ object VanillaPlacementRules {
         ::SignPlacementRule
     )
 
+    val CHESTS = group(
+        all(
+            byTag("minecraft:chests"),
+            byBlock(Block.CHEST),
+            byBlock(Block.TRAPPED_CHEST),
+        ),
+        ::ChestPlacementRule
+    )
+
     private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
         val result = PlacementGroup(blockGroup, valueFunction)
         ALL.add(result)

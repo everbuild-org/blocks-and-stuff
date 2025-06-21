@@ -26,6 +26,7 @@ minecraft:green_candle_cake
 minecraft:red_candle_cake
 minecraft:black_candle_cake
 minecraft:cake
+minecraft:tnt
 minecraft:acacia_wall_sign
 minecraft:azalea_wall_sign
 minecraft:birch_wall_sign
