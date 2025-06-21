@@ -1,19 +1,13 @@
 package org.everbuild.blocksandstuff.blocks.group
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.KeyPattern
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.blocks.group.block.AggregateTagBlockGroup
-import org.everbuild.blocksandstuff.blocks.group.block.BlockBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
-import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
 import java.util.function.Function
 
-object VanillaPlacementRules {
-    val ALL: ArrayList<PlacementGroup> = ArrayList()
+object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, BlockPlacementRule>>() {
 
     val ROTATED_PILLARS = group(
         all(
@@ -103,7 +97,15 @@ object VanillaPlacementRules {
 
     val SIMPLE_WATERLOGGABLE = group(
         all(
-            byBlock(Block.BARRIER)
+            byBlock(Block.BARRIER),
+            byBlock(Block.COPPER_GRATE),
+            byBlock(Block.EXPOSED_COPPER_GRATE),
+            byBlock(Block.WEATHERED_COPPER_GRATE),
+            byBlock(Block.OXIDIZED_COPPER_GRATE),
+            byBlock(Block.WAXED_COPPER_GRATE),
+            byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
+            byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
+            byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
         ),
         ::SimpleWaterloggablePlacementRule
     )
@@ -172,7 +174,7 @@ object VanillaPlacementRules {
 
     val CANDLES = group(
         byBlock(Block.CANDLE),
-        ::CandleBlockPlacementRule
+        ::CandlePlacementRule
     )
 
     val VINES_TOP = group(
@@ -199,6 +201,13 @@ object VanillaPlacementRules {
         ::FencePlacementRule
     )
 
+    val FENCE_GATE = group(
+        all(
+            byTag("minecraft:fence_gates"),
+        ),
+        ::FenceGatePlacementRule
+    )
+
     val STAIRS = group(
         all(
             byTag("minecraft:stairs"),
@@ -213,7 +222,7 @@ object VanillaPlacementRules {
         ),
         ::VerticalSlimBlockPlacementRule
     )
-    
+
     val LADDERS = group(
         all(
             byBlock(Block.LADDER),
@@ -233,21 +242,91 @@ object VanillaPlacementRules {
         ::TorchPlacementRule
     )
 
-    private fun group(blockGroup: BlockGroup, valueFunction: Function<Block, BlockPlacementRule>): PlacementGroup {
-        val result = PlacementGroup(blockGroup, valueFunction)
-        ALL.add(result)
-        return result
-    }
+    val WALLS = group(
+        byTag("minecraft:walls"),
+        ::WallBlockPlacementRule
+    )
 
-    private fun all(vararg blockGroups: BlockGroup): BlockGroup {
-        return AggregateTagBlockGroup(*blockGroups)
-    }
+    val DOORS = group(
+        byTag("minecraft:doors"),
+        ::DoorPlacementRule
+    )
 
-    private fun byTag(@KeyPattern tag: String): BlockGroup {
-        return TagBlockGroup(Key.key(tag))
-    }
+    val LANTERNS = group(
+        all(
+            byBlock(Block.LANTERN),
+            byBlock(Block.SOUL_LANTERN)
+        ),
+        ::LanternPlacementRule
+    )
 
-    private fun byBlock(block: Block): BlockGroup {
-        return BlockBlockGroup(block)
+    val GLAZED_TERRACOTTA = group(
+        all(
+            byBlock(Block.MAGENTA_GLAZED_TERRACOTTA),
+            byBlock(Block.WHITE_GLAZED_TERRACOTTA),
+            byBlock(Block.LIGHT_GRAY_GLAZED_TERRACOTTA),
+            byBlock(Block.GRAY_GLAZED_TERRACOTTA),
+            byBlock(Block.BLACK_GLAZED_TERRACOTTA),
+            byBlock(Block.BROWN_GLAZED_TERRACOTTA),
+            byBlock(Block.RED_GLAZED_TERRACOTTA),
+            byBlock(Block.ORANGE_GLAZED_TERRACOTTA),
+            byBlock(Block.YELLOW_GLAZED_TERRACOTTA),
+            byBlock(Block.LIME_GLAZED_TERRACOTTA),
+            byBlock(Block.GREEN_GLAZED_TERRACOTTA),
+            byBlock(Block.CYAN_GLAZED_TERRACOTTA),
+            byBlock(Block.LIGHT_BLUE_GLAZED_TERRACOTTA),
+            byBlock(Block.BLUE_GLAZED_TERRACOTTA),
+            byBlock(Block.PURPLE_GLAZED_TERRACOTTA),
+            byBlock(Block.MAGENTA_GLAZED_TERRACOTTA),
+            byBlock(Block.PINK_GLAZED_TERRACOTTA)
+        ),
+        ::GlazedTerracottaPlacementRule
+    )
+
+    val CHAINS = group(
+        byBlock(Block.CHAIN),
+        ::ChainPlacementRule
+    )
+
+    val TALL_FLOWERS = group(
+        all(
+            byBlock(Block.PEONY),
+            byBlock(Block.TALL_GRASS),
+            byBlock(Block.LARGE_FERN),
+            byBlock(Block.SUNFLOWER),
+            byBlock(Block.LILAC),
+            byBlock(Block.ROSE_BUSH)
+        ),
+        ::TallFlowerPlacementRule
+    )
+
+    val SIGNS = group(
+        all(
+            byTag("minecraft:all_signs"),
+        ),
+        ::SignPlacementRule
+    )
+
+    val CHESTS = group(
+        all(
+            byTag("minecraft:chests"),
+            byBlock(Block.CHEST),
+            byBlock(Block.TRAPPED_CHEST),
+        ),
+        ::ChestPlacementRule
+    )
+
+    val HOPPERS = group(
+        all(
+            byBlock(Block.HOPPER)
+        ),
+        ::HopperPlacementRule
+    )
+
+    override fun createGroup(
+        blockGroup: BlockGroup,
+        valueFunction: Function<Block, BlockPlacementRule>
+    ): PlacementGroup {
+        return PlacementGroup(blockGroup, valueFunction)
     }
 }
