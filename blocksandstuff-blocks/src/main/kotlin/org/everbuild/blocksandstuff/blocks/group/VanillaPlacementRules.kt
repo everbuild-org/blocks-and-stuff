@@ -1,13 +1,8 @@
 package org.everbuild.blocksandstuff.blocks.group
 
-import net.kyori.adventure.key.Key
-import net.kyori.adventure.key.KeyPattern
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.blocks.group.block.AggregateTagBlockGroup
-import org.everbuild.blocksandstuff.blocks.group.block.BlockBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
-import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
 import java.util.function.Function
@@ -227,7 +222,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ),
         ::VerticalSlimBlockPlacementRule
     )
-    
+
     val LADDERS = group(
         all(
             byBlock(Block.LADDER),
@@ -319,6 +314,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.TRAPPED_CHEST),
         ),
         ::ChestPlacementRule
+    )
+
+    val HOPPERS = group(
+        all(
+            byBlock(Block.HOPPER)
+        ),
+        ::HopperPlacementRule
     )
 
     override fun createGroup(
