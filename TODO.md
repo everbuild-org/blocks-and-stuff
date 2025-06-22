@@ -4,9 +4,9 @@
 
 ## Statistics
  - Total blocks with state: 660
- - Supported blocks: 575
- - Unsupported blocks: 117
- - Implementation progress: 87%
+ - Supported blocks: 595
+ - Unsupported blocks: 97
+ - Implementation progress: 90%
 
 ## Unsupported Blocks
 - [ ] minecraft:acacia_sapling
@@ -14,10 +14,8 @@
 - [ ] minecraft:attached_melon_stem
 - [ ] minecraft:attached_pumpkin_stem
 - [ ] minecraft:birch_sapling
-- [ ] minecraft:brain_coral_wall_fan
 - [ ] minecraft:brown_mushroom_block
 - [ ] minecraft:bubble_column
-- [ ] minecraft:bubble_coral_wall_fan
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:cave_vines_plant
 - [ ] minecraft:chain_command_block
@@ -32,21 +30,6 @@
 - [ ] minecraft:creaking_heart
 - [ ] minecraft:dark_oak_sapling
 - [ ] minecraft:daylight_detector
-- [ ] minecraft:dead_brain_coral
-- [ ] minecraft:dead_brain_coral_fan
-- [ ] minecraft:dead_brain_coral_wall_fan
-- [ ] minecraft:dead_bubble_coral
-- [ ] minecraft:dead_bubble_coral_fan
-- [ ] minecraft:dead_bubble_coral_wall_fan
-- [ ] minecraft:dead_fire_coral
-- [ ] minecraft:dead_fire_coral_fan
-- [ ] minecraft:dead_fire_coral_wall_fan
-- [ ] minecraft:dead_horn_coral
-- [ ] minecraft:dead_horn_coral_fan
-- [ ] minecraft:dead_horn_coral_wall_fan
-- [ ] minecraft:dead_tube_coral
-- [ ] minecraft:dead_tube_coral_fan
-- [ ] minecraft:dead_tube_coral_wall_fan
 - [ ] minecraft:decorated_pot
 - [ ] minecraft:deepslate_redstone_ore
 - [ ] minecraft:detector_rail
@@ -55,13 +38,11 @@
 - [ ] minecraft:end_rod
 - [ ] minecraft:farmland
 - [ ] minecraft:fire
-- [ ] minecraft:fire_coral_wall_fan
 - [ ] minecraft:frosted_ice
 - [ ] minecraft:glow_lichen
 - [ ] minecraft:grass_block
 - [ ] minecraft:grindstone
 - [ ] minecraft:hanging_roots
-- [ ] minecraft:horn_coral_wall_fan
 - [ ] minecraft:jigsaw
 - [ ] minecraft:jukebox
 - [ ] minecraft:jungle_sapling
@@ -119,7 +100,6 @@
 - [ ] minecraft:trial_spawner
 - [ ] minecraft:tripwire
 - [ ] minecraft:tripwire_hook
-- [ ] minecraft:tube_coral_wall_fan
 - [ ] minecraft:turtle_egg
 - [ ] minecraft:twisting_vines
 - [ ] minecraft:vault
@@ -210,6 +190,7 @@
 - [x] minecraft:bone_block
 - [x] minecraft:brain_coral
 - [x] minecraft:brain_coral_fan
+- [x] minecraft:brain_coral_wall_fan
 - [x] minecraft:brick_slab
 - [x] minecraft:brick_stairs
 - [x] minecraft:brick_wall
@@ -223,6 +204,7 @@
 - [x] minecraft:brown_wall_banner
 - [x] minecraft:bubble_coral
 - [x] minecraft:bubble_coral_fan
+- [x] minecraft:bubble_coral_wall_fan
 - [x] minecraft:cactus
 - [x] minecraft:cake
 - [x] minecraft:campfire
@@ -302,6 +284,21 @@
 - [x] minecraft:dark_oak_wood
 - [x] minecraft:dark_prismarine_slab
 - [x] minecraft:dark_prismarine_stairs
+- [x] minecraft:dead_brain_coral
+- [x] minecraft:dead_brain_coral_fan
+- [x] minecraft:dead_brain_coral_wall_fan
+- [x] minecraft:dead_bubble_coral
+- [x] minecraft:dead_bubble_coral_fan
+- [x] minecraft:dead_bubble_coral_wall_fan
+- [x] minecraft:dead_fire_coral
+- [x] minecraft:dead_fire_coral_fan
+- [x] minecraft:dead_fire_coral_wall_fan
+- [x] minecraft:dead_horn_coral
+- [x] minecraft:dead_horn_coral_fan
+- [x] minecraft:dead_horn_coral_wall_fan
+- [x] minecraft:dead_tube_coral
+- [x] minecraft:dead_tube_coral_fan
+- [x] minecraft:dead_tube_coral_wall_fan
 - [x] minecraft:deepslate
 - [x] minecraft:deepslate_brick_slab
 - [x] minecraft:deepslate_brick_stairs
@@ -326,6 +323,7 @@
 - [x] minecraft:exposed_cut_copper_stairs
 - [x] minecraft:fire_coral
 - [x] minecraft:fire_coral_fan
+- [x] minecraft:fire_coral_wall_fan
 - [x] minecraft:furnace
 - [x] minecraft:glass_pane
 - [x] minecraft:granite_slab
@@ -353,6 +351,7 @@
 - [x] minecraft:hopper
 - [x] minecraft:horn_coral
 - [x] minecraft:horn_coral_fan
+- [x] minecraft:horn_coral_wall_fan
 - [x] minecraft:infested_deepslate
 - [x] minecraft:iron_bars
 - [x] minecraft:iron_door
@@ -634,6 +633,7 @@
 - [x] minecraft:trapped_chest
 - [x] minecraft:tube_coral
 - [x] minecraft:tube_coral_fan
+- [x] minecraft:tube_coral_wall_fan
 - [x] minecraft:tuff_brick_slab
 - [x] minecraft:tuff_brick_stairs
 - [x] minecraft:tuff_brick_wall

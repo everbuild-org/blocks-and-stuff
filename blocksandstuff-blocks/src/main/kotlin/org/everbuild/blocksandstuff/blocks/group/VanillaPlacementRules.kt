@@ -343,9 +343,35 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val CORALS = group(
         all(
-            byTag("minecraft:corals")
+            byTag("minecraft:corals"),
+            byBlock(Block.DEAD_TUBE_CORAL),
+            byBlock(Block.DEAD_BRAIN_CORAL),
+            byBlock(Block.DEAD_BUBBLE_CORAL),
+            byBlock(Block.DEAD_FIRE_CORAL),
+            byBlock(Block.DEAD_HORN_CORAL),
+            byBlock(Block.DEAD_TUBE_CORAL_FAN),
+            byBlock(Block.DEAD_BRAIN_CORAL_FAN),
+            byBlock(Block.DEAD_BUBBLE_CORAL_FAN),
+            byBlock(Block.DEAD_FIRE_CORAL_FAN),
+            byBlock(Block.DEAD_HORN_CORAL_FAN),
         ),
         ::CoralPlacementRule
+    )
+
+    val WALL_CORALS = group(
+        all(
+            byBlock(Block.TUBE_CORAL_WALL_FAN),
+            byBlock(Block.BRAIN_CORAL_WALL_FAN),
+            byBlock(Block.BUBBLE_CORAL_WALL_FAN),
+            byBlock(Block.FIRE_CORAL_WALL_FAN),
+            byBlock(Block.HORN_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_TUBE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_BRAIN_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_BUBBLE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_FIRE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_HORN_CORAL_WALL_FAN)
+        ),
+        ::WallCoralPlacementRule
     )
 
     val HEADS = group(
