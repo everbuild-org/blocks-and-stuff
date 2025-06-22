@@ -348,6 +348,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::CoralPlacementRule
     )
 
+    val SUGAR_CANE = group(
+        byBlock(Block.SUGAR_CANE),
+        ::SugarCanePlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
