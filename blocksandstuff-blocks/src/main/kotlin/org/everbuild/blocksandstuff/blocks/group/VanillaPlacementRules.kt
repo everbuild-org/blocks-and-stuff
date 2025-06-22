@@ -350,7 +350,12 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val HEADS = group(
         all(
-            byBlock(Block.SKELETON_SKULL)
+            byBlock(Block.SKELETON_SKULL),
+            byBlock(Block.WITHER_SKELETON_SKULL),
+            byBlock(Block.ZOMBIE_HEAD),
+            byBlock(Block.CREEPER_HEAD),
+            byBlock(Block.DRAGON_HEAD),
+            byBlock(Block.PLAYER_HEAD)
         ),
         ::HeadPlacementRule
     )
