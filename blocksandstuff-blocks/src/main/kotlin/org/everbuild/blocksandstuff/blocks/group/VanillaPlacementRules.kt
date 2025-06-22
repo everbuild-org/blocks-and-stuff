@@ -346,6 +346,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::CoralPlacementRule
     )
 
+    val HEADS = group(
+        all(
+            byBlock(Block.SKELETON_SKULL)
+        ),
+        ::HeadPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
