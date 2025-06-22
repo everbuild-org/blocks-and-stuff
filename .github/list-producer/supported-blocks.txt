@@ -571,4 +571,5 @@ minecraft:zombie_head
 minecraft:creeper_head
 minecraft:dragon_head
 minecraft:player_head
+minecraft:piglin_head
 minecraft:sugar_cane

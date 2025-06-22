@@ -355,7 +355,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.ZOMBIE_HEAD),
             byBlock(Block.CREEPER_HEAD),
             byBlock(Block.DRAGON_HEAD),
-            byBlock(Block.PLAYER_HEAD)
+            byBlock(Block.PLAYER_HEAD),
+            byBlock(Block.PIGLIN_HEAD)
         ),
         ::HeadPlacementRule
     )
