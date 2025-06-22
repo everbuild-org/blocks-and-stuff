@@ -25,7 +25,7 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
             return if (oldBlock.isWater()) {
                 block.withProperty("waterlogged", "true")
             } else {
-                null
+                block
             }
         }
 
@@ -35,7 +35,7 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun isSelfReplaceable(replacement: Replacement): Boolean {
         val candles = replacement.block.getProperty("candles")?.toIntOrNull() ?: return false
-        return candles <= 4
+        return candles < 4
     }
 
     companion object {

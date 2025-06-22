@@ -173,7 +173,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val CANDLES = group(
-        byBlock(Block.CANDLE),
+        byTag("minecraft:candles"),
         ::CandlePlacementRule
     )
 
