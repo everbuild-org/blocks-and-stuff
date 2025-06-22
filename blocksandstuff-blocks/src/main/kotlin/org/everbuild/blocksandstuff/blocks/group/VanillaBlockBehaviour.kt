@@ -118,6 +118,16 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::SignEditRule
     )
 
+    val CAKE = group(
+        byBlock(Block.CAKE),
+        ::CakeEatRule
+    )
+
+    val CANDLE_CAKE = group(
+        byTag("minecraft:candle_cakes"),
+        ::CandleCakeRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler
