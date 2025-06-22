@@ -348,6 +348,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::CoralPlacementRule
     )
 
+    val HEADS = group(
+        all(
+            byBlock(Block.SKELETON_SKULL)
+        ),
+        ::HeadPlacementRule
+    )
+
     val SUGAR_CANE = group(
         byBlock(Block.SUGAR_CANE),
         ::SugarCanePlacementRule
