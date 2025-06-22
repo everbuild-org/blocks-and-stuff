@@ -323,6 +323,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::HopperPlacementRule
     )
 
+    val SHULKERBOXES = group(
+        all(
+            byTag("minecraft:shulker_boxes")
+        ),
+        ::ShulkerPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
