@@ -339,6 +339,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::FloorFillerPlacementRule
     )
 
+    val CORALS = group(
+        all(
+            byTag("minecraft:corals")
+        ),
+        ::CoralPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
