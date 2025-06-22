@@ -47,3 +47,4 @@ minecraft:waxed_weathered_copper_bulb
 minecraft:oxidized_copper_bulb
 minecraft:waxed_oxidized_copper_bulb
 minecraft:composter
+minecraft:brewing_stand

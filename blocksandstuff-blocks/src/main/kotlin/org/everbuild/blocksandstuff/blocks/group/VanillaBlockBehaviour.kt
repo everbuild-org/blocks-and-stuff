@@ -128,6 +128,12 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::CandleCakeRule
     )
 
+    val STRIPPABLE_WOOD = group(
+        byList(StrippingBehaviorRule.getStrippableBlocks()),
+        ::StrippingBehaviorRule
+    )
+
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler

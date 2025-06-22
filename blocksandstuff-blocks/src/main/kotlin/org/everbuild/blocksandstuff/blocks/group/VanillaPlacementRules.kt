@@ -295,7 +295,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.LARGE_FERN),
             byBlock(Block.SUNFLOWER),
             byBlock(Block.LILAC),
-            byBlock(Block.ROSE_BUSH)
+            byBlock(Block.ROSE_BUSH),
         ),
         ::TallFlowerPlacementRule
     )
