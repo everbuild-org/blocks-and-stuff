@@ -57,3 +57,5 @@ minecraft:player_wall_head
 minecraft:zombie_wall_head
 minecraft:wither_skeleton_wall_skull
 minecraft:skeleton_wall_skull
+minecraft:cave_vines_plant
+minecraft:jukebox
