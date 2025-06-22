@@ -106,6 +106,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
             byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
             byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
+            byBlock(Block.DRIED_GHAST),
+            byBlock(Block.HEAVY_CORE)
         ),
         ::SimpleWaterloggablePlacementRule
     )
