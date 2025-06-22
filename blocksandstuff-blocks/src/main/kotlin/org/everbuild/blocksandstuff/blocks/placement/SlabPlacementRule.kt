@@ -28,6 +28,8 @@ class SlabPlacementRule(block: Block) : BlockPlacementRule(block) {
         val type = placedBlock.getProperty("type") ?: return false
         if (type == "double") return false
 
+        if (replacement.isOffset) return true
+
         if (type == "top" && replacement.blockFace() == BlockFace.BOTTOM) return true
         if (type == "bottom" && replacement.blockFace() == BlockFace.TOP) return true
 
