@@ -2,10 +2,12 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
+import net.minestom.server.component.DataComponents
 import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
+import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.tag.Tag
@@ -18,36 +20,30 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         val player = interaction.player
         val itemInHand = player.itemInMainHand
-        
+
         if (!isAxe(itemInHand.material())) {
-            return false
+            return true
         }
         val currentBlock = interaction.instance.getBlock(interaction.blockPosition)
         val strippedBaseBlock = getStrippedVariant(currentBlock) ?: return false
         val strippedBlockWithProperties = preserveBlockProperties(currentBlock, strippedBaseBlock)
         interaction.instance.setBlock(interaction.blockPosition, strippedBlockWithProperties)
         playStrippingSound(player, interaction.blockPosition)
-        
         if (player.gameMode != GameMode.CREATIVE) {
             damageAxe(player, itemInHand)
         }
-        return true
+        return false
     }
-    
+
     private fun preserveBlockProperties(originalBlock: Block, strippedBlock: Block): Block {
         var resultBlock = strippedBlock
         val axis = originalBlock.getProperty("axis")
         if (axis != null) {
             resultBlock = resultBlock.withProperty("axis", axis)
         }
-        
-        val waterlogged = originalBlock.getProperty("waterlogged")
-        if (waterlogged != null) {
-            resultBlock = resultBlock.withProperty("waterlogged", waterlogged)
-        }
         return resultBlock
     }
-    
+
     private fun isAxe(material: Material): Boolean {
         return when (material) {
             Material.WOODEN_AXE,
@@ -56,10 +52,11 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
             Material.GOLDEN_AXE,
             Material.DIAMOND_AXE,
             Material.NETHERITE_AXE -> true
+
             else -> false
         }
     }
-    
+
     private fun getStrippedVariant(originalBlock: Block): Block? {
         val baseBlockName = originalBlock.name()
         return when (baseBlockName) {
@@ -72,7 +69,7 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
             "minecraft:mangrove_log" -> Block.STRIPPED_MANGROVE_LOG
             "minecraft:cherry_log" -> Block.STRIPPED_CHERRY_LOG
             "minecraft:bamboo_block" -> Block.STRIPPED_BAMBOO_BLOCK
-            
+
             "minecraft:oak_wood" -> Block.STRIPPED_OAK_WOOD
             "minecraft:spruce_wood" -> Block.STRIPPED_SPRUCE_WOOD
             "minecraft:birch_wood" -> Block.STRIPPED_BIRCH_WOOD
@@ -81,7 +78,7 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
             "minecraft:dark_oak_wood" -> Block.STRIPPED_DARK_OAK_WOOD
             "minecraft:mangrove_wood" -> Block.STRIPPED_MANGROVE_WOOD
             "minecraft:cherry_wood" -> Block.STRIPPED_CHERRY_WOOD
-            
+
             "minecraft:crimson_stem" -> Block.STRIPPED_CRIMSON_STEM
             "minecraft:warped_stem" -> Block.STRIPPED_WARPED_STEM
             "minecraft:crimson_hyphae" -> Block.STRIPPED_CRIMSON_HYPHAE
@@ -89,37 +86,27 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
             else -> null
         }
     }
-    
+
     private fun playStrippingSound(player: Player, blockPosition: net.minestom.server.coordinate.Point) {
         val sound = Sound.sound(SoundEvent.ITEM_AXE_STRIP, Sound.Source.BLOCK, 1.0f, 1.0f)
         player.instance?.playSound(sound, blockPosition)
     }
-    
-    private fun damageAxe(player: Player, axe: net.minestom.server.item.ItemStack) {
+
+    private fun damageAxe(player: Player, axe: ItemStack) {
         val currentDamage = axe.getTag(Tag.Integer("Damage")) ?: 0
-        val maxDamage = getMaxDurability(axe.material())
-        if (currentDamage + 1 >= maxDamage) {
-            player.itemInMainHand = net.minestom.server.item.ItemStack.AIR
-            val breakSound = Sound.sound(SoundEvent.ENTITY_ITEM_BREAK, Sound.Source.PLAYER, 1.0f, 1.0f)
-            player.instance?.playSound(breakSound, player.position)
-        } else {
-            val damagedAxe = axe.withTag(Tag.Integer("Damage"), currentDamage + 1)
-            player.itemInMainHand = damagedAxe
+        if (axe.has(DataComponents.MAX_DAMAGE)) {
+            val maxDamage = axe.get(DataComponents.MAX_DAMAGE)!!
+            if (currentDamage + 1 >= maxDamage) {
+                player.itemInMainHand = ItemStack.AIR
+                val breakSound = Sound.sound(SoundEvent.ENTITY_ITEM_BREAK, Sound.Source.PLAYER, 1.0f, 1.0f)
+                player.instance?.playSound(breakSound, player.position)
+            } else {
+                val damagedAxe = axe.withTag(Tag.Integer("Damage"), currentDamage + 1)
+                player.itemInMainHand = damagedAxe
+            }
         }
     }
-    
-    private fun getMaxDurability(material: Material): Int {
-        return when (material) {
-            Material.WOODEN_AXE -> 59
-            Material.STONE_AXE -> 131
-            Material.IRON_AXE -> 250
-            Material.GOLDEN_AXE -> 32
-            Material.DIAMOND_AXE -> 1561
-            Material.NETHERITE_AXE -> 2031
-            else -> 0
-        }
-    }
-    
+
     companion object {
         fun getStrippableBlocks(): List<Block> {
             return listOf(
@@ -132,7 +119,7 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
                 Block.MANGROVE_LOG,
                 Block.CHERRY_LOG,
                 Block.BAMBOO_BLOCK,
-                
+
                 Block.OAK_WOOD,
                 Block.SPRUCE_WOOD,
                 Block.BIRCH_WOOD,
@@ -141,7 +128,7 @@ class StrippingBehaviorRule(private val block: Block) : BlockHandler {
                 Block.DARK_OAK_WOOD,
                 Block.MANGROVE_WOOD,
                 Block.CHERRY_WOOD,
-                
+
                 Block.CRIMSON_STEM,
                 Block.WARPED_STEM,
                 Block.CRIMSON_HYPHAE,
