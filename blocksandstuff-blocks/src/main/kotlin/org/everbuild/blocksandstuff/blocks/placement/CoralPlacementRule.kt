@@ -28,7 +28,6 @@ class CoralPlacementRule(block: Block) : BlockPlacementRule(block) {
             )
         ) return null
 
-
         return block.withProperty("waterlogged", waterlogged)
     }
 
