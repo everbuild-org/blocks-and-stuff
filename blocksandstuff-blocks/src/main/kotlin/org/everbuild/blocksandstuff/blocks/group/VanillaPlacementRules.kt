@@ -330,6 +330,15 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ShulkerPlacementRule
     )
 
+    val FLOOR_FLOWER = group(
+        all(
+            byBlock(Block.WILDFLOWERS),
+            byBlock(Block.LEAF_LITTER),
+            byBlock(Block.PINK_PETALS)
+        ),
+        ::FloorFillerPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
