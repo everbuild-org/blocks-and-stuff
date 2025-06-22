@@ -392,6 +392,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SugarCanePlacementRule
     )
 
+    val GROUNDED_PLANTS = group(
+        all(
+            byTag("minecraft:saplings"),
+            byTag("minecraft:small_flowers"),
+        ),
+        ::GroundedPlantBlockPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
