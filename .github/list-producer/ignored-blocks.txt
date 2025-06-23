@@ -62,3 +62,7 @@ minecraft:jukebox
 minecraft:respawn_anchor
 minecraft:sculk_sensor
 minecraft:sculk_shrieker
+minecraft:daylight_detector
+minecraft:redstone_ore
+minecraft:light
+minecraft:test_block

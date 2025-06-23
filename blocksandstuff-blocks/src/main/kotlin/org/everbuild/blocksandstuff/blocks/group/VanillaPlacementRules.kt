@@ -92,7 +92,10 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         all(
             byBlock(Block.BARREL),
             byBlock(Block.PISTON),
-            byBlock(Block.STICKY_PISTON)
+            byBlock(Block.STICKY_PISTON),
+            byBlock(Block.COMMAND_BLOCK),
+            byBlock(Block.CHAIN_COMMAND_BLOCK),
+            byBlock(Block.REPEATING_COMMAND_BLOCK),
         ),
         ::FacingPlacementRule
     )
