@@ -400,6 +400,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::GroundedPlantBlockPlacementRule
     )
 
+    val CRAFTER = group(
+        byBlock(Block.CRAFTER),
+        ::CrafterPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
