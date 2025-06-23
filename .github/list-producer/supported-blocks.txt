@@ -175,6 +175,12 @@ minecraft:black_wall_banner
 minecraft:barrel
 minecraft:piston
 minecraft:sticky_piston
+minecraft:command_block
+minecraft:chain_command_block
+minecraft:repeating_command_block
+minecraft:dropper
+minecraft:dispenser
+minecraft:observer
 minecraft:barrier
 minecraft:copper_grate
 minecraft:exposed_copper_grate
@@ -627,6 +633,9 @@ minecraft:lever
 minecraft:comparator
 minecraft:repeater
 minecraft:farmland
+minecraft:grass_block
+minecraft:podzol
+minecraft:mycelium
 minecraft:rail
 minecraft:activator_rail
 minecraft:detector_rail
