@@ -90,9 +90,23 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val FACING = group(
         all(
-            byBlock(Block.BARREL)
+            byBlock(Block.BARREL),
+            byBlock(Block.PISTON),
+            byBlock(Block.STICKY_PISTON),
+            byBlock(Block.COMMAND_BLOCK),
+            byBlock(Block.CHAIN_COMMAND_BLOCK),
+            byBlock(Block.REPEATING_COMMAND_BLOCK),
+            byBlock(Block.DROPPER),
+            byBlock(Block.DISPENSER),
         ),
         ::FacingPlacementRule
+    )
+
+    val OBSERVER = group(
+        all(
+            byBlock(Block.OBSERVER)
+        ),
+        ::ObserverPlacementRule
     )
 
     val SIMPLE_WATERLOGGABLE = group(
@@ -106,6 +120,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
             byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
             byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
+            byBlock(Block.DRIED_GHAST),
+            byBlock(Block.HEAVY_CORE)
         ),
         ::SimpleWaterloggablePlacementRule
     )
@@ -173,7 +189,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val CANDLES = group(
-        byBlock(Block.CANDLE),
+        byTag("minecraft:candles"),
         ::CandlePlacementRule
     )
 
@@ -295,7 +311,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.LARGE_FERN),
             byBlock(Block.SUNFLOWER),
             byBlock(Block.LILAC),
-            byBlock(Block.ROSE_BUSH)
+            byBlock(Block.ROSE_BUSH),
         ),
         ::TallFlowerPlacementRule
     )
@@ -321,6 +337,122 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.HOPPER)
         ),
         ::HopperPlacementRule
+    )
+
+    val SHULKERBOXES = group(
+        all(
+            byTag("minecraft:shulker_boxes")
+        ),
+        ::ShulkerPlacementRule
+    )
+
+    val FLOOR_FLOWER = group(
+        all(
+            byBlock(Block.WILDFLOWERS),
+            byBlock(Block.LEAF_LITTER),
+            byBlock(Block.PINK_PETALS)
+        ),
+        ::FloorFillerPlacementRule
+    )
+
+    val CORALS = group(
+        all(
+            byTag("minecraft:corals"),
+            byBlock(Block.DEAD_TUBE_CORAL),
+            byBlock(Block.DEAD_BRAIN_CORAL),
+            byBlock(Block.DEAD_BUBBLE_CORAL),
+            byBlock(Block.DEAD_FIRE_CORAL),
+            byBlock(Block.DEAD_HORN_CORAL),
+            byBlock(Block.DEAD_TUBE_CORAL_FAN),
+            byBlock(Block.DEAD_BRAIN_CORAL_FAN),
+            byBlock(Block.DEAD_BUBBLE_CORAL_FAN),
+            byBlock(Block.DEAD_FIRE_CORAL_FAN),
+            byBlock(Block.DEAD_HORN_CORAL_FAN),
+        ),
+        ::CoralPlacementRule
+    )
+
+    val WALL_CORALS = group(
+        all(
+            byBlock(Block.TUBE_CORAL_WALL_FAN),
+            byBlock(Block.BRAIN_CORAL_WALL_FAN),
+            byBlock(Block.BUBBLE_CORAL_WALL_FAN),
+            byBlock(Block.FIRE_CORAL_WALL_FAN),
+            byBlock(Block.HORN_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_TUBE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_BRAIN_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_BUBBLE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_FIRE_CORAL_WALL_FAN),
+            byBlock(Block.DEAD_HORN_CORAL_WALL_FAN)
+        ),
+        ::WallCoralPlacementRule
+    )
+
+    val HEADS = group(
+        all(
+            byBlock(Block.SKELETON_SKULL),
+            byBlock(Block.WITHER_SKELETON_SKULL),
+            byBlock(Block.ZOMBIE_HEAD),
+            byBlock(Block.CREEPER_HEAD),
+            byBlock(Block.DRAGON_HEAD),
+            byBlock(Block.PLAYER_HEAD),
+            byBlock(Block.PIGLIN_HEAD)
+        ),
+        ::HeadPlacementRule
+    )
+
+    val SUGAR_CANE = group(
+        byBlock(Block.SUGAR_CANE),
+        ::SugarCanePlacementRule
+    )
+
+    val GROUNDED_PLANTS = group(
+        all(
+            byTag("minecraft:saplings"),
+            byTag("minecraft:small_flowers"),
+        ),
+        ::GroundedPlantBlockPlacementRule
+    )
+
+    val CRAFTER = group(
+        byBlock(Block.CRAFTER),
+        ::CrafterPlacementRule
+    )
+
+    val LEVER = group(
+        byBlock(Block.LEVER),
+        ::LeverPlacementRule
+    )
+
+    val REDSTONE_STUFF = group(
+        all(
+            byBlock(Block.COMPARATOR),
+            byBlock(Block.REPEATER),
+        ),
+        ::RedstoneStuffPlacementRule
+    )
+
+    val FARMLAND = group(
+        byBlock(Block.FARMLAND),
+        ::FarmlandPlacementRule
+    )
+
+    val SNOWY = group(
+        all(
+            byBlock(Block.GRASS_BLOCK),
+            byBlock(Block.PODZOL),
+            byBlock(Block.MYCELIUM)
+        ),
+        ::SnowyUpdateRule
+    )
+
+    val MUSHROOM = group(
+        all(
+            byBlock(Block.MUSHROOM_STEM),
+            byBlock(Block.BROWN_MUSHROOM_BLOCK),
+            byBlock(Block.RED_MUSHROOM_BLOCK),
+        ),
+        ::MushroomPlacementRule
     )
 
     override fun createGroup(

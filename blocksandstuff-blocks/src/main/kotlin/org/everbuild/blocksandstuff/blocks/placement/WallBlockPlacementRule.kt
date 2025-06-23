@@ -14,9 +14,11 @@ import org.everbuild.blocksandstuff.common.utils.isWaterSource
 class WallBlockPlacementRule(block: Block) : AbstractConnectingBlockPlacementRule(block) {
     private val walls = tagManager.getTag(Key.key("minecraft:walls"))!!
     private val glassPanes = BlockTags.getTaggedWith("blocksandstuff:glass_panes")
+    private val fenceGates = BlockTags.getTaggedWith("minecraft:fence_gates")
     private val canConnect = RegistryTag.direct(
         glassPanes.toList()
                 + walls.toList()
+                + fenceGates.toList()
                 + listOf(Block.IRON_BARS)
     )
 

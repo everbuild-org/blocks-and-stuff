@@ -5,15 +5,16 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.utils.isWater
+import org.everbuild.blocksandstuff.common.utils.withDefaultHandler
 
 class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val positionBelow = placementState.placePosition.sub(0.0, 1.0, 0.0)
         val blockBelow = placementState.instance.getBlock(positionBelow)
-        if (blockBelow == Block.CAKE) {
+        if (blockBelow.compare(Block.CAKE, Block.Comparator.ID)) {
             (placementState.instance as Instance).setBlock(
                 positionBelow,
-                CANDLE_CAKE[block] ?: return null
+                CANDLE_CAKE[block]?.withDefaultHandler() ?: return null
             )
             return Block.AIR
         }
@@ -25,7 +26,7 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
             return if (oldBlock.isWater()) {
                 block.withProperty("waterlogged", "true")
             } else {
-                null
+                block
             }
         }
 
@@ -35,7 +36,7 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun isSelfReplaceable(replacement: Replacement): Boolean {
         val candles = replacement.block.getProperty("candles")?.toIntOrNull() ?: return false
-        return candles <= 4
+        return candles < 4
     }
 
     companion object {

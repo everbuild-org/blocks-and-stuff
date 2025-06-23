@@ -8,6 +8,9 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler
 import java.util.concurrent.ThreadLocalRandom
+import net.minestom.server.coordinate.BlockVec
+import net.minestom.server.event.EventDispatcher
+import org.everbuild.blocksandstuff.blocks.event.CopperOxidationEvent
 
 class CopperOxidationRule(private val block: Block) : BlockHandler {
     override fun getKey(): Key {
@@ -26,7 +29,7 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
         val exposedToAir = countExposedSides(instance, blockPosition) > 0
 
         if (exposedToAir && ThreadLocalRandom.current().nextInt(100) < 20) {
-            oxidizeBlock(instance, blockPosition)
+            oxidizeBlock(instance, blockPosition, tick.block)
         }
     }
 
@@ -49,13 +52,21 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
         return exposedSides
     }
 
-    private fun oxidizeBlock(instance: Instance, blockPosition: Point) {
+    private fun oxidizeBlock(instance: Instance, blockPosition: Point, block: Block) {
         var nextStage = getNextOxidationStage() ?: return
         val handler = MinecraftServer.getBlockManager().getHandler(nextStage.key().asString())
         if (handler != null) {
             nextStage = nextStage.withHandler(handler)
         }
-        instance.setBlock(blockPosition, nextStage)
+        val event = CopperOxidationEvent(
+            block,
+            nextStage,
+            BlockVec(blockPosition),
+            instance
+        )
+        EventDispatcher.callCancellable(event) {
+            instance.setBlock(blockPosition, event.getBlockAfterOxidation())
+        }
     }
 
     companion object {

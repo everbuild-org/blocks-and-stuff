@@ -12,7 +12,15 @@ import net.minestom.server.utils.time.TimeUnit
 class DefaultDroppedItemFactory : DroppedItemFactory {
     override fun spawn(instance: Instance, position: Point, block: Block) {
         val item = block.registry().material() ?: return
-        val entity = ItemEntity(ItemStack.of(item))
+        spawn(instance, position, ItemStack.of(item))
+    }
+
+    override fun spawn(
+        instance: Instance,
+        position: Point,
+        item: ItemStack
+    ) {
+        val entity = ItemEntity(item)
         entity.setPickupDelay(1, TimeUnit.SECOND) // 1s for natural drop
         entity.scheduleRemove(5, TimeUnit.MINUTE)
         entity.velocity = Vec(

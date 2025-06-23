@@ -31,8 +31,9 @@ val supported = File(".github/list-producer/supported-blocks.txt").readLines()
 val unsupported = allWithState.filter { !supported.contains(it) }
 
 val totalBlocks = allWithState.size
-val supportedCount = supported.size
 val unsupportedCount = unsupported.size
+val supportedAndIgnored = allWithState.filter { supported.contains(it) || ignored.contains(it) }
+val supportedCount = supportedAndIgnored.size
 val supportedPercentage = (supportedCount.toDouble() / totalBlocks * 100).toInt()
 
 fun generateMarkdown(): String {
@@ -45,7 +46,7 @@ fun generateMarkdown(): String {
  - Total blocks with state: $totalBlocks
  - Supported blocks: $supportedCount
  - Unsupported blocks: $unsupportedCount
- - Implementation progress: $supportedPercentage%
+ - Implementation progress: $supportedPercentage% (${(totalBlocks.toDouble() / 100).toInt()} blocks = 1%)
 
 ## Unsupported Blocks
 ${unsupported.sorted().joinToString("\n") { "- [ ] $it" }}

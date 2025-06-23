@@ -6,6 +6,7 @@ import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
+import org.everbuild.blocksandstuff.blocks.placement.LeverPlacementRule
 import org.everbuild.blocksandstuff.blocks.placement.SignPlacementRule
 
 object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHandler>() {
@@ -116,6 +117,21 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     val SIGNS = group(
         byTag("minecraft:all_signs"),
         ::SignEditRule
+    )
+
+    val CAKE = group(
+        byBlock(Block.CAKE),
+        ::CakeEatRule
+    )
+
+    val CANDLE_CAKE = group(
+        byTag("minecraft:candle_cakes"),
+        ::CandleCakeRule
+    )
+
+    val STRIPPABLE_WOOD = group(
+        byList(StrippingBehaviorRule.getStrippableBlocks()),
+        ::StrippingBehaviorRule
     )
 
     override fun createGroup(
