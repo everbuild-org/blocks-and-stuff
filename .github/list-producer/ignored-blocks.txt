@@ -66,3 +66,4 @@ minecraft:daylight_detector
 minecraft:redstone_ore
 minecraft:light
 minecraft:test_block
+minecraft:podzol

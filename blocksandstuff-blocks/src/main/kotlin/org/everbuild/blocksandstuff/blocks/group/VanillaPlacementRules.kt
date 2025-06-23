@@ -428,6 +428,15 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::FarmlandPlacementRule
     )
 
+    val SNOWY = group(
+        all(
+            byBlock(Block.GRASS_BLOCK),
+            byBlock(Block.PODZOL),
+            byBlock(Block.MYCELIUM)
+        ),
+        ::SnowyUpdateRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
