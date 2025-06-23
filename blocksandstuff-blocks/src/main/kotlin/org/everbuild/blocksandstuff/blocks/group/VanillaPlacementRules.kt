@@ -410,6 +410,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::LeverPlacementRule
     )
 
+    val REDSTONE_STUFF = group(
+        all(
+            byBlock(Block.COMPARATOR),
+            byBlock(Block.REPEATER),
+        ),
+        ::RedstoneStuffPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
