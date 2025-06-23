@@ -405,6 +405,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::CrafterPlacementRule
     )
 
+    val LEVER = group(
+        byBlock(Block.LEVER),
+        ::LeverPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>

@@ -59,3 +59,4 @@ minecraft:wither_skeleton_wall_skull
 minecraft:skeleton_wall_skull
 minecraft:cave_vines_plant
 minecraft:jukebox
+minecraft:respawn_anchor
