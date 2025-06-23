@@ -90,7 +90,9 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val FACING = group(
         all(
-            byBlock(Block.BARREL)
+            byBlock(Block.BARREL),
+            byBlock(Block.PISTON),
+            byBlock(Block.STICKY_PISTON)
         ),
         ::FacingPlacementRule
     )
