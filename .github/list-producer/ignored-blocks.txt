@@ -68,3 +68,5 @@ minecraft:deepslate_redstone_ore
 minecraft:light
 minecraft:test_block
 minecraft:podzol
+minecraft:cauldron
+minecraft:shroomlight

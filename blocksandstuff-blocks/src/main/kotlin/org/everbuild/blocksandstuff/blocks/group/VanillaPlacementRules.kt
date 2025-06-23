@@ -109,21 +109,21 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ObserverPlacementRule
     )
 
-        val SIMPLE_WATERLOGGABLE = group (
-            all(
-                byBlock(Block.BARRIER),
-                byBlock(Block.COPPER_GRATE),
-                byBlock(Block.EXPOSED_COPPER_GRATE),
-                byBlock(Block.WEATHERED_COPPER_GRATE),
-                byBlock(Block.OXIDIZED_COPPER_GRATE),
-                byBlock(Block.WAXED_COPPER_GRATE),
-                byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
-                byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
-                byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
-                byBlock(Block.DRIED_GHAST),
-                byBlock(Block.HEAVY_CORE)
-            ),
-    ::SimpleWaterloggablePlacementRule
+    val SIMPLE_WATERLOGGABLE = group(
+        all(
+            byBlock(Block.BARRIER),
+            byBlock(Block.COPPER_GRATE),
+            byBlock(Block.EXPOSED_COPPER_GRATE),
+            byBlock(Block.WEATHERED_COPPER_GRATE),
+            byBlock(Block.OXIDIZED_COPPER_GRATE),
+            byBlock(Block.WAXED_COPPER_GRATE),
+            byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
+            byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
+            byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
+            byBlock(Block.DRIED_GHAST),
+            byBlock(Block.HEAVY_CORE)
+        ),
+        ::SimpleWaterloggablePlacementRule
     )
 
     val BEDS = group(
@@ -444,6 +444,15 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.MYCELIUM)
         ),
         ::SnowyUpdateRule
+    )
+
+    val MUSHROOM = group(
+        all(
+            byBlock(Block.MUSHROOM_STEM),
+            byBlock(Block.BROWN_MUSHROOM_BLOCK),
+            byBlock(Block.RED_MUSHROOM_BLOCK),
+        ),
+        ::MushroomPlacementRule
     )
 
     override fun createGroup(
