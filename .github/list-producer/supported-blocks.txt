@@ -636,6 +636,9 @@ minecraft:farmland
 minecraft:grass_block
 minecraft:podzol
 minecraft:mycelium
+minecraft:mushroom_stem
+minecraft:brown_mushroom_block
+minecraft:red_mushroom_block
 minecraft:rail
 minecraft:activator_rail
 minecraft:detector_rail

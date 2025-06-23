@@ -4,14 +4,13 @@
 
 ## Statistics
  - Total blocks with state: 649
- - Supported blocks: 642
- - Unsupported blocks: 58
- - Implementation progress: 98%
+ - Supported blocks: 594
+ - Unsupported blocks: 55
+ - Implementation progress: 91% (6 blocks = 1%)
 
 ## Unsupported Blocks
 - [ ] minecraft:attached_melon_stem
 - [ ] minecraft:attached_pumpkin_stem
-- [ ] minecraft:brown_mushroom_block
 - [ ] minecraft:bubble_column
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:chorus_flower
@@ -32,7 +31,6 @@
 - [ ] minecraft:lightning_rod
 - [ ] minecraft:mangrove_roots
 - [ ] minecraft:moving_piston
-- [ ] minecraft:mushroom_stem
 - [ ] minecraft:nether_portal
 - [ ] minecraft:nether_wart
 - [ ] minecraft:pale_hanging_moss
@@ -42,7 +40,6 @@
 - [ ] minecraft:pitcher_plant
 - [ ] minecraft:pointed_dripstone
 - [ ] minecraft:powder_snow_cauldron
-- [ ] minecraft:red_mushroom_block
 - [ ] minecraft:redstone_wall_torch
 - [ ] minecraft:redstone_wire
 - [ ] minecraft:resin_clump
@@ -167,6 +164,7 @@
 - [x] minecraft:brown_candle
 - [x] minecraft:brown_carpet
 - [x] minecraft:brown_glazed_terracotta
+- [x] minecraft:brown_mushroom_block
 - [x] minecraft:brown_shulker_box
 - [x] minecraft:brown_stained_glass_pane
 - [x] minecraft:brown_wall_banner
@@ -426,6 +424,7 @@
 - [x] minecraft:mud_brick_stairs
 - [x] minecraft:mud_brick_wall
 - [x] minecraft:muddy_mangrove_roots
+- [x] minecraft:mushroom_stem
 - [x] minecraft:mycelium
 - [x] minecraft:nether_brick_fence
 - [x] minecraft:nether_brick_slab
@@ -547,6 +546,7 @@
 - [x] minecraft:red_candle
 - [x] minecraft:red_carpet
 - [x] minecraft:red_glazed_terracotta
+- [x] minecraft:red_mushroom_block
 - [x] minecraft:red_nether_brick_slab
 - [x] minecraft:red_nether_brick_stairs
 - [x] minecraft:red_nether_brick_wall
