@@ -173,6 +173,8 @@ minecraft:green_wall_banner
 minecraft:red_wall_banner
 minecraft:black_wall_banner
 minecraft:barrel
+minecraft:piston
+minecraft:sticky_piston
 minecraft:barrier
 minecraft:copper_grate
 minecraft:exposed_copper_grate
@@ -620,3 +622,12 @@ minecraft:lily_of_the_valley
 minecraft:wither_rose
 minecraft:torchflower
 minecraft:closed_eyeblossom
+minecraft:crafter
+minecraft:lever
+minecraft:comparator
+minecraft:repeater
+minecraft:farmland
+minecraft:rail
+minecraft:activator_rail
+minecraft:detector_rail
+minecraft:powered_rail
