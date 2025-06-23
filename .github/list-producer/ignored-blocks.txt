@@ -64,6 +64,7 @@ minecraft:sculk_sensor
 minecraft:sculk_shrieker
 minecraft:daylight_detector
 minecraft:redstone_ore
+minecraft:deepslate_redstone_ore
 minecraft:light
 minecraft:test_block
 minecraft:podzol

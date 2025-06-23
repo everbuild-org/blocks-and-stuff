@@ -96,25 +96,34 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.COMMAND_BLOCK),
             byBlock(Block.CHAIN_COMMAND_BLOCK),
             byBlock(Block.REPEATING_COMMAND_BLOCK),
+            byBlock(Block.DROPPER),
+            byBlock(Block.DISPENSER),
         ),
         ::FacingPlacementRule
     )
 
-    val SIMPLE_WATERLOGGABLE = group(
+    val OBSERVER = group(
         all(
-            byBlock(Block.BARRIER),
-            byBlock(Block.COPPER_GRATE),
-            byBlock(Block.EXPOSED_COPPER_GRATE),
-            byBlock(Block.WEATHERED_COPPER_GRATE),
-            byBlock(Block.OXIDIZED_COPPER_GRATE),
-            byBlock(Block.WAXED_COPPER_GRATE),
-            byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
-            byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
-            byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
-            byBlock(Block.DRIED_GHAST),
-            byBlock(Block.HEAVY_CORE)
+            byBlock(Block.OBSERVER)
         ),
-        ::SimpleWaterloggablePlacementRule
+        ::ObserverPlacementRule
+    )
+
+        val SIMPLE_WATERLOGGABLE = group (
+            all(
+                byBlock(Block.BARRIER),
+                byBlock(Block.COPPER_GRATE),
+                byBlock(Block.EXPOSED_COPPER_GRATE),
+                byBlock(Block.WEATHERED_COPPER_GRATE),
+                byBlock(Block.OXIDIZED_COPPER_GRATE),
+                byBlock(Block.WAXED_COPPER_GRATE),
+                byBlock(Block.WAXED_EXPOSED_COPPER_GRATE),
+                byBlock(Block.WAXED_WEATHERED_COPPER_GRATE),
+                byBlock(Block.WAXED_OXIDIZED_COPPER_GRATE),
+                byBlock(Block.DRIED_GHAST),
+                byBlock(Block.HEAVY_CORE)
+            ),
+    ::SimpleWaterloggablePlacementRule
     )
 
     val BEDS = group(
