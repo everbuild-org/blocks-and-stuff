@@ -418,6 +418,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::RedstoneStuffPlacementRule
     )
 
+    val FARMLAND = group(
+        byBlock(Block.FARMLAND),
+        ::FarmlandPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
