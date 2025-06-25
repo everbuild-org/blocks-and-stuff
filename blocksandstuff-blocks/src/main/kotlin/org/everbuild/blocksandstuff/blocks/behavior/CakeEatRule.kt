@@ -11,7 +11,6 @@ import org.everbuild.blocksandstuff.blocks.event.CakeEatEvent
 class CakeEatRule(val block: Block) : BlockHandler {
     private val maxSlices = 7
     private val candles = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:candles"))!!
-
     override fun getKey(): Key = block.key()
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {

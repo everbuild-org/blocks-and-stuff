@@ -35,7 +35,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SlabPlacementRule
     )
 
-    val WORKSTATIONS = group(
+    val VERTICALLYROTATED = group(
         all(
             byBlock(Block.FURNACE),
             byBlock(Block.BLAST_FURNACE),
@@ -50,8 +50,9 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.LOOM),
             byBlock(Block.BEE_NEST),
             byBlock(Block.END_PORTAL_FRAME),
+            byBlock(Block.VAULT)
         ),
-        ::WorkstationPlacementRule
+        ::VerticallyRotatedPlacementRule
     )
 
     val ROTATED_WORKSTATIONS = group(
