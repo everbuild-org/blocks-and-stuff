@@ -70,3 +70,4 @@ minecraft:test_block
 minecraft:podzol
 minecraft:cauldron
 minecraft:shroomlight
+minecraft:trial_spawner

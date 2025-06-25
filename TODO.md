@@ -4,11 +4,12 @@
 
 ## Statistics
  - Total blocks with state: 649
- - Supported blocks: 594
- - Unsupported blocks: 55
- - Implementation progress: 91% (6 blocks = 1%)
+ - Supported blocks: 590
+ - Unsupported blocks: 59
+ - Implementation progress: 90% (6 blocks = 1%)
 
 ## Unsupported Blocks
+- [ ] minecraft:activator_rail
 - [ ] minecraft:attached_melon_stem
 - [ ] minecraft:attached_pumpkin_stem
 - [ ] minecraft:bubble_column
@@ -19,6 +20,7 @@
 - [ ] minecraft:conduit
 - [ ] minecraft:creaking_heart
 - [ ] minecraft:decorated_pot
+- [ ] minecraft:detector_rail
 - [ ] minecraft:end_rod
 - [ ] minecraft:fire
 - [ ] minecraft:frosted_ice
@@ -40,6 +42,8 @@
 - [ ] minecraft:pitcher_plant
 - [ ] minecraft:pointed_dripstone
 - [ ] minecraft:powder_snow_cauldron
+- [ ] minecraft:powered_rail
+- [ ] minecraft:rail
 - [ ] minecraft:redstone_wall_torch
 - [ ] minecraft:redstone_wire
 - [ ] minecraft:resin_clump
@@ -81,7 +85,6 @@
 - [x] minecraft:acacia_wall_hanging_sign
 - [x] minecraft:acacia_wall_sign
 - [x] minecraft:acacia_wood
-- [x] minecraft:activator_rail
 - [x] minecraft:allium
 - [x] minecraft:amethyst_cluster
 - [x] minecraft:andesite_slab
@@ -281,7 +284,6 @@
 - [x] minecraft:deepslate_tile_slab
 - [x] minecraft:deepslate_tile_stairs
 - [x] minecraft:deepslate_tile_wall
-- [x] minecraft:detector_rail
 - [x] minecraft:diorite_slab
 - [x] minecraft:diorite_stairs
 - [x] minecraft:diorite_wall
@@ -519,7 +521,6 @@
 - [x] minecraft:polished_tuff_wall
 - [x] minecraft:poppy
 - [x] minecraft:potatoes
-- [x] minecraft:powered_rail
 - [x] minecraft:prismarine_brick_slab
 - [x] minecraft:prismarine_brick_stairs
 - [x] minecraft:prismarine_slab
@@ -540,7 +541,6 @@
 - [x] minecraft:quartz_pillar
 - [x] minecraft:quartz_slab
 - [x] minecraft:quartz_stairs
-- [x] minecraft:rail
 - [x] minecraft:red_banner
 - [x] minecraft:red_bed
 - [x] minecraft:red_candle

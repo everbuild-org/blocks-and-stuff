@@ -12,7 +12,7 @@ import net.minestom.server.item.Material
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.tag.Tag
 
-class StrippingBehaviorRule(private val block: Block) : BlockHandler {
+class StrippingBehaviorRule(block: Block) : BlockHandler {
     override fun getKey(): Key {
         return Key.key("blocksandstuff:stripping_behavior")
     }
