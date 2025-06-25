@@ -455,6 +455,20 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::MushroomPlacementRule
     )
 
+    val RAIL = group(
+        byBlock(Block.RAIL),
+        ::RailPlacementRule
+    )
+
+    val FEATURE_RAIL = group(
+        all(
+            byBlock(Block.ACTIVATOR_RAIL),
+            byBlock(Block.DETECTOR_RAIL),
+            byBlock(Block.POWERED_RAIL),
+        ),
+        ::FeatureRailPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
