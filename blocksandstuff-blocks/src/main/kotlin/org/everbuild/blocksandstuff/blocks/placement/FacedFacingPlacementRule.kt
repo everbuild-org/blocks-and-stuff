@@ -7,7 +7,7 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 
-class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
+open class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val blockFace = placementState.blockFace() ?: return null
 
@@ -18,7 +18,7 @@ class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
             BlockFace.fromDirection(placementState.getNearestHorizontalLookingDirection().opposite())
 
         val supporting = getSupportingBlockPosition(face, facing, placementState.placePosition)
-        if (!placementState.instance.getBlock(supporting).isSolid) {
+        if (needSupport() && !placementState.instance.getBlock(supporting).isSolid) {
             return null
         }
 
@@ -32,7 +32,7 @@ class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
         val facing = BlockFace.valueOf(updateState.currentBlock.getProperty("facing").uppercase())
         val supportingBlockPos = getSupportingBlockPosition(face, facing, updateState.blockPosition)
 
-        if (!updateState.instance.getBlock(supportingBlockPos).isSolid) {
+        if (needSupport() && !updateState.instance.getBlock(supportingBlockPos).isSolid) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
@@ -46,5 +46,9 @@ class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
             "floor" -> blockPosition.sub(0.0, 1.0, 0.0)
             else -> blockPosition.add(facing.oppositeFace.toDirection().vec())
         }
+    }
+    
+    open fun needSupport(): Boolean {
+        return true
     }
 }
