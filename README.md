@@ -6,7 +6,7 @@
 ---
 
 <!-- TAG_REPLACEMENT -->
-[![Supported Blocks](https://img.shields.io/badge/Supported_Blocks-91%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.3.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
+[![Supported Blocks](https://img.shields.io/badge/Supported_Blocks-91%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.4.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
 <!-- /TAG_REPLACEMENT -->
 
 > This library is still in heavy development and API is subject to change in a breaking way at any time, even without a
