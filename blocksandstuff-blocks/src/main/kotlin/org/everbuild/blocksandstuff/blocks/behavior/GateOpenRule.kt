@@ -3,7 +3,8 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import net.kyori.adventure.key.Key
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
-import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
+import net.minestom.server.utils.Direction
+import org.everbuild.blocksandstuff.common.utils.getNearestLookingDirection
 
 class GateOpenRule(private val block: Block?) : BlockHandler {
     override fun getKey(): Key {
@@ -13,7 +14,9 @@ class GateOpenRule(private val block: Block?) : BlockHandler {
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         if (interaction.player.isSneaking && !interaction.player.itemInMainHand.isAir)
             return true
-        val direction = interaction.getNearestHorizontalLookingDirection().opposite()
+
+        val allowedDirections = getAllowedDirections(interaction.block)
+        val direction = interaction.getNearestLookingDirection(allowedDirections).opposite()
         val bool = (!interaction.block.getProperty("open").toBoolean()).toString()
         interaction.instance.setBlock(interaction.blockPosition,
             interaction.block
@@ -21,5 +24,10 @@ class GateOpenRule(private val block: Block?) : BlockHandler {
                 .withProperty("facing", direction.toString().lowercase())
         )
         return false
+    }
+    
+    fun getAllowedDirections(block: Block): Collection<Direction> {
+        val currentDirection = Direction.valueOf(block.getProperty("facing").uppercase())
+        return listOf(currentDirection, currentDirection.opposite())
     }
 }
