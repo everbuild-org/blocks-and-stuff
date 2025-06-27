@@ -4,8 +4,8 @@
 
 ## Statistics
  - Total blocks with state: 648
- - Supported blocks: 595
- - Unsupported blocks: 53
+ - Supported blocks: 596
+ - Unsupported blocks: 52
  - Implementation progress: 91% (6 blocks = 1%)
 
 ## Unsupported Blocks
@@ -23,7 +23,6 @@
 - [ ] minecraft:fire
 - [ ] minecraft:frosted_ice
 - [ ] minecraft:glow_lichen
-- [ ] minecraft:grindstone
 - [ ] minecraft:hanging_roots
 - [ ] minecraft:jigsaw
 - [ ] minecraft:kelp
@@ -324,6 +323,7 @@
 - [x] minecraft:green_shulker_box
 - [x] minecraft:green_stained_glass_pane
 - [x] minecraft:green_wall_banner
+- [x] minecraft:grindstone
 - [x] minecraft:hay_block
 - [x] minecraft:heavy_core
 - [x] minecraft:heavy_weighted_pressure_plate
