@@ -34,14 +34,14 @@ class DoorOpenRule(private val baseDoorBlock: Block) : BlockHandler {
 
         val otherHalfBlock = instance.getBlock(otherHalfPos)
 
-        if (!otherHalfBlock.compare(baseDoorBlock) || otherHalfBlock.getProperty("half") == half) {
+        if (!otherHalfBlock.compare(clickedBlock) || otherHalfBlock.getProperty("half") == half) {
             return false
         }
 
         val facing = clickedBlock.getProperty("facing")
         val hinge = clickedBlock.getProperty("hinge")
 
-        val updatedBlockState = baseDoorBlock
+        val updatedBlockState = clickedBlock
             .withProperty("facing", facing)
             .withProperty("hinge", hinge)
             .withProperty("open", newOpen.toString())
