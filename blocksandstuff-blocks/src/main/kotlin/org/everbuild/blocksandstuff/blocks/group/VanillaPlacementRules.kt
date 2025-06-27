@@ -35,7 +35,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SlabPlacementRule
     )
 
-    val WORKSTATIONS = group(
+    val VERTICALLYROTATED = group(
         all(
             byBlock(Block.FURNACE),
             byBlock(Block.BLAST_FURNACE),
@@ -50,8 +50,9 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.LOOM),
             byBlock(Block.BEE_NEST),
             byBlock(Block.END_PORTAL_FRAME),
+            byBlock(Block.VAULT)
         ),
-        ::WorkstationPlacementRule
+        ::VerticallyRotatedPlacementRule
     )
 
     val ROTATED_WORKSTATIONS = group(
@@ -453,6 +454,27 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.RED_MUSHROOM_BLOCK),
         ),
         ::MushroomPlacementRule
+    )
+
+    val RAIL = group(
+        byBlock(Block.RAIL),
+        ::RailPlacementRule
+    )
+
+    val FEATURE_RAIL = group(
+        all(
+            byBlock(Block.ACTIVATOR_RAIL),
+            byBlock(Block.DETECTOR_RAIL),
+            byBlock(Block.POWERED_RAIL),
+        ),
+        ::FeatureRailPlacementRule
+    )
+    
+    val GRINDSTONE = group(
+        all(
+            byBlock(Block.GRINDSTONE)
+        ),
+        ::GrindstonePlacementRule
     )
 
     override fun createGroup(

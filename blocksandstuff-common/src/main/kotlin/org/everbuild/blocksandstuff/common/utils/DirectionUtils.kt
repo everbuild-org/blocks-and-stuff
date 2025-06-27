@@ -60,6 +60,10 @@ fun PlacementState.getNearestHorizontalLookingDirection(): Direction {
     return this.getNearestLookingDirection(Direction.HORIZONTAL.iterator().asSequence().toList())
 }
 
+fun BlockHandler.Interaction.getNearestLookingDirection(allowedDirections: Collection<Direction>): Direction {
+    return getNearestLookingDirection(this.player.position, allowedDirections)
+}
+
 fun BlockHandler.Interaction.getNearestHorizontalLookingDirection(): Direction {
     return getNearestLookingDirection(this.player.position, Direction.HORIZONTAL.iterator().asSequence().toList())
 }

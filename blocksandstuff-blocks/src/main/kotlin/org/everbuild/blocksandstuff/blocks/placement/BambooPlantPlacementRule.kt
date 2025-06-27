@@ -32,10 +32,7 @@ class BambooPlantPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         val below = updateState.instance.getBlock(updateState.blockPosition.sub(0.0, 1.0, 0.0))
         if (plantableOn.none { it.compare(below) }) {
-            if (DROP_ITEMS) {
-                val instance = updateState.instance as Instance
-                DroppedItemFactory.current.spawn(instance, updateState.blockPosition, updateState.currentBlock)
-            }
+            DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
 
@@ -43,8 +40,4 @@ class BambooPlantPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     override fun maxUpdateDistance(): Int = 500
-
-    companion object {
-        var DROP_ITEMS = true
-    }
 }
