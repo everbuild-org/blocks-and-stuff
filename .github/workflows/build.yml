@@ -105,6 +105,7 @@ jobs:
         run: |
           echo "📝 Configuring Everbuild Maven Repository..."
           cat >> gradle.properties << EOF
+          
           everbuildMavenUrl=${{ secrets.EVERBUILD_MAVEN_URL }}
           everbuildMavenUsername=${{ secrets.EVERBUILD_MAVEN_USERNAME }}
           everbuildMavenPassword=${{ secrets.EVERBUILD_MAVEN_PASSWORD }}
