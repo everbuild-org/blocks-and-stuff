@@ -28,7 +28,6 @@ class StrippingBehaviorRule(block: Block) : BlockHandler {
         val strippedBaseBlock = getStrippedVariant(currentBlock) ?: return false
         val strippedBlockWithProperties = preserveBlockProperties(currentBlock, strippedBaseBlock)
         interaction.instance.setBlock(interaction.blockPosition, strippedBlockWithProperties)
-        playStrippingSound(player, interaction.blockPosition)
         if (player.gameMode != GameMode.CREATIVE) {
             damageAxe(player, itemInHand)
         }
@@ -85,11 +84,6 @@ class StrippingBehaviorRule(block: Block) : BlockHandler {
             "minecraft:warped_hyphae" -> Block.STRIPPED_WARPED_HYPHAE
             else -> null
         }
-    }
-
-    private fun playStrippingSound(player: Player, blockPosition: net.minestom.server.coordinate.Point) {
-        val sound = Sound.sound(SoundEvent.ITEM_AXE_STRIP, Sound.Source.BLOCK, 1.0f, 1.0f)
-        player.instance?.playSound(sound, blockPosition)
     }
 
     private fun damageAxe(player: Player, axe: ItemStack) {
