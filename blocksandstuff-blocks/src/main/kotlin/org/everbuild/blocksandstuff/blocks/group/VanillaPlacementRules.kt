@@ -469,6 +469,13 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ),
         ::FeatureRailPlacementRule
     )
+    
+    val GRINDSTONE = group(
+        all(
+            byBlock(Block.GRINDSTONE)
+        ),
+        ::GrindstonePlacementRule
+    )
 
     override fun createGroup(
         blockGroup: BlockGroup,
