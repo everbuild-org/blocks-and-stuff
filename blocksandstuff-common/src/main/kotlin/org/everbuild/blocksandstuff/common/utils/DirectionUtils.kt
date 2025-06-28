@@ -24,8 +24,7 @@ fun PlacementState.getHorizontalPlacementDirection(): Direction? {
         in 45f..135f -> Direction.EAST
         in 135f..225f -> Direction.SOUTH
         in 225f..315f -> Direction.WEST
-        in 0f..45f -> Direction.NORTH
-        else -> null
+        else -> Direction.NORTH
     }
 }
 
