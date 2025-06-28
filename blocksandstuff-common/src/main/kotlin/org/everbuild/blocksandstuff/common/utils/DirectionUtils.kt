@@ -1,9 +1,8 @@
 package org.everbuild.blocksandstuff.common.utils
 
-import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
-import kotlin.enums.EnumEntries
 import net.minestom.server.coordinate.Vec
+import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.instance.block.rule.BlockPlacementRule.PlacementState
 import net.minestom.server.utils.Direction
@@ -17,15 +16,8 @@ fun Direction.getAxis(): String {
 }
 
 fun PlacementState.getHorizontalPlacementDirection(): Direction? {
-    var yaw = this.playerPosition?.yaw ?: return null
-    if (yaw < 0) yaw += 360f
-
-    return when (yaw) {
-        in 45f..135f -> Direction.EAST
-        in 135f..225f -> Direction.SOUTH
-        in 225f..315f -> Direction.WEST
-        else -> Direction.NORTH
-    }
+    val yaw = this.playerPosition?.yaw ?: return null
+    return BlockFace.fromYaw(yaw).toDirection()
 }
 
 fun PlacementState.sixteenStepRotation(): Int {
