@@ -57,9 +57,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val ROTATED_WORKSTATIONS = group(
         all(
-            byBlock(Block.ANVIL),
-            byBlock(Block.CHIPPED_ANVIL),
-            byBlock(Block.DAMAGED_ANVIL),
+            byTag("minecraft:anvil")
         ),
         ::InverseWorkstationPlacementRule
     )
