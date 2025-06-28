@@ -1,17 +1,14 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.coordinate.Point
-import net.minestom.server.coordinate.Pos
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory // Assuming this exists
-import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection // Assuming this exists
-import org.everbuild.blocksandstuff.common.utils.getYaw
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 import org.everbuild.blocksandstuff.common.utils.rotateL
 import org.everbuild.blocksandstuff.common.utils.rotateR
-import kotlin.math.abs
 
 class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock) {
     private fun countSolidFaces(instance: Instance, centerPos: Point, horizontalDirection: BlockFace): Int {
@@ -36,7 +33,7 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         return solidFaces
     }
 
-    private fun getHingeSide(instance: Instance, placePos: Point, playerPos: Pos, playerFacing: BlockFace): String {
+    private fun getHingeSide(instance: Instance, placePos: Point, cursorPos: Point?, playerFacing: BlockFace): String {
         val doorFrontDirection = playerFacing.oppositeFace
 
         val leftOfDoor = BlockFace.fromDirection(doorFrontDirection.toDirection().rotateL())
@@ -48,23 +45,19 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         val leftNeighborBlock = instance.getBlock(leftBlockPos)
         val rightNeighborBlock = instance.getBlock(rightBlockPos)
 
-        if (leftNeighborBlock.key() == block.key()) {
-            val existingDoorHalf = leftNeighborBlock.getProperty("half")
-            val existingDoorHinge = leftNeighborBlock.getProperty("hinge")
+        if (leftNeighborBlock.isAir || rightNeighborBlock.isAir) {
+            if (leftNeighborBlock.key() == block.key()) {
+                val existingDoorHalf = leftNeighborBlock.getProperty("half")
 
-            if (existingDoorHalf == "lower") {
-                if (existingDoorHinge == "right") {
+                if (existingDoorHalf == "lower") {
                     return "left"
                 }
             }
-        }
 
-        if (rightNeighborBlock.key() == block.key()) {
-            val existingDoorHalf = rightNeighborBlock.getProperty("half")
-            val existingDoorHinge = rightNeighborBlock.getProperty("hinge")
+            if (rightNeighborBlock.key() == block.key()) {
+                val existingDoorHalf = rightNeighborBlock.getProperty("half")
 
-            if (existingDoorHalf == "lower") {
-                if (existingDoorHinge == "left") {
+                if (existingDoorHalf == "lower") {
                     return "right"
                 }
             }
@@ -83,32 +76,19 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
             return "right"
         }
 
-        val playerYaw = playerPos.yaw
-
-        val yawToRightHandleSide = rightOfDoor.toDirection()
-            .getYaw()
-
-        val yawToLeftHandleSide = leftOfDoor.toDirection()
-            .getYaw()
-
-        fun normalizeYaw(yaw: Float): Float {
-            var normalized = yaw % 360
-            if (normalized > 180) normalized -= 360
-            if (normalized < -180) normalized += 360
-            return normalized
+        if (cursorPos == null) {
+            return "left"
         }
 
-        val normalizedPlayerYaw = normalizeYaw(playerYaw)
-        val normalizedYawToRightHandle = normalizeYaw(yawToRightHandleSide)
-        val normalizedYawToLeftHandle = normalizeYaw(yawToLeftHandleSide)
+        val option = when(playerFacing) {
+            BlockFace.EAST -> cursorPos.z() < 0.5
+            BlockFace.WEST -> cursorPos.z() > 0.5
+            BlockFace.NORTH -> cursorPos.x() < 0.5
+            BlockFace.SOUTH -> cursorPos.x() > 0.5
+            else -> true
+        }
 
-        val diffToRightHandle = abs(normalizedPlayerYaw - normalizedYawToRightHandle)
-        val diffToLeftHandle = abs(normalizedPlayerYaw - normalizedYawToLeftHandle)
-
-        val finalDiffToRightHandle = minOf(diffToRightHandle, abs(diffToRightHandle - 360))
-        val finalDiffToLeftHandle = minOf(diffToLeftHandle, abs(diffToLeftHandle - 360))
-
-        return if (finalDiffToRightHandle < finalDiffToLeftHandle) {
+        return if (option) {
             "left"
         } else {
             "right"
@@ -134,7 +114,7 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         val hinge = getHingeSide(
             instance as Instance,
             placePos,
-            placementState.playerPosition as Pos,
+            placementState.cursorPosition,
             BlockFace.fromDirection(facing)
         )
 
