@@ -45,23 +45,19 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         val leftNeighborBlock = instance.getBlock(leftBlockPos)
         val rightNeighborBlock = instance.getBlock(rightBlockPos)
 
-        if (leftNeighborBlock.key() == block.key()) {
-            val existingDoorHalf = leftNeighborBlock.getProperty("half")
-            val existingDoorHinge = leftNeighborBlock.getProperty("hinge")
+        if (leftNeighborBlock.isAir || rightNeighborBlock.isAir) {
+            if (leftNeighborBlock.key() == block.key()) {
+                val existingDoorHalf = leftNeighborBlock.getProperty("half")
 
-            if (existingDoorHalf == "lower") {
-                if (existingDoorHinge == "right") {
+                if (existingDoorHalf == "lower") {
                     return "left"
                 }
             }
-        }
 
-        if (rightNeighborBlock.key() == block.key()) {
-            val existingDoorHalf = rightNeighborBlock.getProperty("half")
-            val existingDoorHinge = rightNeighborBlock.getProperty("hinge")
+            if (rightNeighborBlock.key() == block.key()) {
+                val existingDoorHalf = rightNeighborBlock.getProperty("half")
 
-            if (existingDoorHalf == "lower") {
-                if (existingDoorHinge == "left") {
+                if (existingDoorHalf == "lower") {
                     return "right"
                 }
             }
