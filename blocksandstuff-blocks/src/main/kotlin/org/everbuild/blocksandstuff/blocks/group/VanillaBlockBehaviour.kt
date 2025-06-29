@@ -134,6 +134,12 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::StrippingBehaviorRule
     )
 
+    val CHEST = group(
+        byBlock(Block.CHEST),
+        ::ChestRule
+    )
+
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler
