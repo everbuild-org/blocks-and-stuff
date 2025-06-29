@@ -195,7 +195,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val VINES_TOP = group(
         all(
             byBlock(Block.CAVE_VINES),
-            byBlock(Block.CAVE_VINES),
+            byBlock(Block.CAVE_VINES_PLANT),
             byBlock(Block.WEEPING_VINES),
             byBlock(Block.WEEPING_VINES_PLANT),
         ),
@@ -483,6 +483,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val RESIN_CLUMP = group(
         byBlock(Block.RESIN_CLUMP),
         ::ResinClumpPlacementRule
+    )
+
+    val TWISTING_VINE = group(
+        all(
+            byBlock(Block.TWISTING_VINES),
+            byBlock(Block.TWISTING_VINES_PLANT),
+        ),
+        ::TwistingVinePlacementRule
     )
 
     override fun createGroup(
