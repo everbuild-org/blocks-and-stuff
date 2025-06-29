@@ -71,3 +71,6 @@ minecraft:podzol
 minecraft:cauldron
 minecraft:shroomlight
 minecraft:trial_spawner
+minecraft:water
+minecraft:water_cauldron
+minecraft:water_cauldron

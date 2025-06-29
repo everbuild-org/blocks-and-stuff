@@ -467,12 +467,22 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ),
         ::FeatureRailPlacementRule
     )
-    
+
     val GRINDSTONE = group(
         all(
             byBlock(Block.GRINDSTONE)
         ),
         ::GrindstonePlacementRule
+    )
+
+    val VINE = group(
+        byBlock(Block.VINE),
+        ::VinePlacementRule
+    )
+
+    val RESIN_CLUMP = group(
+        byBlock(Block.RESIN_CLUMP),
+        ::ResinClumpPlacementRule
     )
 
     override fun createGroup(
