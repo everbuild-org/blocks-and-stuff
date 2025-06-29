@@ -14,6 +14,7 @@ import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
+import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 
@@ -31,6 +32,7 @@ class TestServer(generateElements: Boolean) {
         BlockPlacementRuleRegistrations.registerDefault()
         BlockBehaviorRuleRegistrations.registerDefault()
         PlacedHandlerRegistration.registerDefault()
+        BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
 
