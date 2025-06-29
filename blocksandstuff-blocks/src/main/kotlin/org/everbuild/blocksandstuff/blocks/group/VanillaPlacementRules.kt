@@ -493,6 +493,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::TwistingVinePlacementRule
     )
 
+    val TURTLE_EGG = group(
+        byBlock(Block.TURTLE_EGG),
+        ::TurtleEggPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
