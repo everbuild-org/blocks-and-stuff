@@ -40,13 +40,8 @@ object BlockPickup {
                 }
             }
             
-            var firstAirSlot = -1
             for (slot in 0..35) {
                 val item = inventory.getItemStack(slot)
-
-                if (item.isAir && firstAirSlot == -1) {
-                    firstAirSlot = slot
-                }
 
                 if (item.material() === newItemStack.material()) { // TODO: Compare block entity data
                     inventory.setItemStack(slot, player.itemInMainHand)
@@ -55,10 +50,8 @@ object BlockPickup {
                 }
             }
 
-            if (firstAirSlot != -1) {
-                inventory.setItemStack(firstAirSlot, player.itemInMainHand)
-                player.setItemInHand(PlayerHand.MAIN, newItemStack)
-            }
+            inventory.addItemStack(player.itemInMainHand)
+            player.setItemInHand(PlayerHand.MAIN, newItemStack)
         }
     }
 }
