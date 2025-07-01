@@ -20,7 +20,7 @@ object BlockPickup {
 
             for (slot in 0..8) {
                 val item = inventory.getItemStack(slot)
-                if (item.material() === material) {
+                if (item.material() === material) { // TODO: Compare block entity data
                     player.setHeldItemSlot(slot.toByte())
                     return@addListener
                 }
@@ -48,7 +48,7 @@ object BlockPickup {
                     firstAirSlot = slot
                 }
 
-                if (item === newItemStack) {
+                if (item.material() === newItemStack.material()) { // TODO: Compare block entity data
                     inventory.setItemStack(slot, player.itemInMainHand)
                     player.setItemInHand(PlayerHand.MAIN, item)
                     return@addListener
