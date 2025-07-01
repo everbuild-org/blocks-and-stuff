@@ -5,6 +5,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.utils.Direction
+import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 
 abstract class AbstractPlaceAroundCursorRule(block: Block, private val directions: Set<Direction>) :
     BlockPlacementRule(block) {
@@ -19,9 +20,13 @@ abstract class AbstractPlaceAroundCursorRule(block: Block, private val direction
             .filter { !assignedDirections.contains(it) }
 
         if (possibleDirections.isEmpty()) return if (assignedDirections.isEmpty()) null else prevBlock
-        val direction = placementState.playerPosition?.direction() ?: return null
+        var direction = placementState.blockFace?.oppositeFace?.toDirection() ?: return null
 
-        val nearest = possibleDirections.maxBy { direction.dot(it.vec()) }
+        if (direction == Direction.DOWN) {
+            direction = placementState.getNearestHorizontalLookingDirection().opposite()
+        }
+        
+        val nearest = possibleDirections.maxBy { direction.vec().dot(it.vec()) }
 
         return (if (prevBlock.compare(block, Block.Comparator.ID)) prevBlock else placementState.block)
             .withProperty(nearest.name.lowercase(), "true")
