@@ -498,6 +498,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::TurtleEggPlacementRule
     )
 
+    val CONDUIT = group(
+        byBlock(Block.CONDUIT),
+        ::ConduitPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
