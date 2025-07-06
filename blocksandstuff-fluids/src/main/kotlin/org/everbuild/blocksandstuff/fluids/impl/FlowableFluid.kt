@@ -19,6 +19,7 @@ import org.everbuild.blocksandstuff.fluids.event.BlockFluidReplacementEvent
 abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defaultBlock, bucket) {
     override fun onTick(instance: Instance, point: Point, block: Block) {
         var varBlock = block
+        instance.getChunkAt(point) ?: return // don't tick if unloaded
 
         if (!isSource(varBlock)) {
             val updated = getUpdatedState(instance, point, varBlock)
