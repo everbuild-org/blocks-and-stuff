@@ -7,14 +7,12 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 
 internal class FluidPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        checkNotNull(placementState.blockFace())
         val placedPoint = placementState.placePosition() // The actual placed position
         MinestomFluids.scheduleTick(
             placementState.instance() as Instance,
             placedPoint,
             block,
-        ) // Schedule update for placed block
-        println("Placing block at $placedPoint")
+        )
         return block
     }
 

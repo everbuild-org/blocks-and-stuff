@@ -19,18 +19,22 @@ import org.everbuild.blocksandstuff.fluids.event.BlockFluidReplacementEvent
 abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defaultBlock, bucket) {
     override fun onTick(instance: Instance, point: Point, block: Block) {
         var varBlock = block
+        try {
 
-        if (!isSource(varBlock)) {
-            val updated = getUpdatedState(instance, point, varBlock)
-            if (MinestomFluids.getFluidOnBlock(updated) == MinestomFluids.EMPTY) {
-                varBlock = updated
-                instance.setBlock(point, Block.AIR, true)
-            } else if (updated !== varBlock) {
-                varBlock = updated
-                instance.setBlock(point, updated, true)
+            if (!isSource(varBlock)) {
+                val updated = getUpdatedState(instance, point, varBlock)
+                if (MinestomFluids.getFluidOnBlock(updated) == MinestomFluids.EMPTY) {
+                    varBlock = updated
+                    instance.setBlock(point, Block.AIR, true)
+                } else if (updated !== varBlock) {
+                    varBlock = updated
+                    instance.setBlock(point, updated, true)
+                }
             }
+            tryFlow(instance, point, varBlock)
+        } catch (_: NullPointerException) {
+            // the chunk was unloaded
         }
-        tryFlow(instance, point, varBlock)
     }
 
     protected fun tryFlow(instance: Instance, point: Point, block: Block) {
