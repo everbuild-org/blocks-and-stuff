@@ -5,6 +5,7 @@ import kotlin.system.exitProcess
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.GameMode
+import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
@@ -20,14 +21,13 @@ import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 
 class TestServer(generateElements: Boolean) {
     private val server: MinecraftServer = MinecraftServer.init()
+    private val ingestRb = Array<Long>(500) { 0 }
+    private var ingestCount = 0
 
     init {
         val instance: Instance = MinecraftServer.getInstanceManager().createInstanceContainer()
         instance.chunkSupplier = ChunkSupplier { inst, x, z -> LightingChunk(inst, x, z) }
-
-        instance.setGenerator { unit: GenerationUnit ->
-            unit.modifier().fillHeight(0, 65, Block.GRASS_BLOCK)
-        }
+        instance.setGenerator(ExampleGenerator())
 
         BlockPlacementRuleRegistrations.registerDefault()
         BlockBehaviorRuleRegistrations.registerDefault()
@@ -35,6 +35,19 @@ class TestServer(generateElements: Boolean) {
         BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+//      MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
+
+        MinecraftServer.getGlobalEventHandler()
+            .addListener(InstanceChunkLoadEvent::class.java) {
+                val before = System.nanoTime()
+                MinestomFluids.ingestChunk(it.instance, it.chunk)
+                val after = System.nanoTime()
+                ingestRb[ingestCount++ % ingestRb.size] = after - before
+                if (ingestCount >= 500) {
+                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
+                    ingestCount = 0
+                }
+            }
 
         if (generateElements) {
             val allPlacementRuleBlockKeys = VanillaPlacementRules.ALL

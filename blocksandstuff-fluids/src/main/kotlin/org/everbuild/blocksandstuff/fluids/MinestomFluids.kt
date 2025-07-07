@@ -10,6 +10,9 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import java.util.concurrent.ConcurrentHashMap
 import net.kyori.adventure.key.Key
+import net.minestom.server.coordinate.BlockVec
+import net.minestom.server.event.instance.InstanceChunkLoadEvent
+import net.minestom.server.instance.Chunk
 import net.minestom.server.registry.DynamicRegistry
 import net.minestom.server.registry.RegistryKey
 import org.everbuild.blocksandstuff.fluids.impl.EmptyFluid
@@ -78,24 +81,42 @@ object MinestomFluids {
             setupFluidPlacementEvent() // TODO
         }
 
-    // breaking water logging
-//    private fun registerWaterloggedPlacementRules() {
-//        Block.values().forEach { block ->
-//            if (MinecraftServer.getTagManager().getTag(Tag.BasicType.BLOCKS, "minecraft:stairs")!!
-//                    .contains(block.key())
-//            ) {
-//                block.possibleStates().forEach { state ->
-//                    val property = state.getProperty("waterlogged")
-//                    if (property != null && property == "true") {
-//                        println("registered ${block.name()}")
-//                        MinecraftServer.getBlockManager().registerBlockPlacementRule(FluidPlacementRule(block))
-//                    } else {
-//                        println("property is null")
-//                    }
-//                }
-//            }
-//        }
-//    }
+    /**
+     * Processes the given chunk to ingest and manage fluid-related operations,
+     * enabling fluid mechanics within the specified chunk.
+     *
+     * This is needed due to the way water updating is initially triggered.
+     *
+     * Call this whenever you manually edit a chunk. It is automatically called using world generation / loading
+     *
+     * @param chunk The chunk to be processed for fluid-related mechanics.
+     */
+    @JvmStatic
+    fun ingestChunk(instance: Instance, chunk: Chunk) {
+        val minY = instance.cachedDimensionType.minY()
+        val startX = chunk.chunkX * 16
+        val startZ = chunk.chunkZ * 16
+        chunk.sections.forEachIndexed { i, section ->
+            val palette = section.blockPalette()
+            for (x in 0 until Chunk.CHUNK_SIZE_X) {
+                for (z in 0 until Chunk.CHUNK_SIZE_Z) {
+                    for (sectionRelY in 0 until Chunk.CHUNK_SECTION_SIZE) {
+                        val y = (i * 16 + sectionRelY)
+                        val blockId = palette.get(x, y, z)
+                        if (!FluidBlockCache.BLOCK_STATES.contains(blockId)) {
+                            continue
+                        }
+
+                        scheduleTick(
+                            instance,
+                            BlockVec(x + startX, y + minY, z + startZ),
+                            Block.fromStateId(blockId)!!,
+                        )
+                    }
+                }
+            }
+        }
+    }
 
     @JvmStatic
     fun enableFluids() {
@@ -112,5 +133,13 @@ object MinestomFluids {
         if (!enabled) enableFluids()
         registry.register("minecraft:water", WaterFluid(Block.WATER, Material.WATER_BUCKET))
         registry.register("minecraft:lava", LavaFluid(Block.LAVA, Material.LAVA_BUCKET))
+    }
+
+    @JvmStatic
+    fun enableAutoIngestion() {
+        events()
+            .addListener(InstanceChunkLoadEvent::class.java) {
+                ingestChunk(it.instance, it.chunk)
+            }
     }
 }

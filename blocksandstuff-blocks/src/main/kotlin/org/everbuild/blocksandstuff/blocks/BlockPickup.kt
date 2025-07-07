@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.blocks
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.event.player.PlayerPickBlockEvent
 import net.minestom.server.item.ItemStack
@@ -10,6 +11,8 @@ object BlockPickup {
         MinecraftServer.getGlobalEventHandler().addListener(PlayerPickBlockEvent::class.java) {
             val material = it.block.registry().material() ?: return@addListener
             val player = it.player
+            if (player.gameMode != GameMode.CREATIVE) return@addListener // TODO: survival block picking
+
             val newItemStack = ItemStack.of(material)
             
             if (player.isSneaking) {
@@ -20,7 +23,7 @@ object BlockPickup {
 
             for (slot in 0..8) {
                 val item = inventory.getItemStack(slot)
-                if (item.material() === material) {
+                if (item.material() === material) { // TODO: Compare block entity data
                     player.setHeldItemSlot(slot.toByte())
                     return@addListener
                 }
@@ -40,25 +43,18 @@ object BlockPickup {
                 }
             }
             
-            var firstAirSlot = -1
             for (slot in 0..35) {
                 val item = inventory.getItemStack(slot)
 
-                if (item.isAir && firstAirSlot == -1) {
-                    firstAirSlot = slot
-                }
-
-                if (item === newItemStack) {
+                if (item.material() === newItemStack.material()) { // TODO: Compare block entity data
                     inventory.setItemStack(slot, player.itemInMainHand)
                     player.setItemInHand(PlayerHand.MAIN, item)
                     return@addListener
                 }
             }
 
-            if (firstAirSlot != -1) {
-                inventory.setItemStack(firstAirSlot, player.itemInMainHand)
-                player.setItemInHand(PlayerHand.MAIN, newItemStack)
-            }
+            inventory.addItemStack(player.itemInMainHand)
+            player.setItemInHand(PlayerHand.MAIN, newItemStack)
         }
     }
 }
