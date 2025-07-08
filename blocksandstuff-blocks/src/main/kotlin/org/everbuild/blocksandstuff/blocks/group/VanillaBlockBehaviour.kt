@@ -134,6 +134,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::StrippingBehaviorRule
     )
 
+    val BARREL = group(
+        byBlock(Block.BARREL),
+        ::BarrelRules
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler
