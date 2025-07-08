@@ -6,8 +6,6 @@ import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
-import org.everbuild.blocksandstuff.blocks.placement.LeverPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.SignPlacementRule
 
 object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHandler>() {
     val CRAFTING_TABLE = group(
@@ -132,6 +130,28 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     val STRIPPABLE_WOOD = group(
         byList(StrippingBehaviorRule.getStrippableBlocks()),
         ::StrippingBehaviorRule
+    )
+
+    val CONCRETE_POWDER = group(
+        all(
+            byBlock(Block.WHITE_CONCRETE_POWDER),
+            byBlock(Block.ORANGE_CONCRETE_POWDER),
+            byBlock(Block.MAGENTA_CONCRETE_POWDER),
+            byBlock(Block.LIGHT_BLUE_CONCRETE_POWDER),
+            byBlock(Block.YELLOW_CONCRETE_POWDER),
+            byBlock(Block.LIME_CONCRETE_POWDER),
+            byBlock(Block.PINK_CONCRETE_POWDER),
+            byBlock(Block.GRAY_CONCRETE_POWDER),
+            byBlock(Block.LIGHT_GRAY_CONCRETE_POWDER),
+            byBlock(Block.CYAN_CONCRETE_POWDER),
+            byBlock(Block.PURPLE_CONCRETE_POWDER),
+            byBlock(Block.BLUE_CONCRETE_POWDER),
+            byBlock(Block.BROWN_CONCRETE_POWDER),
+            byBlock(Block.GREEN_CONCRETE_POWDER),
+            byBlock(Block.RED_CONCRETE_POWDER),
+            byBlock(Block.BLACK_CONCRETE_POWDER)
+        ),
+        ::ConcretePowderRule
     )
 
     override fun createGroup(
