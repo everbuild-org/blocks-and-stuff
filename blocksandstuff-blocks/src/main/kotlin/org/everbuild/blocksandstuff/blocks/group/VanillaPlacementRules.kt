@@ -503,6 +503,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ConduitPlacementRule
     )
 
+    val LIGHTNING_ROD = group(
+        byBlock(Block.LIGHTNING_ROD),
+        ::LightningRodPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
