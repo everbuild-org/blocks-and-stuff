@@ -71,6 +71,7 @@ class ChestPlacementRule(block: Block) : BlockPlacementRule(block) {
         ) {
             return updateState.currentBlock
                 .withProperty("type", "single")
+                .withNbt(updateState.currentBlock.nbt())
         }
 
         return super.blockUpdate(updateState)
