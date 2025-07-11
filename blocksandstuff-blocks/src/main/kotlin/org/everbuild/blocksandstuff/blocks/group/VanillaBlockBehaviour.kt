@@ -133,24 +133,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val CONCRETE_POWDER = group(
-        all(
-            byBlock(Block.WHITE_CONCRETE_POWDER),
-            byBlock(Block.ORANGE_CONCRETE_POWDER),
-            byBlock(Block.MAGENTA_CONCRETE_POWDER),
-            byBlock(Block.LIGHT_BLUE_CONCRETE_POWDER),
-            byBlock(Block.YELLOW_CONCRETE_POWDER),
-            byBlock(Block.LIME_CONCRETE_POWDER),
-            byBlock(Block.PINK_CONCRETE_POWDER),
-            byBlock(Block.GRAY_CONCRETE_POWDER),
-            byBlock(Block.LIGHT_GRAY_CONCRETE_POWDER),
-            byBlock(Block.CYAN_CONCRETE_POWDER),
-            byBlock(Block.PURPLE_CONCRETE_POWDER),
-            byBlock(Block.BLUE_CONCRETE_POWDER),
-            byBlock(Block.BROWN_CONCRETE_POWDER),
-            byBlock(Block.GREEN_CONCRETE_POWDER),
-            byBlock(Block.RED_CONCRETE_POWDER),
-            byBlock(Block.BLACK_CONCRETE_POWDER)
-        ),
+            byTag("minecraft:concrete_powder"),
         ::ConcretePowderRule
     )
 
