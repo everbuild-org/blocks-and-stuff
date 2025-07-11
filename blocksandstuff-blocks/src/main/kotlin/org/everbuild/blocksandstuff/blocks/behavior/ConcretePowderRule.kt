@@ -57,8 +57,6 @@ class ConcretePowderRule(val block: Block) : BlockHandler {
         return false
     }
 
-
-
     private fun checkNeighboringConcretePowder(instance: Instance, position: Point) {
         val directions = arrayOf(
             intArrayOf(1, 0, 0),   // Osten
