@@ -15,6 +15,11 @@ abstract class Fluid(val defaultBlock: Block, bucket: Material) {
         other: Fluid?, direction: Direction?
     ): Boolean
 
+    abstract fun handleInteractionWithFluid(
+        instance: Instance, thisPoint: Point,
+        otherPoint: Point, direction: Direction
+    )
+
     abstract fun getNextTickDelay(instance: Instance, point: Point, block: Block): Int
 
     open fun onTick(instance: Instance, point: Point, block: Block) {}

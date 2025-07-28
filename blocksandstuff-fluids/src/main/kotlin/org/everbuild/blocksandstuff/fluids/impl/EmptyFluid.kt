@@ -15,6 +15,12 @@ class EmptyFluid : Fluid(Block.AIR, Material.BUCKET) {
     ): Boolean {
         return true
     }
+    override fun handleInteractionWithFluid(
+        instance: Instance,
+        thisPoint: Point,
+        otherPoint: Point,
+        direction: Direction
+    ) {}
 
     override fun getNextTickDelay(
         instance: Instance,

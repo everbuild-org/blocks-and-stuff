@@ -5,6 +5,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.fluids.relativeTicks
 
 open class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
@@ -34,5 +35,21 @@ open class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(def
 
     override fun isInTile(block: Block): Boolean {
         return super.isInTile(block) || block.getProperty("waterlogged") == "true"
+    }
+
+    override fun handleInteractionWithFluid(
+        instance: Instance,
+        thisPoint: Point,
+        otherPoint: Point,
+        direction: Direction
+    ) {
+        val thisBlock = instance.getBlock(thisPoint)
+        val otherBlock = instance.getBlock(otherPoint)
+        val otherFluid = MinestomFluids.getFluidInstanceOnBlock(otherBlock)
+
+        if (otherFluid is LavaFluid) {
+            val block = if (isSource(otherBlock)) Block.OBSIDIAN else Block.COBBLESTONE
+            flow(instance, otherPoint, thisBlock, direction, block)
+        }
     }
 }

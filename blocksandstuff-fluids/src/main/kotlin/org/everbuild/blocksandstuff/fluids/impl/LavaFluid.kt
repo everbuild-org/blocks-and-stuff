@@ -8,6 +8,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
 import net.minestom.server.world.DimensionType
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.fluids.relativeTicks
 
 open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
@@ -49,5 +50,22 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
     ): Boolean {
 
         return direction == Direction.DOWN && this === other
+    }
+
+    override fun handleInteractionWithFluid(
+        instance: Instance,
+        thisPoint: Point,
+        otherPoint: Point,
+        direction: Direction
+    ) {
+        val thisBlock = instance.getBlock(thisPoint)
+        val otherBlock = instance.getBlock(otherPoint)
+        val otherFluid = MinestomFluids.getFluidInstanceOnBlock(otherBlock)
+
+        if (otherFluid is WaterFluid) {
+            if (direction == Direction.DOWN)
+                flow(instance, otherPoint, thisBlock, direction, Block.STONE)
+            else flow(instance, thisPoint, thisBlock, direction, Block.COBBLESTONE)
+        }
     }
 }
