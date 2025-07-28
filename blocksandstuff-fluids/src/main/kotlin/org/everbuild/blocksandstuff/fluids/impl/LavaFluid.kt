@@ -28,7 +28,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
         block: Block
     ): Int {
         return if(MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType]!!.ultrawarm()) {
-            5.relativeTicks
+            10.relativeTicks
         } else {
             15.relativeTicks
         }
