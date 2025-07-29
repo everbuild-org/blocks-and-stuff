@@ -1,13 +1,15 @@
 package org.everbuild.blocksandstuff.fluids.impl
 
 import net.minestom.server.MinecraftServer
-import net.minestom.server.ServerFlag
+import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
+import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
-import net.minestom.server.world.DimensionType
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
+import org.everbuild.blocksandstuff.fluids.event.FluidBlockReplacementEvent
 import org.everbuild.blocksandstuff.fluids.relativeTicks
 
 open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defaultBlock, bucket) {
@@ -47,7 +49,32 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
         other: Fluid?,
         direction: Direction?
     ): Boolean {
-
         return direction == Direction.DOWN && this === other
+    }
+
+    override fun handleInteractionWithFluid(
+        instance: Instance,
+        thisPoint: Point,
+        otherPoint: Point,
+        direction: Direction
+    ) {
+        val thisBlock = instance.getBlock(thisPoint)
+        val otherBlock = instance.getBlock(otherPoint)
+        val otherFluid = MinestomFluids.getFluidInstanceOnBlock(otherBlock)
+
+        if (otherFluid is WaterFluid) {
+            val isDown = direction == Direction.DOWN
+            val point = if (isDown) otherPoint else thisPoint
+            val event = FluidBlockReplacementEvent(
+                instance,
+                if (isDown) Block.STONE else Block.COBBLESTONE,
+                BlockVec(point)
+            )
+
+            EventDispatcher.callCancellable(event) {
+                val block = event.blk
+                flow(instance, point, thisBlock, direction, block)
+            }
+        }
     }
 }

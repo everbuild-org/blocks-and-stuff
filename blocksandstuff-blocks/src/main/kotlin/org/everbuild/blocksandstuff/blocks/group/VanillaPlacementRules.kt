@@ -57,9 +57,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val ROTATED_WORKSTATIONS = group(
         all(
-            byBlock(Block.ANVIL),
-            byBlock(Block.CHIPPED_ANVIL),
-            byBlock(Block.DAMAGED_ANVIL),
+            byTag("minecraft:anvil")
         ),
         ::InverseWorkstationPlacementRule
     )
@@ -197,7 +195,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val VINES_TOP = group(
         all(
             byBlock(Block.CAVE_VINES),
-            byBlock(Block.CAVE_VINES),
+            byBlock(Block.CAVE_VINES_PLANT),
             byBlock(Block.WEEPING_VINES),
             byBlock(Block.WEEPING_VINES_PLANT),
         ),
@@ -469,12 +467,45 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ),
         ::FeatureRailPlacementRule
     )
-    
+
     val GRINDSTONE = group(
         all(
             byBlock(Block.GRINDSTONE)
         ),
         ::GrindstonePlacementRule
+    )
+
+    val VINE = group(
+        byBlock(Block.VINE),
+        ::VinePlacementRule
+    )
+
+    val RESIN_CLUMP = group(
+        byBlock(Block.RESIN_CLUMP),
+        ::ResinClumpPlacementRule
+    )
+
+    val TWISTING_VINE = group(
+        all(
+            byBlock(Block.TWISTING_VINES),
+            byBlock(Block.TWISTING_VINES_PLANT),
+        ),
+        ::TwistingVinePlacementRule
+    )
+
+    val TURTLE_EGG = group(
+        byBlock(Block.TURTLE_EGG),
+        ::TurtleEggPlacementRule
+    )
+
+    val CONDUIT = group(
+        byBlock(Block.CONDUIT),
+        ::ConduitPlacementRule
+    )
+
+    val LIGHTNING_ROD = group(
+        byBlock(Block.LIGHTNING_ROD),
+        ::LightningRodPlacementRule
     )
 
     override fun createGroup(

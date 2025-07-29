@@ -6,8 +6,6 @@ import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
-import org.everbuild.blocksandstuff.blocks.placement.LeverPlacementRule
-import org.everbuild.blocksandstuff.blocks.placement.SignPlacementRule
 
 object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHandler>() {
     val CRAFTING_TABLE = group(
@@ -132,6 +130,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     val STRIPPABLE_WOOD = group(
         byList(StrippingBehaviorRule.getStrippableBlocks()),
         ::StrippingBehaviorRule
+    )
+
+    val CONCRETE_POWDER = group(
+            byTag("minecraft:concrete_powder"),
+        ::ConcretePowderRule
     )
 
     override fun createGroup(
