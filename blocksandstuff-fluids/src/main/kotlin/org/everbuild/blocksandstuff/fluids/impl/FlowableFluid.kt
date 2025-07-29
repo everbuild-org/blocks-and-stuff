@@ -46,7 +46,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defa
         val updatedDownFluid = getUpdatedState(instance, down, downBlock)
         if (canFlow(instance, point, block, Direction.DOWN, down, downBlock, updatedDownFluid)) {
             flow(instance, down, downBlock, Direction.DOWN, updatedDownFluid)
-            if (getAdjacentSourceCount(instance, point) >= 3) {
+            if (isSource(block) || getAdjacentSourceCount(instance, point) >= 3) {
                 flowSides(instance, point, block)
             }
         } else if (isSource(block) || !canFlowDown(instance, updatedDownFluid, point, block, down, downBlock)) {

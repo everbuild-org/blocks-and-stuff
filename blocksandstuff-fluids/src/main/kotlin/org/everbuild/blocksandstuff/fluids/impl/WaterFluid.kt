@@ -11,7 +11,7 @@ open class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(def
     override val isInfinite: Boolean
         get() = true
 
-    override fun getNextTickDelay(instance: Instance, point: Point, block: Block): Int = 10.relativeTicks
+    override fun getNextTickDelay(instance: Instance, point: Point, block: Block): Int = 5.relativeTicks
 
     override fun getHoleRadius(instance: Instance?): Int {
         return 4
