@@ -288,7 +288,7 @@ minecraft:green_candle
 minecraft:red_candle
 minecraft:black_candle
 minecraft:cave_vines
-minecraft:cave_vines
+minecraft:cave_vines_plant
 minecraft:weeping_vines
 minecraft:weeping_vines_plant
 minecraft:acacia_trapdoor
@@ -645,3 +645,10 @@ minecraft:activator_rail
 minecraft:detector_rail
 minecraft:powered_rail
 minecraft:grindstone
+minecraft:vine
+minecraft:resin_clump
+minecraft:twisting_vines
+minecraft:twisting_vines_plant
+minecraft:turtle_egg
+minecraft:conduit
+minecraft:lightning_rod
