@@ -57,9 +57,7 @@ open class WaterFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(def
                 BlockVec(otherPoint)
             )
 
-            EventDispatcher.call(event)
-
-            if (!event.isCancelled) {
+            EventDispatcher.callCancellable(event) {
                 val block = event.blk
                 flow(instance, otherPoint, thisBlock, direction, block)
             }

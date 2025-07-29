@@ -71,9 +71,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
                 BlockVec(point)
             )
 
-            EventDispatcher.call(event)
-
-            if (!event.isCancelled) {
+            EventDispatcher.callCancellable(event) {
                 val block = event.blk
                 flow(instance, point, thisBlock, direction, block)
             }
