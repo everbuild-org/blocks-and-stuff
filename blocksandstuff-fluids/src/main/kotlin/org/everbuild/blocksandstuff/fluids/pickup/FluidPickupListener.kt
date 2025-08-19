@@ -2,6 +2,7 @@ package org.everbuild.blocksandstuff.fluids.pickup
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.BlockVec
+import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.attribute.Attribute
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerUseItemEvent
@@ -10,7 +11,10 @@ import net.minestom.server.instance.block.BlockHandler.PlayerPlacement
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.utils.eyePosition
+import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.fluids.findBlockFace
+import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
+import org.everbuild.blocksandstuff.fluids.impl.WaterFluid
 import org.everbuild.blocksandstuff.fluids.raycastForFluid
 
 fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
@@ -49,6 +53,19 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
                     liquidBlock.y().toFloat(),
                     liquidBlock.z().toFloat(),
                 )
+            )
+        }
+
+        val fluid = MinestomFluids.getFluidInstanceOnBlock(pickupEvent.sourceBlock)
+
+        if (fluid is WaterFluid || fluid is LavaFluid) {
+            val material = if (fluid is WaterFluid) Material.WATER_BUCKET
+                else Material.LAVA_BUCKET
+
+            event.player.inventory.setEquipment(
+                EquipmentSlot.MAIN_HAND,
+                event.player.heldSlot,
+                ItemStack.of(material)
             )
         }
     }
