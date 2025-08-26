@@ -19,7 +19,7 @@ import org.everbuild.blocksandstuff.fluids.impl.EmptyFluid
 import org.everbuild.blocksandstuff.fluids.impl.Fluid
 import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
 import org.everbuild.blocksandstuff.fluids.impl.WaterFluid
-import org.everbuild.blocksandstuff.fluids.listener.setupFluidPlacementEvent
+import org.everbuild.blocksandstuff.fluids.placement.getFluidPlacementEventNode
 import org.everbuild.blocksandstuff.fluids.pickup.getFluidPickupEventNode
 
 object MinestomFluids {
@@ -77,9 +77,7 @@ object MinestomFluids {
     private fun events(): EventNode<Event> = EventNode.all("fluid-events")
         .addListener(InstanceTickEvent::class.java, MinestomFluids::onTick)
         .addChild(getFluidPickupEventNode())
-        .also {
-            setupFluidPlacementEvent() // TODO
-        }
+        .addChild(getFluidPlacementEventNode())
 
     /**
      * Processes the given chunk to ingest and manage fluid-related operations,

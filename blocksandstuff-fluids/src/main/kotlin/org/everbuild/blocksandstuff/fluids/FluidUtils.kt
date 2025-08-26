@@ -35,7 +35,7 @@ fun raycastForFluid(player: Player, startPosition: Point, direction: Vec, maxDis
     return null // No fluid found within the range
 }
 
-fun findBlockFace(player: Player, blockPosition: Point): BlockFace? {
+fun findBlockFace(blockPosition: Point): BlockFace? {
     return BlockFace.entries.firstOrNull { dir ->
         val direction = dir.toDirection()
         blockPosition.add(
