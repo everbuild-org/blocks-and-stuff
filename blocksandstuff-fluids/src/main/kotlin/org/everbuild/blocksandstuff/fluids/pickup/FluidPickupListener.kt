@@ -75,5 +75,4 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
 
         event.player.inventory.update()
 
-
     }
