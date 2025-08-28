@@ -25,7 +25,7 @@ class ConcretePowderRule(val block: Block) : BlockHandler {
     }
 
     override fun tick(tick: BlockHandler.Tick) {
-        if (ThreadLocalRandom.current().nextInt(40) == 0) {
+        if (ThreadLocalRandom.current().nextInt(5) == 0) {
             if (touchesWater(tick.instance, tick.blockPosition)) {
                 val solidBlock = solidify(tick.block)
                 tick.instance.setBlock(tick.blockPosition, solidBlock)
