@@ -11,8 +11,9 @@ import java.util.concurrent.ThreadLocalRandom
 import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.event.EventDispatcher
 import org.everbuild.blocksandstuff.blocks.event.CopperOxidationEvent
+import org.everbuild.blocksandstuff.blocks.randomticking.RandomTickHandler
 
-class CopperOxidationRule(private val block: Block) : BlockHandler {
+class CopperOxidationRule(private val block: Block) : BlockHandler, RandomTickHandler {
     override fun getKey(): Key {
         return Key.key("blocksandstuff:copper_oxidation")
     }
@@ -21,20 +22,16 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
         return oxidationStages[block]
     }
 
-    override fun tick(tick: BlockHandler.Tick) {
-        if (ThreadLocalRandom.current().nextInt(10000) > 1) return
-
-        val instance = tick.instance
-        val blockPosition = tick.blockPosition
+    override fun onRandomTick(randomTick: RandomTickHandler.RandomTick): Block? {
+        val instance = randomTick.instance
+        val blockPosition = randomTick.blockPosition
         val exposedToAir = countExposedSides(instance, blockPosition) > 0
 
-        if (exposedToAir && ThreadLocalRandom.current().nextInt(100) < 20) {
-            oxidizeBlock(instance, blockPosition, tick.block)
+        if (exposedToAir && ThreadLocalRandom.current().nextInt(100) < 5) {
+            return oxidizeBlock(instance, blockPosition, randomTick.block)
         }
-    }
 
-    override fun isTickable(): Boolean {
-        return true
+        return null
     }
 
     private fun countExposedSides(instance: Instance, blockPosition: Point): Int {
@@ -52,8 +49,8 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
         return exposedSides
     }
 
-    private fun oxidizeBlock(instance: Instance, blockPosition: Point, block: Block) {
-        var nextStage = getNextOxidationStage() ?: return
+    private fun oxidizeBlock(instance: Instance, blockPosition: Point, block: Block): Block? {
+        var nextStage = getNextOxidationStage() ?: return null
         val handler = MinecraftServer.getBlockManager().getHandler(nextStage.key().asString())
         if (handler != null) {
             nextStage = nextStage.withHandler(handler)
@@ -64,9 +61,9 @@ class CopperOxidationRule(private val block: Block) : BlockHandler {
             BlockVec(blockPosition),
             instance
         )
-        EventDispatcher.callCancellable(event) {
-            instance.setBlock(blockPosition, event.getBlockAfterOxidation())
-        }
+        EventDispatcher.call(event)
+        if (event.isCancelled) return null
+        return nextStage
     }
 
     companion object {
