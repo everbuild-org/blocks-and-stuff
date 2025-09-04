@@ -100,7 +100,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val COPPER = group(
-        byList(CopperOxidationRule.Companion.getOxidizableBlocks()),
+        byList(CopperOxidationRule.getOxidizableBlocks()),
         ::CopperOxidationRule
     )
 

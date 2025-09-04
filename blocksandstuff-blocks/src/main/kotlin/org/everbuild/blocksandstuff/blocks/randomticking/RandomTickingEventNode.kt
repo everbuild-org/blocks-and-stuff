@@ -4,17 +4,22 @@ import kotlin.random.Random
 import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
+import net.minestom.server.event.instance.InstanceChunkLoadEvent
+import net.minestom.server.event.instance.InstanceChunkUnloadEvent
+import net.minestom.server.event.instance.InstanceRegisterEvent
 import net.minestom.server.event.instance.InstanceTickEvent
+import net.minestom.server.instance.Chunk
+import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.common.InstanceOptionsProvider
+import org.everbuild.blocksandstuff.common.utils.SimpleInvalidatableCache
 
-private fun Pair<Int, Int>.around(): List<Pair<Int, Int>> {
-    val (x, y) = this
+private fun Chunk.around(): List<Pair<Int, Int>> {
     return buildList {
         for (dx in -1..1) {
             for (dy in -1..1) {
                 if (dx != 0 || dy != 0) {
-                    add((x + dx) to (y + dy))
+                    add((chunkX + dx) to (chunkZ + dy))
                 }
             }
         }
@@ -24,13 +29,26 @@ private fun Pair<Int, Int>.around(): List<Pair<Int, Int>> {
 private val random: Random = Random.Default
 private val airId = Block.AIR.stateId()
 
-fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.INSTANCE)
-    .addListener(InstanceTickEvent::class.java) { event ->
-        val chunks = event.instance.chunks.map { it.chunkX to it.chunkZ }.toSet()
-        val randomTickSpeed = InstanceOptionsProvider.getForInstance(event.instance).randomTickSpeed
-        for (chunk in event.instance.chunks) {
-            if ((chunk.chunkX to chunk.chunkZ).around().all { chunks.contains(it) }) continue
+private val innerChunkCache = SimpleInvalidatableCache<Instance, Set<Chunk>> { instance ->
+    val chunkCoordinates = instance.chunks.asSequence().map { it.chunkX to it.chunkZ }.toSet()
+    return@SimpleInvalidatableCache instance.chunks.filter { chunk ->
+        chunk.around().all { neighbor -> chunkCoordinates.contains(neighbor) }
+    }.toSet()
+}
 
+fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.INSTANCE)
+    .addListener(InstanceChunkLoadEvent::class.java) { event ->
+        innerChunkCache.invalidate(event.instance)
+    }
+    .addListener(InstanceChunkUnloadEvent::class.java) { event ->
+        innerChunkCache.invalidate(event.instance)
+    }
+    .addListener(InstanceRegisterEvent::class.java) { event ->
+        innerChunkCache.invalidate(event.instance)
+    }
+    .addListener(InstanceTickEvent::class.java) { event ->
+        val randomTickSpeed = InstanceOptionsProvider.getForInstance(event.instance).randomTickSpeed
+        for (chunk in innerChunkCache[event.instance]) {
             val minChunkX = chunk.chunkX * 16
             val minChunkZ = chunk.chunkZ * 16
             for (index in chunk.sections.indices) {
@@ -44,10 +62,11 @@ fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.I
                     val zRandom = (random shr 8 and 0xF).toInt()
                     val blockId = section.blockPalette().get(xRandom, yRandom, zRandom)
                     if (blockId == airId) return@repeat
-                    val block = Block.fromBlockId(blockId) ?: return@repeat
+                    val pos = BlockVec(xRandom + minChunkX, yRandom + minSectionPos, zRandom + minChunkZ)
+                    val block = event.instance.getBlock(pos)
+                    if (block == Block.COPPER_BLOCK) println("handler ${block.handler()}")
                     val handler = block.handler() ?: return@repeat
                     if (handler !is RandomTickHandler) return@repeat
-                    val pos = BlockVec(xRandom + minChunkX, yRandom + minSectionPos, zRandom + minChunkZ)
                     val newBlock = handler.onRandomTick(
                         RandomTickHandler.RandomTick(
                             block,
@@ -55,7 +74,7 @@ fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.I
                             pos,
                         )
                     ) ?: return@repeat
-                    chunk.setBlock(pos, newBlock)
+                    event.instance.setBlock(pos, newBlock)
                 }
             }
         }
