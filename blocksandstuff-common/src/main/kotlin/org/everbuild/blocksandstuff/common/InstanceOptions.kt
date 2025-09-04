@@ -3,7 +3,7 @@ package org.everbuild.blocksandstuff.common
 import net.minestom.server.instance.Instance
 
 data class InstanceOptions(
-    var randomTickSpeed: Int = 3000
+    var randomTickSpeed: Int = 3
 )
 
 object InstanceOptionsProvider {
