@@ -27,7 +27,6 @@ private fun Chunk.around(): List<Pair<Int, Int>> {
 }
 
 private val random: Random = Random.Default
-private val airId = Block.AIR.stateId()
 
 private val innerChunkCache = SimpleInvalidatableCache<Instance, Set<Chunk>> { instance ->
     val chunkCoordinates = instance.chunks.asSequence().map { it.chunkX to it.chunkZ }.toSet()
@@ -52,21 +51,22 @@ fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.I
             val minChunkX = chunk.chunkX * 16
             val minChunkZ = chunk.chunkZ * 16
             for (index in chunk.sections.indices) {
-                val section = chunk.sections[index] ?: continue
                 val minSectionPos = (chunk.minSection + index) * 16
 
                 repeat(randomTickSpeed) {
-                    val random = random.nextLong()
-                    val xRandom = (random and 0xF).toInt()
-                    val yRandom = (random shr 4 and 0xF).toInt()
-                    val zRandom = (random shr 8 and 0xF).toInt()
-                    val blockId = section.blockPalette().get(xRandom, yRandom, zRandom)
-                    if (blockId == airId) return@repeat
-                    val pos = BlockVec(xRandom + minChunkX, yRandom + minSectionPos, zRandom + minChunkZ)
-                    val block = event.instance.getBlock(pos)
-                    if (block == Block.COPPER_BLOCK) println("handler ${block.handler()}")
+                    val randomValue = random.nextLong()
+                    val xRandom = (randomValue and 0xF).toInt()
+                    val yRandom = (randomValue shr 4 and 0xF).toInt()
+                    val zRandom = (randomValue shr 8 and 0xF).toInt()
+                    val block = chunk.getBlock(
+                        xRandom,
+                        yRandom + minSectionPos,
+                        zRandom,
+                        Block.Getter.Condition.CACHED
+                    ) ?: return@repeat
                     val handler = block.handler() ?: return@repeat
                     if (handler !is RandomTickHandler) return@repeat
+                    val pos = BlockVec(xRandom + minChunkX, yRandom + minSectionPos, zRandom + minChunkZ)
                     val newBlock = handler.onRandomTick(
                         RandomTickHandler.RandomTick(
                             block,
