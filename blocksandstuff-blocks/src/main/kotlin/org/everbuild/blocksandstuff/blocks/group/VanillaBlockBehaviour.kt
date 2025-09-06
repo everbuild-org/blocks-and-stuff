@@ -137,6 +137,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::ConcretePowderRule
     )
 
+    val FARMLAND = group(
+        byBlock(Block.FARMLAND),
+        ::FarmlandRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler
