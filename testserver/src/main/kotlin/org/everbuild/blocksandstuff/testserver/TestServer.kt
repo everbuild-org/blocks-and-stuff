@@ -33,21 +33,21 @@ class TestServer(generateElements: Boolean) {
         BlockBehaviorRuleRegistrations.registerDefault()
         PlacedHandlerRegistration.registerDefault()
         BlockPickup.enable()
-        MinestomFluids.enableFluids()
-        MinestomFluids.enableVanillaFluids()
+//        MinestomFluids.enableFluids()
+//        MinestomFluids.enableVanillaFluids()
 //      MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
-        MinecraftServer.getGlobalEventHandler()
-            .addListener(InstanceChunkLoadEvent::class.java) {
-                val before = System.nanoTime()
-                MinestomFluids.ingestChunk(it.instance, it.chunk)
-                val after = System.nanoTime()
-                ingestRb[ingestCount++ % ingestRb.size] = after - before
-                if (ingestCount >= 500) {
-                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
-                    ingestCount = 0
-                }
-            }
+//        MinecraftServer.getGlobalEventHandler()
+//            .addListener(InstanceChunkLoadEvent::class.java) {
+//                val before = System.nanoTime()
+//                MinestomFluids.ingestChunk(it.instance, it.chunk)
+//                val after = System.nanoTime()
+//                ingestRb[ingestCount++ % ingestRb.size] = after - before
+//                if (ingestCount >= 500) {
+//                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
+//                    ingestCount = 0
+//                }
+//            }
 
         if (generateElements) {
             val allPlacementRuleBlockKeys = VanillaPlacementRules.ALL
