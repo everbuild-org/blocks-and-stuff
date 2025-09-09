@@ -9,7 +9,7 @@ import org.everbuild.blocksandstuff.common.utils.isWater
 import java.util.concurrent.ThreadLocalRandom
 
 class ConcretePowderRule(val block: Block) : BlockHandler {
-    override fun getKey(): Key = Key.key("blocksandstuff:concrete_powder_behavior")
+    override fun getKey(): Key = block.key()
 
     override fun onPlace(placement: BlockHandler.Placement) {
         if (touchesWater(placement.instance, placement.blockPosition)) {

@@ -66,6 +66,8 @@ class TestServer(generateElements: Boolean) {
             event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
             event.player.setGameMode(GameMode.CREATIVE)
         }
+
+        MinecraftServer.getCommandManager().register(DebugCommand())
     }
 
     fun bind() {
