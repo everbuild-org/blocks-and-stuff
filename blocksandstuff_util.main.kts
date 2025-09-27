@@ -58,7 +58,6 @@ ${supported.sorted().joinToString("\n") { "- [x] $it" }}
 
 File("TODO-placement.md").writeText(generatePlacementMarkdown())
 
-
 fun generateBehaviourMarkdown(): String {
     val supported = listOf<String>()
     val unsupported = Block.values().filter { !supported.contains(it.key().asString()) }.map { it.key().asString() }
