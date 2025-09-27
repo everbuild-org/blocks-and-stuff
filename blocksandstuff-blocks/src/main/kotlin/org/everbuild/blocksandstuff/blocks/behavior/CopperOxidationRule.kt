@@ -14,9 +14,7 @@ import org.everbuild.blocksandstuff.blocks.event.CopperOxidationEvent
 import org.everbuild.blocksandstuff.blocks.randomticking.RandomTickHandler
 
 class CopperOxidationRule(private val block: Block) : BlockHandler, RandomTickHandler {
-    override fun getKey(): Key {
-        return Key.key("blocksandstuff:copper_oxidation")
-    }
+    override fun getKey(): Key = block.key()
 
     fun getNextOxidationStage(): Block? {
         return oxidationStages[block]
