@@ -14,7 +14,6 @@ object BlockBehaviorRuleRegistrations {
         MinecraftServer.getGlobalEventHandler().addChild(getRandomTickingEventNode())
     }
 
-
     @JvmStatic
     fun registerDefault() {
         registerDefault(listOf())
@@ -25,7 +24,6 @@ object BlockBehaviorRuleRegistrations {
         register(exclude, *VanillaBlockBehaviour.ALL.toTypedArray<BehaviourGroup>())
         registerRandomTickingGlobally()
     }
-
 
     @JvmStatic
     fun register(vararg blockGroups: BehaviourGroup) {
