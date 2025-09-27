@@ -8,7 +8,7 @@ object PlacedHandlerRegistration {
     fun registerDefault() {
         MinecraftServer.getGlobalEventHandler().addListener(PlayerBlockPlaceEvent::class.java) {
             val handler = MinecraftServer.getBlockManager().getHandler(it.block.key().asString())
-            if (it.block.handler() != handler) it.block = it.block.withHandler(handler)
+            it.block = it.block.withHandler(handler)
         }
     }
 }

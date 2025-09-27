@@ -28,7 +28,7 @@ class CoralPlacementRule(block: Block) : BlockPlacementRule(block) {
             )
         ) return null
 
-        return block.withProperty("waterlogged", waterlogged)
+        return placementState.block.withProperty("waterlogged", waterlogged)
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {

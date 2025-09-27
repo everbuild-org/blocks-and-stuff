@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.group
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
@@ -100,7 +101,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val COPPER = group(
-        byList(CopperOxidationRule.Companion.getOxidizableBlocks()),
+        byList(CopperOxidationRule.getOxidizableBlocks()),
         ::CopperOxidationRule
     )
 
@@ -133,8 +134,23 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val CONCRETE_POWDER = group(
-            byTag("minecraft:concrete_powder"),
+        byTag("minecraft:concrete_powder"),
         ::ConcretePowderRule
+    )
+
+    val FARMLAND = group(
+        byBlock(Block.FARMLAND),
+        ::FarmlandRule
+    )
+
+    val CORAL = group(
+        all(
+            byTag("minecraft:corals"),
+            byTag("minecraft:coral_plants"),
+            byTag("minecraft:coral_blocks"),
+            byTag("minecraft:wall_corals"),
+        ),
+        ::CoralRule
     )
 
     override fun createGroup(

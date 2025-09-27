@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.fluids.listener
 import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.event.player.PlayerBlockInteractEvent
 import net.minestom.server.instance.block.Block
@@ -51,6 +52,11 @@ fun setupFluidPlacementEvent() {
                         }
                     }
                     event.player.refreshPosition(placePosition)
+                    event.player.inventory.setEquipment(
+                        EquipmentSlot.MAIN_HAND,
+                        event.player.heldSlot,
+                        ItemStack.of(Material.BUCKET)
+                    )
                 }
                 if (itemInMainHand == ItemStack.of(Material.WATER_BUCKET)) {
                     val blockFace = event.blockFace
@@ -91,6 +97,11 @@ fun setupFluidPlacementEvent() {
                         }
                     }
                     event.player.refreshPosition(placePosition, false, true)
+                    event.player.inventory.setEquipment(
+                        EquipmentSlot.MAIN_HAND,
+                        event.player.heldSlot,
+                        ItemStack.of(Material.BUCKET)
+                    )
                 }
             }
         }

@@ -1,11 +1,16 @@
 package org.everbuild.blocksandstuff.testserver
-
+import net.minestom.server.MinecraftServer
 import kotlin.math.sin
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.generator.GenerationUnit
 import net.minestom.server.instance.generator.Generator
 
 class ExampleGenerator : Generator {
+    fun Block.withDefaultHandler(): Block {
+        if (this.handler() != null) return this
+        return this.withHandler(MinecraftServer.getBlockManager().getHandler(this.key().asString()))
+    }
+
     override fun generate(unit: GenerationUnit) {
         val modifier = unit.modifier()
         val start = unit.absoluteStart()
@@ -24,7 +29,19 @@ class ExampleGenerator : Generator {
                 x,
                 combined.toInt(),
                 z,
-                Block.WATER
+                Block.WATER.withDefaultHandler()
+            )
+            if (x % 64 == 9 && z % 64 == 9) modifier.setBlock(
+                x,
+                combined.toInt(),
+                z,
+                Block.TUBE_CORAL_BLOCK.withDefaultHandler()
+            )
+            if (x % 64 == 12 && z % 64 == 12) modifier.setBlock(
+                x,
+                combined.toInt(),
+                z,
+                Block.COPPER_BLOCK.withDefaultHandler()
             )
         }
     }
