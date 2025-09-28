@@ -652,3 +652,4 @@ minecraft:twisting_vines_plant
 minecraft:turtle_egg
 minecraft:conduit
 minecraft:lightning_rod
+minecraft:cocoa

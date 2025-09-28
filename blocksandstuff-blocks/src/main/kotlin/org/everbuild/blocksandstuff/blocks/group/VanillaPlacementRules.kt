@@ -508,6 +508,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::LightningRodPlacementRule
     )
 
+    val COCOA = group(
+        byBlock(Block.COCOA),
+        ::CocoaPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>

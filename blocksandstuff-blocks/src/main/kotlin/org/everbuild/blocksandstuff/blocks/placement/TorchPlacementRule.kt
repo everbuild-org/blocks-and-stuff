@@ -28,7 +28,6 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     private fun canSupportTorch(instance: Block.Getter, position: Point, blockFace: BlockFace): Boolean {
         val block = instance.getBlock(position)
         val isFullFace = !getIsNotFullFace(instance, position, blockFace)
-        // Certain blocks like fences and walls don't have full faces on the top but torches can be placed on them
         return isFullFace || (blockFace != BlockFace.TOP && nonFullButPlaceable.contains(block))
     }
 
