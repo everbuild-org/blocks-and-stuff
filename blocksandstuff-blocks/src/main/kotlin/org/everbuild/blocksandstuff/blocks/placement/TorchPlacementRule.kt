@@ -63,7 +63,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         val supporting = updateState.currentBlock.getProperty("facing")
             ?.let { BlockFace.valueOf(it.uppercase()).oppositeFace }
-            ?: BlockFace.BOTTOM
+                ?: BlockFace.BOTTOM
 
         if (!canSupportTorch(
                 updateState.instance,

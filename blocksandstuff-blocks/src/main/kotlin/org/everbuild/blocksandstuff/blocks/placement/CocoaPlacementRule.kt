@@ -24,7 +24,7 @@ class CocoaPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         val blockPos = updateState.blockPosition()
         val supporting = updateState.currentBlock.getProperty("facing")
-            ?.let { BlockFace.valueOf(it.uppercase())} ?: return updateState.currentBlock
+            ?.let { BlockFace.valueOf(it.uppercase()) } ?: return updateState.currentBlock
         if (!canSupportCocoa(updateState.instance, blockPos.relative(supporting))) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
