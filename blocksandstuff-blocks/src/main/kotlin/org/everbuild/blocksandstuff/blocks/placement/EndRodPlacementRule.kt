@@ -4,7 +4,6 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
 class EndRodPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
@@ -37,39 +36,6 @@ class EndRodPlacementRule(block: Block) : BlockPlacementRule(block) {
                 else -> blockFace.name.lowercase()
             }
         )
-    }
-
-    override fun blockUpdate(updateState: UpdateState): Block {
-        val current = updateState.currentBlock
-        val pos = updateState.blockPosition
-        val instance = updateState.instance
-        val neighborFaces = arrayOf(
-            BlockFace.TOP, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST, BlockFace.BOTTOM
-        )
-        var shouldBreak = false
-        for (face in neighborFaces) {
-            val neighborPos = when (face) {
-                BlockFace.TOP -> pos.add(0.0, 1.0, 0.0)
-                BlockFace.BOTTOM -> pos.sub(0.0, 1.0, 0.0)
-                else -> pos.add(face.toDirection().vec())
-            }
-            val isWater = instance.getBlock(neighborPos).compare(Block.WATER)
-            if (isWater) {
-                if (face == BlockFace.BOTTOM) continue
-                shouldBreak = true
-                break
-            }
-        }
-        if (shouldBreak) {
-            DroppedItemFactory.maybeDrop(updateState)
-            return Block.AIR
-        }
-        val isWaterHere = instance.getBlock(pos).compare(Block.WATER)
-        if (isWaterHere) {
-            DroppedItemFactory.maybeDrop(updateState)
-            return Block.AIR
-        }
-        return current
     }
 
     fun getSupportingBlockPosition(facing: BlockFace, blockPosition: Point): Point {
