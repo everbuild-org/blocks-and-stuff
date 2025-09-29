@@ -4,8 +4,8 @@
 
 ## Statistics
  - Total blocks with state: 644
- - Supported blocks: 602
- - Unsupported blocks: 42
+ - Supported blocks: 605
+ - Unsupported blocks: 39
  - Implementation progress: 93% (6 blocks = 1%)
 
 ## Unsupported Blocks
@@ -15,10 +15,8 @@
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:chorus_flower
 - [ ] minecraft:chorus_plant
-- [ ] minecraft:cocoa
 - [ ] minecraft:creaking_heart
 - [ ] minecraft:decorated_pot
-- [ ] minecraft:end_rod
 - [ ] minecraft:fire
 - [ ] minecraft:frosted_ice
 - [ ] minecraft:glow_lichen
@@ -29,7 +27,6 @@
 - [ ] minecraft:mangrove_roots
 - [ ] minecraft:moving_piston
 - [ ] minecraft:nether_portal
-- [ ] minecraft:nether_wart
 - [ ] minecraft:pale_hanging_moss
 - [ ] minecraft:pale_moss_carpet
 - [ ] minecraft:pale_oak_leaves
@@ -193,6 +190,7 @@
 - [x] minecraft:cobblestone_slab
 - [x] minecraft:cobblestone_stairs
 - [x] minecraft:cobblestone_wall
+- [x] minecraft:cocoa
 - [x] minecraft:command_block
 - [x] minecraft:comparator
 - [x] minecraft:conduit
@@ -278,6 +276,7 @@
 - [x] minecraft:dried_ghast
 - [x] minecraft:dropper
 - [x] minecraft:end_portal_frame
+- [x] minecraft:end_rod
 - [x] minecraft:end_stone_brick_slab
 - [x] minecraft:end_stone_brick_stairs
 - [x] minecraft:end_stone_brick_wall
@@ -420,6 +419,7 @@
 - [x] minecraft:nether_brick_slab
 - [x] minecraft:nether_brick_stairs
 - [x] minecraft:nether_brick_wall
+- [x] minecraft:nether_wart
 - [x] minecraft:oak_button
 - [x] minecraft:oak_door
 - [x] minecraft:oak_fence

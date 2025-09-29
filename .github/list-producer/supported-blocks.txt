@@ -654,6 +654,4 @@ minecraft:conduit
 minecraft:lightning_rod
 minecraft:cocoa
 minecraft:nether_wart
-minecraft:decorated_pot
-minecraft:mangrove_roots
 minecraft:end_rod
