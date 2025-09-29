@@ -7,7 +7,7 @@ import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDire
 import org.everbuild.blocksandstuff.common.utils.isWater
 
 class CampfireBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
-    override fun blockPlace(placementState: PlacementState): Block? {
+    override fun blockPlace(placementState: PlacementState): Block {
         val facing = BlockFace.fromDirection(placementState.getNearestHorizontalLookingDirection().opposite())
         val waterlogged = placementState.instance.getBlock(placementState.placePosition).isWater()
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))

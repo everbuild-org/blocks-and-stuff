@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.group
 
+import net.minestom.server.Git.group
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
@@ -511,6 +512,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val COCOA = group(
         byBlock(Block.COCOA),
         ::CocoaPlacementRule
+    )
+
+    val NETHER_WART = group(
+        byBlock(Block.NETHER_WART),
+        ::NetherWartPlacementRule
     )
 
     override fun createGroup(
