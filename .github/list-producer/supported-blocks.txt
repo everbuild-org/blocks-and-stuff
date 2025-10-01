@@ -655,4 +655,6 @@ minecraft:lightning_rod
 minecraft:cocoa
 minecraft:nether_wart
 minecraft:end_rod
+minecraft:attached_pumpkin_stem
+minecraft:attached_melon_stem
 minecraft:snow
