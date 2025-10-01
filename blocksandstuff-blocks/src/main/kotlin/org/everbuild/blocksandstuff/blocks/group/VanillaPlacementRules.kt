@@ -523,6 +523,21 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::EndRodPlacementRule
     )
 
+    val ATTACHED_STEMP = group(
+        byList(
+            listOf(
+                Block.ATTACHED_PUMPKIN_STEM,
+                Block.ATTACHED_MELON_STEM
+            )
+        ),
+        ::AttachedStemPlacementRule
+    )
+
+    val SNOW = group(
+        byBlock(Block.SNOW),
+        ::SnowPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>

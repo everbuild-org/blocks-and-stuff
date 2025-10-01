@@ -655,3 +655,4 @@ minecraft:lightning_rod
 minecraft:cocoa
 minecraft:nether_wart
 minecraft:end_rod
+minecraft:snow
