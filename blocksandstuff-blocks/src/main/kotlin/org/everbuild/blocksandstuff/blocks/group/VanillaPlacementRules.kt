@@ -543,6 +543,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::KelpPlacementRule
     )
 
+    val POINTED_DRIPSTONE = group(
+        byBlock(Block.POINTED_DRIPSTONE),
+        ::PointedDripstonePlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
