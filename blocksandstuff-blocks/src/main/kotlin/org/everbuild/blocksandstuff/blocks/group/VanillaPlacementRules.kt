@@ -538,6 +538,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SnowPlacementRule
     )
 
+    val KELP = group(
+        byList(listOf(Block.KELP_PLANT, Block.KELP)),
+        ::KelpPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
