@@ -660,3 +660,4 @@ minecraft:attached_melon_stem
 minecraft:snow
 minecraft:kelp_plant
 minecraft:kelp
+minecraft:pointed_dripstone

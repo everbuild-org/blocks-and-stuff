@@ -4,8 +4,8 @@
 
 ## Statistics
  - Total blocks with state: 643
- - Supported blocks: 609
- - Unsupported blocks: 34
+ - Supported blocks: 610
+ - Unsupported blocks: 33
  - Implementation progress: 94% (6 blocks = 1%)
 
 ## Unsupported Blocks
@@ -28,7 +28,6 @@
 - [ ] minecraft:pale_oak_leaves
 - [ ] minecraft:piston_head
 - [ ] minecraft:pitcher_plant
-- [ ] minecraft:pointed_dripstone
 - [ ] minecraft:powder_snow_cauldron
 - [ ] minecraft:redstone_wall_torch
 - [ ] minecraft:redstone_wire
@@ -485,6 +484,7 @@
 - [x] minecraft:pitcher_crop
 - [x] minecraft:player_head
 - [x] minecraft:podzol
+- [x] minecraft:pointed_dripstone
 - [x] minecraft:polished_andesite_slab
 - [x] minecraft:polished_andesite_stairs
 - [x] minecraft:polished_basalt
