@@ -4,8 +4,8 @@
 
 ## Statistics
  - Total blocks with state: 643
- - Supported blocks: 608
- - Unsupported blocks: 35
+ - Supported blocks: 609
+ - Unsupported blocks: 34
  - Implementation progress: 94% (6 blocks = 1%)
 
 ## Unsupported Blocks
@@ -19,7 +19,6 @@
 - [ ] minecraft:glow_lichen
 - [ ] minecraft:hanging_roots
 - [ ] minecraft:jigsaw
-- [ ] minecraft:kelp
 - [ ] minecraft:lava
 - [ ] minecraft:mangrove_roots
 - [ ] minecraft:moving_piston
@@ -339,6 +338,8 @@
 - [x] minecraft:jungle_wall_hanging_sign
 - [x] minecraft:jungle_wall_sign
 - [x] minecraft:jungle_wood
+- [x] minecraft:kelp
+- [x] minecraft:kelp_plant
 - [x] minecraft:ladder
 - [x] minecraft:lantern
 - [x] minecraft:large_amethyst_bud
