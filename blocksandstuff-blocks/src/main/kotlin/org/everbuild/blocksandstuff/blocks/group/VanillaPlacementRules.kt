@@ -98,6 +98,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.DROPPER),
             byBlock(Block.DISPENSER),
             byTag("minecraft:wooden_shelves"),
+            byTag("minecraft:copper_golem_statues")
         ),
         ::FacingPlacementRule
     )
