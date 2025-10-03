@@ -28,8 +28,8 @@ open class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {
-        val face = updateState.currentBlock.getProperty("face")
-        val facing = BlockFace.valueOf(updateState.currentBlock.getProperty("facing").uppercase())
+        val face = updateState.currentBlock.getProperty("face")!!
+        val facing = BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val supportingBlockPos = getSupportingBlockPosition(face, facing, updateState.blockPosition)
 
         if (needSupport() && !updateState.instance.getBlock(supportingBlockPos).isSolid) {

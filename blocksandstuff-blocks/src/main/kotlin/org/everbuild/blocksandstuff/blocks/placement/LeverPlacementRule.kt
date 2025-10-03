@@ -57,7 +57,7 @@ class LeverPlacementRule(block: Block) : BlockPlacementRule(block) {
         val supportBlock = updateState.instance.getBlock(supportBlockPosition)
         val attachedFace = supportDirection.oppositeFace
 
-        if (!supportBlock.registry().collisionShape().isFaceFull(attachedFace)) {
+        if (!supportBlock.registry()!!.collisionShape().isFaceFull(attachedFace)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

@@ -19,12 +19,12 @@ fun raycastForFluid(player: Player, startPosition: Point, direction: Vec, maxDis
         val block = player.instance.getBlock(currentPosition)
 
         if (block.isLiquid) {
-            val levelStr = block.getProperty("level")
+            val levelStr = block.getProperty("level")!!
             if (levelStr.toInt() == 0)
                 return currentPosition // Found a fluid block, return it
         }
 
-        val shape = block.registry().collisionShape()
+        val shape = block.registry()!!.collisionShape()
         if (shape.intersectBox(currentPosition, box)) {
             break
         }

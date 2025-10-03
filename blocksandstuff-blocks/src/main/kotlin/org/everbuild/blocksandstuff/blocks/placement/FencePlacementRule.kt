@@ -23,7 +23,7 @@ class FencePlacementRule(block: Block) : AbstractConnectingBlockPlacementRule(bl
             fenceGates.contains(instanceBlock) && getAxis(getFacing(instanceBlock).toDirection()) == getAxis(
                 rotateYClockwise(blockFace.toDirection())
             )
-        val isFaceFull = instanceBlock.registry().collisionShape().isFaceFull(blockFace)
+        val isFaceFull = instanceBlock.registry()!!.collisionShape().isFaceFull(blockFace)
 
         return !cannotConnect.contains(block) && isFaceFull || (canConnectToFence && !isBlockNetherBrickFence) || canFenceGateConnect || (isBlockNetherBrickFence && isInstanceBlockNetherBrickFence)
     }

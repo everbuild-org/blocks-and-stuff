@@ -304,7 +304,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defa
     private fun canFill(instance: Instance, point: Point, block: Block, flowing: Block): Boolean {
         val event = BlockFluidReplacementEvent(instance, block, BlockVec(point))
         EventDispatcher.call(event)
-        return block.isAir || block.registry().isReplaceable || !event.isCancelled
+        return block.isAir || block.registry()!!.isReplaceable || !event.isCancelled
     }
 
     private fun canFlowDown(
@@ -378,7 +378,7 @@ abstract class FlowableFluid(defaultBlock: Block, bucket: Material) : Fluid(defa
     protected open fun getDirections(block: Block): Collection<Direction> {
         if (block.isLiquid) return Direction.entries
         return Direction.entries.filter {
-            !block.registry().collisionShape().isFaceFull(it.asBlockFace())
+            !block.registry()!!.collisionShape().isFaceFull(it.asBlockFace())
         }
     }
 

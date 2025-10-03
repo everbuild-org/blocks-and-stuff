@@ -19,7 +19,7 @@ class VerticalSlimBlockPlacementRule(block: Block) : AbstractConnectingBlockPlac
 
     override fun canConnect(instance: Block.Getter, pos: Point, blockFace: BlockFace): Boolean {
         val instanceBlock = instance.getBlock(pos)
-        val isFaceFull = instanceBlock.registry().collisionShape().isFaceFull(blockFace)
+        val isFaceFull = instanceBlock.registry()!!.collisionShape().isFaceFull(blockFace)
         return !cannotConnect.contains(instanceBlock) && isFaceFull || canConnect.contains(instanceBlock) || instanceBlock.key() == this.block.key()
     }
 }

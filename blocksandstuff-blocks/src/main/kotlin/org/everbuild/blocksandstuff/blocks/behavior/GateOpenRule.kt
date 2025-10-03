@@ -27,7 +27,7 @@ class GateOpenRule(private val block: Block?) : BlockHandler {
     }
     
     fun getAllowedDirections(block: Block): Collection<Direction> {
-        val currentDirection = Direction.valueOf(block.getProperty("facing").uppercase())
+        val currentDirection = Direction.valueOf(block.getProperty("facing")!!.uppercase())
         return listOf(currentDirection, currentDirection.opposite())
     }
 }

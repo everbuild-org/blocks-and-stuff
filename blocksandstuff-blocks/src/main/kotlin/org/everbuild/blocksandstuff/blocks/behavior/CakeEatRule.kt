@@ -15,7 +15,7 @@ class CakeEatRule(val block: Block) : BlockHandler {
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         if (interaction.player.isSneaking) return super.onInteract(interaction)
-        val currentSlices = interaction.block.getProperty("bites").toInt()
+        val currentSlices = interaction.block.getProperty("bites")!!.toInt()
         if (currentSlices == 0 && candles.contains(
                 interaction.player.getItemInHand(interaction.hand).material().block() ?: Block.AIR
             )

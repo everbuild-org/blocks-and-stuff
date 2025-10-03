@@ -25,7 +25,7 @@ class FenceGatePlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     private fun integrateInWalls(instance: Block.Getter, pos: Point, block: Block): Block {
-        val direction = Direction.valueOf(block.getProperty("facing").uppercase())
+        val direction = Direction.valueOf(block.getProperty("facing")!!.uppercase())
         val leftBlock = instance.getBlock(pos.add(direction.rotateR().vec()))
         val rightBlock = instance.getBlock(pos.add(direction.rotateL().vec()))
         val inWall = walls.contains(leftBlock) || walls.contains(rightBlock)

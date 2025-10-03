@@ -8,6 +8,15 @@ version = "1.6.0-SNAPSHOT"
 allprojects {
     group = rootProject.group
     version = rootProject.version
+
+    repositories {
+        mavenCentral()
+        maven(url = "https://central.sonatype.com/repository/maven-snapshots/") {
+            content {
+                includeModule("net.minestom", "minestom")
+            }
+        }
+    }
 }
 
 subprojects {

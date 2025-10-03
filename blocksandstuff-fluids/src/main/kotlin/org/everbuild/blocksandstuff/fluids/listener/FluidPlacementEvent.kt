@@ -30,6 +30,7 @@ fun setupFluidPlacementEvent() {
                     instance.placeBlock(
                         PlayerPlacement(
                             block,
+                            updated,
                             instance,
                             placePosition,
                             event.player,
@@ -73,6 +74,7 @@ fun setupFluidPlacementEvent() {
                     instance.placeBlock(
                         PlayerPlacement(
                             block,
+                            updated,
                             instance,
                             placePosition,
                             event.player,

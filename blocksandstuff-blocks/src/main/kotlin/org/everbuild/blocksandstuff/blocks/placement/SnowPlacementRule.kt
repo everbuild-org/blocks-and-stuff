@@ -8,9 +8,9 @@ class SnowPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val bottomSupport = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
         val snow = placementState.instance.getBlock(placementState.placePosition)
-        if (!bottomSupport.registry().collisionShape().isFaceFull(BlockFace.TOP) && !(bottomSupport.compare(Block.SNOW) && bottomSupport.getProperty("layers") == "8")) return null
+        if (!bottomSupport.registry()!!.collisionShape().isFaceFull(BlockFace.TOP) && !(bottomSupport.compare(Block.SNOW) && bottomSupport.getProperty("layers") == "8")) return null
         if (snow.compare(Block.SNOW)) {
-            val snowLayer = snow.getProperty("layers").toInt()
+            val snowLayer = snow.getProperty("layers")!!.toInt()
             return placementState.block().withProperty("layers", (snowLayer + 1).toString())
         }
         return placementState.block()
@@ -28,7 +28,7 @@ class SnowPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val bottomSupport = updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0))
-        if (bottomSupport.registry().collisionShape().isFaceFull(BlockFace.TOP) || (bottomSupport.compare(Block.SNOW) && bottomSupport.getProperty("layers") == "8")) return updateState.currentBlock
+        if (bottomSupport.registry()!!.collisionShape().isFaceFull(BlockFace.TOP) || (bottomSupport.compare(Block.SNOW) && bottomSupport.getProperty("layers") == "8")) return updateState.currentBlock
         return Block.AIR
     }
 }

@@ -299,7 +299,10 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val CHAINS = group(
-        byBlock(Block.CHAIN),
+        all(
+            byBlock(Block.IRON_CHAIN),
+            byBlock(Block.COPPER_CHAIN)
+        ),
         ::ChainPlacementRule
     )
 

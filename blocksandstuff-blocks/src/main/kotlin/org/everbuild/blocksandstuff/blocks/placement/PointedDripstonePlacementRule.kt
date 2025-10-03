@@ -26,11 +26,11 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
         val newThickness = getThickness(updateState.instance(), updateState.blockPosition(), direction)
         val bottomSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, -1.0, 0.0))
         val topSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, 1.0, 0.0))
-        if (direction && !bottomSupported.registry().collisionShape().isFaceFull(BlockFace.TOP) && !bottomSupported.compare(Block.POINTED_DRIPSTONE)) {
+        if (direction && !bottomSupported.registry()!!.collisionShape().isFaceFull(BlockFace.TOP) && !bottomSupported.compare(Block.POINTED_DRIPSTONE)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
-        if (!direction && !topSupported.registry().collisionShape().isFaceFull(BlockFace.BOTTOM) && !topSupported.compare(Block.POINTED_DRIPSTONE)) {
+        if (!direction && !topSupported.registry()!!.collisionShape().isFaceFull(BlockFace.BOTTOM) && !topSupported.compare(Block.POINTED_DRIPSTONE)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

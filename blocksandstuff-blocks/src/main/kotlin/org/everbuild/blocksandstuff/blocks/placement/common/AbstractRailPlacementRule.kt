@@ -37,7 +37,7 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
     protected fun isSupported(instance: Block.Getter, blockPos: Point): Boolean {
         return instance
             .getBlock(blockPos.sub(0.0, 1.0, 0.0))
-            .registry()
+            .registry()!!
             .collisionShape()
             .isFaceFull(BlockFace.BOTTOM)
     }

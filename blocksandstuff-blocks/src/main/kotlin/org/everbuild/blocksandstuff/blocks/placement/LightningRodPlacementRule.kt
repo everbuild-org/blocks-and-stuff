@@ -39,7 +39,7 @@ open class LightningRodPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {
-        val facing = if (updateState.currentBlock.getProperty("facing").equals("up")) BlockFace.TOP else if (updateState.currentBlock.getProperty("facing").equals("down")) BlockFace.BOTTOM else BlockFace.valueOf(updateState.currentBlock.getProperty("facing").uppercase())
+        val facing = if (updateState.currentBlock.getProperty("facing").equals("up")) BlockFace.TOP else if (updateState.currentBlock.getProperty("facing").equals("down")) BlockFace.BOTTOM else BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val supportingBlockPos = getSupportingBlockPosition(facing, updateState.blockPosition)
 
         if (needSupport() && (updateState.instance.getBlock(supportingBlockPos).isLiquid || updateState.instance.getBlock(supportingBlockPos).isAir)) {
