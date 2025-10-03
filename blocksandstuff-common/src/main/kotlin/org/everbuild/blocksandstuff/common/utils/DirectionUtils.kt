@@ -2,8 +2,10 @@ package org.everbuild.blocksandstuff.common.utils
 
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.coordinate.Vec
+import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler
+import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.instance.block.rule.BlockPlacementRule.PlacementState
 import net.minestom.server.utils.Direction
 
@@ -30,7 +32,13 @@ fun PlacementState.sixteenStepRotation(): Int {
 fun PlacementState.canAttach(): Boolean {
     val anchor = this.placePosition.sub((this.blockFace ?: return false).toDirection().vec())
     val anchorBlock = this.instance.getBlock(anchor)
-    return anchorBlock.registry().collisionShape().isFaceFull(this.blockFace!!)
+    return anchorBlock.registry()!!.collisionShape().isFaceFull(this.blockFace!!)
+}
+
+fun BlockPlacementRule.UpdateState.canAttach(facing: BlockFace): Boolean {
+    val anchor = this.blockPosition.sub(facing.toDirection().vec())
+    val anchorBlock = this.instance.getBlock(anchor)
+    return anchorBlock.registry()!!.collisionShape().isFaceFull(facing)
 }
 
 private fun getNearestLookingDirection(position: Pos, allowedDirections: Collection<Direction>): Direction {

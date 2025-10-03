@@ -12,7 +12,7 @@ class CoralPlacementRule(block: Block) : BlockPlacementRule(block) {
         val waterlogged = placementState.instance().getBlock(placementState.placePosition).isWater().toString()
         if (placementState.blockFace!!.toDirection()
                 .horizontal() && placementState.instance.getBlock(placementState.placePosition.relative(placementState.blockFace!!.oppositeFace))
-                .registry().collisionShape().isFaceFull(placementState.blockFace!!)
+                .registry()!!.collisionShape().isFaceFull(placementState.blockFace!!)
         ) {
             WALL_CORALS[block]?.let {
                 return it
@@ -23,7 +23,7 @@ class CoralPlacementRule(block: Block) : BlockPlacementRule(block) {
         }
 
         if (!placementState.instance.getBlock(placementState.placePosition.relative(BlockFace.BOTTOM)).registry()
-                .collisionShape().isFaceFull(
+                !!.collisionShape().isFaceFull(
                 BlockFace.TOP
             )
         ) return null
@@ -33,7 +33,7 @@ class CoralPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         if (!updateState.instance.getBlock(updateState.blockPosition.relative(BlockFace.BOTTOM)).registry()
-                .collisionShape().isFaceFull(BlockFace.TOP)
+                !!.collisionShape().isFaceFull(BlockFace.TOP)
         ) {
             return if (updateState.currentBlock.getProperty("waterlogged") == "true") Block.WATER else Block.AIR
         }

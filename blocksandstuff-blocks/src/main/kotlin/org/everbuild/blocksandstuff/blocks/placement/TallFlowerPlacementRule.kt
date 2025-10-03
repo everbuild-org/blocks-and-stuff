@@ -13,12 +13,12 @@ class TallFlowerPlacementRule (baseFlowerBlock: Block) : BlockPlacementRule(base
         val placePos = placementState.placePosition
 
         val upperPos = placePos.add(0.0, 1.0, 0.0)
-        if (!instance.getBlock(upperPos).registry().isReplaceable) {
+        if (!instance.getBlock(upperPos).registry()!!.isReplaceable) {
             return null
         }
 
         val lowerPos = placePos.sub(0.0, 1.0, 0.0)
-        if (!instance.getBlock(lowerPos).registry().collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!instance.getBlock(lowerPos).registry()!!.collisionShape().isFaceFull(BlockFace.TOP)) {
             return null
         }
 
@@ -61,7 +61,7 @@ class TallFlowerPlacementRule (baseFlowerBlock: Block) : BlockPlacementRule(base
         }
 
         val blockBelow = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM))
-        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.registry().collisionShape()
+        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.registry()!!.collisionShape()
                 .isFaceFull(BlockFace.TOP)
         ) {
             DroppedItemFactory.maybeDrop(updateState)

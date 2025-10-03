@@ -299,7 +299,10 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val CHAINS = group(
-        byBlock(Block.CHAIN),
+        all(
+            byBlock(Block.IRON_CHAIN),
+            byBlock(Block.COPPER_CHAIN)
+        ),
         ::ChainPlacementRule
     )
 
@@ -506,6 +509,46 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val LIGHTNING_ROD = group(
         byBlock(Block.LIGHTNING_ROD),
         ::LightningRodPlacementRule
+    )
+
+    val COCOA = group(
+        byBlock(Block.COCOA),
+        ::CocoaPlacementRule
+    )
+
+    val NETHER_WART = group(
+        byBlock(Block.NETHER_WART),
+        ::NetherWartPlacementRule
+    )
+
+    val END_ROD = group(
+        byBlock(Block.END_ROD),
+        ::EndRodPlacementRule
+    )
+
+    val ATTACHED_STEMP = group(
+        byList(
+            listOf(
+                Block.ATTACHED_PUMPKIN_STEM,
+                Block.ATTACHED_MELON_STEM
+            )
+        ),
+        ::AttachedStemPlacementRule
+    )
+
+    val SNOW = group(
+        byBlock(Block.SNOW),
+        ::SnowPlacementRule
+    )
+
+    val KELP = group(
+        byList(listOf(Block.KELP_PLANT, Block.KELP)),
+        ::KelpPlacementRule
+    )
+
+    val POINTED_DRIPSTONE = group(
+        byBlock(Block.POINTED_DRIPSTONE),
+        ::PointedDripstonePlacementRule
     )
 
     override fun createGroup(

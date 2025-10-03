@@ -41,6 +41,6 @@ class FloorFillerPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     fun isSupported(instance: Block.Getter, block: Point): Boolean {
         val below = instance.getBlock(block.sub(0.0, 1.0, 0.0))
-        return below.registry().collisionShape().isFaceFull(BlockFace.TOP)
+        return below.registry()!!.collisionShape().isFaceFull(BlockFace.TOP)
     }
 }

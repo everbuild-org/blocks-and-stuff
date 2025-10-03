@@ -18,12 +18,12 @@ object States {
 
     fun getHalf(block: Block): BlockFace {
         if (block.getProperty(HALF) == null) return BlockFace.BOTTOM
-        return BlockFace.valueOf(block.getProperty(HALF).uppercase(Locale.getDefault()))
+        return BlockFace.valueOf(block.getProperty(HALF)!!.uppercase(Locale.getDefault()))
     }
 
     fun getFacing(block: Block): BlockFace {
         if (block.getProperty(FACING) == null) return BlockFace.NORTH
-        return BlockFace.valueOf(block.getProperty(FACING).uppercase(Locale.getDefault()))
+        return BlockFace.valueOf(block.getProperty(FACING)!!.uppercase(Locale.getDefault()))
     }
 
     fun getDirection(block: Block): Direction? {

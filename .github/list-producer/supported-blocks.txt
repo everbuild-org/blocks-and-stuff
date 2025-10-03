@@ -486,7 +486,8 @@ minecraft:blue_glazed_terracotta
 minecraft:purple_glazed_terracotta
 minecraft:magenta_glazed_terracotta
 minecraft:pink_glazed_terracotta
-minecraft:chain
+minecraft:iron_chain
+minecraft:copper_chain
 minecraft:peony
 minecraft:tall_grass
 minecraft:large_fern
@@ -652,3 +653,12 @@ minecraft:twisting_vines_plant
 minecraft:turtle_egg
 minecraft:conduit
 minecraft:lightning_rod
+minecraft:cocoa
+minecraft:nether_wart
+minecraft:end_rod
+minecraft:attached_pumpkin_stem
+minecraft:attached_melon_stem
+minecraft:snow
+minecraft:kelp_plant
+minecraft:kelp
+minecraft:pointed_dripstone

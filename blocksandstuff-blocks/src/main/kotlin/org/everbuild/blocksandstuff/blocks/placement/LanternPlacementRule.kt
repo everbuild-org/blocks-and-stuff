@@ -46,7 +46,7 @@ class LanternPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     private fun canSupport(supportBlock: Block, requiredFace: BlockFace): Boolean {
-        if (supportBlock.registry().collisionShape().isFaceFull(requiredFace)) {
+        if (supportBlock.registry()!!.collisionShape().isFaceFull(requiredFace)) {
             return true
         }
         return when (supportBlock.name()) {

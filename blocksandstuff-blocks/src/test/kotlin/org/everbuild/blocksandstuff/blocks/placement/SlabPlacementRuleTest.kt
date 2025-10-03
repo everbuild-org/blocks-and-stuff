@@ -39,6 +39,7 @@ internal class SlabPlacementRuleTest {
         instance.placeBlock(
             PlayerPlacement(
                 Block.OAK_SLAB,
+                Block.AIR,
                 instance,
                 Pos.ZERO,
                 player,
@@ -59,6 +60,7 @@ internal class SlabPlacementRuleTest {
         instance.placeBlock(
             PlayerPlacement(
                 Block.OAK_SLAB,
+                Block.AIR,
                 instance,
                 Pos.ZERO,
                 player,
@@ -79,6 +81,7 @@ internal class SlabPlacementRuleTest {
         instance.placeBlock(
             PlayerPlacement(
                 Block.OAK_SLAB,
+                Block.AIR,
                 instance,
                 Pos.ZERO,
                 player,
@@ -99,6 +102,7 @@ internal class SlabPlacementRuleTest {
         instance.placeBlock(
             PlayerPlacement(
                 Block.OAK_SLAB,
+                Block.AIR,
                 instance,
                 Pos.ZERO,
                 player,

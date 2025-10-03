@@ -33,10 +33,11 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
 
         val blockFace = findBlockFace(player = event.player, liquidBlock) ?: return@addListener
 
+        val source = event.instance.getBlock(liquidBlock)
         val pickupEvent = FluidPickupEvent(
             event.instance,
             event.player,
-            event.instance.getBlock(liquidBlock),
+            source,
             BlockVec(liquidBlock.x(), liquidBlock.y(), liquidBlock.z()),
             Block.AIR
         )
@@ -44,6 +45,7 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
             instance.placeBlock(
                 PlayerPlacement(
                     pickupEvent.blockToPlace,
+                    source,
                     instance,
                     liquidBlock,
                     event.player,

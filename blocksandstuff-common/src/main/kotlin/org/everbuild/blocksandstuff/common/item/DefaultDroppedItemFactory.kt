@@ -11,7 +11,7 @@ import net.minestom.server.utils.time.TimeUnit
 
 class DefaultDroppedItemFactory : DroppedItemFactory {
     override fun spawn(instance: Instance, position: Point, block: Block) {
-        val item = block.registry().material() ?: return
+        val item = block.registry()!!.material() ?: return
         spawn(instance, position, ItemStack.of(item))
     }
 

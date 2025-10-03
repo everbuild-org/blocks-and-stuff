@@ -54,7 +54,7 @@ class ChestPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         val type = updateState.currentBlock.getProperty("type")
         if (type == "single") return super.blockUpdate(updateState)
-        val facing = Direction.valueOf(updateState.currentBlock.getProperty("facing").uppercase())
+        val facing = Direction.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
 
         val (neighbourPosition, expectedNeighbourType) = if (type == "left") {
             facing.rotateR() to "right"
@@ -78,7 +78,7 @@ class ChestPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     private fun getClickedChestFacing(placementState: PlacementState, clicked: Block): Direction? {
         if (!clicked.compare(block, Block.Comparator.ID)) return null
-        val facing = Direction.valueOf(clicked.getProperty("facing").uppercase())
+        val facing = Direction.valueOf(clicked.getProperty("facing")!!.uppercase())
         val lrFaces = listOf(facing.rotateL(), facing.rotateR()).map { BlockFace.fromDirection(it) }
         return if (lrFaces.contains(placementState.blockFace)) facing else null
     }
@@ -87,7 +87,7 @@ class ChestPlacementRule(block: Block) : BlockPlacementRule(block) {
         val blockPos = placementState.placePosition.relative(BlockFace.fromDirection(connecting))
         val currentBlock = placementState.instance.getBlock(blockPos)
         if (!currentBlock.compare(block, Block.Comparator.ID)) return false
-        val facing = Direction.valueOf(currentBlock.getProperty("facing").uppercase())
+        val facing = Direction.valueOf(currentBlock.getProperty("facing")!!.uppercase())
         if (facing != facingSelf) return false
         val type = currentBlock.getProperty("type")
         return type == "single"

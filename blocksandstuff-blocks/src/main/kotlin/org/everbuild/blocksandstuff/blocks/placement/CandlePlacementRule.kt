@@ -19,7 +19,7 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
             return Block.AIR
         }
 
-        if (!blockBelow.registry().collisionShape().isFaceFull(BlockFace.TOP)) return null
+        if (!blockBelow.registry()!!.collisionShape().isFaceFull(BlockFace.TOP)) return null
 
         val oldBlock = placementState.instance.getBlock(placementState.placePosition)
         if (!oldBlock.compare(block, Block.Comparator.ID)) {

@@ -36,7 +36,7 @@ class TwistingVinePlacementRule(block: Block) : BlockPlacementRule(block) {
     fun validatePosition(instance: Block.Getter, position: Point): Boolean {
         val below = instance.getBlock(position.sub(0.0, 1.0, 0.0))
 
-        if (below.registry().collisionShape().isFaceFull(BlockFace.TOP)) return true
+        if (below.registry()!!.collisionShape().isFaceFull(BlockFace.TOP)) return true
         if (below.compare(Block.TWISTING_VINES, Block.Comparator.ID) || below.compare(
                 Block.TWISTING_VINES_PLANT,
                 Block.Comparator.ID

@@ -22,13 +22,12 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     )
 
     private fun getIsNotFullFace(instance: Block.Getter, position: Point, face: BlockFace): Boolean {
-        return !instance.getBlock(position).registry().collisionShape().isFaceFull(face)
+        return !instance.getBlock(position).registry()!!.collisionShape().isFaceFull(face)
     }
 
     private fun canSupportTorch(instance: Block.Getter, position: Point, blockFace: BlockFace): Boolean {
         val block = instance.getBlock(position)
         val isFullFace = !getIsNotFullFace(instance, position, blockFace)
-        // Certain blocks like fences and walls don't have full faces on the top but torches can be placed on them
         return isFullFace || (blockFace != BlockFace.TOP && nonFullButPlaceable.contains(block))
     }
 
@@ -50,10 +49,10 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
             return block
         }
 
-        val torch = when (placementState.block.registry().material()) {
-            Block.TORCH.registry().material() -> Block.WALL_TORCH
-            Block.SOUL_TORCH.registry().material() -> Block.SOUL_WALL_TORCH
-            Block.REDSTONE_TORCH.registry().material() -> Block.REDSTONE_WALL_TORCH
+        val torch = when (placementState.block.registry()!!.material()) {
+            Block.TORCH.registry()!!.material() -> Block.WALL_TORCH
+            Block.SOUL_TORCH.registry()!!.material() -> Block.SOUL_WALL_TORCH
+            Block.REDSTONE_TORCH.registry()!!.material() -> Block.REDSTONE_WALL_TORCH
             else -> return null
         }
 
@@ -64,7 +63,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         val supporting = updateState.currentBlock.getProperty("facing")
             ?.let { BlockFace.valueOf(it.uppercase()).oppositeFace }
-            ?: BlockFace.BOTTOM
+                ?: BlockFace.BOTTOM
 
         if (!canSupportTorch(
                 updateState.instance,

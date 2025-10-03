@@ -9,7 +9,7 @@ import net.minestom.server.item.ItemStack
 object BlockPickup {
     fun enable() {
         MinecraftServer.getGlobalEventHandler().addListener(PlayerPickBlockEvent::class.java) {
-            val material = it.block.registry().material() ?: return@addListener
+            val material = it.block.registry()!!.material() ?: return@addListener
             val player = it.player
             if (player.gameMode != GameMode.CREATIVE) return@addListener // TODO: survival block picking
 

@@ -76,3 +76,4 @@ minecraft:suspicious_sand
 minecraft:water
 minecraft:water_cauldron
 minecraft:water_cauldron
+minecraft:decorated_pot

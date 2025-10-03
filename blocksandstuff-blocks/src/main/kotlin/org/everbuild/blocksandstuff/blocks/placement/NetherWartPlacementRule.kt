@@ -5,16 +5,14 @@ import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
-class SupportedBelowPlacementRule(block: Block) : BlockPlacementRule(block) {
+class NetherWartPlacementRule(block: Block): BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        if (!placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0)).registry()!!.collisionShape().isFaceFull(
-                BlockFace.TOP)) return null
-        return placementState.block
+        if (!placementState.instance.getBlock(placementState.placePosition.relative(BlockFace.BOTTOM)).compare(Block.SOUL_SAND)) return null
+        return placementState.block()
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {
-        if (!updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0)).registry()!!.collisionShape().isFaceFull(
-                BlockFace.TOP)) {
+        if (!updateState.instance.getBlock(updateState.blockPosition.relative(BlockFace.BOTTOM)).compare(Block.SOUL_SAND)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

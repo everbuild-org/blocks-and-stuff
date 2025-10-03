@@ -37,7 +37,7 @@ class TopAttachedVinePlacementRule(block: Block) : BlockPlacementRule(block) {
     fun validatePosition(instance: Block.Getter, position: Point): Boolean {
         val above = instance.getBlock(position.add(0.0, 1.0, 0.0))
 
-        if (above.registry().collisionShape().isFaceFull(BlockFace.BOTTOM)) return true
+        if (above.registry()!!.collisionShape().isFaceFull(BlockFace.BOTTOM)) return true
         if (above.compare(block, Block.Comparator.ID) || above.compare(OTHER_MAP[block]!!, Block.Comparator.ID)) return true
         if (above.key().value().substring(0, 3) == block.key().value().substring(0, 3)) return true
         return false

@@ -1,5 +1,5 @@
 [versions]
-minestom = "2025.07.17-1.21.8"
+minestom = "1_21_9-SNAPSHOT"
 tinylog = "2.7.0"
 gson = "2.12.1"
 junit = "5.10.0"

@@ -60,7 +60,7 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
             return Block.AIR
         }
 
-        val attachmentDirection = BlockFace.valueOf(updateState.currentBlock.getProperty("facing").uppercase())
+        val attachmentDirection = BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val blockInFront = updateState.instance.getBlock(updateState.blockPosition.add(attachmentDirection.toDirection().vec()))
         val blockBehind = updateState.instance.getBlock(updateState.blockPosition.add(attachmentDirection.oppositeFace.toDirection().vec()))
 
