@@ -486,7 +486,8 @@ minecraft:blue_glazed_terracotta
 minecraft:purple_glazed_terracotta
 minecraft:magenta_glazed_terracotta
 minecraft:pink_glazed_terracotta
-minecraft:chain
+minecraft:iron_chain
+minecraft:copper_chain
 minecraft:peony
 minecraft:tall_grass
 minecraft:large_fern
