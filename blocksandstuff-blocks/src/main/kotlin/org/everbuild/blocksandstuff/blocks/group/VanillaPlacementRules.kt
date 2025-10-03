@@ -232,7 +232,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val VERTICAL_SLIM = group(
         all(
-            byBlock(Block.IRON_BARS),
+            byTag("minecraft:bars"),
             byTag("blocksandstuff:glass_panes"),
         ),
         ::VerticalSlimBlockPlacementRule
@@ -269,8 +269,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val LANTERNS = group(
         all(
-            byBlock(Block.LANTERN),
-            byBlock(Block.SOUL_LANTERN)
+            byTag("minecraft:lanterns"),
         ),
         ::LanternPlacementRule
     )
@@ -300,8 +299,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val CHAINS = group(
         all(
-            byBlock(Block.IRON_CHAIN),
-            byBlock(Block.COPPER_CHAIN)
+            byTag("minecraft:chains"),
         ),
         ::ChainPlacementRule
     )
@@ -330,6 +328,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byTag("minecraft:chests"),
             byBlock(Block.CHEST),
             byBlock(Block.TRAPPED_CHEST),
+            byTag("minecraft:copper_chests"),
         ),
         ::ChestPlacementRule
     )
@@ -507,7 +506,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val LIGHTNING_ROD = group(
-        byBlock(Block.LIGHTNING_ROD),
+        byTag("minecraft:lightning_rods"),
         ::LightningRodPlacementRule
     )
 
