@@ -97,6 +97,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REPEATING_COMMAND_BLOCK),
             byBlock(Block.DROPPER),
             byBlock(Block.DISPENSER),
+            byTag("minecraft:wooden_shelves"),
         ),
         ::FacingPlacementRule
     )
@@ -252,7 +253,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REDSTONE_TORCH),
             byBlock(Block.WALL_TORCH),
             byBlock(Block.SOUL_WALL_TORCH),
-            byBlock(Block.SOUL_FIRE),
+            byBlock(Block.REDSTONE_WALL_TORCH),
         ),
         ::TorchPlacementRule
     )
