@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.fluids.pickup
+package org.everbuild.blocksandstuff.fluids.placement
 
 import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.entity.Player
@@ -7,11 +7,11 @@ import net.minestom.server.event.trait.PlayerInstanceEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 
-class FluidPickupEvent(
+class FluidPlaceEvent(
     private val instance: Instance,
     private val player: Player,
-    val sourceBlock: Block,
-    val sourceBlockPosition: BlockVec,
+    val block: Block,
+    val placePosition: BlockVec,
     var blockToPlace: Block
 ) : CancellableEvent, PlayerInstanceEvent {
     private var isCancelled = false

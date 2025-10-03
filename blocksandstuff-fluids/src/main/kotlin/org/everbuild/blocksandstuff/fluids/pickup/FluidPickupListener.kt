@@ -2,7 +2,6 @@ package org.everbuild.blocksandstuff.fluids.pickup
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.BlockVec
-import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.attribute.Attribute
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerUseItemEvent
@@ -19,7 +18,7 @@ import org.everbuild.blocksandstuff.fluids.raycastForFluid
 
 fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
     .addListener(PlayerUseItemEvent::class.java) { event: PlayerUseItemEvent ->
-        if (event.player.itemInMainHand != ItemStack.of(Material.BUCKET)) return@addListener
+        if (event.itemStack != ItemStack.of(Material.BUCKET)) return@addListener
 
         val instance = event.player.instance
 
@@ -29,9 +28,18 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
                 event.player.eyePosition(),
                 event.player.position.direction(),
                 event.player.getAttributeValue(Attribute.BLOCK_INTERACTION_RANGE)
-            ) ?: return@addListener
+            )
 
-        val blockFace = findBlockFace(player = event.player, liquidBlock) ?: return@addListener
+        if (liquidBlock==null) {
+            //FIXME: sometimes this is null when it shouldn't
+            // and the water doesn't get picked up which causes a client desync
+            // this is a fix for the desync but not the raycastForFluid being null
+            event.player.inventory.update()
+
+            return@addListener
+        }
+
+        val blockFace = findBlockFace(liquidBlock) ?: return@addListener
 
         val pickupEvent = FluidPickupEvent(
             event.instance,
@@ -40,6 +48,7 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
             BlockVec(liquidBlock.x(), liquidBlock.y(), liquidBlock.z()),
             Block.AIR
         )
+
         MinecraftServer.getGlobalEventHandler().callCancellable(pickupEvent) {
             instance.placeBlock(
                 PlayerPlacement(
@@ -54,18 +63,16 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
                     liquidBlock.z().toFloat(),
                 )
             )
-        }
+            val fluid = MinestomFluids.getFluidInstanceOnBlock(pickupEvent.sourceBlock)
 
-        val fluid = MinestomFluids.getFluidInstanceOnBlock(pickupEvent.sourceBlock)
-
-        if (fluid is WaterFluid || fluid is LavaFluid) {
-            val material = if (fluid is WaterFluid) Material.WATER_BUCKET
+            if (fluid is WaterFluid || fluid is LavaFluid) {
+                val material = if (fluid is WaterFluid) Material.WATER_BUCKET
                 else Material.LAVA_BUCKET
 
-            event.player.inventory.setEquipment(
-                EquipmentSlot.MAIN_HAND,
-                event.player.heldSlot,
-                ItemStack.of(material)
-            )
+                event.player.setItemInHand(event.hand, ItemStack.of(material))
+            }
         }
+
+        event.player.inventory.update()
+
     }
