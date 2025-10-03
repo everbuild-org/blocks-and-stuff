@@ -4,13 +4,14 @@
 
 ## Statistics
  - Total blocks with state: 643
- - Supported blocks: 610
- - Unsupported blocks: 33
+ - Supported blocks: 609
+ - Unsupported blocks: 34
  - Implementation progress: 94% (6 blocks = 1%)
 
 ## Unsupported Blocks
 - [ ] minecraft:bubble_column
 - [ ] minecraft:calibrated_sculk_sensor
+- [ ] minecraft:chain
 - [ ] minecraft:chorus_flower
 - [ ] minecraft:chorus_plant
 - [ ] minecraft:creaking_heart
@@ -159,7 +160,6 @@
 - [x] minecraft:carved_pumpkin
 - [x] minecraft:cave_vines
 - [x] minecraft:cave_vines_plant
-- [x] minecraft:chain
 - [x] minecraft:chain_command_block
 - [x] minecraft:cherry_button
 - [x] minecraft:cherry_door
@@ -190,6 +190,7 @@
 - [x] minecraft:command_block
 - [x] minecraft:comparator
 - [x] minecraft:conduit
+- [x] minecraft:copper_chain
 - [x] minecraft:copper_door
 - [x] minecraft:copper_grate
 - [x] minecraft:copper_trapdoor
@@ -319,6 +320,7 @@
 - [x] minecraft:horn_coral_wall_fan
 - [x] minecraft:infested_deepslate
 - [x] minecraft:iron_bars
+- [x] minecraft:iron_chain
 - [x] minecraft:iron_door
 - [x] minecraft:iron_trapdoor
 - [x] minecraft:jack_o_lantern
