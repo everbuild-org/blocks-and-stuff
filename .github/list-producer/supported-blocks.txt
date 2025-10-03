@@ -273,6 +273,7 @@ minecraft:brown_carpet
 minecraft:green_carpet
 minecraft:red_carpet
 minecraft:black_carpet
+minecraft:moss_carpet
 minecraft:oak_button
 minecraft:spruce_button
 minecraft:birch_button
@@ -448,6 +449,8 @@ minecraft:redstone_torch
 minecraft:wall_torch
 minecraft:soul_wall_torch
 minecraft:redstone_wall_torch
+minecraft:copper_torch
+minecraft:copper_wall_torch
 minecraft:cobblestone_wall
 minecraft:mossy_cobblestone_wall
 minecraft:brick_wall
@@ -720,3 +723,6 @@ minecraft:snow
 minecraft:kelp_plant
 minecraft:kelp
 minecraft:pointed_dripstone
+minecraft:hanging_roots
+minecraft:pale_hanging_moss
+minecraft:pale_moss_carpet
