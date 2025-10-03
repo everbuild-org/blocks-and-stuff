@@ -165,6 +165,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val PIN_BOTTOM_SUPPORTED = group(
         all(
             byTag("minecraft:wool_carpets"),
+            byBlock(Block.MOSS_CARPET)
         ),
         ::PinSupportedBelowPlacementRule
     )
@@ -255,6 +256,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.WALL_TORCH),
             byBlock(Block.SOUL_WALL_TORCH),
             byBlock(Block.REDSTONE_WALL_TORCH),
+            byBlock(Block.COPPER_TORCH),
+            byBlock(Block.COPPER_WALL_TORCH),
         ),
         ::TorchPlacementRule
     )
@@ -550,6 +553,21 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val POINTED_DRIPSTONE = group(
         byBlock(Block.POINTED_DRIPSTONE),
         ::PointedDripstonePlacementRule
+    )
+
+    val HANGING_ROOTS = group(
+        byBlock(Block.HANGING_ROOTS),
+        ::HangingRootsPlacementRule
+    )
+
+    val PALE_HANGING_MOSS = group(
+        byBlock(Block.PALE_HANGING_MOSS),
+        ::PaleHangingMossPlacementRule
+    )
+
+    val PALE_MOSS_CARPET = group(
+        byBlock(Block.PALE_MOSS_CARPET),
+        ::PaleMossCarpetPlacementRule
     )
 
     override fun createGroup(

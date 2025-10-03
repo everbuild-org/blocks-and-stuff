@@ -7,6 +7,7 @@ minecraft:flowering_azalea_leaves
 minecraft:jungle_leaves
 minecraft:mangrove_leaves
 minecraft:oak_leaves
+minecraft:pale_oak_leaves
 minecraft:spruce_leaves
 minecraft:candle_cake
 minecraft:white_candle_cake
@@ -75,5 +76,5 @@ minecraft:suspicious_gravel
 minecraft:suspicious_sand
 minecraft:water
 minecraft:water_cauldron
-minecraft:water_cauldron
 minecraft:decorated_pot
+minecraft:mangrove_roots
