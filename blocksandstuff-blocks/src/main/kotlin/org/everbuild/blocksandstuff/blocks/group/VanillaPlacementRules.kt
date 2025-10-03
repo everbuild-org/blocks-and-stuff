@@ -97,6 +97,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REPEATING_COMMAND_BLOCK),
             byBlock(Block.DROPPER),
             byBlock(Block.DISPENSER),
+            byTag("minecraft:wooden_shelves"),
+            byTag("minecraft:copper_golem_statues")
         ),
         ::FacingPlacementRule
     )
@@ -163,6 +165,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val PIN_BOTTOM_SUPPORTED = group(
         all(
             byTag("minecraft:wool_carpets"),
+            byBlock(Block.MOSS_CARPET)
         ),
         ::PinSupportedBelowPlacementRule
     )
@@ -232,7 +235,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val VERTICAL_SLIM = group(
         all(
-            byBlock(Block.IRON_BARS),
+            byTag("minecraft:bars"),
             byTag("blocksandstuff:glass_panes"),
         ),
         ::VerticalSlimBlockPlacementRule
@@ -252,7 +255,9 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REDSTONE_TORCH),
             byBlock(Block.WALL_TORCH),
             byBlock(Block.SOUL_WALL_TORCH),
-            byBlock(Block.SOUL_FIRE),
+            byBlock(Block.REDSTONE_WALL_TORCH),
+            byBlock(Block.COPPER_TORCH),
+            byBlock(Block.COPPER_WALL_TORCH),
         ),
         ::TorchPlacementRule
     )
@@ -269,8 +274,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val LANTERNS = group(
         all(
-            byBlock(Block.LANTERN),
-            byBlock(Block.SOUL_LANTERN)
+            byTag("minecraft:lanterns"),
         ),
         ::LanternPlacementRule
     )
@@ -300,8 +304,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val CHAINS = group(
         all(
-            byBlock(Block.IRON_CHAIN),
-            byBlock(Block.COPPER_CHAIN)
+            byTag("minecraft:chains"),
         ),
         ::ChainPlacementRule
     )
@@ -330,6 +333,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byTag("minecraft:chests"),
             byBlock(Block.CHEST),
             byBlock(Block.TRAPPED_CHEST),
+            byTag("minecraft:copper_chests"),
         ),
         ::ChestPlacementRule
     )
@@ -507,7 +511,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val LIGHTNING_ROD = group(
-        byBlock(Block.LIGHTNING_ROD),
+        byTag("minecraft:lightning_rods"),
         ::LightningRodPlacementRule
     )
 
@@ -549,6 +553,21 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val POINTED_DRIPSTONE = group(
         byBlock(Block.POINTED_DRIPSTONE),
         ::PointedDripstonePlacementRule
+    )
+
+    val HANGING_ROOTS = group(
+        byBlock(Block.HANGING_ROOTS),
+        ::HangingRootsPlacementRule
+    )
+
+    val PALE_HANGING_MOSS = group(
+        byBlock(Block.PALE_HANGING_MOSS),
+        ::PaleHangingMossPlacementRule
+    )
+
+    val PALE_MOSS_CARPET = group(
+        byBlock(Block.PALE_MOSS_CARPET),
+        ::PaleMossCarpetPlacementRule
     )
 
     override fun createGroup(
