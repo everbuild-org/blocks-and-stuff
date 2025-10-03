@@ -4,46 +4,32 @@
 
 ## Statistics
  - Total blocks with state: 703
- - Supported blocks: 649
- - Unsupported blocks: 54
- - Implementation progress: 92% (7 blocks = 1%)
+ - Supported blocks: 670
+ - Unsupported blocks: 33
+ - Implementation progress: 95% (7 blocks = 1%)
 
 ## Unsupported Blocks
-- [ ] minecraft:acacia_shelf
-- [ ] minecraft:bamboo_shelf
-- [ ] minecraft:birch_shelf
 - [ ] minecraft:bubble_column
 - [ ] minecraft:calibrated_sculk_sensor
-- [ ] minecraft:cherry_shelf
 - [ ] minecraft:chorus_flower
 - [ ] minecraft:chorus_plant
-- [ ] minecraft:copper_golem_statue
 - [ ] minecraft:copper_wall_torch
 - [ ] minecraft:creaking_heart
-- [ ] minecraft:crimson_shelf
-- [ ] minecraft:dark_oak_shelf
-- [ ] minecraft:exposed_copper_golem_statue
 - [ ] minecraft:fire
 - [ ] minecraft:frosted_ice
 - [ ] minecraft:glow_lichen
 - [ ] minecraft:hanging_roots
 - [ ] minecraft:jigsaw
-- [ ] minecraft:jungle_shelf
 - [ ] minecraft:lava
 - [ ] minecraft:mangrove_roots
-- [ ] minecraft:mangrove_shelf
 - [ ] minecraft:moving_piston
 - [ ] minecraft:nether_portal
-- [ ] minecraft:oak_shelf
-- [ ] minecraft:oxidized_copper_golem_statue
 - [ ] minecraft:pale_hanging_moss
 - [ ] minecraft:pale_moss_carpet
 - [ ] minecraft:pale_oak_leaves
-- [ ] minecraft:pale_oak_shelf
 - [ ] minecraft:piston_head
 - [ ] minecraft:pitcher_plant
 - [ ] minecraft:powder_snow_cauldron
-- [ ] minecraft:redstone_wall_torch
 - [ ] minecraft:redstone_wire
 - [ ] minecraft:scaffolding
 - [ ] minecraft:sculk_catalyst
@@ -51,18 +37,11 @@
 - [ ] minecraft:sea_pickle
 - [ ] minecraft:small_dripleaf
 - [ ] minecraft:sniffer_egg
-- [ ] minecraft:spruce_shelf
 - [ ] minecraft:structure_block
 - [ ] minecraft:sweet_berry_bush
 - [ ] minecraft:tall_seagrass
 - [ ] minecraft:tripwire
 - [ ] minecraft:tripwire_hook
-- [ ] minecraft:warped_shelf
-- [ ] minecraft:waxed_copper_golem_statue
-- [ ] minecraft:waxed_exposed_copper_golem_statue
-- [ ] minecraft:waxed_oxidized_copper_golem_statue
-- [ ] minecraft:waxed_weathered_copper_golem_statue
-- [ ] minecraft:weathered_copper_golem_statue
 
 ## Supported Blocks
 - [x] minecraft:acacia_button
@@ -73,6 +52,7 @@
 - [x] minecraft:acacia_log
 - [x] minecraft:acacia_pressure_plate
 - [x] minecraft:acacia_sapling
+- [x] minecraft:acacia_shelf
 - [x] minecraft:acacia_sign
 - [x] minecraft:acacia_slab
 - [x] minecraft:acacia_stairs
@@ -102,6 +82,7 @@
 - [x] minecraft:bamboo_mosaic_stairs
 - [x] minecraft:bamboo_pressure_plate
 - [x] minecraft:bamboo_sapling
+- [x] minecraft:bamboo_shelf
 - [x] minecraft:bamboo_sign
 - [x] minecraft:bamboo_slab
 - [x] minecraft:bamboo_stairs
@@ -125,6 +106,7 @@
 - [x] minecraft:birch_log
 - [x] minecraft:birch_pressure_plate
 - [x] minecraft:birch_sapling
+- [x] minecraft:birch_shelf
 - [x] minecraft:birch_sign
 - [x] minecraft:birch_slab
 - [x] minecraft:birch_stairs
@@ -189,6 +171,7 @@
 - [x] minecraft:cherry_log
 - [x] minecraft:cherry_pressure_plate
 - [x] minecraft:cherry_sapling
+- [x] minecraft:cherry_shelf
 - [x] minecraft:cherry_sign
 - [x] minecraft:cherry_slab
 - [x] minecraft:cherry_stairs
@@ -214,6 +197,7 @@
 - [x] minecraft:copper_chain
 - [x] minecraft:copper_chest
 - [x] minecraft:copper_door
+- [x] minecraft:copper_golem_statue
 - [x] minecraft:copper_grate
 - [x] minecraft:copper_lantern
 - [x] minecraft:copper_trapdoor
@@ -227,6 +211,7 @@
 - [x] minecraft:crimson_hanging_sign
 - [x] minecraft:crimson_hyphae
 - [x] minecraft:crimson_pressure_plate
+- [x] minecraft:crimson_shelf
 - [x] minecraft:crimson_sign
 - [x] minecraft:crimson_slab
 - [x] minecraft:crimson_stairs
@@ -256,6 +241,7 @@
 - [x] minecraft:dark_oak_log
 - [x] minecraft:dark_oak_pressure_plate
 - [x] minecraft:dark_oak_sapling
+- [x] minecraft:dark_oak_shelf
 - [x] minecraft:dark_oak_sign
 - [x] minecraft:dark_oak_slab
 - [x] minecraft:dark_oak_stairs
@@ -305,6 +291,7 @@
 - [x] minecraft:exposed_copper_chain
 - [x] minecraft:exposed_copper_chest
 - [x] minecraft:exposed_copper_door
+- [x] minecraft:exposed_copper_golem_statue
 - [x] minecraft:exposed_copper_grate
 - [x] minecraft:exposed_copper_lantern
 - [x] minecraft:exposed_copper_trapdoor
@@ -360,6 +347,7 @@
 - [x] minecraft:jungle_log
 - [x] minecraft:jungle_pressure_plate
 - [x] minecraft:jungle_sapling
+- [x] minecraft:jungle_shelf
 - [x] minecraft:jungle_sign
 - [x] minecraft:jungle_slab
 - [x] minecraft:jungle_stairs
@@ -422,6 +410,7 @@
 - [x] minecraft:mangrove_log
 - [x] minecraft:mangrove_pressure_plate
 - [x] minecraft:mangrove_propagule
+- [x] minecraft:mangrove_shelf
 - [x] minecraft:mangrove_sign
 - [x] minecraft:mangrove_slab
 - [x] minecraft:mangrove_stairs
@@ -456,6 +445,7 @@
 - [x] minecraft:oak_log
 - [x] minecraft:oak_pressure_plate
 - [x] minecraft:oak_sapling
+- [x] minecraft:oak_shelf
 - [x] minecraft:oak_sign
 - [x] minecraft:oak_slab
 - [x] minecraft:oak_stairs
@@ -480,6 +470,7 @@
 - [x] minecraft:oxidized_copper_chain
 - [x] minecraft:oxidized_copper_chest
 - [x] minecraft:oxidized_copper_door
+- [x] minecraft:oxidized_copper_golem_statue
 - [x] minecraft:oxidized_copper_grate
 - [x] minecraft:oxidized_copper_lantern
 - [x] minecraft:oxidized_copper_trapdoor
@@ -494,6 +485,7 @@
 - [x] minecraft:pale_oak_log
 - [x] minecraft:pale_oak_pressure_plate
 - [x] minecraft:pale_oak_sapling
+- [x] minecraft:pale_oak_shelf
 - [x] minecraft:pale_oak_sign
 - [x] minecraft:pale_oak_slab
 - [x] minecraft:pale_oak_stairs
@@ -582,6 +574,7 @@
 - [x] minecraft:red_tulip
 - [x] minecraft:red_wall_banner
 - [x] minecraft:redstone_torch
+- [x] minecraft:redstone_wall_torch
 - [x] minecraft:repeater
 - [x] minecraft:repeating_command_block
 - [x] minecraft:resin_brick_slab
@@ -605,7 +598,6 @@
 - [x] minecraft:smooth_stone_slab
 - [x] minecraft:snow
 - [x] minecraft:soul_campfire
-- [x] minecraft:soul_fire
 - [x] minecraft:soul_lantern
 - [x] minecraft:soul_torch
 - [x] minecraft:soul_wall_torch
@@ -617,6 +609,7 @@
 - [x] minecraft:spruce_log
 - [x] minecraft:spruce_pressure_plate
 - [x] minecraft:spruce_sapling
+- [x] minecraft:spruce_shelf
 - [x] minecraft:spruce_sign
 - [x] minecraft:spruce_slab
 - [x] minecraft:spruce_stairs
@@ -686,6 +679,7 @@
 - [x] minecraft:warped_hanging_sign
 - [x] minecraft:warped_hyphae
 - [x] minecraft:warped_pressure_plate
+- [x] minecraft:warped_shelf
 - [x] minecraft:warped_sign
 - [x] minecraft:warped_slab
 - [x] minecraft:warped_stairs
@@ -697,6 +691,7 @@
 - [x] minecraft:waxed_copper_chain
 - [x] minecraft:waxed_copper_chest
 - [x] minecraft:waxed_copper_door
+- [x] minecraft:waxed_copper_golem_statue
 - [x] minecraft:waxed_copper_grate
 - [x] minecraft:waxed_copper_lantern
 - [x] minecraft:waxed_copper_trapdoor
@@ -706,6 +701,7 @@
 - [x] minecraft:waxed_exposed_copper_chain
 - [x] minecraft:waxed_exposed_copper_chest
 - [x] minecraft:waxed_exposed_copper_door
+- [x] minecraft:waxed_exposed_copper_golem_statue
 - [x] minecraft:waxed_exposed_copper_grate
 - [x] minecraft:waxed_exposed_copper_lantern
 - [x] minecraft:waxed_exposed_copper_trapdoor
@@ -717,6 +713,7 @@
 - [x] minecraft:waxed_oxidized_copper_chain
 - [x] minecraft:waxed_oxidized_copper_chest
 - [x] minecraft:waxed_oxidized_copper_door
+- [x] minecraft:waxed_oxidized_copper_golem_statue
 - [x] minecraft:waxed_oxidized_copper_grate
 - [x] minecraft:waxed_oxidized_copper_lantern
 - [x] minecraft:waxed_oxidized_copper_trapdoor
@@ -727,6 +724,7 @@
 - [x] minecraft:waxed_weathered_copper_chain
 - [x] minecraft:waxed_weathered_copper_chest
 - [x] minecraft:waxed_weathered_copper_door
+- [x] minecraft:waxed_weathered_copper_golem_statue
 - [x] minecraft:waxed_weathered_copper_grate
 - [x] minecraft:waxed_weathered_copper_lantern
 - [x] minecraft:waxed_weathered_copper_trapdoor
@@ -737,6 +735,7 @@
 - [x] minecraft:weathered_copper_chain
 - [x] minecraft:weathered_copper_chest
 - [x] minecraft:weathered_copper_door
+- [x] minecraft:weathered_copper_golem_statue
 - [x] minecraft:weathered_copper_grate
 - [x] minecraft:weathered_copper_lantern
 - [x] minecraft:weathered_copper_trapdoor
