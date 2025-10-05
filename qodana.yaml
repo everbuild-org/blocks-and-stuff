@@ -1,10 +1,64 @@
 ####################################################################################################################
 # WARNING: Do not store sensitive information in this file, as its contents will be included in the Qodana report. #
 ####################################################################################################################
-
-version: "1.0"
-linter: jetbrains/qodana-jvm-community:2025.2
+version: '1.0'
+linter: 'jetbrains/qodana-jvm-community:2025.2'
 profile:
   name: qodana.recommended
 include:
   - name: CheckDependencyLicenses
+exclude:
+  - name: IfThenToSafeAccess
+  - name: ConstantConditionIf
+  - name: CanBeParameter
+  - name: ControlFlowWithEmptyBody
+  - name: RedundantExplicitType
+  - name: CanBePrimaryConstructorProperty
+  - name: RedundantElvisReturnNull
+  - name: RedundantCompanionReference
+  - name: RedundantConstructorKeyword
+  - name: RedundantIf
+  - name: RedundantInnerClassModifier
+  - name: RedundantRequireNotNullCall
+  - name: RedundantReturnLabel
+  - name: RedundantSuspendModifier
+  - name: RedundantUnitExpression
+  - name: RedundantUnitReturnType
+  - name: RedundantWith
+  - name: ComplexRedundantLet
+  - name: RemoveRedundantBackticks
+  - name: RemoveRedundantCallsOfConversionMethods
+  - name: RemoveToStringInStringTemplate
+  - name: RemoveEmptySecondaryConstructorBody
+  - name: RedundantLambdaOrAnonymousFunction
+  - name: RemoveCurlyBracesFromTemplate
+  - name: KotlinDoubleNegation
+  - name: RedundantEmptyInitializerBlock
+  - name: RedundantEnumConstructorInvocation
+  - name: CanUnescapeDollarLiteral
+  - name: RedundantInterpolationPrefix
+  - name: RedundantLambdaArrow
+  - name: RedundantModalityModifier
+  - name: RedundantNullableReturnType
+  - name: KotlinRedundantOverride
+  - name: RedundantGetter
+  - name: RedundantSetter
+  - name: RemoveRedundantQualifierName
+  - name: SimpleRedundantLet
+  - name: RedundantSamConstructor
+  - name: RedundantSemicolon
+  - name: RemoveSetterParameterType
+  - name: RemoveRedundantSpreadOperator
+  - name: RemoveSingleExpressionStringTemplate
+  - name: RedundantVisibilityModifier
+  - name: RemoveEmptyClassBody
+  - name: SimplifyWhenWithBooleanConstantCondition
+  - name: UnnecessaryVariable
+  - name: RemoveEmptyParenthesesFromLambdaCall
+  - name: RemoveExplicitSuperQualifier
+  - name: RemoveExplicitTypeArguments
+  - name: KotlinUnusedImport
+  - name: UnusedReceiverParameter
+  - name: UnusedSymbol
+  - name: UnusedVariable
+  - name: VariableInitializerIsRedundant
