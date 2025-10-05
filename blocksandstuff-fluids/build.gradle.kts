@@ -19,6 +19,7 @@ dependencies {
     testImplementation(libs.minestom)
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation(kotlin("stdlib-jdk8"))
+    implementation(libs.fastutil)
 }
 
 tasks.test {
