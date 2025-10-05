@@ -26,6 +26,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.VERDANT_FROGLIGHT),
             byBlock(Block.PEARLESCENT_FROGLIGHT),
             byBlock(Block.HAY_BLOCK),
+            byBlock(Block.CREAKING_HEART)
         ),
         ::RotatedPillarPlacementRule
     )
@@ -416,6 +417,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         all(
             byTag("minecraft:saplings"),
             byTag("minecraft:small_flowers"),
+            byBlock(Block.SWEET_BERRY_BUSH),
         ),
         ::GroundedPlantBlockPlacementRule
     )
@@ -569,6 +571,12 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         byBlock(Block.PALE_MOSS_CARPET),
         ::PaleMossCarpetPlacementRule
     )
+
+    val CALIBRATED_SCULK_SENSOR =
+        group(
+            byBlock(Block.CALIBRATED_SCULK_SENSOR),
+            ::CalibratedSculkSensorPlacementRule
+        )
 
     override fun createGroup(
         blockGroup: BlockGroup,

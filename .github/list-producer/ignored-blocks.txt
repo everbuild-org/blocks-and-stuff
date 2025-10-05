@@ -78,3 +78,5 @@ minecraft:water
 minecraft:water_cauldron
 minecraft:decorated_pot
 minecraft:mangrove_roots
+minecraft:mangrove_leaves
+minecraft:structure_block
