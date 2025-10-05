@@ -10,8 +10,7 @@ class FeatureRailPlacementRule(block: Block) : AbstractRailPlacementRule(block) 
         if (!isSupported(placementState.instance, placementState.placePosition)) return null
         val primaryDirection = placementState.getNearestHorizontalLookingDirection()
 
-        val fixed = getFixedPlacement(placementState)
-        val lockedDirection = when(fixed) {
+        val lockedDirection = when(val fixed = getFixedPlacement(placementState)) {
             is FixedPlacementResult.DefinitiveBlock -> return fixed.block
             is FixedPlacementResult.LockedDirection  -> fixed.direction
         }
