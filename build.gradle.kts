@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.3.0-dev-9673"
+    kotlin("jvm") version "2.3.0-Beta1"
 }
 
 group = "org.everbuild.blocksandstuff"
@@ -18,7 +18,6 @@ allprojects {
         }
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
-        maven("https://redirector.kotlinlang.org/maven/bootstrap")
     }
 }
 

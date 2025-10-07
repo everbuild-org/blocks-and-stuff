@@ -33,7 +33,7 @@ jobs:
       - name: Set up Kotlin
         uses: fwilhe2/setup-kotlin@main
         with:
-          version: '2.1.0'
+          version: '2.3.0-Beta1'
 
       - name: Cache Gradle packages
         uses: actions/cache@v4
