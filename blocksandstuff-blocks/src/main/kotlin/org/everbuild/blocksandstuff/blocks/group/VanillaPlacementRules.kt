@@ -578,6 +578,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             ::CalibratedSculkSensorPlacementRule
         )
 
+    val SCULK_VEIN = group(
+        byBlock(Block.SCULK_VEIN),
+        ::SculkVeinPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
