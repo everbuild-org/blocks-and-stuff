@@ -80,3 +80,5 @@ minecraft:decorated_pot
 minecraft:mangrove_roots
 minecraft:mangrove_leaves
 minecraft:structure_block
+minecraft:powder_snow_cauldron
+minecraft:sculk_catalyst
