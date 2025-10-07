@@ -20,13 +20,8 @@ abstract class AbstractPlaceAroundCursorRule(block: Block, private val direction
             .filter { !assignedDirections.contains(it) }
 
         if (possibleDirections.isEmpty()) return if (assignedDirections.isEmpty()) null else prevBlock
-        var direction = placementState.blockFace?.oppositeFace?.toDirection() ?: return null
-
-        if (direction == Direction.DOWN) {
-            direction = placementState.getNearestHorizontalLookingDirection().opposite()
-        }
-        
-        val nearest = possibleDirections.maxBy { direction.vec().dot(it.vec()) }
+        val direction = placementState.blockFace?.oppositeFace?.toDirection() ?: return null
+        val nearest = if (possibleDirections.contains(direction)) direction else possibleDirections.maxBy { placementState.playerPosition!!.direction().dot(it.vec()) }
 
         return (if (prevBlock.compare(block, Block.Comparator.ID)) prevBlock else placementState.block)
             .withProperty(nearest.name.lowercase(), "true")
