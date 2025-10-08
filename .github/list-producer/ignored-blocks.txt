@@ -82,3 +82,5 @@ minecraft:mangrove_leaves
 minecraft:structure_block
 minecraft:powder_snow_cauldron
 minecraft:sculk_catalyst
+minecraft:frosted_ice
+minecraft:nether_portal
