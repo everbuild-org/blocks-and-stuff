@@ -495,6 +495,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ResinClumpPlacementRule
     )
 
+    val GLOW_LICHEN = group(
+        byBlock(Block.GLOW_LICHEN),
+        ::GlowLichenPlacementRule
+    )
+
     val TWISTING_VINE = group(
         all(
             byBlock(Block.TWISTING_VINES),
