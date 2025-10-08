@@ -153,6 +153,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::CoralRule
     )
 
+    val SWEET_BERRY_BUSH = group(
+        byBlock(Block.SWEET_BERRY_BUSH),
+        ::SweetBerryBushRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler

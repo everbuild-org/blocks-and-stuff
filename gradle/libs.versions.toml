@@ -5,6 +5,7 @@ gson = "2.12.1"
 junit = "5.10.0"
 mockito = "5.16.0"
 mockito-kotlin = "5.4.0"
+fastutil = "8.5.17"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
@@ -12,6 +13,7 @@ tinylog-api = { group = "org.tinylog", name = "tinylog-api", version.ref = "tiny
 tinylog-impl = { group = "org.tinylog", name = "tinylog-impl", version.ref = "tinylog" }
 tinylog-slf4j = { group = "org.tinylog", name = "slf4j-tinylog", version.ref = "tinylog" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson"}
+fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }

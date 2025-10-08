@@ -4,7 +4,7 @@ pluginManagement {
         mavenCentral()
     }
     plugins {
-        kotlin("jvm") version "2.1.10"
+        kotlin("jvm") version "2.3.0-Beta1"
     }
 }
 

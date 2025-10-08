@@ -10,8 +10,7 @@ class RailPlacementRule(block: Block) : AbstractRailPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         if (!isSupported(placementState.instance, placementState.placePosition)) return null
 
-        val fixed = getFixedPlacement(placementState)
-        val lockedDirection = when(fixed) {
+        val lockedDirection = when(val fixed = getFixedPlacement(placementState)) {
             is FixedPlacementResult.DefinitiveBlock -> return fixed.block
             is FixedPlacementResult.LockedDirection  -> fixed.direction
         }

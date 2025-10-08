@@ -26,7 +26,7 @@ tasks.test {
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(25)
 }
 
 publishing {
@@ -66,7 +66,7 @@ publishing {
     repositories {
         maven {
             name = "EverbuildMaven"
-            url = uri(project.findProperty("everbuildMavenUrl") as String? ?: "")
+            url = uri("https://mvn.everbuild.org/public")
             credentials {
                 username = project.findProperty("everbuildMavenUsername") as String? ?: ""
                 password = project.findProperty("everbuildMavenPassword") as String? ?: ""
