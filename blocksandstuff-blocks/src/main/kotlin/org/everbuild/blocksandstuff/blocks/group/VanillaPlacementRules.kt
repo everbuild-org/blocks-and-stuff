@@ -318,6 +318,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.SUNFLOWER),
             byBlock(Block.LILAC),
             byBlock(Block.ROSE_BUSH),
+            byBlock(Block.PITCHER_PLANT)
         ),
         ::TallFlowerPlacementRule
     )
@@ -492,6 +493,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val RESIN_CLUMP = group(
         byBlock(Block.RESIN_CLUMP),
         ::ResinClumpPlacementRule
+    )
+
+    val GLOW_LICHEN = group(
+        byBlock(Block.GLOW_LICHEN),
+        ::GlowLichenPlacementRule
     )
 
     val TWISTING_VINE = group(
