@@ -147,6 +147,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::BellPlacementRule
     )
 
+    val SMALL_DRIPLEAF = group(
+        byBlock(Block.SMALL_DRIPLEAF),
+        ::SmallDripleafPlacementRule
+    )
+
     val BIG_DRIPLEAF = group(
         all(
             byBlock(Block.BIG_DRIPLEAF),
