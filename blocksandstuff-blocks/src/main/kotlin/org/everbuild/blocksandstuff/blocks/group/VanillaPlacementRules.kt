@@ -584,6 +584,16 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             ::CalibratedSculkSensorPlacementRule
         )
 
+    val SEAGRASS = group(
+        byBlock(Block.SEAGRASS),
+        ::SeagrassPlacementRule
+    )
+
+    val TALL_SEAGRASS = group(
+        byBlock(Block.TALL_SEAGRASS),
+        ::TallSeagrassPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
