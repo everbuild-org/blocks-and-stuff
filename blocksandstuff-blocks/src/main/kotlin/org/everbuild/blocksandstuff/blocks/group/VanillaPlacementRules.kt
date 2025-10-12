@@ -589,6 +589,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SculkVeinPlacementRule
     )
 
+    val SEA_PICKLE = group(
+        byBlock(Block.SEA_PICKLE),
+        ::SeaPicklePlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
