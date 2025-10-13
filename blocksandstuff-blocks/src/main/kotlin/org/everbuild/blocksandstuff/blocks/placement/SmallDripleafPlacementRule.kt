@@ -13,20 +13,16 @@ import org.everbuild.blocksandstuff.common.utils.isWater
 class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
     private val plantableOn = BlockTags.getTaggedWith("minecraft:small_dripleaf_placeable")
     private val dirtBlocks = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:dirt"))!!
-
     override fun blockPlace(placementState: PlacementState): Block {
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
         val blockAbove = placementState.instance.getBlock(placementState.placePosition.add(0.0, 1.0, 0.0))
         val currentBlock = placementState.instance.getBlock(placementState.placePosition)
         val direction = placementState.getNearestHorizontalLookingDirection()
-
         val bottomInsideWater = currentBlock.isWater()
         val topInsideWater = blockAbove.isWater()
-
         val instance = placementState.instance as Instance
 
         if (!blockAbove.isWater() && !blockAbove.isAir) return currentBlock
-
         if (plantableOn.any { it.compare(blockBelow) }) {
             setUpperBlock(
                 instance,
@@ -42,7 +38,6 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
         }
 
         if (!currentBlock.isWater()) return Block.AIR
-
         if (dirtBlocks.contains(blockBelow) || blockBelow.compare(Block.MUD) || blockBelow.compare(Block.FARMLAND)) {
             setUpperBlock(
                 instance,
@@ -50,7 +45,6 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
                 direction.name.lowercase(),
                 topInsideWater
             )
-
             return placementState.block
                 .withProperty("waterlogged", bottomInsideWater.toString())
                 .withProperty("facing", direction.name.lowercase())
@@ -76,8 +70,8 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
             Block.SMALL_DRIPLEAF
                 .withProperty("facing", direction)
                 .withProperty("half", "upper")
-                .withProperty("waterlogged", waterlogged.toString())
-            , false
+                .withProperty("waterlogged", waterlogged.toString()),
+            false
         )
     }
 }
