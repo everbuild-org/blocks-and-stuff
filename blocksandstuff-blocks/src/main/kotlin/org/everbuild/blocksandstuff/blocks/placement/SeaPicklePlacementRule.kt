@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 

@@ -609,6 +609,16 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::SeaPicklePlacementRule
     )
 
+    val TRIPWIREHOOK = group(
+        byBlock(Block.TRIPWIRE_HOOK),
+        ::TripwireHookPlacementRule
+    )
+
+    val TRIPWIRE = group(
+        byBlock(Block.TRIPWIRE),
+        ::TripwirePlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
