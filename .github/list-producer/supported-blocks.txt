@@ -56,6 +56,7 @@ minecraft:ochre_froglight
 minecraft:verdant_froglight
 minecraft:pearlescent_froglight
 minecraft:hay_block
+minecraft:creaking_heart
 minecraft:oak_slab
 minecraft:spruce_slab
 minecraft:birch_slab
@@ -238,6 +239,7 @@ minecraft:pumpkin_stem
 minecraft:torchflower_crop
 minecraft:pitcher_crop
 minecraft:bell
+minecraft:small_dripleaf
 minecraft:big_dripleaf
 minecraft:big_dripleaf_stem
 minecraft:light_weighted_pressure_plate
@@ -540,6 +542,7 @@ minecraft:large_fern
 minecraft:sunflower
 minecraft:lilac
 minecraft:rose_bush
+minecraft:pitcher_plant
 minecraft:oak_sign
 minecraft:spruce_sign
 minecraft:birch_sign
@@ -684,6 +687,7 @@ minecraft:lily_of_the_valley
 minecraft:wither_rose
 minecraft:torchflower
 minecraft:closed_eyeblossom
+minecraft:sweet_berry_bush
 minecraft:crafter
 minecraft:lever
 minecraft:comparator
@@ -702,6 +706,7 @@ minecraft:powered_rail
 minecraft:grindstone
 minecraft:vine
 minecraft:resin_clump
+minecraft:glow_lichen
 minecraft:twisting_vines
 minecraft:twisting_vines_plant
 minecraft:turtle_egg
@@ -726,3 +731,10 @@ minecraft:pointed_dripstone
 minecraft:hanging_roots
 minecraft:pale_hanging_moss
 minecraft:pale_moss_carpet
+minecraft:calibrated_sculk_sensor
+minecraft:seagrass
+minecraft:tall_seagrass
+minecraft:sculk_vein
+minecraft:sea_pickle
+minecraft:tripwire_hook
+minecraft:tripwire
