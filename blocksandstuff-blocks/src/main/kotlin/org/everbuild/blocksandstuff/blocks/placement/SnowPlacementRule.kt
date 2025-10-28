@@ -13,7 +13,7 @@ class SnowPlacementRule(block: Block) : BlockPlacementRule(block) {
             val snowLayer = snow.getProperty("layers")!!.toInt()
             return placementState.block().withProperty("layers", (snowLayer + 1).toString())
         }
-        return placementState.block()
+        return placementState.block
     }
 
     override fun isSelfReplaceable(replacement: Replacement): Boolean {

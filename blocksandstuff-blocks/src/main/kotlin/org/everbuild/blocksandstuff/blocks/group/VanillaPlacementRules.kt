@@ -26,6 +26,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.VERDANT_FROGLIGHT),
             byBlock(Block.PEARLESCENT_FROGLIGHT),
             byBlock(Block.HAY_BLOCK),
+            byBlock(Block.CREAKING_HEART)
         ),
         ::RotatedPillarPlacementRule
     )
@@ -97,6 +98,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REPEATING_COMMAND_BLOCK),
             byBlock(Block.DROPPER),
             byBlock(Block.DISPENSER),
+            byTag("minecraft:wooden_shelves"),
+            byTag("minecraft:copper_golem_statues")
         ),
         ::FacingPlacementRule
     )
@@ -144,6 +147,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::BellPlacementRule
     )
 
+    val SMALL_DRIPLEAF = group(
+        byBlock(Block.SMALL_DRIPLEAF),
+        ::SmallDripleafPlacementRule
+    )
+
     val BIG_DRIPLEAF = group(
         all(
             byBlock(Block.BIG_DRIPLEAF),
@@ -163,6 +171,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val PIN_BOTTOM_SUPPORTED = group(
         all(
             byTag("minecraft:wool_carpets"),
+            byBlock(Block.MOSS_CARPET)
         ),
         ::PinSupportedBelowPlacementRule
     )
@@ -232,7 +241,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val VERTICAL_SLIM = group(
         all(
-            byBlock(Block.IRON_BARS),
+            byTag("minecraft:bars"),
             byTag("blocksandstuff:glass_panes"),
         ),
         ::VerticalSlimBlockPlacementRule
@@ -252,7 +261,9 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.REDSTONE_TORCH),
             byBlock(Block.WALL_TORCH),
             byBlock(Block.SOUL_WALL_TORCH),
-            byBlock(Block.SOUL_FIRE),
+            byBlock(Block.REDSTONE_WALL_TORCH),
+            byBlock(Block.COPPER_TORCH),
+            byBlock(Block.COPPER_WALL_TORCH),
         ),
         ::TorchPlacementRule
     )
@@ -269,8 +280,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val LANTERNS = group(
         all(
-            byBlock(Block.LANTERN),
-            byBlock(Block.SOUL_LANTERN)
+            byTag("minecraft:lanterns"),
         ),
         ::LanternPlacementRule
     )
@@ -300,8 +310,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val CHAINS = group(
         all(
-            byBlock(Block.IRON_CHAIN),
-            byBlock(Block.COPPER_CHAIN)
+            byTag("minecraft:chains"),
         ),
         ::ChainPlacementRule
     )
@@ -314,6 +323,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byBlock(Block.SUNFLOWER),
             byBlock(Block.LILAC),
             byBlock(Block.ROSE_BUSH),
+            byBlock(Block.PITCHER_PLANT)
         ),
         ::TallFlowerPlacementRule
     )
@@ -330,6 +340,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             byTag("minecraft:chests"),
             byBlock(Block.CHEST),
             byBlock(Block.TRAPPED_CHEST),
+            byTag("minecraft:copper_chests"),
         ),
         ::ChestPlacementRule
     )
@@ -412,6 +423,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         all(
             byTag("minecraft:saplings"),
             byTag("minecraft:small_flowers"),
+            byBlock(Block.SWEET_BERRY_BUSH),
         ),
         ::GroundedPlantBlockPlacementRule
     )
@@ -488,6 +500,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ResinClumpPlacementRule
     )
 
+    val GLOW_LICHEN = group(
+        byBlock(Block.GLOW_LICHEN),
+        ::GlowLichenPlacementRule
+    )
+
     val TWISTING_VINE = group(
         all(
             byBlock(Block.TWISTING_VINES),
@@ -507,7 +524,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     )
 
     val LIGHTNING_ROD = group(
-        byBlock(Block.LIGHTNING_ROD),
+        byTag("minecraft:lightning_rods"),
         ::LightningRodPlacementRule
     )
 
@@ -526,7 +543,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::EndRodPlacementRule
     )
 
-    val ATTACHED_STEMP = group(
+    val ATTACHED_STEM = group(
         byList(
             listOf(
                 Block.ATTACHED_PUMPKIN_STEM,
@@ -549,6 +566,57 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val POINTED_DRIPSTONE = group(
         byBlock(Block.POINTED_DRIPSTONE),
         ::PointedDripstonePlacementRule
+    )
+
+    val HANGING_ROOTS = group(
+        byBlock(Block.HANGING_ROOTS),
+        ::HangingRootsPlacementRule
+    )
+
+    val PALE_HANGING_MOSS = group(
+        byBlock(Block.PALE_HANGING_MOSS),
+        ::PaleHangingMossPlacementRule
+    )
+
+    val PALE_MOSS_CARPET = group(
+        byBlock(Block.PALE_MOSS_CARPET),
+        ::PaleMossCarpetPlacementRule
+    )
+
+    val CALIBRATED_SCULK_SENSOR =
+        group(
+            byBlock(Block.CALIBRATED_SCULK_SENSOR),
+            ::CalibratedSculkSensorPlacementRule
+        )
+
+    val SEAGRASS = group(
+        byBlock(Block.SEAGRASS),
+        ::SeagrassPlacementRule
+    )
+
+    val TALL_SEAGRASS = group(
+        byBlock(Block.TALL_SEAGRASS),
+        ::TallSeagrassPlacementRule
+    )
+
+    val SCULK_VEIN = group(
+        byBlock(Block.SCULK_VEIN),
+        ::SculkVeinPlacementRule
+    )
+
+    val SEA_PICKLE = group(
+        byBlock(Block.SEA_PICKLE),
+        ::SeaPicklePlacementRule
+    )
+
+    val TRIPWIREHOOK = group(
+        byBlock(Block.TRIPWIRE_HOOK),
+        ::TripwireHookPlacementRule
+    )
+
+    val TRIPWIRE = group(
+        byBlock(Block.TRIPWIRE),
+        ::TripwirePlacementRule
     )
 
     override fun createGroup(

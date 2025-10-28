@@ -53,6 +53,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
             Block.TORCH.registry()!!.material() -> Block.WALL_TORCH
             Block.SOUL_TORCH.registry()!!.material() -> Block.SOUL_WALL_TORCH
             Block.REDSTONE_TORCH.registry()!!.material() -> Block.REDSTONE_WALL_TORCH
+            Block.COPPER_TORCH.registry()!!.material() -> Block.COPPER_WALL_TORCH
             else -> return null
         }
 

@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
+    kotlin("jvm") version "2.3.0-Beta2"
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.7.0-SNAPSHOT"
+version = "1.8.0-SNAPSHOT"
 
 allprojects {
     group = rootProject.group
@@ -16,6 +16,9 @@ allprojects {
                 includeModule("net.minestom", "minestom")
             }
         }
+        maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        maven("https://repo.papermc.io/repository/maven-public/")
+        maven("https://redirector.kotlinlang.org/maven/bootstrap")
     }
 }
 

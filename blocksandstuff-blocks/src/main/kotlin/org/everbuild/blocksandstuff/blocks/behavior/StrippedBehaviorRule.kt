@@ -48,8 +48,8 @@ class StrippingBehaviorRule(val block: Block) : BlockHandler {
             Material.IRON_AXE,
             Material.GOLDEN_AXE,
             Material.DIAMOND_AXE,
+            Material.COPPER_AXE,
             Material.NETHERITE_AXE -> true
-
             else -> false
         }
     }
