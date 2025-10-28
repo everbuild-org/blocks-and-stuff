@@ -543,7 +543,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::EndRodPlacementRule
     )
 
-    val ATTACHED_STEMP = group(
+    val ATTACHED_STEM = group(
         byList(
             listOf(
                 Block.ATTACHED_PUMPKIN_STEM,
