@@ -18,6 +18,7 @@ dependencies {
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.minestom)
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation(kotlin("test"))
     implementation(kotlin("stdlib-jdk8"))
 }
 

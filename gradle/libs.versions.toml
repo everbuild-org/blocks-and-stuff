@@ -3,8 +3,8 @@ minestom = "2025.10.11-1.21.10"
 tinylog = "2.7.0"
 gson = "2.12.1"
 junit = "5.10.0"
-mockito = "5.16.0"
-mockito-kotlin = "5.4.0"
+mockito = "5.20.0"
+mockito-kotlin = "6.1.0"
 fastutil = "8.5.17"
 
 [libraries]
