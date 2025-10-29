@@ -739,5 +739,3 @@ minecraft:sea_pickle
 minecraft:tripwire_hook
 minecraft:tripwire
 minecraft:jigsaw
-minecraft:fire
-minecraft:lava
