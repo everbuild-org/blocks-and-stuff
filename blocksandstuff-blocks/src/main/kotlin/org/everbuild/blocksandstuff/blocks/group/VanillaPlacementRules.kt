@@ -629,6 +629,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::RedstoneWirePlacementRule
     )
 
+    val SCAFFOLDING = group(
+        byBlock(Block.SCAFFOLDING),
+        ::ScaffoldingPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
