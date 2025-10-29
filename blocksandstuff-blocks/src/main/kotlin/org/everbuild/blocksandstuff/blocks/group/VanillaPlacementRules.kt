@@ -619,6 +619,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::TripwirePlacementRule
     )
 
+    val JIGSAW = group(
+        byBlock(Block.JIGSAW),
+        ::JigsawPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
