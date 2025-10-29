@@ -84,3 +84,4 @@ minecraft:powder_snow_cauldron
 minecraft:sculk_catalyst
 minecraft:frosted_ice
 minecraft:nether_portal
+minecraft:jigsaw
