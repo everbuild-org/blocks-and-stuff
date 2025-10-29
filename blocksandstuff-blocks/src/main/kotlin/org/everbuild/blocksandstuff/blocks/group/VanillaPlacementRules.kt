@@ -624,6 +624,11 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::JigsawPlacementRule
     )
 
+    val REDSTONE = group(
+        byBlock(Block.REDSTONE_WIRE),
+        ::RedstoneWirePlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
