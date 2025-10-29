@@ -739,3 +739,7 @@ minecraft:sea_pickle
 minecraft:tripwire_hook
 minecraft:tripwire
 minecraft:jigsaw
+minecraft:redstone_wire
+minecraft:scaffolding
+minecraft:chorus_plant
+minecraft:chorus_flower
