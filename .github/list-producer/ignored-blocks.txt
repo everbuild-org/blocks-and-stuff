@@ -87,3 +87,5 @@ minecraft:nether_portal
 minecraft:bubble_column
 minecraft:moving_piston
 minecraft:piston_head
+minecraft:fire
+minecraft:lava
