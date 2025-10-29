@@ -132,6 +132,7 @@ object MinestomFluids {
     fun enableVanillaFluids() {
         if (!enabled) enableFluids()
         registry.register("minecraft:water", WaterFluid(Block.WATER, Material.WATER_BUCKET))
+        MinecraftServer.getBlockManager().registerBlockPlacementRule(BubbleColumnPlacementRule())
         registry.register("minecraft:lava", LavaFluid(Block.LAVA, Material.LAVA_BUCKET))
     }
 

@@ -5,6 +5,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.utils.isWaterSource
+import org.everbuild.blocksandstuff.common.utils.withDefaultHandler
 
 open class FluidPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
@@ -35,11 +36,15 @@ open class FluidPlacementRule(block: Block) : BlockPlacementRule(block) {
             }
         }
 
-        if (block == Block.WATER) {
-            if (bottomBlock.compare(Block.SOUL_SAND) && bottomBlock.isWaterSource()) {
-                return Block.BUBBLE_COLUMN.withProperty("drag", "false")
-            } else if (bottomBlock.compare(Block.MAGMA_BLOCK) && bottomBlock.isWaterSource()) {
-                return Block.BUBBLE_COLUMN.withProperty("drag", "false")
+        if (block.isWaterSource()) {
+            if (bottomBlock.compare(Block.SOUL_SAND, Block.Comparator.ID)) {
+                return Block.BUBBLE_COLUMN
+                    .withDefaultHandler()
+                    .withProperty("drag", "false")
+            } else if (bottomBlock.compare(Block.MAGMA_BLOCK, Block.Comparator.ID)) {
+                return Block.BUBBLE_COLUMN
+                    .withDefaultHandler()
+                    .withProperty("drag", "true")
             }
         }
         return block
