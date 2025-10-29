@@ -738,3 +738,4 @@ minecraft:sculk_vein
 minecraft:sea_pickle
 minecraft:tripwire_hook
 minecraft:tripwire
+minecraft:jigsaw
