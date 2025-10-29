@@ -89,3 +89,4 @@ minecraft:moving_piston
 minecraft:piston_head
 minecraft:fire
 minecraft:lava
+minecraft:sniffer_egg
