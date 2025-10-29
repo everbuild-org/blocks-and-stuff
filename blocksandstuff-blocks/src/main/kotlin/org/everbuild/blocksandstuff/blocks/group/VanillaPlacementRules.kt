@@ -634,6 +634,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         ::ScaffoldingPlacementRule
     )
 
+    val CHORUS = group(
+        all(
+            byBlock(Block.CHORUS_PLANT),
+            byBlock(Block.CHORUS_FLOWER),
+        ),
+        ::ChorusPlacementRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>
