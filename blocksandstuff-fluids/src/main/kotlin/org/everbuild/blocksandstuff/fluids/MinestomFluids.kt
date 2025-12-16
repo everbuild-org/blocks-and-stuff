@@ -101,15 +101,16 @@ object MinestomFluids {
             for (x in 0 until Chunk.CHUNK_SIZE_X) {
                 for (z in 0 until Chunk.CHUNK_SIZE_Z) {
                     for (sectionRelY in 0 until Chunk.CHUNK_SECTION_SIZE) {
-                        val y = (i * 16 + sectionRelY)
-                        val blockId = palette.get(x, y, z)
+                        val chunkRelY = (i * 16 + sectionRelY)
+                        // WICHTIG: Palette-Koordinaten sind section-lokal (0..15), nicht chunk-lokal.
+                        val blockId = palette.get(x, sectionRelY, z)
                         if (!FluidBlockCache.BLOCK_STATES.contains(blockId)) {
                             continue
                         }
 
                         scheduleTick(
                             instance,
-                            BlockVec(x + startX, y + minY, z + startZ),
+                            BlockVec(x + startX, chunkRelY + minY, z + startZ),
                             Block.fromStateId(blockId)!!,
                         )
                     }
