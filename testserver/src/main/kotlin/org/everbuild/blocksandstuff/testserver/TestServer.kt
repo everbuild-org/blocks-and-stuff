@@ -20,7 +20,9 @@ import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import java.io.File
 import kotlin.system.exitProcess
 
-class TestServer(generateElements: Boolean) {
+class TestServer(
+    generateElements: Boolean,
+) {
     private val server: MinecraftServer = MinecraftServer.init()
     private val ingestRb = Array<Long>(500) { 0 }
     private var ingestCount = 0
@@ -36,9 +38,10 @@ class TestServer(generateElements: Boolean) {
         BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
-        //MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
+        // MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
-        MinecraftServer.getGlobalEventHandler()
+        MinecraftServer
+            .getGlobalEventHandler()
             .addListener(InstanceChunkLoadEvent::class.java) {
                 val before = System.nanoTime()
                 MinestomFluids.ingestChunk(it.instance, it.chunk)
@@ -51,9 +54,10 @@ class TestServer(generateElements: Boolean) {
             }
 
         if (generateElements) {
-            val allPlacementRuleBlockKeys = VanillaPlacementRules.ALL
-                .flatMap { it.blockGroup.allMatching() }
-                .map { it.key().asString() }
+            val allPlacementRuleBlockKeys =
+                VanillaPlacementRules.ALL
+                    .flatMap { it.blockGroup.allMatching() }
+                    .map { it.key().asString() }
 
             File("../.github/list-producer/supported-blocks.txt").writeText(allPlacementRuleBlockKeys.joinToString("\n"))
             println("Written ${allPlacementRuleBlockKeys.size} block keys to file .github/list-producer/supported-blocks.txt")
@@ -61,7 +65,7 @@ class TestServer(generateElements: Boolean) {
         }
 
         MinecraftServer.getGlobalEventHandler().addListener(
-            AsyncPlayerConfigurationEvent::class.java
+            AsyncPlayerConfigurationEvent::class.java,
         ) { event: AsyncPlayerConfigurationEvent ->
             event.spawningInstance = instance
             event.player.respawnPoint = Pos(0.0, 65.0, 0.0)

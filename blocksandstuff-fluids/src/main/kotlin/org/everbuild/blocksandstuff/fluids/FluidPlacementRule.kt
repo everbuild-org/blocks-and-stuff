@@ -7,7 +7,9 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.utils.isWaterSource
 import org.everbuild.blocksandstuff.common.utils.withDefaultHandler
 
-open class FluidPlacementRule(block: Block) : BlockPlacementRule(block) {
+open class FluidPlacementRule(
+    block: Block,
+) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val placedPoint = placementState.placePosition() // The actual placed position
         MinestomFluids.scheduleTick(

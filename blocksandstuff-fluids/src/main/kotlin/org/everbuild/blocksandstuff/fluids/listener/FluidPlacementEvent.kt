@@ -15,7 +15,8 @@ import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 
 fun setupFluidPlacementEvent() {
-    MinecraftServer.getGlobalEventHandler()
+    MinecraftServer
+        .getGlobalEventHandler()
         .addListener(PlayerBlockInteractEvent::class.java) { event: PlayerBlockInteractEvent ->
             if (event.isCancelled) return@addListener
             if (event.player.getItemInHand(event.hand) != event.player.itemInMainHand) return@addListener
@@ -28,23 +29,32 @@ fun setupFluidPlacementEvent() {
 
             val blockFace = event.blockFace
             val updated = instance.getBlock(event.blockPosition)
-            var placePosition: Pos = event.blockPosition.relative(blockFace).asVec().asPosition()
-            val blockToPlace: Block = when (heldMaterial) {
-                Material.LAVA_BUCKET -> Block.LAVA
-                Material.WATER_BUCKET -> {
-                    if (isWaterloggable(updated)) {
-                        placePosition = event.blockPosition.asVec().asPosition()
-                        updated.withProperty("waterlogged", "true")
-                    } else {
-                        Block.WATER
+            var placePosition: Pos =
+                event.blockPosition
+                    .relative(blockFace)
+                    .asVec()
+                    .asPosition()
+            val blockToPlace: Block =
+                when (heldMaterial) {
+                    Material.LAVA_BUCKET -> {
+                        Block.LAVA
+                    }
+
+                    Material.WATER_BUCKET -> {
+                        if (isWaterloggable(updated)) {
+                            placePosition = event.blockPosition.asVec().asPosition()
+                            updated.withProperty("waterlogged", "true")
+                        } else {
+                            Block.WATER
+                        }
+                    }
+
+                    else -> {
+                        return@addListener
                     }
                 }
-                else -> return@addListener
-            }
 
-            // Wir übernehmen die komplette Bucket-Interaktion selbst.
             event.isCancelled = true
-
             instance.placeBlock(
                 PlayerPlacement(
                     blockToPlace,
@@ -56,8 +66,8 @@ fun setupFluidPlacementEvent() {
                     blockFace,
                     placePosition.x.toFloat(),
                     placePosition.y.toFloat(),
-                    placePosition.z.toFloat()
-                )
+                    placePosition.z.toFloat(),
+                ),
             )
 
             if (blockToPlace == Block.WATER || blockToPlace == Block.LAVA) {
@@ -76,7 +86,7 @@ fun setupFluidPlacementEvent() {
                 event.player.inventory.setEquipment(
                     EquipmentSlot.MAIN_HAND,
                     event.player.heldSlot,
-                    ItemStack.of(Material.BUCKET)
+                    ItemStack.of(Material.BUCKET),
                 )
             }
         }
@@ -84,8 +94,10 @@ fun setupFluidPlacementEvent() {
 
 fun isWaterloggable(block: Block): Boolean {
     val tags = Block.staticRegistry()
-    return (tags.getTag(Key.key("minecraft:stairs"))!!.contains(block)
-            || tags.getTag(Key.key("minecraft:slabs"))!!.contains(block)
-            || tags.getTag(Key.key("minecraft:fences"))!!.contains(block)
-            || tags.getTag(Key.key("minecraft:trapdoors"))!!.contains(block))
+    return (
+        tags.getTag(Key.key("minecraft:stairs"))!!.contains(block) ||
+            tags.getTag(Key.key("minecraft:slabs"))!!.contains(block) ||
+            tags.getTag(Key.key("minecraft:fences"))!!.contains(block) ||
+            tags.getTag(Key.key("minecraft:trapdoors"))!!.contains(block)
+    )
 }
