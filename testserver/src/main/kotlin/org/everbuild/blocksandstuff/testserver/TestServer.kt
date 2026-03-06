@@ -2,11 +2,14 @@ package org.everbuild.blocksandstuff.testserver
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.GameMode
 import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
+import net.minestom.server.item.ItemStack
+import net.minestom.server.item.Material
 import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
@@ -62,7 +65,8 @@ class TestServer(generateElements: Boolean) {
         ) { event: AsyncPlayerConfigurationEvent ->
             event.spawningInstance = instance
             event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
-            event.player.setGameMode(GameMode.CREATIVE)
+            event.player.setGameMode(GameMode.SURVIVAL)
+            event.player.inventory.setEquipment(EquipmentSlot.MAIN_HAND, 1, ItemStack.of(Material.WATER_BUCKET))
         }
 
         MinecraftServer.getCommandManager().register(DebugCommand())

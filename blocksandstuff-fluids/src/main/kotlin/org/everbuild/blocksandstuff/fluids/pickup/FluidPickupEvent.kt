@@ -19,7 +19,7 @@ class FluidPickupEvent(
 ) : CancellableEvent, PlayerInstanceEvent {
     private var isCancelled = false
 
-    override fun isCancelled(): Boolean =isCancelled
+    override fun isCancelled(): Boolean = isCancelled
     override fun setCancelled(cancel: Boolean) {
         isCancelled = cancel
     }
