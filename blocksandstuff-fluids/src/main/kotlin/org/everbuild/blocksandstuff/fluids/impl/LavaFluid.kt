@@ -39,7 +39,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
     }
 
     override fun getHeight(block: Block?, instance: Instance?, point: Point?): Double {
-        TODO("Not yet implemented")
+        return getLevel(block!!).toDouble() / 9.0
     }
 
     override val blastResistance: Double
