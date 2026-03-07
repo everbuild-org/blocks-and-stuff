@@ -1,7 +1,6 @@
 #!/usr/bin/env kotlin
 
-@file:Repository("https://central.sonatype.com/repository/maven-snapshots")
-@file:DependsOn("net.minestom:minestom:2026.02.19-1.21.11")
+@file:DependsOn("net.minestom:minestom:2026.03.03-1.21.11")
 
 import java.io.File
 import java.lang.ProcessBuilder

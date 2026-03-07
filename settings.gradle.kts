@@ -5,7 +5,7 @@ pluginManagement {
         maven("https://redirector.kotlinlang.org/maven/bootstrap")
     }
     plugins {
-        kotlin("jvm") version "2.3.0-dev-9673"
+        kotlin("jvm") version "2.3.10"
     }
 }
 
