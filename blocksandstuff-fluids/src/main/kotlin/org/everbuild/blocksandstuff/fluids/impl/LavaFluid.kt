@@ -8,6 +8,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
+import net.minestom.server.world.attribute.EnvironmentAttribute
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.fluids.event.FluidBlockReplacementEvent
 import org.everbuild.blocksandstuff.fluids.relativeTicks
@@ -29,7 +30,8 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
         point: Point,
         block: Block
     ): Int {
-        return if(MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType]!!.ultrawarm()) {
+        val attributes = MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType]!!.attributes().entries();
+        return if(attributes.getOrDefault(EnvironmentAttribute.FAST_LAVA, false) as Boolean) {
             10.relativeTicks
         } else {
             15.relativeTicks
