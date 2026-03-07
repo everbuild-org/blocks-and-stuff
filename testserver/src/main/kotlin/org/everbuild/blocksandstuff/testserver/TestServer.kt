@@ -19,6 +19,8 @@ import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import java.io.File
 import kotlin.system.exitProcess
+import net.minestom.server.event.EventNode
+import net.minestom.server.event.player.PlayerGameModeRequestEvent
 
 class TestServer(
     generateElements: Boolean,
@@ -64,14 +66,19 @@ class TestServer(
             exitProcess(0)
         }
 
-        MinecraftServer.getGlobalEventHandler().addListener(
-            AsyncPlayerConfigurationEvent::class.java,
-        ) { event: AsyncPlayerConfigurationEvent ->
-            event.spawningInstance = instance
-            event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
-            event.player.setGameMode(GameMode.SURVIVAL)
-            event.player.inventory.setEquipment(EquipmentSlot.MAIN_HAND, 1, ItemStack.of(Material.WATER_BUCKET))
-        }
+        MinecraftServer.getGlobalEventHandler().addChild(
+            EventNode.all("test-server-ux")
+                .addListener(AsyncPlayerConfigurationEvent::class.java) { event ->
+                    event.spawningInstance = instance
+                    event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
+                    event.player.gameMode = GameMode.SURVIVAL
+                    event.player.inventory.setEquipment(EquipmentSlot.MAIN_HAND, 1, ItemStack.of(Material.WATER_BUCKET))
+                    event.player.permissionLevel = 4
+                }
+                .addListener(PlayerGameModeRequestEvent::class.java) { event ->
+                    event.player.gameMode = event.requestedGameMode
+                }
+        )
 
         MinecraftServer.getCommandManager().register(DebugCommand())
     }
