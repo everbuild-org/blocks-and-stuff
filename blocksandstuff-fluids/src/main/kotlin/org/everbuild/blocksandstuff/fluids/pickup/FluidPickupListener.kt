@@ -52,7 +52,7 @@ fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
 
         MinecraftServer.getGlobalEventHandler().callCancellable(pickupEvent) {
 
-            // Flüssigkeit im World-Block entfernen (durch AIR ersetzen)
+            @Suppress("UnstableApiUsage")
             instance.placeBlock(
                 PlayerPlacement(
                     pickupEvent.blockToPlace,

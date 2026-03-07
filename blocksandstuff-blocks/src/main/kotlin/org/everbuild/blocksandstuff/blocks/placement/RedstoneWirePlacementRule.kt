@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.coordinate.BlockVec
-import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule

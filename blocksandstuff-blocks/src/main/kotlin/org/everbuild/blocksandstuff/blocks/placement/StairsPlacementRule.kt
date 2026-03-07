@@ -103,8 +103,8 @@ class StairsPlacementRule(block: Block) : BlockPlacementRule(block) {
         blockPos: Point,
         direction: Direction
     ): Boolean {
-        val facing: BlockFace? = States.getFacing(block)
-        val half: BlockFace? = States.getHalf(block)
+        val facing: BlockFace = States.getFacing(block)
+        val half: BlockFace = States.getHalf(block)
         val instanceBlock = instance.getBlock(
             blockPos.add(
                 direction.normalX().toDouble(),
@@ -112,8 +112,8 @@ class StairsPlacementRule(block: Block) : BlockPlacementRule(block) {
                 direction.normalZ().toDouble()
             )
         )
-        val instanceBlockFacing: BlockFace? = States.getFacing(instanceBlock)
-        val instanceBlockHalf: BlockFace? = States.getHalf(instanceBlock)
+        val instanceBlockFacing: BlockFace = States.getFacing(instanceBlock)
+        val instanceBlockHalf: BlockFace = States.getHalf(instanceBlock)
 
         return !isStairs(instanceBlock) || instanceBlockFacing != facing || instanceBlockHalf != half
     }

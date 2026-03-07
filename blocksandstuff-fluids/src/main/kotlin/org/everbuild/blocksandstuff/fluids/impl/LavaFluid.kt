@@ -30,8 +30,9 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
         point: Point,
         block: Block
     ): Int {
-        val attributes = MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType]!!.attributes().entries();
-        return if(attributes.getOrDefault(EnvironmentAttribute.FAST_LAVA, false) as Boolean) {
+        val dimensionType = MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType] ?: return 15.relativeTicks
+        val environmentAttributes = dimensionType.attributes().entries
+        return if(environmentAttributes.getOrDefault(EnvironmentAttribute.FAST_LAVA, false) as Boolean) {
             10.relativeTicks
         } else {
             15.relativeTicks

@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.blocks.placement
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.common.utils.isWater
 import org.everbuild.blocksandstuff.common.utils.withDefaultHandler
 

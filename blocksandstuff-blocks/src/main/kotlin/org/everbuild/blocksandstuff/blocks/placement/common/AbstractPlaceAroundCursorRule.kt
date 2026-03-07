@@ -5,7 +5,6 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.utils.Direction
-import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 
 abstract class AbstractPlaceAroundCursorRule(block: Block, private val directions: Set<Direction>) :
     BlockPlacementRule(block) {

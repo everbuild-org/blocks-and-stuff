@@ -12,7 +12,7 @@ import org.everbuild.blocksandstuff.common.utils.rotateR
 class FenceGatePlacementRule(block: Block) : BlockPlacementRule(block) {
     private val walls = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:walls"))!!
 
-    override fun blockPlace(state: PlacementState): Block? {
+    override fun blockPlace(state: PlacementState): Block {
         val direction = state.getNearestHorizontalLookingDirection().opposite()
         val block = state.block
             .withProperty("facing", direction.toString().lowercase())

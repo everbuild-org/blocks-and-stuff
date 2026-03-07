@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.fluids.impl
 
-import it.unimi.dsi.fastutil.shorts.Short2BooleanFunction
 import it.unimi.dsi.fastutil.shorts.Short2BooleanMap
 import it.unimi.dsi.fastutil.shorts.Short2BooleanOpenHashMap
 import net.minestom.server.coordinate.BlockVec
@@ -15,6 +14,7 @@ import org.everbuild.blocksandstuff.fluids.asBlockFace
 import org.everbuild.blocksandstuff.fluids.event.BlockFluidReplacementEvent
 import java.util.EnumMap
 import kotlin.math.max
+import net.minestom.server.MinecraftServer
 
 abstract class FlowableFluid(
     defaultBlock: Block,
@@ -254,18 +254,17 @@ abstract class FlowableFluid(
             val down =
                 holeMap.computeIfAbsent(
                     id,
-                    Short2BooleanFunction { _: Short ->
-                        val downPoint = directionPoint.add(0.0, -1.0, 0.0)
-                        canFlowDown(
-                            instance,
-                            getFlowing(getLevel(updatedBlock), false),
-                            directionPoint,
-                            directionBlock,
-                            downPoint,
-                            instance.getBlock(downPoint),
-                        )
-                    },
-                )
+                ) { _: Short ->
+                    val downPoint = directionPoint.add(0.0, -1.0, 0.0)
+                    canFlowDown(
+                        instance,
+                        getFlowing(getLevel(updatedBlock), false),
+                        directionPoint,
+                        directionBlock,
+                        downPoint,
+                        instance.getBlock(downPoint),
+                    )
+                }
 
             val newWeight =
                 if (down) {
@@ -328,19 +327,18 @@ abstract class FlowableFluid(
             val down =
                 short2BooleanMap.computeIfAbsent(
                     id,
-                    Short2BooleanFunction { s: Short ->
-                        val downPoint = directionPoint.add(0.0, -1.0, 0.0)
-                        val downBlock = instance.getBlock(downPoint)
-                        canFlowDown(
-                            instance,
-                            getFlowing(getLevel(block), false),
-                            directionPoint,
-                            downBlock,
-                            downPoint,
-                            downBlock,
-                        )
-                    },
-                )
+                ) { s: Short ->
+                    val downPoint = directionPoint.add(0.0, -1.0, 0.0)
+                    val downBlock = instance.getBlock(downPoint)
+                    canFlowDown(
+                        instance,
+                        getFlowing(getLevel(block), false),
+                        directionPoint,
+                        downBlock,
+                        downPoint,
+                        downBlock,
+                    )
+                }
             if (down) return initialWeight
 
             if (initialWeight < getHoleRadius(instance)) {
@@ -453,7 +451,8 @@ abstract class FlowableFluid(
 
         // TODO waterloggable check
 
-        if (point.y() >= instance.cachedDimensionType.minY()) instance.setBlock(point, newBlock)
+        val dimensionType = MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType] ?: return
+        if (point.y() >= dimensionType.minY()) instance.setBlock(point, newBlock)
     }
 
     private fun isMatchingAndStill(block: Block): Boolean = MinestomFluids.getFluidOnBlock(block) === this && isSource(block)

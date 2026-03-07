@@ -55,6 +55,7 @@ fun setupFluidPlacementEvent() {
                 }
 
             event.isCancelled = true
+            @Suppress("UnstableApiUsage") // no way to combat this
             instance.placeBlock(
                 PlayerPlacement(
                     blockToPlace,

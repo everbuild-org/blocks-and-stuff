@@ -26,6 +26,7 @@ object MinestomFluids {
     private var enabled = false
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
+    @Suppress("UnstableApiUsage")
     val registry = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
         @JvmStatic get
 
@@ -109,6 +110,7 @@ object MinestomFluids {
         instance: Instance,
         chunk: Chunk,
     ) {
+        @Suppress("UnstableApiUsage")
         val minY = instance.cachedDimensionType.minY()
         val startX = chunk.chunkX * 16
         val startZ = chunk.chunkZ * 16
