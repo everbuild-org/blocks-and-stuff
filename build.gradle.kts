@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.3.0-Beta2"
+    kotlin("jvm") version "2.3.10"
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.9.0-SNAPSHOT"
+version = "1.9.1-SNAPSHOT"
 
 allprojects {
     group = rootProject.group
@@ -25,4 +25,3 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
 }
-

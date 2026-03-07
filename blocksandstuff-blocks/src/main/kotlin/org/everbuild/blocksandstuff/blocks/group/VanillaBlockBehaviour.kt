@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.blocks.group
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.InventoryType
-import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
@@ -161,7 +160,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler
-    ): BehaviourGroup = BehaviourGroup(blockGroup) { it -> valueFunction(it) }
+    ): BehaviourGroup = BehaviourGroup(blockGroup) { valueFunction(it) }
 
     fun group(blockGroup: BlockGroup, handler: BlockHandler): BehaviourGroup {
         return BehaviourGroup(blockGroup) { handler }.also {

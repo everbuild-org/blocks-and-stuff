@@ -10,7 +10,6 @@ class AttachedStemPlacementRule(block: Block) : BlockPlacementRule(block) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
-        val connectedSite = updateState.currentBlock().getProperty("facing")
         return updateState.currentBlock
     }
 

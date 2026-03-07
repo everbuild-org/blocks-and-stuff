@@ -14,11 +14,12 @@ object BlockPickup {
             if (player.gameMode != GameMode.CREATIVE) return@addListener // TODO: survival block picking
 
             val newItemStack = ItemStack.of(material)
-            
+
+            @Suppress("ControlFlowWithEmptyBody") // Drop when implemented
             if (player.isSneaking) {
                 // TODO: Save block entity data
             }
-            
+
             val inventory = player.getInventory()
 
             for (slot in 0..8) {

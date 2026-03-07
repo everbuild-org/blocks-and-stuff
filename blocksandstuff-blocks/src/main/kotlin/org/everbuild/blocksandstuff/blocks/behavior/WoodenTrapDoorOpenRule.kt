@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import net.kyori.adventure.key.Key
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
-import net.minestom.server.tag.Tag
 
 class WoodenTrapDoorOpenRule(private val block: Block) : BlockHandler {
     override fun getKey(): Key = block.key()

@@ -8,6 +8,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.utils.Direction
+import net.minestom.server.world.attribute.EnvironmentAttribute
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.fluids.event.FluidBlockReplacementEvent
 import org.everbuild.blocksandstuff.fluids.relativeTicks
@@ -29,7 +30,9 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
         point: Point,
         block: Block
     ): Int {
-        return if(MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType]!!.ultrawarm()) {
+        val dimensionType = MinecraftServer.getDimensionTypeRegistry()[instance.dimensionType] ?: return 15.relativeTicks
+        val environmentAttributes = dimensionType.attributes().entries
+        return if(environmentAttributes.getOrDefault(EnvironmentAttribute.FAST_LAVA, false) as Boolean) {
             10.relativeTicks
         } else {
             15.relativeTicks
@@ -37,7 +40,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
     }
 
     override fun getHeight(block: Block?, instance: Instance?, point: Point?): Double {
-        TODO("Not yet implemented")
+        return getLevel(block!!).toDouble() / 9.0
     }
 
     override val blastResistance: Double

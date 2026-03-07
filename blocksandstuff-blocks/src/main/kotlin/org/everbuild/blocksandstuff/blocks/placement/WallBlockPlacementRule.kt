@@ -5,11 +5,9 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.registry.RegistryTag
-import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.blocks.placement.common.AbstractConnectingBlockPlacementRule
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.blocksandstuff.common.utils.isWater
-import org.everbuild.blocksandstuff.common.utils.isWaterSource
 
 class WallBlockPlacementRule(block: Block) : AbstractConnectingBlockPlacementRule(block) {
     private val walls = tagManager.getTag(Key.key("minecraft:walls"))!!

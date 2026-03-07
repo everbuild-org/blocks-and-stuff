@@ -6,9 +6,9 @@ import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.common.utils.getNearestLookingDirection
 
-class GateOpenRule(private val block: Block?) : BlockHandler {
+class GateOpenRule(private val block: Block) : BlockHandler {
     override fun getKey(): Key {
-        return block?.key() ?: key.key()
+        return block.key()
     }
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {

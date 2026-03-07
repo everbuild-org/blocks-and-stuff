@@ -10,7 +10,6 @@ object States {
     const val FACING: String = "facing"
     const val FACE: String = "face"
     const val SHAPE: String = "shape"
-    const val WATERLOGGED: String = "waterlogged"
     const val NORTH: String = "north"
     const val EAST: String = "east"
     const val SOUTH: String = "south"
@@ -24,15 +23,6 @@ object States {
     fun getFacing(block: Block): BlockFace {
         if (block.getProperty(FACING) == null) return BlockFace.NORTH
         return BlockFace.valueOf(block.getProperty(FACING)!!.uppercase(Locale.getDefault()))
-    }
-
-    fun getDirection(block: Block): Direction? {
-        if (block.getProperty(FACE) == null) return Direction.NORTH
-        return when (block.getProperty(FACE)) {
-            "ceiling" -> Direction.DOWN
-            "floor" -> Direction.UP
-            else -> getFacing(block).toDirection()
-        }
     }
 
     fun rotateYCounterclockwise(direction: Direction): Direction {

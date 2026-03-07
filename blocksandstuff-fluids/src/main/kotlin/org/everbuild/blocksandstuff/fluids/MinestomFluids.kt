@@ -1,18 +1,17 @@
 package org.everbuild.blocksandstuff.fluids
 
+import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.Event
 import net.minestom.server.event.EventNode
+import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.instance.InstanceTickEvent
+import net.minestom.server.instance.Chunk
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
-import java.util.concurrent.ConcurrentHashMap
-import net.kyori.adventure.key.Key
-import net.minestom.server.coordinate.BlockVec
-import net.minestom.server.event.instance.InstanceChunkLoadEvent
-import net.minestom.server.instance.Chunk
 import net.minestom.server.registry.DynamicRegistry
 import net.minestom.server.registry.RegistryKey
 import org.everbuild.blocksandstuff.fluids.impl.EmptyFluid
@@ -21,29 +20,33 @@ import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
 import org.everbuild.blocksandstuff.fluids.impl.WaterFluid
 import org.everbuild.blocksandstuff.fluids.listener.setupFluidPlacementEvent
 import org.everbuild.blocksandstuff.fluids.pickup.getFluidPickupEventNode
+import java.util.concurrent.ConcurrentHashMap
 
 object MinestomFluids {
     private var enabled = false
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
+    @Suppress("UnstableApiUsage")
     val registry = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
         @JvmStatic get
 
     val EMPTY = registry.register("minecraft:empty", EmptyFluid())
 
-    fun getFluidOnBlock(block: Block): RegistryKey<Fluid> {
-        return registry.values().firstOrNull { it.isInTile(block) }?.let { registry.getKey(it) } ?: EMPTY
-    }
+    fun getFluidOnBlock(block: Block): RegistryKey<Fluid> =
+        registry
+            .values()
+            .firstOrNull {
+                it.isInTile(block)
+            }?.let { registry.getKey(it) } ?: EMPTY
 
-    fun getFluidInstanceOnBlock(block: Block): Fluid {
-        return registry.values().firstOrNull { it.isInTile(block) } ?: registry[EMPTY]!!
-    }
+    fun getFluidInstanceOnBlock(block: Block): Fluid = registry.values().firstOrNull { it.isInTile(block) } ?: registry[EMPTY]!!
 
     fun onTick(event: InstanceTickEvent) {
-        val currentUpdate: Set<Point>? = UPDATES
-            .computeIfAbsent(event.instance) {
-                ConcurrentHashMap<Long, MutableSet<Point>>()
-            }[event.instance.worldAge]
+        val currentUpdate: Set<Point>? =
+            UPDATES
+                .computeIfAbsent(event.instance) {
+                    ConcurrentHashMap<Long, MutableSet<Point>>()
+                }[event.instance.worldAge]
 
         if (currentUpdate == null) return
 
@@ -54,7 +57,10 @@ object MinestomFluids {
         UPDATES[event.instance]!!.remove(event.instance.worldAge)
     }
 
-    fun processFluidTick(instance: Instance, point: Point) {
+    fun processFluidTick(
+        instance: Instance,
+        point: Point,
+    ) {
         val block = instance.getBlock(point)
         val fluid = registry[getFluidOnBlock(block)]!!
 
@@ -62,24 +68,32 @@ object MinestomFluids {
         scheduleTick(instance, point, block)
     }
 
-    fun scheduleTick(instance: Instance, point: Point, block: Block) {
-        val tickDelay = registry[getFluidOnBlock(block)]!!
-            .getNextTickDelay(instance, point, block)
+    fun scheduleTick(
+        instance: Instance,
+        point: Point,
+        block: Block,
+    ) {
+        val tickDelay =
+            registry[getFluidOnBlock(block)]!!
+                .getNextTickDelay(instance, point, block)
 
         if (tickDelay == -1) return
 
         val newAge = instance.worldAge + tickDelay
-        UPDATES.computeIfAbsent(instance) { ConcurrentHashMap<Long, MutableSet<Point>>() }
+        UPDATES
+            .computeIfAbsent(instance) { ConcurrentHashMap<Long, MutableSet<Point>>() }
             .computeIfAbsent(newAge) { HashSet() }
             .add(point)
     }
 
-    private fun events(): EventNode<Event> = EventNode.all("fluid-events")
-        .addListener(InstanceTickEvent::class.java, MinestomFluids::onTick)
-        .addChild(getFluidPickupEventNode())
-        .also {
-            setupFluidPlacementEvent() // TODO
-        }
+    private fun events(): EventNode<Event> =
+        EventNode
+            .all("fluid-events")
+            .addListener(InstanceTickEvent::class.java, MinestomFluids::onTick)
+            .addChild(getFluidPickupEventNode())
+            .also {
+                setupFluidPlacementEvent() // TODO
+            }
 
     /**
      * Processes the given chunk to ingest and manage fluid-related operations,
@@ -92,7 +106,11 @@ object MinestomFluids {
      * @param chunk The chunk to be processed for fluid-related mechanics.
      */
     @JvmStatic
-    fun ingestChunk(instance: Instance, chunk: Chunk) {
+    fun ingestChunk(
+        instance: Instance,
+        chunk: Chunk,
+    ) {
+        @Suppress("UnstableApiUsage")
         val minY = instance.cachedDimensionType.minY()
         val startX = chunk.chunkX * 16
         val startZ = chunk.chunkZ * 16
@@ -101,15 +119,16 @@ object MinestomFluids {
             for (x in 0 until Chunk.CHUNK_SIZE_X) {
                 for (z in 0 until Chunk.CHUNK_SIZE_Z) {
                     for (sectionRelY in 0 until Chunk.CHUNK_SECTION_SIZE) {
-                        val y = (i * 16 + sectionRelY)
-                        val blockId = palette.get(x, y, z)
+                        val chunkRelY = (i * 16 + sectionRelY)
+                        // WICHTIG: Palette-Koordinaten sind section-lokal (0..15), nicht chunk-lokal.
+                        val blockId = palette.get(x, sectionRelY, z)
                         if (!FluidBlockCache.BLOCK_STATES.contains(blockId)) {
                             continue
                         }
 
                         scheduleTick(
                             instance,
-                            BlockVec(x + startX, y + minY, z + startZ),
+                            BlockVec(x + startX, chunkRelY + minY, z + startZ),
                             Block.fromStateId(blockId)!!,
                         )
                     }

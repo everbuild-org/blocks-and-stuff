@@ -60,15 +60,4 @@ class LanternPlacementRule(block: Block) : BlockPlacementRule(block) {
             }
         }
     }
-
-    companion object {
-        private val SPECIAL_SUPPORT_BLOCKS = setOf(
-            "minecraft:chain",
-            "minecraft:iron_bars"
-        )
-
-        private fun isSpecialSupportBlock(blockName: String): Boolean {
-            return SPECIAL_SUPPORT_BLOCKS.contains(blockName) || blockName.contains("glass_pane")
-        }
-    }
 }
