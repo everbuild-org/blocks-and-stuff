@@ -1,8 +1,8 @@
-package org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl
+package org.everbuild.blocksandstuff.recipes.impl
 
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
+import org.everbuild.blocksandstuff.recipes.api.StashController
 
 object StashControllerImpl : StashController {
     override fun add(player: Player, item: ItemStack) {

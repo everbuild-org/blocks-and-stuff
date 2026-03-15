@@ -1,4 +1,4 @@
-package org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api
+package org.everbuild.blocksandstuff.recipes.api
 
 import net.minestom.server.entity.Player
 import net.minestom.server.item.ItemStack

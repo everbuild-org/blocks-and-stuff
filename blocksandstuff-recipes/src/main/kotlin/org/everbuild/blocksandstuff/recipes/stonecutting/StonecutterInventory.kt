@@ -10,8 +10,8 @@ import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.api.StashController
+import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.recipes.util.InventoryButtonClickEvent
 
 class StonecutterInventory(private val stashController: StashController = StashControllerImpl) : Inventory(InventoryType.STONE_CUTTER, Component.translatable("container.stonecutter")) {

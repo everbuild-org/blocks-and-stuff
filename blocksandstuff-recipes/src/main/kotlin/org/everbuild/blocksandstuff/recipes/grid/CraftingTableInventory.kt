@@ -6,7 +6,6 @@ import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
 
 class CraftingTableInventory() : Inventory(InventoryType.CRAFTING, Component.translatable("container.crafting")) {
     private val service = CraftingTableGridService(this)

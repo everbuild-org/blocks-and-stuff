@@ -10,12 +10,10 @@ import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import net.minestom.server.MinecraftServer
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.recipes.RecipeFactory.stashController
 import kotlin.math.min
 
-class SmithingTableInventory(stashController: StashController = StashControllerImpl) : Inventory(InventoryType.SMITHING, Component.translatable("container.upgrade")) {
+class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.translatable("container.upgrade")) {
     private var currentRecipe: AbstractSmithingRecipe? = null
 
     init {

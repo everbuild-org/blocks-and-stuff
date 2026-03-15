@@ -15,7 +15,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket
 import net.minestom.server.utils.chunk.ChunkSupplier
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations

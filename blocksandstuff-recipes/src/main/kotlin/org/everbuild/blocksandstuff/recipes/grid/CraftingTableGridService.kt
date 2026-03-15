@@ -2,7 +2,6 @@ package org.everbuild.blocksandstuff.recipes.grid
 
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.item.ItemStack
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
 
 class CraftingTableGridService(private val inventory: Inventory) : AbstractCraftingGridService() {
     override val outputSlot: Int = 0

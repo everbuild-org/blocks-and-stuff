@@ -2,8 +2,8 @@ package org.everbuild.blocksandstuff.recipes.stonecutting
 
 import net.kyori.adventure.key.Key
 import net.minestom.server.instance.block.BlockHandler
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.api.StashController
+import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 
 class StonecutterHandler(private val stashController: StashController = StashControllerImpl) : BlockHandler {
     override fun getKey(): Key = Key.key("minecraft:stonecutter")

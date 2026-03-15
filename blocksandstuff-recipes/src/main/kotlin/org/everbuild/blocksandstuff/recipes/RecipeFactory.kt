@@ -1,8 +1,8 @@
 package org.everbuild.blocksandstuff.recipes
 
 import net.minestom.server.recipe.Recipe
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.api.StashController
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.api.StashController
+import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.recipes.grid.ShapedCraftingRecipe
 import org.everbuild.blocksandstuff.recipes.grid.ShapelessCraftingRecipe
 import org.everbuild.blocksandstuff.recipes.grid.TransmuteCraftingRecipe
