@@ -4,23 +4,39 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.GameMode
+import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
+import net.minestom.server.event.player.PlayerGameModeRequestEvent
+import net.minestom.server.event.player.PlayerSpawnEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket
 import net.minestom.server.utils.chunk.ChunkSupplier
+import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
+import org.everbuild.blocksandstuff.recipes.RecipeFactory
+import org.everbuild.blocksandstuff.recipes.grid.CraftingTableHandler
+import org.everbuild.blocksandstuff.recipes.grid.PlayerInventoryCraftingGridService
+import org.everbuild.blocksandstuff.recipes.impl.ItemControllerImpl
+import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
+import org.everbuild.blocksandstuff.recipes.loader.RecipeLoader
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceInventory
+import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler
+import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceHandler
+import org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerHandler
+import org.everbuild.blocksandstuff.recipes.smithing.SmithingTableHandler
+import org.everbuild.blocksandstuff.recipes.stonecutting.StonecutterHandler
+import org.everbuild.blocksandstuff.recipes.util.InventoryButtonClickListener
 import java.io.File
 import kotlin.system.exitProcess
-import net.minestom.server.event.EventNode
-import net.minestom.server.event.player.PlayerGameModeRequestEvent
 
 class TestServer(
     generateElements: Boolean,
@@ -40,6 +56,7 @@ class TestServer(
         BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+        loadRecipes()
         // MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
         MinecraftServer
@@ -85,6 +102,56 @@ class TestServer(
 
     fun bind() {
         server.start("0.0.0.0", 25565)
+    }
+
+    fun loadRecipes() {
+        RecipeFactory.itemController = ItemControllerImpl
+        RecipeFactory.stashController = StashControllerImpl
+        RecipeLoader.loadAllRecipes("everbuild")
+        FuelLoader.loadAllFuels("everbuild")
+        FurnaceInventory.withInventoryReload()
+
+        MinecraftServer.getGlobalEventHandler().addListener(
+            PlayerSpawnEvent::class.java
+        ) {
+            PlayerInventoryCraftingGridService(it.player)
+        }
+
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:crafting_table"
+        ) {
+            CraftingTableHandler()
+        }
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:smithing_table"
+        ) {
+            SmithingTableHandler()
+        }
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:furnace"
+        ) {
+            FurnaceHandler()
+        }
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:blast_furnace"
+        ) {
+            BlastFurnaceHandler()
+        }
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:smoker"
+        ) {
+            SmokerHandler()
+        }
+        MinecraftServer.getBlockManager().registerHandler(
+            "minecraft:stonecutter"
+        ) {
+            StonecutterHandler()
+        }
+
+        MinecraftServer.getPacketListenerManager().setPlayListener(
+            ClientClickWindowButtonPacket::class.java,
+            InventoryButtonClickListener::inventoryButtonClickListener
+        )
     }
 
     companion object {

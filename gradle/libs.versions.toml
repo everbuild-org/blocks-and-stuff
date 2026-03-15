@@ -1,4 +1,5 @@
 [versions]
+kotlin-version = "2.3.10"
 minestom = "2026.03.03-1.21.11"
 tinylog = "2.7.0"
 junit = "5.10.0"
@@ -6,6 +7,10 @@ mockito = "5.20.0"
 mockito-kotlin = "6.1.0"
 fastutil = "8.5.17"
 jetbrains-annotations = "26.1.0"
+kotlinx-serialization = "1.9.0"
+jib = "3.5.2"
+commons-compress = "1.27.1"
+commons-codec = "1.15"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
@@ -14,7 +19,15 @@ tinylog-impl = { group = "org.tinylog", name = "tinylog-impl", version.ref = "ti
 tinylog-slf4j = { group = "org.tinylog", name = "slf4j-tinylog", version.ref = "tinylog" }
 fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commons-compress" }
+commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
 
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+
+[plugins]
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-version" }
+jib = { id = "com.google.cloud.tools.jib", version.ref = "jib" }

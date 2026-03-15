@@ -2,6 +2,7 @@ plugins {
     java
     kotlin("jvm")
     `maven-publish`
+    alias(libs.plugins.kotlin.serialization)
 }
 
 repositories {
@@ -10,6 +11,9 @@ repositories {
 
 dependencies {
     implementation(project(":blocksandstuff-common"))
+
+    implementation(libs.kotlinx.serialization.core)
+    implementation(libs.kotlinx.serialization.json)
 
     compileOnly(libs.minestom)
     compileOnly(libs.jetbrains.annotations)
