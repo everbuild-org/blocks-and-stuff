@@ -1,28 +1,34 @@
 package org.everbuild.blocksandstuff.recipes.smelting
 
-import net.kyori.adventure.text.TranslatableComponent
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
-import net.minestom.server.inventory.InventoryType
 import net.minestom.server.tag.Tag
-import org.everbuild.blocksandstuff.recipes.api.BlockInventoryBackend
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
+import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 
-abstract class AbstractSmeltingHandler(private val recipeType: Class<out SmeltingRecipe>) : BlockHandler {
-    protected abstract val inventoryType: InventoryType
-    abstract val inventoryTitle: TranslatableComponent
+abstract class AbstractSmeltingHandler(
+    private val recipeType: Class<out SmeltingRecipe>,
+    private val archetype: FurnaceArchetype
+) : BlockHandler, BlockInventoryHolder {
+    private var backend: PhysicalInventory? = null
 
-    fun getRecipe(inventory: BlockInventoryBackend): SmeltingRecipeData? {
-        val inputSlot = inventory[0]
+    override fun getInventory(instance: Instance, blockPos: Point): PhysicalInventory {
+        backend?.let { return it }
+        return archetype.Backend(blockPos, instance).also { backend = it }
+    }
+
+    fun getRecipe(inventory: PhysicalInventory): SmeltingRecipeData? {
+        val inputSlot = inventory[FurnaceArchetype.SLOT_INPUT]
         if (inputSlot.isAir) return null
         val currentRecipe = MinecraftServer.getRecipeManager().recipes
             .filterIsInstance(recipeType)
             .firstOrNull { it.matches(inputSlot) } ?: return null
-        if (!inventory[2].isAir) {
-            if (inventory[2].amount() >= currentRecipe.result.maxStackSize()) return null
-            if (!inventory[2].isSimilar(currentRecipe.result)) return null
+        if (!inventory[FurnaceArchetype.SLOT_OUTPUT].isAir) {
+            if (inventory[FurnaceArchetype.SLOT_OUTPUT].amount() >= currentRecipe.result.maxStackSize()) return null
+            if (!inventory[FurnaceArchetype.SLOT_OUTPUT].isSimilar(currentRecipe.result)) return null
         }
 
         val result = currentRecipe.result
@@ -41,7 +47,7 @@ abstract class AbstractSmeltingHandler(private val recipeType: Class<out Smeltin
         var newBlock = tick.block
         var litTime = tick.block.getTag(litTimeRemaining)!!
         val isLit = newBlock.getProperty("lit") == "true"
-        val inventory = FurnaceInventoryBackend(tick.blockPosition, tick.instance)
+        val inventory = getInventory(tick.instance, tick.blockPosition)
         if (litTime > 0) {
             val totalCookingTime = newBlock.getTag(cookingTotalTime)
             val spentCookingTime = newBlock.getTag(cookingTimeSpent)
@@ -58,7 +64,7 @@ abstract class AbstractSmeltingHandler(private val recipeType: Class<out Smeltin
                     newBlock = updateCookingTime(newBlock, recipeData)
                 } else if (recipeData != null) {
                     tick.instance.setBlock(tick.blockPosition, newBlock, false)
-                    insertResult(FurnaceInventoryBackend(tick.blockPosition, tick.instance), recipeData)
+                    insertResult(getInventory(tick.instance, tick.blockPosition), recipeData)
                     newBlock = tick.instance.getBlock(tick.blockPosition)
                     newBlock = newBlock.withTag(cookingTimeSpent, 0).withTag(cookingTotalTime, 0)
                 }
@@ -109,19 +115,15 @@ abstract class AbstractSmeltingHandler(private val recipeType: Class<out Smeltin
         if (interaction.player.isSneaking) {
             return true
         }
-        interaction.player.openInventory(
-            FurnaceInventory(
-                interaction.blockPosition,
-                interaction.instance,
-                inventoryTitle,
-                inventoryType
-            )
-        )
+        val inventory = getInventory(interaction.instance, interaction.blockPosition)
+            .getViewableInventory()
+
+        interaction.player.openInventory(inventory)
         return false
     }
 
     open fun takeFuel(instance: Instance, blockPosition: Point): Int {
-        val inventory = FurnaceInventoryBackend(blockPosition, instance)
+        val inventory = getInventory(instance, blockPosition)
         return useFuel(inventory)
     }
 

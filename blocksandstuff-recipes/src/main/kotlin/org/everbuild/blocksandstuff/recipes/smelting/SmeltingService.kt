@@ -2,31 +2,38 @@ package org.everbuild.blocksandstuff.recipes.smelting
 
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import org.everbuild.blocksandstuff.recipes.api.BlockInventoryBackend
+import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype.Companion.SLOT_FUEL
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype.Companion.SLOT_INPUT
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype.Companion.SLOT_OUTPUT
 
-fun useFuel(inventory: BlockInventoryBackend): Int {
-    if (inventory[1].isAir) return 0
-    val fuelItem = FuelLoader.loadAllFuels().firstOrNull { it.itemStack.matches(inventory[1]) } ?: return 0
+fun useFuel(inventory: PhysicalInventory): Int {
+    if (inventory[SLOT_FUEL].isAir) return 0
+    val fuelItem = FuelLoader.loadAllFuels().firstOrNull { it.itemStack.matches(inventory[SLOT_FUEL]) } ?: return 0
     val newFuelSlotItem =
-        if (inventory[1].isSimilar(ItemStack.of(Material.LAVA_BUCKET)))
+        if (inventory[SLOT_FUEL].isSimilar(ItemStack.of(Material.LAVA_BUCKET)))
             ItemStack.of(Material.BUCKET)
         else {
-            if (inventory[1].amount() == 1) ItemStack.AIR
-            else inventory[1].withAmount(inventory[1].amount() - 1)
+            if (inventory[SLOT_FUEL].amount() == 1) ItemStack.AIR
+            else inventory[SLOT_FUEL].let { it.withAmount(it.amount() - 1) }
         }
-    inventory.setItemStack(1, newFuelSlotItem)
-    inventory.save()
+    inventory.transact { setter -> setter(SLOT_FUEL, newFuelSlotItem) }
 
     return fuelItem.burnTime
 }
 
-fun insertResult(inventory: BlockInventoryBackend, recipeData: SmeltingRecipeData) {
-    val resultItem =
-        if (inventory[2].isAir) recipeData.result else inventory[2].withAmount(inventory[2].amount() + recipeData.result.amount())
-    val newInputItem =
-        if (inventory[0].amount() == 1) ItemStack.AIR else inventory[0].withAmount(inventory[0].amount() - 1)
-    inventory.setItemStack(0, newInputItem)
-    inventory.setItemStack(2, resultItem)
-    inventory.save()
+fun insertResult(inventory: PhysicalInventory, recipeData: SmeltingRecipeData) {
+    val outputSlotItem = inventory[SLOT_OUTPUT]
+    val resultItem = if (outputSlotItem.isAir) recipeData.result
+    else outputSlotItem.withAmount(outputSlotItem.amount() + recipeData.result.amount())
+
+    val inputSlotItem = inventory[SLOT_INPUT]
+    val newInputItem = if (inputSlotItem.amount() == SLOT_FUEL) ItemStack.AIR
+    else inputSlotItem.withAmount(inputSlotItem.amount() - SLOT_FUEL)
+
+    inventory.transact { setter ->
+        setter(SLOT_INPUT, newInputItem)
+        setter(SLOT_OUTPUT, resultItem)
+    }
 }

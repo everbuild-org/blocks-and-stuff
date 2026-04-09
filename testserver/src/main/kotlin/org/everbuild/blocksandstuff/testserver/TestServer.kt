@@ -28,7 +28,6 @@ import org.everbuild.blocksandstuff.recipes.grid.PlayerInventoryCraftingGridServ
 import org.everbuild.blocksandstuff.recipes.impl.ItemControllerImpl
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.loader.RecipeLoader
-import org.everbuild.blocksandstuff.recipes.smelting.FurnaceInventory
 import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler
 import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceHandler
 import org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerHandler
@@ -37,6 +36,7 @@ import org.everbuild.blocksandstuff.recipes.stonecutting.StonecutterHandler
 import org.everbuild.blocksandstuff.recipes.util.InventoryButtonClickListener
 import java.io.File
 import kotlin.system.exitProcess
+import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
 
 class TestServer(
     generateElements: Boolean,
@@ -56,21 +56,28 @@ class TestServer(
         BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
-        loadRecipes()
+
+        RecipeRegistrations {
+            fuelNamespaces += "everbuild"
+            recipeNamespaces += "everbuild"
+        }
+
         // MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
-        MinecraftServer
-            .getGlobalEventHandler()
-            .addListener(InstanceChunkLoadEvent::class.java) {
-                val before = System.nanoTime()
-                MinestomFluids.ingestChunk(it.instance, it.chunk)
-                val after = System.nanoTime()
-                ingestRb[ingestCount++ % ingestRb.size] = after - before
-                if (ingestCount >= 500) {
-                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
-                    ingestCount = 0
-                }
-            }
+        MsptTpsBar()
+
+//        MinecraftServer
+//            .getGlobalEventHandler()
+//            .addListener(InstanceChunkLoadEvent::class.java) {
+//                val before = System.nanoTime()
+//                MinestomFluids.ingestChunk(it.instance, it.chunk)
+//                val after = System.nanoTime()
+//                ingestRb[ingestCount++ % ingestRb.size] = after - before
+//                if (ingestCount >= 500) {
+//                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
+//                    ingestCount = 0
+//                }
+//            }
 
         if (generateElements) {
             val allPlacementRuleBlockKeys =
@@ -102,56 +109,6 @@ class TestServer(
 
     fun bind() {
         server.start("0.0.0.0", 25565)
-    }
-
-    fun loadRecipes() {
-        RecipeFactory.itemController = ItemControllerImpl
-        RecipeFactory.stashController = StashControllerImpl
-        RecipeLoader.loadAllRecipes("everbuild")
-        FuelLoader.loadAllFuels("everbuild")
-        FurnaceInventory.withInventoryReload()
-
-        MinecraftServer.getGlobalEventHandler().addListener(
-            PlayerSpawnEvent::class.java
-        ) {
-            PlayerInventoryCraftingGridService(it.player)
-        }
-
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:crafting_table"
-        ) {
-            CraftingTableHandler()
-        }
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:smithing_table"
-        ) {
-            SmithingTableHandler()
-        }
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:furnace"
-        ) {
-            FurnaceHandler()
-        }
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:blast_furnace"
-        ) {
-            BlastFurnaceHandler()
-        }
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:smoker"
-        ) {
-            SmokerHandler()
-        }
-        MinecraftServer.getBlockManager().registerHandler(
-            "minecraft:stonecutter"
-        ) {
-            StonecutterHandler()
-        }
-
-        MinecraftServer.getPacketListenerManager().setPlayListener(
-            ClientClickWindowButtonPacket::class.java,
-            InventoryButtonClickListener::inventoryButtonClickListener
-        )
     }
 
     companion object {

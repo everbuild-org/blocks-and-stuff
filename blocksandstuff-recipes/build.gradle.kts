@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":blocksandstuff-common"))
+    api(project(":blocksandstuff-common"))
 
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)

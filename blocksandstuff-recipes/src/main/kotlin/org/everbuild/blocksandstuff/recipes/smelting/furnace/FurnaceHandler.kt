@@ -5,9 +5,16 @@ import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TranslatableComponent
 import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.recipes.smelting.AbstractSmeltingHandler
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype
 
-class FurnaceHandler : AbstractSmeltingHandler(FurnaceRecipe::class.java) {
+class FurnaceHandler : AbstractSmeltingHandler(
+    FurnaceRecipe::class.java,
+    Archetype
+) {
     override fun getKey(): Key = Key.key("minecraft:furnace")
-    override val inventoryType: InventoryType = InventoryType.FURNACE
-    override val inventoryTitle: TranslatableComponent = Component.translatable("container.furnace")
+
+    private object Archetype : FurnaceArchetype(
+        title = Component.translatable("container.furnace"),
+        inventoryType = InventoryType.FURNACE
+    )
 }
