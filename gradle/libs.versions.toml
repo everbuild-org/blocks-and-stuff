@@ -1,6 +1,6 @@
 [versions]
 kotlin-version = "2.3.10"
-minestom = "2026.03.03-1.21.11"
+minestom = "26_1-SNAPSHOT"
 tinylog = "2.7.0"
 junit = "5.10.0"
 mockito = "5.20.0"
