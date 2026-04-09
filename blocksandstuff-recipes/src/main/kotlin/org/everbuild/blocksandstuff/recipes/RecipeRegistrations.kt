@@ -29,32 +29,39 @@ class RecipeRegistrations {
     var itemController: ItemController? = null
     var stashController: StashController? = null
 
-    fun fuelNamespace(namespace: String) {
+    fun fuelNamespace(namespace: String): RecipeRegistrations {
         fuelNamespaces.add(namespace)
+        return this
     }
 
-    fun recipeNamespace(namespace: String) {
+    fun recipeNamespace(namespace: String): RecipeRegistrations {
         recipeNamespaces.add(namespace)
+        return this
     }
 
-    fun addRegistration(registration: FeatureRegistration) {
+    fun addRegistration(registration: FeatureRegistration): RecipeRegistrations {
         registrations.add(registration)
+        return this
     }
 
-    fun removeRegistration(registration: FeatureRegistration) {
+    fun removeRegistration(registration: FeatureRegistration): RecipeRegistrations {
         registrations.remove(registration)
+        return this
     }
 
-    fun disableRegistrations() {
+    fun disableRegistrations(): RecipeRegistrations {
         registrations.clear()
+        return this
     }
 
-    fun itemController(controller: ItemController) {
+    fun itemController(controller: ItemController): RecipeRegistrations {
         itemController = controller
+        return this
     }
 
-    fun stashController(controller: StashController) {
+    fun stashController(controller: StashController): RecipeRegistrations {
         stashController = controller
+        return this
     }
 
     fun apply() {
