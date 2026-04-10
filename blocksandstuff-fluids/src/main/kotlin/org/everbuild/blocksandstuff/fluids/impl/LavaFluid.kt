@@ -71,7 +71,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
             val event = FluidBlockReplacementEvent(
                 instance,
                 if (isDown) Block.STONE else Block.COBBLESTONE,
-                BlockVec(point)
+                point.asBlockVec()
             )
 
             EventDispatcher.callCancellable(event) {

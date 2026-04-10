@@ -56,7 +56,7 @@ class CopperOxidationRule(private val block: Block) : BlockHandler, RandomTickHa
         val event = CopperOxidationEvent(
             block,
             nextStage,
-            BlockVec(blockPosition),
+            blockPosition.asBlockVec(),
             instance
         )
         EventDispatcher.call(event)

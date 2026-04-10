@@ -67,7 +67,7 @@ class SignEditRule(private val block: Block) : BlockHandler {
     }
 
     private fun openEditor(block: Block, position: Point, player: Player, front: Boolean) {
-        EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, BlockVec(position), block)) {
+        EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, position.asBlockVec(), block)) {
             player.sendPacket(OpenSignEditorPacket(position, front))
         }
     }

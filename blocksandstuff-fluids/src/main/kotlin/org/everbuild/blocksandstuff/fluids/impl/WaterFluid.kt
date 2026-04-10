@@ -63,7 +63,7 @@ open class WaterFluid(
                 FluidBlockReplacementEvent(
                     instance,
                     if (isSource(otherBlock)) Block.OBSIDIAN else Block.COBBLESTONE,
-                    BlockVec(otherPoint),
+                    otherPoint.asBlockVec(),
                 )
 
             EventDispatcher.callCancellable(event) {
