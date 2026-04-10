@@ -78,6 +78,7 @@ sealed interface RecipeIngredient {
         override fun asMaterials(): List<Material> = listOf(value.material())
 
         private fun mergeData(builder: ItemStack.Builder, source: ItemStack) {
+            @Suppress("UnstableApiUsage")
             for (value in source.componentPatch().entrySet()) {
                 @Suppress("UNCHECKED_CAST") // can't fail, generic cast
                 builder.set(value.component as DataComponent<Any?>, value.value)

@@ -1,13 +1,11 @@
 package org.everbuild.blocksandstuff.recipes.smithing
 
-import net.kyori.adventure.key.Key
 import net.minestom.server.component.DataComponents
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.item.armor.TrimMaterial
 import net.minestom.server.item.armor.TrimPattern
 import net.minestom.server.item.component.ArmorTrim
-import net.minestom.server.registry.RegistryKey
 import org.everbuild.blocksandstuff.recipes.loader.RecipeModel
 import org.everbuild.blocksandstuff.recipes.serializer.ingredients.IngredientOrIngredients
 
@@ -30,38 +28,38 @@ class TrimSmithingRecipe(
         if (addition == null) return base
         if (template == null) return base
         val trimPattern = when(template.material()) {
-            Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:bolt"))
-            Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:sentry"))
-            Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:dune"))
-            Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:coast"))
-            Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:wild"))
-            Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:ward"))
-            Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:eye"))
-            Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:vex"))
-            Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:tide"))
-            Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:snout"))
-            Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:rib"))
-            Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:spire"))
-            Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:wayfinder"))
-            Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:shaper"))
-            Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:silence"))
-            Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:raiser"))
-            Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:host"))
-            Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE -> RegistryKey.unsafeOf<TrimPattern>(Key.key("minecraft:flow"))
+            Material.BOLT_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.BOLT
+            Material.SENTRY_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SENTRY
+            Material.DUNE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.DUNE
+            Material.COAST_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.COAST
+            Material.WILD_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WILD
+            Material.WARD_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WARD
+            Material.EYE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.EYE
+            Material.VEX_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.VEX
+            Material.TIDE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.TIDE
+            Material.SNOUT_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SNOUT
+            Material.RIB_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.RIB
+            Material.SPIRE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SPIRE
+            Material.WAYFINDER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.WAYFINDER
+            Material.SHAPER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SHAPER
+            Material.SILENCE_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.SILENCE
+            Material.RAISER_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.RAISER
+            Material.HOST_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.HOST
+            Material.FLOW_ARMOR_TRIM_SMITHING_TEMPLATE -> TrimPattern.FLOW
             else -> return base
         }
 
         val trimMaterial = when(addition.material()) {
-            Material.AMETHYST_SHARD -> RegistryKey.unsafeOf(Key.key("minecraft:amethyst"))
-            Material.COPPER_INGOT -> RegistryKey.unsafeOf(Key.key("minecraft:copper"))
-            Material.GOLD_INGOT -> RegistryKey.unsafeOf(Key.key("minecraft:gold"))
-            Material.EMERALD -> RegistryKey.unsafeOf(Key.key("minecraft:emerald"))
-            Material.DIAMOND -> RegistryKey.unsafeOf(Key.key("minecraft:diamond"))
-            Material.IRON_INGOT -> RegistryKey.unsafeOf(Key.key("minecraft:iron"))
-            Material.LAPIS_LAZULI -> RegistryKey.unsafeOf(Key.key("minecraft:lapis"))
-            Material.NETHERITE_INGOT -> RegistryKey.unsafeOf(Key.key("minecraft:netherite"))
-            Material.QUARTZ -> RegistryKey.unsafeOf(Key.key("minecraft:quartz"))
-            Material.REDSTONE -> RegistryKey.unsafeOf<TrimMaterial>(Key.key("minecraft:redstone"))
+            Material.AMETHYST_SHARD -> TrimMaterial.AMETHYST
+            Material.COPPER_INGOT -> TrimMaterial.COPPER
+            Material.GOLD_INGOT -> TrimMaterial.GOLD
+            Material.EMERALD -> TrimMaterial.EMERALD
+            Material.DIAMOND -> TrimMaterial.DIAMOND
+            Material.IRON_INGOT -> TrimMaterial.IRON
+            Material.LAPIS_LAZULI -> TrimMaterial.LAPIS
+            Material.NETHERITE_INGOT -> TrimMaterial.NETHERITE
+            Material.QUARTZ -> TrimMaterial.QUARTZ
+            Material.REDSTONE -> TrimMaterial.REDSTONE
             else -> return base
         }
 

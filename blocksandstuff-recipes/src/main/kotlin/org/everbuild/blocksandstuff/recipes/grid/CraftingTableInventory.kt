@@ -7,7 +7,7 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 
-class CraftingTableInventory() : Inventory(InventoryType.CRAFTING, Component.translatable("container.crafting")) {
+class CraftingTableInventory : Inventory(InventoryType.CRAFTING, Component.translatable("container.crafting")) {
     private val service = CraftingTableGridService(this)
 
     init {

@@ -10,7 +10,7 @@ import org.everbuild.blocksandstuff.recipes.loader.RecipeModel
 import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceRecipe
 import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceRecipe
 import org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerRecipe
-import org.everbuild.averium.org.everbuild.blocksandstuff.recipes.smithing.TransformSmithingRecipe
+import org.everbuild.blocksandstuff.recipes.smithing.TransformSmithingRecipe
 import org.everbuild.blocksandstuff.recipes.smithing.TrimSmithingRecipe
 import org.everbuild.blocksandstuff.recipes.stonecutting.StonecutterRecipe
 import org.everbuild.blocksandstuff.recipes.api.ItemController

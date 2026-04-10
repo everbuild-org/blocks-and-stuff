@@ -1,10 +1,9 @@
-package org.everbuild.averium.org.everbuild.blocksandstuff.recipes.smithing
+package org.everbuild.blocksandstuff.recipes.smithing
 
 import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.recipes.loader.RecipeModel
 import org.everbuild.blocksandstuff.recipes.serializer.ingredient.RecipeIngredient
 import org.everbuild.blocksandstuff.recipes.serializer.ingredients.IngredientOrIngredients
-import org.everbuild.blocksandstuff.recipes.smithing.AbstractSmithingRecipe
 
 class TransformSmithingRecipe(
     template: IngredientOrIngredients? = null,
