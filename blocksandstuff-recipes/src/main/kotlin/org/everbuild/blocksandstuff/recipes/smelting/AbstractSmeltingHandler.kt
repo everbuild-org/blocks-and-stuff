@@ -65,13 +65,7 @@ abstract class AbstractSmeltingHandler(
 
             if (totalCookingTime == 0L) {
                 val recipeData = getRecipe(inventory)
-                var totalCookingTime = recipeData?.burnTime?.toLong() ?: 0
-
-                if (this is org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler ||
-                    this is org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerHandler
-                ) {
-                    totalCookingTime /= 2
-                }
+                val totalCookingTime = recipeData?.burnTime?.toLong() ?: 0
 
                 newBlock = newBlock.withTag(cookingTotalTime, totalCookingTime).withTag(cookingTimeSpent, 0)
             } else {

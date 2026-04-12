@@ -8,22 +8,24 @@ import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.inventory.InventoryOpenEvent
+import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.inventory.InventoryProperty
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.inventory.click.Click
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventory
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryArchetype
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
+import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 
 abstract class FurnaceArchetype(
     override val title: Component,
-    override val inventoryType: InventoryType
+    override val inventoryType: InventoryType,
 ) : BlockInventoryArchetype {
     override val size: Int = 3
 
-    override fun createInventory(backend: PhysicalInventory): BlockInventory =
-        InventoryImpl(backend)
+    override fun createInventory(backend: PhysicalInventory): BlockInventory = InventoryImpl(backend)
 
     companion object {
         const val SLOT_INPUT = 0
@@ -31,18 +33,19 @@ abstract class FurnaceArchetype(
         const val SLOT_OUTPUT = 2
     }
 
-    inner class Backend(blockPos: Point, instance: Instance) :
-        SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance)
+    inner class Backend(
+        blockPos: Point,
+        instance: Instance,
+    ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance)
 
     inner class InventoryImpl(
         backend: PhysicalInventory,
     ) : BlockInventory(inventoryType, title, backend) {
-
         init {
-            var eventNode: EventNode<Event>? = null
+            var globalEventNode: EventNode<Event>? = null
 
             eventNode().addListener(InventoryOpenEvent::class.java) {
-                if (eventNode == null) {
+                if (globalEventNode == null) {
                     val eventNode = EventNode.all("furnace-inventory-listener")
                     MinecraftServer.getGlobalEventHandler().addChild(eventNode)
 
@@ -52,6 +55,25 @@ abstract class FurnaceArchetype(
                     }
 
                     eventNode.addListener(InstanceTickEvent::class.java) { onTick(it) }
+                }
+            }
+
+            eventNode().addListener(InventoryPreClickEvent::class.java) {
+                val slot = it.slot
+                if (slot == SLOT_OUTPUT && !it.player.inventory.cursorItem.isAir) {
+                    it.isCancelled = true
+                    return@addListener
+                }
+                if (slot == SLOT_FUEL && !(it.player.inventory.cursorItem.isAir || FuelLoader.isFuel(it.player.inventory.cursorItem))) {
+                    it.isCancelled = true
+                    return@addListener
+                }
+
+                if (FuelLoader.isFuel(it.clickedItem) && (it.click is Click.LeftShift || it.click is Click.RightShift)) {
+                    if (slot == SLOT_OUTPUT) {
+                        it.isCancelled = true
+                        return@addListener
+                    }
                 }
             }
         }

@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.recipes.loader
 
+import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.recipes.SerializationFactory
 import java.io.File
 import java.net.URL
@@ -9,7 +10,10 @@ object FuelLoader {
 
     var furnaceFuels: List<FurnaceFuel>? = null
 
-    private fun getResource(namespace: String, module: Class<*>): URL {
+    private fun getResource(
+        namespace: String,
+        module: Class<*>,
+    ): URL {
         this.namespace = namespace
         return module.getResource("/data/$namespace/fuels.json") ?: File("/data/$namespace/fuels.json").toURI().toURL()
     }
@@ -24,4 +28,6 @@ object FuelLoader {
         furnaceFuels = value
         return value
     }
+
+    fun isFuel(item: ItemStack): Boolean = furnaceFuels?.any { it.itemStack.matches(item) } ?: false
 }
