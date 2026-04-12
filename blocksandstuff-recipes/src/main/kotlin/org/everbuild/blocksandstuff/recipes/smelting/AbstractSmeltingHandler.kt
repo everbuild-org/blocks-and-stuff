@@ -11,11 +11,15 @@ import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 
 abstract class AbstractSmeltingHandler(
     private val recipeType: Class<out SmeltingRecipe>,
-    private val archetype: FurnaceArchetype
-) : BlockHandler, BlockInventoryHolder {
+    private val archetype: FurnaceArchetype,
+) : BlockHandler,
+    BlockInventoryHolder {
     private var backend: PhysicalInventory? = null
 
-    override fun getInventory(instance: Instance, blockPos: Point): PhysicalInventory {
+    override fun getInventory(
+        instance: Instance,
+        blockPos: Point,
+    ): PhysicalInventory {
         backend?.let { return it }
         return archetype.Backend(blockPos, instance).also { backend = it }
     }
@@ -23,9 +27,12 @@ abstract class AbstractSmeltingHandler(
     fun getRecipe(inventory: PhysicalInventory): SmeltingRecipeData? {
         val inputSlot = inventory[FurnaceArchetype.SLOT_INPUT]
         if (inputSlot.isAir) return null
-        val currentRecipe = MinecraftServer.getRecipeManager().recipes
-            .filterIsInstance(recipeType)
-            .firstOrNull { it.matches(inputSlot) } ?: return null
+        val currentRecipe =
+            MinecraftServer
+                .getRecipeManager()
+                .recipes
+                .filterIsInstance(recipeType)
+                .firstOrNull { it.matches(inputSlot) } ?: return null
         if (!inventory[FurnaceArchetype.SLOT_OUTPUT].isAir) {
             if (inventory[FurnaceArchetype.SLOT_OUTPUT].amount() >= currentRecipe.result.maxStackSize()) return null
             if (!inventory[FurnaceArchetype.SLOT_OUTPUT].isSimilar(currentRecipe.result)) return null
@@ -37,9 +44,13 @@ abstract class AbstractSmeltingHandler(
         return SmeltingRecipeData(result, experience, burnTime)
     }
 
-    fun updateCookingTime(block: Block, recipeData: SmeltingRecipeData?): Block {
-        if (recipeData == null)
+    fun updateCookingTime(
+        block: Block,
+        recipeData: SmeltingRecipeData?,
+    ): Block {
+        if (recipeData == null) {
             return block.withTag(cookingTimeSpent, 0).withTag(cookingTotalTime, 0)
+        }
         return block.withTag(cookingTimeSpent, block.getTag(cookingTimeSpent) + 1)
     }
 
@@ -54,7 +65,13 @@ abstract class AbstractSmeltingHandler(
 
             if (totalCookingTime == 0L) {
                 val recipeData = getRecipe(inventory)
-                val totalCookingTime = recipeData?.burnTime?.toLong() ?: 0
+                var totalCookingTime = recipeData?.burnTime?.toLong() ?: 0
+
+                if (this is org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler ||
+                    this is org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerHandler
+                ) {
+                    totalCookingTime /= 2
+                }
 
                 newBlock = newBlock.withTag(cookingTotalTime, totalCookingTime).withTag(cookingTimeSpent, 0)
             } else {
@@ -71,7 +88,6 @@ abstract class AbstractSmeltingHandler(
             }
             litTime = (litTime - 1).toShort()
             newBlock = newBlock.withProperty("lit", "true").withTag(litTimeRemaining, litTime)
-
         } else if (getRecipe(inventory) != null) {
             tick.instance.setBlock(tick.blockPosition, newBlock, false)
             val fuelTime = takeFuel(tick.instance, tick.blockPosition)
@@ -82,14 +98,17 @@ abstract class AbstractSmeltingHandler(
                         .withTag(litTotalTime, fuelTime.toLong())
                         .withTag(litTimeRemaining, fuelTime.toShort())
                         .withProperty("lit", "true")
-            } else if (isLit)
-                newBlock = newBlock
-                    .withProperty("lit", "false")
-                    .withTag(cookingTimeSpent, 0)
-                    .withTag(cookingTotalTime, 0)
+            } else if (isLit) {
+                newBlock =
+                    newBlock
+                        .withProperty("lit", "false")
+                        .withTag(cookingTimeSpent, 0)
+                        .withTag(cookingTotalTime, 0)
+            }
         } else {
-            if (isLit)
+            if (isLit) {
                 newBlock = newBlock.withProperty("lit", "false")
+            }
         }
 
         if (newBlock != tick.block) {
@@ -97,32 +116,33 @@ abstract class AbstractSmeltingHandler(
         }
     }
 
-    override fun isTickable(): Boolean {
-        return true
-    }
+    override fun isTickable(): Boolean = true
 
-    override fun getBlockEntityTags(): MutableCollection<Tag<*>> {
-        return mutableListOf(
+    override fun getBlockEntityTags(): MutableCollection<Tag<*>> =
+        mutableListOf(
             litTimeRemaining,
             cookingTimeSpent,
             cookingTotalTime,
             litTotalTime,
             customName,
         )
-    }
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         if (interaction.player.isSneaking) {
             return true
         }
-        val inventory = getInventory(interaction.instance, interaction.blockPosition)
-            .getViewableInventory()
+        val inventory =
+            getInventory(interaction.instance, interaction.blockPosition)
+                .getViewableInventory()
 
         interaction.player.openInventory(inventory)
         return false
     }
 
-    open fun takeFuel(instance: Instance, blockPosition: Point): Int {
+    open fun takeFuel(
+        instance: Instance,
+        blockPosition: Point,
+    ): Int {
         val inventory = getInventory(instance, blockPosition)
         return useFuel(inventory)
     }
