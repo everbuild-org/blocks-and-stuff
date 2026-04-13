@@ -3,8 +3,6 @@ package org.everbuild.blocksandstuff.recipes.smithing
 import net.kyori.adventure.text.Component
 import net.minestom.server.MinecraftServer
 import net.minestom.server.entity.Player
-import net.minestom.server.event.Event
-import net.minestom.server.event.EventNode
 import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
@@ -12,7 +10,9 @@ import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
+import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.recipes.RecipeFactory.stashController
+import org.everbuild.blocksandstuff.recipes.util.trimPatterns
 import kotlin.math.min
 
 class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.translatable("container.upgrade")) {
@@ -26,15 +26,31 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
     }
 
     init {
-        var globalEventNode: EventNode<Event>? = null
-
         eventNode()
             .addListener(InventoryItemChangeEvent::class.java) { onChangeItem(it) }
             .addListener(InventoryPreClickEvent::class.java) { onClickItem(it) }
             .addListener(InventoryCloseEvent::class.java) { onClose(it.player) }
 
         eventNode().addListener(InventoryPreClickEvent::class.java) {
+            if (it.click is Click.LeftShift || it.click is Click.RightShift) {
+                it.isCancelled = true
+                // Todo: implement Shift Clicking when the API in Minestom is implemented
+                return@addListener
+            }
             if (it.slot == RESULT_SLOT && !it.player.inventory.cursorItem.isAir) {
+                it.isCancelled = true
+                return@addListener
+            }
+
+            if (it.slot == TEMPLATE_SLOT &&
+                (
+                    !(trimPatterns.keys + Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE).contains(
+                        it.player.inventory.cursorItem
+                            .material(),
+                    ) &&
+                        !it.player.inventory.cursorItem.isAir
+                )
+            ) {
                 it.isCancelled = true
                 return@addListener
             }

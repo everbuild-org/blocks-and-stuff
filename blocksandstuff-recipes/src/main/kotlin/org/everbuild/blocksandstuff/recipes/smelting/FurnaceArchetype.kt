@@ -69,12 +69,17 @@ abstract class FurnaceArchetype(
                     return@addListener
                 }
 
-                if (FuelLoader.isFuel(it.clickedItem) && (it.click is Click.LeftShift || it.click is Click.RightShift)) {
-                    if (slot == SLOT_OUTPUT) {
-                        it.isCancelled = true
-                        return@addListener
-                    }
+                if (it.click is Click.LeftShift || it.click is Click.RightShift) {
+                    it.isCancelled = true
+                    // Todo: implement Shift Clicking when the API in Minestom is implemented
+                    return@addListener
                 }
+                // if (FuelLoader.isFuel(it.clickedItem) && (it.click is Click.LeftShift || it.click is Click.RightShift)) {
+                //    if (slot == SLOT_OUTPUT) {
+                //        it.isCancelled = true
+                //        return@addListener
+                //    }
+                // }
             }
         }
 
