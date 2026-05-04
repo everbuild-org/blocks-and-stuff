@@ -20,7 +20,7 @@ open class LightningRodPlacementRule(block: Block) : BlockPlacementRule(block) {
             return null
         }
 
-        return block
+        return placementState.block
             .withProperty("facing",
                 when (facing) {
                     BlockFace.BOTTOM -> "down"

@@ -26,9 +26,10 @@ class EndRodPlacementRule(block: Block) : BlockPlacementRule(block) {
                     }
                 }
             }
-            return block.withProperty("facing", newFacing)
+            return placementState.block
+                .withProperty("facing", newFacing)
         }
-        return block.withProperty(
+        return placementState.block.withProperty(
             "facing",
             when (blockFace) {
                 BlockFace.BOTTOM -> "down"

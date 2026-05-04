@@ -82,7 +82,7 @@ class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
 
         val actualConnections = connections.filter { it.value != ConnectionType.NONE }
         if (actualConnections.isEmpty()) {
-            return UpdateResult(block.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" }), connections)
+            return UpdateResult(current.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" }), connections)
         }
 
         if (actualConnections.size == 1) {

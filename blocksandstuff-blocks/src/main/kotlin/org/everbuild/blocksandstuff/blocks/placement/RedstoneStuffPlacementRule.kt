@@ -15,9 +15,8 @@ class RedstoneStuffPlacementRule(block: Block) : BlockPlacementRule(block) {
             return null
         }
         val facing = placementState.getNearestHorizontalLookingDirection()
-        return block
+        return placementState.block
             .withProperty("facing", facing.name.lowercase(Locale.ROOT))
-            .withProperty("powered", "false")
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {

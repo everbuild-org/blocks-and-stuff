@@ -9,6 +9,7 @@ class GlazedTerracottaPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val horizontalLookingDirection = placementState.getNearestHorizontalLookingDirection()
 
-        return block.withProperty("facing", horizontalLookingDirection.name.lowercase())
+        return placementState.block
+            .withProperty("facing", horizontalLookingDirection.name.lowercase())
     }
 }

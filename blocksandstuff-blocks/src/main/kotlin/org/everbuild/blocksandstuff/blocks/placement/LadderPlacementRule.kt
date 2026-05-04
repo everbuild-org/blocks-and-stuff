@@ -13,7 +13,7 @@ class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (!placementState.instance.getBlock(supporting).registry()!!.collisionShape().isFaceFull(blockFace)) {
             return null
         }
-        return block
+        return placementState.block
             .withProperty("facing", blockFace.name.lowercase())
     }
 
