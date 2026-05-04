@@ -19,17 +19,20 @@ class HeadPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     override fun blockPlace(placementState: PlacementState): Block? {
-        val clickedFace = placementState.blockFace ?: return block
+        val clickedFace = placementState.blockFace ?: return placementState.block
         return when (clickedFace) {
             BlockFace.TOP, BlockFace.BOTTOM -> {
                 val rotation = placementState.sixteenStepRotation()
-                block.withProperty("rotation", rotation.toString())
+                placementState.block.withProperty("rotation", rotation.toString())
             }
             else -> {
                 val wallVariant = WALL_VARIANTS[block]
-                    ?: return block
+                    ?: return placementState.block
                 val facing = clickedFace.name.lowercase(Locale.ROOT)
-                wallVariant.withProperty("facing", facing)
+                wallVariant
+                    .withHandler(placementState.block.handler())
+                    .withNbt(placementState.block.nbt())
+                    .withProperty("facing", facing)
             }
         }
     }
