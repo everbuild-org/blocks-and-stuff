@@ -21,7 +21,7 @@ class CandleCakeRule(val block: Block) : BlockHandler {
             CakeEatEvent(
                 interaction.player,
                 interaction.block,
-                BlockVec(interaction.blockPosition)
+                interaction.blockPosition.asBlockVec()
             )
         ) {
             interaction.instance.setBlock(

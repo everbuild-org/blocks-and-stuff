@@ -29,11 +29,10 @@ fun setupFluidPlacementEvent() {
 
             val blockFace = event.blockFace
             val updated = instance.getBlock(event.blockPosition)
-            var placePosition: Pos =
-                event.blockPosition
+            var placePosition: Pos = event.blockPosition
                     .relative(blockFace)
-                    .asVec()
-                    .asPosition()
+                    .asPos()
+
             val blockToPlace: Block =
                 when (heldMaterial) {
                     Material.LAVA_BUCKET -> {
@@ -42,7 +41,7 @@ fun setupFluidPlacementEvent() {
 
                     Material.WATER_BUCKET -> {
                         if (isWaterloggable(updated)) {
-                            placePosition = event.blockPosition.asVec().asPosition()
+                            placePosition = event.blockPosition.asVec().asPos()
                             updated.withProperty("waterlogged", "true")
                         } else {
                             Block.WATER

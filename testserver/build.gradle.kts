@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation(project(":blocksandstuff-blocks"))
     implementation(project(":blocksandstuff-fluids"))
+    implementation(project(":blocksandstuff-recipes"))
 
     implementation(libs.minestom)
     implementation(libs.tinylog.api)

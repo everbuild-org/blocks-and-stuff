@@ -386,7 +386,7 @@ abstract class FlowableFluid(
         block: Block,
         flowing: Block,
     ): Boolean {
-        val event = BlockFluidReplacementEvent(instance, block, BlockVec(point))
+        val event = BlockFluidReplacementEvent(instance, block, point.asBlockVec())
         EventDispatcher.call(event)
         return block.isAir || block.registry()!!.isReplaceable || !event.isCancelled
     }

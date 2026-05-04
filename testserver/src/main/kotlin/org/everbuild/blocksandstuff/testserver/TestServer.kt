@@ -4,23 +4,39 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.GameMode
+import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
+import net.minestom.server.event.player.PlayerGameModeRequestEvent
+import net.minestom.server.event.player.PlayerSpawnEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket
 import net.minestom.server.utils.chunk.ChunkSupplier
+import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
+import org.everbuild.blocksandstuff.recipes.RecipeFactory
+import org.everbuild.blocksandstuff.recipes.grid.CraftingTableHandler
+import org.everbuild.blocksandstuff.recipes.grid.PlayerInventoryCraftingGridService
+import org.everbuild.blocksandstuff.recipes.impl.ItemControllerImpl
+import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
+import org.everbuild.blocksandstuff.recipes.loader.RecipeLoader
+import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler
+import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceHandler
+import org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerHandler
+import org.everbuild.blocksandstuff.recipes.smithing.SmithingTableHandler
+import org.everbuild.blocksandstuff.recipes.stonecutting.StonecutterHandler
+import org.everbuild.blocksandstuff.recipes.util.InventoryButtonClickListener
 import java.io.File
 import kotlin.system.exitProcess
-import net.minestom.server.event.EventNode
-import net.minestom.server.event.player.PlayerGameModeRequestEvent
+import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
 
 class TestServer(
     generateElements: Boolean,
@@ -40,20 +56,28 @@ class TestServer(
         BlockPickup.enable()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+
+        RecipeRegistrations {
+            fuelNamespaces += "everbuild"
+            recipeNamespaces += "everbuild"
+        }
+
         // MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
-        MinecraftServer
-            .getGlobalEventHandler()
-            .addListener(InstanceChunkLoadEvent::class.java) {
-                val before = System.nanoTime()
-                MinestomFluids.ingestChunk(it.instance, it.chunk)
-                val after = System.nanoTime()
-                ingestRb[ingestCount++ % ingestRb.size] = after - before
-                if (ingestCount >= 500) {
-                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
-                    ingestCount = 0
-                }
-            }
+        MsptTpsBar()
+
+//        MinecraftServer
+//            .getGlobalEventHandler()
+//            .addListener(InstanceChunkLoadEvent::class.java) {
+//                val before = System.nanoTime()
+//                MinestomFluids.ingestChunk(it.instance, it.chunk)
+//                val after = System.nanoTime()
+//                ingestRb[ingestCount++ % ingestRb.size] = after - before
+//                if (ingestCount >= 500) {
+//                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
+//                    ingestCount = 0
+//                }
+//            }
 
         if (generateElements) {
             val allPlacementRuleBlockKeys =

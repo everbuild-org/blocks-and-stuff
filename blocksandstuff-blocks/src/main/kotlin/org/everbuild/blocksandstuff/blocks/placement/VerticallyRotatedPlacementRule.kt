@@ -9,7 +9,7 @@ class VerticallyRotatedPlacementRule(block: Block) : BlockPlacementRule(block) {
         return placementState.block
             .withProperty(
                 "facing",
-                (placementState.getHorizontalPlacementDirection() ?: return placementState.block).name.lowercase()
+                (placementState.getHorizontalPlacementDirection() ?: return placementState.block).opposite().name.lowercase()
             )
     }
 }
