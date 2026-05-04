@@ -15,7 +15,7 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
             else -> return null
         }
         val thickness = getThickness(placementState.instance(), placementState.placePosition(), direction == "up")
-        return block.withProperties(mapOf(
+        return placementState.block.withProperties(mapOf(
             "vertical_direction" to direction,
             "thickness" to thickness
         ))

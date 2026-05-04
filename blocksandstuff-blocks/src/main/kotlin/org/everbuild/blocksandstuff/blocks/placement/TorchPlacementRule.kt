@@ -58,6 +58,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
         }
 
         return torch.withNbt(placementState.block.nbtOrEmpty())
+            .withHandler(placementState.block.handler())
             .withProperty("facing", placementState.blockFace!!.name.lowercase())
     }
 

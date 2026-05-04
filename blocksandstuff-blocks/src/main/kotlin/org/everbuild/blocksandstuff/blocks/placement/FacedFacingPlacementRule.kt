@@ -22,7 +22,7 @@ open class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
             return null
         }
 
-        return block
+        return placementState.block
             .withProperty("facing", facing.name.lowercase())
             .withProperty("face", face)
     }

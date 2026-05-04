@@ -11,10 +11,10 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
         val blockFace = placementState.blockFace ?: return block
 
         return when (blockFace) {
-            BlockFace.BOTTOM -> block
+            BlockFace.BOTTOM -> placementState.block
                 .withProperty("attachment", "ceiling")
 
-            BlockFace.TOP -> block
+            BlockFace.TOP -> placementState.block
                 .withProperty("attachment", "floor")
                 .withProperty("facing", placementState.getNearestHorizontalLookingDirection().name.lowercase())
 
@@ -26,7 +26,7 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
                     )
                 ).isSolid
 
-                block
+                placementState.block
                     .withProperty("facing", direction)
                     .withProperty("attachment", if (doubleWall) "double_wall" else "single_wall")
             }
