@@ -11,13 +11,22 @@ import org.everbuild.blocksandstuff.common.utils.isWater
 class BigDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
     private val plantableOn = BlockTags.getTaggedWith("minecraft:big_dripleaf_placeable")
 
+    fun getBlockVariant(placed: Block, type: Block): Block {
+        if (type.compare(placed)) {
+            return placed
+        }
+        return type
+            .withNbt(placed.nbt())
+            .withHandler(placed.handler())
+    }
+
     override fun blockPlace(placementState: PlacementState): Block? {
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.sub(0.0, 1.0, 0.0))
         val placingInsideWater = placementState.instance.getBlock(placementState.placePosition).isWater()
         if (plantableOn.any { it.compare(blockBelow) }) {
             val direction = placementState.getNearestHorizontalLookingDirection()
 
-            return Block.BIG_DRIPLEAF
+            return getBlockVariant(placementState.block, Block.BIG_DRIPLEAF)
                 .withProperty("facing", direction.name.lowercase())
                 .withProperty("waterlogged", placingInsideWater.toString())
         }
@@ -29,12 +38,12 @@ class BigDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
 
             instance.setBlock(
                 placementState.placePosition.sub(0.0, 1.0, 0.0),
-                Block.BIG_DRIPLEAF_STEM
+                getBlockVariant(placementState.block, Block.BIG_DRIPLEAF_STEM)
                     .withProperty("facing", direction)
                     .withProperty("waterlogged", bottomInsideWater.toString())
             )
 
-            return Block.BIG_DRIPLEAF
+            return getBlockVariant(placementState.block, Block.BIG_DRIPLEAF)
                 .withProperty("facing", direction)
                 .withProperty("waterlogged", placingInsideWater.toString())
         }

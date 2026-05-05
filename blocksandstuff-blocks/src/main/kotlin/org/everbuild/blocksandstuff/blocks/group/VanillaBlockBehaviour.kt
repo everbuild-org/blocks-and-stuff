@@ -157,6 +157,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         ::SweetBerryBushRule
     )
 
+    val SKULL = group(
+        byBlock(Block.PLAYER_HEAD),
+        ::SkullDisplayRule
+    )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler

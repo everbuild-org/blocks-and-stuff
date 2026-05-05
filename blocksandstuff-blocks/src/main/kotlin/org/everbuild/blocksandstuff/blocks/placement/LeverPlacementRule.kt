@@ -14,24 +14,23 @@ class LeverPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (!placementState.canAttach()) {
             return null
         }
-        val newBlock = block.withProperty("powered", "false")
         return when (clickedFace) {
             BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST -> {
-                newBlock
+                placementState.block
                     .withProperty("face", "wall")
                     .withProperty("facing", clickedFace.name.lowercase(Locale.ROOT))
             }
 
             BlockFace.TOP -> {
                 val playerFacing = placementState.getNearestHorizontalLookingDirection().opposite()
-                newBlock
+                placementState.block
                     .withProperty("face", "floor")
                     .withProperty("facing", playerFacing.name.lowercase(Locale.ROOT))
             }
 
             BlockFace.BOTTOM -> {
                 val playerFacing = placementState.getNearestHorizontalLookingDirection().opposite()
-                newBlock
+                placementState.block
                     .withProperty("face", "ceiling")
                     .withProperty("facing", playerFacing.name.lowercase(Locale.ROOT))
             }

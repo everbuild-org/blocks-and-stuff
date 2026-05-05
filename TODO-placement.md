@@ -280,6 +280,7 @@
 - [x] minecraft:furnace
 - [x] minecraft:glass_pane
 - [x] minecraft:glow_lichen
+- [x] minecraft:golden_dandelion
 - [x] minecraft:granite_slab
 - [x] minecraft:granite_stairs
 - [x] minecraft:granite_wall

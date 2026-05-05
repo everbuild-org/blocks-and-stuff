@@ -657,8 +657,8 @@ minecraft:wither_skeleton_skull
 minecraft:zombie_head
 minecraft:creeper_head
 minecraft:dragon_head
-minecraft:player_head
 minecraft:piglin_head
+minecraft:player_head
 minecraft:sugar_cane
 minecraft:oak_sapling
 minecraft:spruce_sapling
@@ -687,6 +687,7 @@ minecraft:lily_of_the_valley
 minecraft:wither_rose
 minecraft:torchflower
 minecraft:closed_eyeblossom
+minecraft:golden_dandelion
 minecraft:sweet_berry_bush
 minecraft:crafter
 minecraft:lever

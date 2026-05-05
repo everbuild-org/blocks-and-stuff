@@ -12,10 +12,11 @@ class CampfireBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
         val waterlogged = placementState.instance.getBlock(placementState.placePosition).isWater()
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
         val signalFire = blockBelow.compare(Block.HAY_BLOCK)
+        val lit = placementState.block.getProperty("lit").toBoolean()
         return placementState.block
             .withProperty("facing", facing.name.lowercase())
             .withProperty("waterlogged", waterlogged.toString())
-            .withProperty("lit", (!waterlogged).toString())
+            .withProperty("lit", (!waterlogged && lit).toString())
             .withProperty("signal_fire", signalFire.toString())
     }
 
