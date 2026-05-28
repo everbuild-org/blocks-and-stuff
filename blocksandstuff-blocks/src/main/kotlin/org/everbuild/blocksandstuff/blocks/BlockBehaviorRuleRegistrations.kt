@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks
 
+import net.kyori.adventure.text.logger.slf4j.ComponentLogger
 import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
@@ -7,7 +8,7 @@ import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.randomticking.getRandomTickingEventNode
 
 object BlockBehaviorRuleRegistrations {
-    private val logger = MinecraftServer.LOGGER
+    private val logger = ComponentLogger.logger(BlockBehaviorRuleRegistrations::class.java)
 
     @JvmStatic
     fun registerRandomTickingGlobally() {
