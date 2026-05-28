@@ -1,6 +1,7 @@
 [versions]
-minestom = "26_1-SNAPSHOT"
+minestom = "2026.05.17c-26.1.1"
 tinylog = "2.7.0"
+slf4j = "2.0.17"
 junit = "5.10.0"
 mockito = "5.20.0"
 mockito-kotlin = "6.1.0"
@@ -9,6 +10,7 @@ jetbrains-annotations = "26.1.0"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 tinylog-api = { group = "org.tinylog", name = "tinylog-api", version.ref = "tinylog" }
 tinylog-impl = { group = "org.tinylog", name = "tinylog-impl", version.ref = "tinylog" }
 tinylog-slf4j = { group = "org.tinylog", name = "slf4j-tinylog", version.ref = "tinylog" }
