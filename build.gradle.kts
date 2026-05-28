@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.10.0-SNAPSHOT"
+version = "1.10.1-SNAPSHOT"
 
 allprojects {
     group = rootProject.group
