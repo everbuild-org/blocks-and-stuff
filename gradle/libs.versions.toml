@@ -1,7 +1,7 @@
 [versions]
 minestom = "2026.05.17c-26.1.1"
 tinylog = "2.7.0"
-slf4j = "2.0.17"
+slf4j = "2.0.18"
 junit = "5.10.0"
 mockito = "5.20.0"
 mockito-kotlin = "6.1.0"
