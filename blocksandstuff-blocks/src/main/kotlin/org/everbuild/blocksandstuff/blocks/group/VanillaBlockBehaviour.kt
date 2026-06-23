@@ -134,7 +134,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val CONCRETE_POWDER = group(
-        //FIXME when 26.2 is mainline
+        //Inline this when minestom 26.2 is mainline
         if (MinecraftServer.PROTOCOL_VERSION < 776) byTag("minecraft:concrete_powder") else byTag("minecraft:concrete_powders"),
         ::ConcretePowderRule
     )
