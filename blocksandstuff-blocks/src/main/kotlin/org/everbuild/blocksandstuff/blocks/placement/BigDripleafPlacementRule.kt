@@ -9,7 +9,7 @@ import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDire
 import org.everbuild.blocksandstuff.common.utils.isWater
 
 class BigDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val plantableOn = BlockTags.getTaggedWith("minecraft:big_dripleaf_placeable")
+    private val plantableOn = BlockTags.getTaggedWith("minecraft:supports_big_dripleaf")
 
     fun getBlockVariant(placed: Block, type: Block): Block {
         if (type.compare(placed)) {
