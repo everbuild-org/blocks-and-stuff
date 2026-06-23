@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.3.10"
+    kotlin("jvm") version "2.4.0"
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.10.1-SNAPSHOT"
+version = "1.10.2-SNAPSHOT"
 
 allprojects {
     group = rootProject.group

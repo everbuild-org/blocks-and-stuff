@@ -11,7 +11,7 @@ import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDire
 import org.everbuild.blocksandstuff.common.utils.isWater
 
 class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val plantableOn = BlockTags.getTaggedWith("minecraft:small_dripleaf_placeable")
+    private val plantableOn = BlockTags.getTaggedWith("minecraft:supports_small_dripleaf")
     private val dirtBlocks = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:dirt"))!!
     override fun blockPlace(placementState: PlacementState): Block {
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
