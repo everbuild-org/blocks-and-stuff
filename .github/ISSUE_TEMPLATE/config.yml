@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Everbuild Discord
+    url: https://dc.asorda.net
+    about: Ask usage questions or discuss ideas before opening an issue.

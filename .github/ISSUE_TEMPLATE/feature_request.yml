@@ -1,0 +1,60 @@
+name: Feature request
+description: Suggest a new capability or improvement.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for new APIs, integration improvements, or behavior that is not limited to one vanilla rule.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What limitation or use case should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the API or behavior you want.
+    validations:
+      required: true
+  - type: dropdown
+    id: affected-module
+    attributes:
+      label: Target module
+      options:
+        - blocksandstuff-blocks
+        - blocksandstuff-common
+        - blocksandstuff-fluids
+        - testserver
+        - build or publishing
+        - documentation
+        - not sure
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What workarounds or designs have you considered?
+    validations:
+      required: false
+  - type: textarea
+    id: compatibility
+    attributes:
+      label: Compatibility notes
+      description: Mention expected breaking changes, migration concerns, or Minestom version requirements.
+    validations:
+      required: false
+  - type: textarea
+    id: ai-disclosure
+    attributes:
+      label: AI usage disclosure
+      description: If AI helped create this request, briefly describe how. Write "None" otherwise.
+      placeholder: "None"
+    validations:
+      required: true
