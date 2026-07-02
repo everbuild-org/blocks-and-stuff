@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 
-@file:DependsOn("net.minestom:minestom:2026.06.05-26.1.2")
+@file:DependsOn("net.minestom:minestom:2026.07.01-26.1.2")
 
 import java.io.File
 import java.lang.ProcessBuilder
