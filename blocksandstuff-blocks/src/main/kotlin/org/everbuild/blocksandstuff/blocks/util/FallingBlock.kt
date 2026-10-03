@@ -19,7 +19,7 @@ class FallingBlock private constructor(
     override fun tick(time: Long) {
         super.tick(time)
         if (this.isOnGround) {
-            this.instance.setBlock(this.position.asBlockVec(), block)
+            this.instance?.setBlock(this.position.asBlockVec(), block)
             this.remove()
         }
     }

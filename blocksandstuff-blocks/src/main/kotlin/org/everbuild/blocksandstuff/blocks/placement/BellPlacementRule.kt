@@ -24,7 +24,7 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
                     placementState.placePosition.add(
                         blockFace.toDirection().vec()
                     )
-                ).isSolid
+                ).solid()
 
                 placementState.block
                     .withProperty("facing", direction)
@@ -41,7 +41,7 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
                     1.0,
                     0.0
                 )
-            ).isSolid
+            ).solid()
         ) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
@@ -53,7 +53,7 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
                     -11.0,
                     0.0
                 )
-            ).isSolid
+            ).solid()
         ) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
@@ -63,14 +63,14 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
         val blockInFront = updateState.instance.getBlock(updateState.blockPosition.add(attachmentDirection.toDirection().vec()))
         val blockBehind = updateState.instance.getBlock(updateState.blockPosition.add(attachmentDirection.oppositeFace.toDirection().vec()))
 
-        if (blockInFront.isSolid && blockBehind.isSolid) {
+        if (blockInFront.solid() && blockBehind.solid()) {
             return updateState.currentBlock
                 .withProperty("attachment", "double_wall")
-        } else if (blockInFront.isSolid) {
+        } else if (blockInFront.solid()) {
             return updateState.currentBlock
                 .withProperty("attachment", "single_wall")
                 .withProperty("facing", attachmentDirection.name.lowercase())
-        } else if (blockBehind.isSolid) {
+        } else if (blockBehind.solid()) {
             return updateState.currentBlock
                 .withProperty("attachment", "single_wall")
                 .withProperty("facing", attachmentDirection.oppositeFace.name.lowercase())

@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.placement.common
 
-import java.util.Map
 import kotlin.collections.plus
 import net.kyori.adventure.key.Key
 import net.minestom.server.coordinate.Point
@@ -43,11 +42,11 @@ abstract class AbstractConnectingBlockPlacementRule(block: Block) : BlockPlaceme
         val west = placePos.relative(BlockFace.WEST)
 
         return block.withProperties(
-            Map.of<String, String>(
-                States.NORTH, stringify(canConnect(instance, north, BlockFace.SOUTH), instance, north, BlockFace.SOUTH),
-                States.EAST, stringify(canConnect(instance, east, BlockFace.WEST), instance, east, BlockFace.WEST),
-                States.SOUTH, stringify(canConnect(instance, south, BlockFace.NORTH), instance, south, BlockFace.NORTH),
-                States.WEST, stringify(canConnect(instance, west, BlockFace.EAST), instance, west, BlockFace.EAST)
+            mapOf(
+                States.NORTH to stringify(canConnect(instance, north, BlockFace.SOUTH), instance, north, BlockFace.SOUTH),
+                States.EAST to stringify(canConnect(instance, east, BlockFace.WEST), instance, east, BlockFace.WEST),
+                States.SOUTH to stringify(canConnect(instance, south, BlockFace.NORTH), instance, south, BlockFace.NORTH),
+                States.WEST to stringify(canConnect(instance, west, BlockFace.EAST), instance, west, BlockFace.EAST)
             )
         )
     }

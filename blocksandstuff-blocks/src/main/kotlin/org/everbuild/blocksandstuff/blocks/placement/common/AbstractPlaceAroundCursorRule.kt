@@ -58,6 +58,6 @@ abstract class AbstractPlaceAroundCursorRule(block: Block, private val direction
 
     protected fun isBackSupported(instance: Block.Getter, position: Point, direction: Direction): Boolean {
         val block = instance.getBlock(position.add(direction.vec()))
-        return block.registry()!!.collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
+        return block.collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
     }
 }

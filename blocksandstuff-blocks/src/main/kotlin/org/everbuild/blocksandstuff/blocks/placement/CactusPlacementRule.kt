@@ -26,7 +26,7 @@ class CactusPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (plantableOn.none { it.compare(blockBelow) } && !blockBelow.compare(Block.CACTUS)) return false
 
         for (direction in Direction.HORIZONTAL) {
-            if (!instance.getBlock(position.add(direction.vec())).isAir) return false
+            if (!instance.getBlock(position.add(direction.vec())).air()) return false
         }
 
         return true

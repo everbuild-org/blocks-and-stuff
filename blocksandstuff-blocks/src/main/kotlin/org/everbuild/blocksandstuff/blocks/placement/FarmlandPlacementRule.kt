@@ -19,7 +19,7 @@ class FarmlandPlacementRule(block: Block) : BlockPlacementRule(block) {
     fun checkBlockPlacement(placePosition: Point, instance: Block.Getter): Block? {
         val abovePosition = placePosition.relative(BlockFace.TOP)
         val aboveBlock = instance.getBlock(abovePosition)
-        if (!aboveBlock.isAir && !maintainsFarmLand.contains(aboveBlock)) {
+        if (!aboveBlock.air() && !maintainsFarmLand.contains(aboveBlock)) {
             return Block.DIRT
         }
         return null

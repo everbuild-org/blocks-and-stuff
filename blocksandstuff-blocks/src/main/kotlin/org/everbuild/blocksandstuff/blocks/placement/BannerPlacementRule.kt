@@ -13,23 +13,23 @@ class BannerPlacementRule(block: Block) : BlockPlacementRule(block) {
             return block.withProperty("rotation", ((placementState.sixteenStepRotation() + 8) % 16).toString())
         }
 
-        val wallBanner = when (placementState.block.registry()!!.material()) {
-            Block.ORANGE_BANNER.registry()!!.material() -> Block.ORANGE_WALL_BANNER
-            Block.MAGENTA_BANNER.registry()!!.material() -> Block.MAGENTA_WALL_BANNER
-            Block.LIGHT_BLUE_BANNER.registry()!!.material() -> Block.LIGHT_BLUE_WALL_BANNER
-            Block.YELLOW_BANNER.registry()!!.material() -> Block.YELLOW_WALL_BANNER
-            Block.LIME_BANNER.registry()!!.material() -> Block.LIME_WALL_BANNER
-            Block.PINK_BANNER.registry()!!.material() -> Block.PINK_WALL_BANNER
-            Block.GRAY_BANNER.registry()!!.material() -> Block.GRAY_WALL_BANNER
-            Block.LIGHT_GRAY_BANNER.registry()!!.material() -> Block.LIGHT_GRAY_WALL_BANNER
-            Block.CYAN_BANNER.registry()!!.material() -> Block.CYAN_WALL_BANNER
-            Block.PURPLE_BANNER.registry()!!.material() -> Block.PURPLE_WALL_BANNER
-            Block.BLUE_BANNER.registry()!!.material() -> Block.BLUE_WALL_BANNER
-            Block.BROWN_BANNER.registry()!!.material() -> Block.BROWN_WALL_BANNER
-            Block.GREEN_BANNER.registry()!!.material() -> Block.GREEN_WALL_BANNER
-            Block.RED_BANNER.registry()!!.material() -> Block.RED_WALL_BANNER
-            Block.BLACK_BANNER.registry()!!.material() -> Block.BLACK_WALL_BANNER
-            Block.WHITE_BANNER.registry()!!.material() -> Block.WHITE_WALL_BANNER
+        val wallBanner = when (placementState.block.material()) {
+            Block.ORANGE_BANNER.material() -> Block.ORANGE_WALL_BANNER
+            Block.MAGENTA_BANNER.material() -> Block.MAGENTA_WALL_BANNER
+            Block.LIGHT_BLUE_BANNER.material() -> Block.LIGHT_BLUE_WALL_BANNER
+            Block.YELLOW_BANNER.material() -> Block.YELLOW_WALL_BANNER
+            Block.LIME_BANNER.material() -> Block.LIME_WALL_BANNER
+            Block.PINK_BANNER.material() -> Block.PINK_WALL_BANNER
+            Block.GRAY_BANNER.material() -> Block.GRAY_WALL_BANNER
+            Block.LIGHT_GRAY_BANNER.material() -> Block.LIGHT_GRAY_WALL_BANNER
+            Block.CYAN_BANNER.material() -> Block.CYAN_WALL_BANNER
+            Block.PURPLE_BANNER.material() -> Block.PURPLE_WALL_BANNER
+            Block.BLUE_BANNER.material() -> Block.BLUE_WALL_BANNER
+            Block.BROWN_BANNER.material() -> Block.BROWN_WALL_BANNER
+            Block.GREEN_BANNER.material() -> Block.GREEN_WALL_BANNER
+            Block.RED_BANNER.material() -> Block.RED_WALL_BANNER
+            Block.BLACK_BANNER.material() -> Block.BLACK_WALL_BANNER
+            Block.WHITE_BANNER.material() -> Block.WHITE_WALL_BANNER
             else -> return null
         }
 

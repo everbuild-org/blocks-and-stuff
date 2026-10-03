@@ -27,7 +27,7 @@ class CakeEatRule(val block: Block) : BlockHandler {
             CakeEatEvent(
                 interaction.player,
                 interaction.block,
-                BlockVec(interaction.blockPosition)
+                interaction.blockPosition.asBlockVec()
             )
         ) {
             if (currentSlices < (maxSlices - 1)) {
