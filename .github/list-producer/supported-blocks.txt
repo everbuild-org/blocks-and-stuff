@@ -274,6 +274,7 @@ minecraft:brown_bed
 minecraft:green_bed
 minecraft:red_bed
 minecraft:black_bed
+minecraft:straw_bed
 minecraft:beetroots
 minecraft:carrots
 minecraft:potatoes
@@ -829,6 +830,7 @@ minecraft:snow
 minecraft:kelp_plant
 minecraft:kelp
 minecraft:pointed_dripstone
+minecraft:sulfur_spike
 minecraft:hanging_roots
 minecraft:pale_hanging_moss
 minecraft:pale_moss_carpet
@@ -844,3 +846,4 @@ minecraft:redstone_wire
 minecraft:scaffolding
 minecraft:chorus_plant
 minecraft:chorus_flower
+minecraft:shelf_mushroom

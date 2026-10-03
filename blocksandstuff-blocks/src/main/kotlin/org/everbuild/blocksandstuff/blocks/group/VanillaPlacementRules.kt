@@ -141,6 +141,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         group(
             all(
                 byTag("minecraft:beds"),
+                byBlock(Block.STRAW_BED)
             ),
             ::BedPlacementRule,
         )
@@ -636,7 +637,10 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
 
     val POINTED_DRIPSTONE =
         group(
-            byBlock(Block.POINTED_DRIPSTONE),
+            all(
+                byBlock(Block.POINTED_DRIPSTONE),
+                byBlock(Block.SULFUR_SPIKE),
+            ),
             ::PointedDripstonePlacementRule,
         )
 
@@ -725,6 +729,12 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.CHORUS_FLOWER),
             ),
             ::ChorusPlacementRule,
+        )
+
+    val SHELF_MUSHROOM =
+        group(
+            byBlock(Block.SHELF_MUSHROOM),
+            ::ShelfMushroomPlacementRule
         )
 
     override fun createGroup(
