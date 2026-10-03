@@ -11,7 +11,7 @@ class BedPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val direction = placementState.getNearestHorizontalLookingDirection().opposite()
         val additionalReplacementBlock = placementState.placePosition.add(direction.vec())
-        if (!placementState.instance.getBlock(additionalReplacementBlock).registry()!!.isReplaceable) {
+        if (!placementState.instance.getBlock(additionalReplacementBlock).replaceable()) {
             return null
         }
 

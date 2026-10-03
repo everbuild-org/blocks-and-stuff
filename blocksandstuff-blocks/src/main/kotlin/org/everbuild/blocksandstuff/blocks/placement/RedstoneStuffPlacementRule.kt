@@ -11,7 +11,7 @@ class RedstoneStuffPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val supportPosition = placementState.placePosition.relative(BlockFace.BOTTOM)
         val supportBlock = placementState.instance.getBlock(supportPosition)
-        if (supportBlock.isAir || supportBlock.compare(block)) {
+        if (supportBlock.air() || supportBlock.compare(block)) {
             return null
         }
         val facing = placementState.getNearestHorizontalLookingDirection()
@@ -23,7 +23,7 @@ class RedstoneStuffPlacementRule(block: Block) : BlockPlacementRule(block) {
         val supportPosition = updateState.blockPosition.relative(BlockFace.BOTTOM)
         val supportBlock = updateState.instance.getBlock(supportPosition)
 
-        if (supportBlock.isAir) {
+        if (supportBlock.air()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

@@ -22,7 +22,7 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
         val topInsideWater = blockAbove.isWater()
         val instance = placementState.instance as Instance
 
-        if (!blockAbove.isWater() && !blockAbove.isAir) return currentBlock
+        if (!blockAbove.isWater() && !blockAbove.air()) return currentBlock
         if (plantableOn.any { it.compare(blockBelow) }) {
             setUpperBlock(
                 instance,
@@ -55,7 +55,7 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val belowBlock = updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0))
-        if (!belowBlock.isSolid && !belowBlock.compare(Block.SMALL_DRIPLEAF)) {
+        if (!belowBlock.solid() && !belowBlock.compare(Block.SMALL_DRIPLEAF)) {
             maybeDrop(updateState)
             if (updateState.currentBlock.getProperty("waterlogged")?.toBoolean() == true)
                 return Block.WATER

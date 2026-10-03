@@ -10,7 +10,7 @@ class SeaPicklePlacementRule(block: Block) : BlockPlacementRule(block) {
         val currentBlock = placementState.instance.getBlock(placementState.placePosition)
         var waterlogged: String? = "false"
 
-        if (!blockBelow.isSolid) return null
+        if (!blockBelow.solid()) return null
         if (currentBlock.compare(Block.WATER) || (currentBlock.compare(Block.SEA_PICKLE)) && currentBlock.getProperty("waterlogged")!!.equals("true", ignoreCase = true)) {
             waterlogged = "true"
         }
@@ -31,7 +31,7 @@ class SeaPicklePlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block? {
         val blockBelow = updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0))
-        if (!blockBelow.isSolid) {
+        if (!blockBelow.solid()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

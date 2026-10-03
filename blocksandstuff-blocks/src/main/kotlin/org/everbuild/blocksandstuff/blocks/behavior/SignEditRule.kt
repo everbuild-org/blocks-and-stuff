@@ -8,6 +8,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
+import net.minestom.server.instance.block.SignTextSlot
 import net.minestom.server.network.packet.server.play.OpenSignEditorPacket
 import net.minestom.server.registry.TagKey
 import net.minestom.server.tag.Tag
@@ -31,7 +32,7 @@ class SignEditRule(private val block: Block) : BlockHandler {
         if (placement.player.isSneaking) return
         val player = placement.player
         if (wallSigns.contains(placement.block)) {
-            openEditor(placement.block, placement.blockPosition, player, true)
+            openEditor(placement.block, placement.blockPosition, player, SignTextSlot.FRONT)
         } else {
             val position = placement.blockPosition
             val rotation = placement.block.getProperty("rotation")?.toInt() ?: 0
@@ -57,18 +58,18 @@ class SignEditRule(private val block: Block) : BlockHandler {
         return false
     }
 
-    private fun getSide(player: Player, position: Point, rotation: Int): Boolean {
+    private fun getSide(player: Player, position: Point, rotation: Int): SignTextSlot {
         val playerAngle = Math.toDegrees(
             atan2(player.position.x - position.x(), position.z() - player.position.z)
         ).toInt()
         val signAngle = rotation * 22.5
         val relativeDegrees = (playerAngle - signAngle + 360) % 360
-        return relativeDegrees in 0.0..180.0
+        return if (relativeDegrees in 0.0..180.0) SignTextSlot.FRONT else SignTextSlot.BACK
     }
 
-    private fun openEditor(block: Block, position: Point, player: Player, front: Boolean) {
-        EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, BlockVec(position), block)) {
-            player.sendPacket(OpenSignEditorPacket(position, front))
+    private fun openEditor(block: Block, position: Point, player: Player, slot: SignTextSlot) {
+        EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, position.asBlockVec(), block)) {
+            player.sendPacket(OpenSignEditorPacket(position, slot))
         }
     }
 

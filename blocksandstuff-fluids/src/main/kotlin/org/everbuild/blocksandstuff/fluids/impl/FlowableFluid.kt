@@ -153,7 +153,7 @@ abstract class FlowableFluid(
             // If there's 2 or more still fluid blocks around
             // and below is still or a solid block, make this block still
             val downBlock = instance.getBlock(point.add(0.0, -1.0, 0.0))
-            if (downBlock.isSolid || isMatchingAndStill(downBlock)) {
+            if (downBlock.solid() || isMatchingAndStill(downBlock)) {
                 return getSource(false)
             }
         }
@@ -191,21 +191,21 @@ abstract class FlowableFluid(
         // (Might not work with some special blocks)
         // If there is anything wrong it is most likely this method :D
 
-        return if (block.isLiquid) {
+        return if (block.liquid()) {
             when (face) {
                 // return isSource(block) || getLevel(block) == 8;
-                Direction.UP -> fromBlock.isLiquid || block.isSolid || block.isAir
+                Direction.UP -> fromBlock.liquid() || block.solid() || block.air()
 
                 // return isSource(fromBlock) || getLevel(fromBlock) == 8;
-                Direction.DOWN -> fromBlock.isLiquid || fromBlock.isSolid || fromBlock.isAir
+                Direction.DOWN -> fromBlock.liquid() || fromBlock.solid() || fromBlock.air()
 
                 else -> true
             }
         } else {
             when (face) {
-                Direction.UP -> block.isSolid || block.isAir
-                Direction.DOWN -> block.isSolid || block.isAir
-                else -> block.isSolid || block.isAir
+                Direction.UP -> block.solid() || block.air()
+                Direction.DOWN -> block.solid() || block.air()
+                else -> block.solid() || block.air()
             }
         }
     }
@@ -386,9 +386,9 @@ abstract class FlowableFluid(
         block: Block,
         flowing: Block,
     ): Boolean {
-        val event = BlockFluidReplacementEvent(instance, block, BlockVec(point))
+        val event = BlockFluidReplacementEvent(instance, block, point.asBlockVec())
         EventDispatcher.call(event)
-        return block.isAir || block.registry()!!.isReplaceable || !event.isCancelled
+        return block.air() || block.replaceable() || !event.isCancelled
     }
 
     private fun canFlowDown(
@@ -491,9 +491,9 @@ abstract class FlowableFluid(
     override fun getHeight(block: Block?): Double = getLevel(block!!) / 9.0
 
     protected open fun getDirections(block: Block): Collection<Direction> {
-        if (block.isLiquid) return Direction.entries
+        if (block.liquid()) return Direction.entries
         return Direction.entries.filter {
-            !block.registry()!!.collisionShape().isFaceFull(it.asBlockFace())
+            !block.collisionShape().isFaceFull(it.asBlockFace())
         }
     }
 

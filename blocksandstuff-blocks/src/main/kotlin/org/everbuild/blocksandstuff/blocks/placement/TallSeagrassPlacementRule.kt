@@ -11,7 +11,7 @@ class TallSeagrassPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val belowBlock = updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0))
-        if (!belowBlock.isSolid && !belowBlock.compare(Block.SEAGRASS)) {
+        if (!belowBlock.solid() && !belowBlock.compare(Block.SEAGRASS)) {
             maybeDrop(updateState)
             return Block.WATER
         }

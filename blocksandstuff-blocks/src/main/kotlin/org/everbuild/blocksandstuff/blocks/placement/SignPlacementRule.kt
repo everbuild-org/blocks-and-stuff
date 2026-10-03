@@ -56,10 +56,10 @@ class SignPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (wallSigns.contains(block)) {
             val facing = BlockFace.valueOf(block.getProperty("facing")!!.uppercase())
             val supportingBlockPos = position.add(facing.oppositeFace.toDirection().vec())
-            return !instance.getBlock(supportingBlockPos).isAir
+            return !instance.getBlock(supportingBlockPos).air()
         } else {
             val below = instance.getBlock(position.sub(0.0, 1.0, 0.0))
-            return below.isSolid
+            return below.solid()
         }
     }
 

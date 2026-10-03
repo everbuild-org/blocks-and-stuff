@@ -14,19 +14,19 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
     private fun countSolidFaces(instance: Instance, centerPos: Point, horizontalDirection: BlockFace): Int {
         var solidFaces = 0
 
-        if (instance.getBlock(centerPos.relative(horizontalDirection)).isSolid) {
+        if (instance.getBlock(centerPos.relative(horizontalDirection)).solid()) {
             solidFaces++
         }
 
         val directionVector = horizontalDirection.toDirection()
 
         val diagClockwiseDir = BlockFace.fromDirection(directionVector.rotateR())
-        if (instance.getBlock(centerPos.relative(diagClockwiseDir)).isSolid) {
+        if (instance.getBlock(centerPos.relative(diagClockwiseDir)).solid()) {
             solidFaces++
         }
 
         val diagCounterClockwiseDir = BlockFace.fromDirection(directionVector.rotateL())
-        if (instance.getBlock(centerPos.relative(diagCounterClockwiseDir)).isSolid) {
+        if (instance.getBlock(centerPos.relative(diagCounterClockwiseDir)).solid()) {
             solidFaces++
         }
 
@@ -45,7 +45,7 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         val leftNeighborBlock = instance.getBlock(leftBlockPos)
         val rightNeighborBlock = instance.getBlock(rightBlockPos)
 
-        if (leftNeighborBlock.isAir || rightNeighborBlock.isAir) {
+        if (leftNeighborBlock.air() || rightNeighborBlock.air()) {
             if (leftNeighborBlock.key() == block.key()) {
                 val existingDoorHalf = leftNeighborBlock.getProperty("half")
 
@@ -100,12 +100,12 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         val placePos = placementState.placePosition
 
         val upperPos = placePos.add(0.0, 1.0, 0.0)
-        if (!instance.getBlock(upperPos).registry()!!.isReplaceable) {
+        if (!instance.getBlock(upperPos).replaceable()) {
             return null
         }
 
         val lowerPos = placePos.sub(0.0, 1.0, 0.0)
-        if (!instance.getBlock(lowerPos).registry()!!.collisionShape().isFaceFull(BlockFace.TOP)) {
+        if (!instance.getBlock(lowerPos).collisionShape().isFaceFull(BlockFace.TOP)) {
             return null
         }
 
@@ -168,7 +168,7 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         }
 
         val blockBelow = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM))
-        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.registry()!!.collisionShape()
+        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.collisionShape()
                 .isFaceFull(BlockFace.TOP)
         ) {
             DroppedItemFactory.maybeDrop(updateState)

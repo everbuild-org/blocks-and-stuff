@@ -51,7 +51,7 @@ class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
 
     private fun getUpdatedBlock(current: Block, instance: Block.Getter, position: BlockVec): UpdateResult? {
         val bottomBlock = instance.getBlock(position.sub(0, 1, 0))
-        val supported = bottomBlock.registry()?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
+        val supported = bottomBlock?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
         if (!supported) return null
 
         val sideConnections = getSideConnections(instance, position, true)

@@ -65,7 +65,7 @@ class TripwireHookPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     private fun getIsNotFullFace(instance: Block.Getter, position: Point, face: BlockFace): Boolean {
-        return !instance.getBlock(position).registry()!!.collisionShape().isFaceFull(face)
+        return !instance.getBlock(position).collisionShape().isFaceFull(face)
     }
 
     private fun canSupportTripwireHook(instance: Block.Getter, position: Point, blockFace: BlockFace): Boolean {
