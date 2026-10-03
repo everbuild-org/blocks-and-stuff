@@ -90,3 +90,7 @@ minecraft:piston_head
 minecraft:fire
 minecraft:lava
 minecraft:sniffer_egg
+minecraft:orange_poplar_leaves
+minecraft:potent_sulfur
+minecraft:red_poplar_leaves
+minecraft:yellow_poplar_leaves

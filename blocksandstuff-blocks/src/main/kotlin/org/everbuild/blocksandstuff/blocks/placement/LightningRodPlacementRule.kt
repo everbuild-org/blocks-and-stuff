@@ -16,7 +16,7 @@ open class LightningRodPlacementRule(block: Block) : BlockPlacementRule(block) {
             BlockFace.fromDirection(placementState.getNearestHorizontalLookingDirection().opposite())**/
 
         val supporting = getSupportingBlockPosition(facing, placementState.placePosition)
-        if (needSupport() && !placementState.instance.getBlock(supporting).isSolid) {
+        if (needSupport() && !placementState.instance.getBlock(supporting).solid()) {
             return null
         }
 
@@ -42,7 +42,7 @@ open class LightningRodPlacementRule(block: Block) : BlockPlacementRule(block) {
         val facing = if (updateState.currentBlock.getProperty("facing").equals("up")) BlockFace.TOP else if (updateState.currentBlock.getProperty("facing").equals("down")) BlockFace.BOTTOM else BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val supportingBlockPos = getSupportingBlockPosition(facing, updateState.blockPosition)
 
-        if (needSupport() && (updateState.instance.getBlock(supportingBlockPos).isLiquid || updateState.instance.getBlock(supportingBlockPos).isAir)) {
+        if (needSupport() && (updateState.instance.getBlock(supportingBlockPos).liquid() || updateState.instance.getBlock(supportingBlockPos).air())) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

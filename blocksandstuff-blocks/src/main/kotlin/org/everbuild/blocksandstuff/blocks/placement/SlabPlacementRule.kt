@@ -22,7 +22,7 @@ class SlabPlacementRule(block: Block) : BlockPlacementRule(block) {
     }
 
     override fun isSelfReplaceable(replacement: Replacement): Boolean {
-        val blockToPlace = replacement.material().block()
+        val blockToPlace = replacement.material().block() ?: return false
         val placedBlock = replacement.block()
         if (!blockToPlace.compare(placedBlock)) return false
         val type = placedBlock.getProperty("type") ?: return false

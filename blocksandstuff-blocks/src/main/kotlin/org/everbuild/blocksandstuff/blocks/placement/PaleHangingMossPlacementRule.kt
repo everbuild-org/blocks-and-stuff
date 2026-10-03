@@ -9,7 +9,7 @@ class PaleHangingMossPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val belowBlock = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
         val aboveBlock = placementState.instance.getBlock(placementState.placePosition.add(0.0, 1.0, 0.0))
-        if (!aboveBlock.isSolid && !aboveBlock.compare(Block.PALE_HANGING_MOSS)) return null
+        if (!aboveBlock.solid() && !aboveBlock.compare(Block.PALE_HANGING_MOSS)) return null
         if (placementState.blockFace() != BlockFace.BOTTOM) return null
         if (belowBlock.compare(Block.PALE_HANGING_MOSS)) {
             return placementState.block.withProperty("tip", "false")

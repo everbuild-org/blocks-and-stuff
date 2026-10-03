@@ -18,7 +18,7 @@ open class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
             BlockFace.fromDirection(placementState.getNearestHorizontalLookingDirection().opposite())
 
         val supporting = getSupportingBlockPosition(face, facing, placementState.placePosition)
-        if (needSupport() && !placementState.instance.getBlock(supporting).isSolid) {
+        if (needSupport() && !placementState.instance.getBlock(supporting).solid()) {
             return null
         }
 
@@ -32,7 +32,7 @@ open class FacedFacingPlacementRule(block: Block) : BlockPlacementRule(block) {
         val facing = BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val supportingBlockPos = getSupportingBlockPosition(face, facing, updateState.blockPosition)
 
-        if (needSupport() && !updateState.instance.getBlock(supportingBlockPos).isSolid) {
+        if (needSupport() && !updateState.instance.getBlock(supportingBlockPos).solid()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

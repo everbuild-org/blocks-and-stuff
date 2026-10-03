@@ -22,14 +22,14 @@ class WallBlockPlacementRule(block: Block) : AbstractConnectingBlockPlacementRul
 
     override fun canConnect(instance: Block.Getter, pos: Point, blockFace: BlockFace): Boolean {
         val instanceBlock = instance.getBlock(pos)
-        val isFaceFull = instanceBlock.registry()!!.collisionShape().isFaceFull(blockFace)
+        val isFaceFull = instanceBlock.collisionShape().isFaceFull(blockFace)
         return !cannotConnect.contains(instanceBlock) && isFaceFull || canConnect.contains(instanceBlock) || instanceBlock.key() == this.block.key()
     }
 
     override fun stringify(connect: Boolean, instance: Block.Getter, pos: Point, direction: BlockFace): String {
         if (!connect) return "none"
         val above = instance.getBlock(pos.add(0.0, 1.0, 0.0))
-        if (!above.isAir) return "tall"
+        if (!above.air()) return "tall"
         return "low"
     }
 
@@ -49,7 +49,7 @@ class WallBlockPlacementRule(block: Block) : AbstractConnectingBlockPlacementRul
                 || blocksAndDirections.count { it } % 2 == 1
 
         val blockAbove = instance.getBlock(pos.add(0.0, 1.0, 0.0))
-        val blockAboveConnect = !blockAbove.isAir || (blockAbove.key() == block.key() && blockAbove.getProperty("up") == "false")
+        val blockAboveConnect = !blockAbove.air() || (blockAbove.key() == block.key() && blockAbove.getProperty("up") == "false")
 
         return block
             .withProperty("waterlogged", instanceBlock.isWater().toString())

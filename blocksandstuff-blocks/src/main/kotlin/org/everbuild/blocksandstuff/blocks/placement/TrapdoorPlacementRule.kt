@@ -7,7 +7,6 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import java.util.*
-import java.util.Map
 
 class TrapdoorPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
@@ -28,9 +27,9 @@ class TrapdoorPlacementRule(block: Block) : BlockPlacementRule(block) {
             BlockFace.BOTTOM
 
         val block = placementState.block().withProperties(
-            Map.of<String, String>(
-                States.HALF, half.name.lowercase(Locale.getDefault()),
-                States.FACING, facing.name.lowercase(Locale.getDefault())
+            mapOf(
+                States.HALF to half.name.lowercase(Locale.getDefault()),
+                States.FACING to facing.name.lowercase(Locale.getDefault())
             )
         )
 
