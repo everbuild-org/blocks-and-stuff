@@ -1,5 +1,5 @@
 [versions]
-minestom = "26_3-SNAPSHOT"
+minestom = "2026.09.12-26.2"
 tinylog = "2.8.0"
 slf4j = "2.0.20"
 junit = "6.1.3"
