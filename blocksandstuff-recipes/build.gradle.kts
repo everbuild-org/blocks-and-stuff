@@ -14,6 +14,7 @@ dependencies {
 
     implementation(libs.kotlinx.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.slf4j.api)
 
     compileOnly(libs.minestom)
     compileOnly(libs.jetbrains.annotations)

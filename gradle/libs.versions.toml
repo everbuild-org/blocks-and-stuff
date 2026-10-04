@@ -11,12 +11,14 @@ kotlinx-serialization = "1.9.0"
 jib = "3.5.2"
 commons-compress = "1.27.1"
 commons-codec = "1.15"
+slf4j = "2.0.20"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
 tinylog-api = { group = "org.tinylog", name = "tinylog-api", version.ref = "tinylog" }
 tinylog-impl = { group = "org.tinylog", name = "tinylog-impl", version.ref = "tinylog" }
 tinylog-slf4j = { group = "org.tinylog", name = "slf4j-tinylog", version.ref = "tinylog" }
+slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
