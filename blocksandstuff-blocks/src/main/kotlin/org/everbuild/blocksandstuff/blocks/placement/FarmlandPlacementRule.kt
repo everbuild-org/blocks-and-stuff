@@ -24,7 +24,7 @@ class FarmlandPlacementRule(
     ): Block? {
         val abovePosition = placePosition.add(0.0, 1.0, 0.0)
         val aboveBlock = instance.getBlock(abovePosition)
-        if (!aboveBlock.isAir && !aboveBlock.isWater() && aboveBlock.isSolid) {
+        if (!aboveBlock.air() && !maintainsFarmLand.contains(aboveBlock)) {
             return Block.DIRT
         }
         return null

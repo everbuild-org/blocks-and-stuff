@@ -37,11 +37,18 @@ import org.everbuild.blocksandstuff.recipes.util.InventoryButtonClickListener
 import java.io.File
 import kotlin.system.exitProcess
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
+import kotlin.time.Duration.Companion.seconds
+import kotlin.time.toJavaDuration
+import net.minestom.server.Auth
+import net.minestom.server.component.DataComponents
+import net.minestom.server.event.EventNode
+import net.minestom.server.event.player.PlayerGameModeRequestEvent
+import net.minestom.server.network.player.ResolvableProfile
 
 class TestServer(
     generateElements: Boolean,
 ) {
-    private val server: MinecraftServer = MinecraftServer.init()
+    private val server: MinecraftServer = MinecraftServer.init(Auth.Online())
     private val ingestRb = Array<Long>(500) { 0 }
     private var ingestCount = 0
 
@@ -96,7 +103,18 @@ class TestServer(
                     event.spawningInstance = instance
                     event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
                     event.player.gameMode = GameMode.SURVIVAL
-                    event.player.inventory.setEquipment(EquipmentSlot.MAIN_HAND, 1, ItemStack.of(Material.WATER_BUCKET))
+
+                    event.player.scheduler().buildTask {
+                        event.player.inventory.setEquipment(
+                            EquipmentSlot.MAIN_HAND,
+                            1,
+                            ItemStack.of(Material.PLAYER_HEAD)
+                                .with(
+                                    DataComponents.PROFILE,
+                                    ResolvableProfile(event.player.skin)
+                                )
+                        )
+                    }.delay(1.seconds.toJavaDuration()).schedule()
                     event.player.permissionLevel = 4
                 }
                 .addListener(PlayerGameModeRequestEvent::class.java) { event ->

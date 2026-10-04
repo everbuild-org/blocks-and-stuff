@@ -17,6 +17,5 @@ class HopperPlacementRule(block: Block) : BlockPlacementRule(block) {
         }
         return placementState.block()
             .withProperty("facing", facing)
-            .withProperty("enabled", "true")
     }
 }

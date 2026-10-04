@@ -17,7 +17,7 @@ class WallCoralPlacementRule(block: Block) : BlockPlacementRule(block) {
             )
         )
 
-        if (!updateState.instance.getBlock(updateState.blockPosition.relative(facing.oppositeFace)).registry()!!.collisionShape().isFaceFull(facing)
+        if (!updateState.instance.getBlock(updateState.blockPosition.relative(facing.oppositeFace)).collisionShape().isFaceFull(facing)
         ) {
             return if (updateState.currentBlock.getProperty("waterlogged") == "true") Block.WATER else Block.AIR
         }

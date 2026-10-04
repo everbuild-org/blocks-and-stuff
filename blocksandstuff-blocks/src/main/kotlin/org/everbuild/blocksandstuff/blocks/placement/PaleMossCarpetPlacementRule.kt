@@ -8,11 +8,11 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
 class PaleMossCarpetPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        if (placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0)).isAir) return null
+        if (placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0)).air()) return null
         val collection = mutableListOf<BlockFace>()
         for (direction in Direction.HORIZONTAL) {
             if (placementState.instance.getBlock(placementState.placePosition.relative(BlockFace.fromDirection(direction)))
-                    .registry()!!.collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
+                    .collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
             ) {
                 collection.add(BlockFace.fromDirection(direction))
             }
@@ -29,13 +29,13 @@ class PaleMossCarpetPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val collection = mutableListOf<BlockFace>()
-        if (updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0)).isAir) {
+        if (updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0)).air()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
         for (direction in Direction.HORIZONTAL) {
             if (updateState.instance.getBlock(updateState.blockPosition.relative(BlockFace.fromDirection(direction)))
-                    .registry()!!.collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
+                    .collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
             ) {
                 collection.add(BlockFace.fromDirection(direction))
             }

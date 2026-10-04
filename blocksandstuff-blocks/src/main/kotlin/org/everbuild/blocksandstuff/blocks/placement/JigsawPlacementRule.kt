@@ -18,6 +18,6 @@ class JigsawPlacementRule(
                 else -> "${face.toString().lowercase()}_up"
             }
 
-        return block.withProperty("orientation", state)
+        return placementState.block.withProperty("orientation", state)
     }
 }

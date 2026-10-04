@@ -53,7 +53,7 @@ class ScaffoldingPlacementRule(block: Block) : BlockPlacementRule(block) {
             val direction = BlockFace.fromDirection(placementState.getNearestHorizontalLookingDirection().opposite())
             val chainEnd = getChainEnd(instance, targetBlockPos, direction) ?: return null
             val chainEndBlock = instance.getBlock(chainEnd)
-            if (chainEndBlock.isAir || chainEndBlock.registry()?.isReplaceable == true) {
+            if (chainEndBlock.air() || chainEndBlock?.replaceable() == true) {
                 val bottomSupport = hasBottomSupport(instance, chainEnd)
                 val nearest = getDistanceToNearestBottomSupported(instance, chainEnd, bottomSupport)
 
@@ -94,7 +94,7 @@ class ScaffoldingPlacementRule(block: Block) : BlockPlacementRule(block) {
             ) ?: return null
 
             val chainTopBlock = instance.getBlock(chainTop)
-            if (chainTopBlock.isAir || chainTopBlock.registry()?.isReplaceable == true) {
+            if (chainTopBlock.air() || chainTopBlock?.replaceable() == true) {
                 instance.setBlock(
                     chainTop,
                     Block.SCAFFOLDING
@@ -133,9 +133,9 @@ class ScaffoldingPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     private fun hasBottomSupport(instance: Block.Getter, position: BlockVec): Boolean {
         val block = instance.getBlock(position.sub(0.0, 1.0, 0.0))
-        return block.isSolid
+        return block.solid()
                 || block.compare(Block.SCAFFOLDING)
-                || block.registry()?.collisionShape()?.isFaceFull(BlockFace.BOTTOM) ?: false
+                || block?.collisionShape()?.isFaceFull(BlockFace.BOTTOM) ?: false
     }
 
     private fun getChainEnd(instance: Block.Getter, position: BlockVec, direction: BlockFace): BlockVec? {

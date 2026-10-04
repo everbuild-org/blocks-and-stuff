@@ -11,7 +11,7 @@ import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDire
 import org.everbuild.blocksandstuff.common.utils.isWater
 
 class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val plantableOn = BlockTags.getTaggedWith("minecraft:small_dripleaf_placeable")
+    private val plantableOn = BlockTags.getTaggedWith("minecraft:supports_small_dripleaf")
     private val dirtBlocks = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:dirt"))!!
     override fun blockPlace(placementState: PlacementState): Block {
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
@@ -22,7 +22,7 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
         val topInsideWater = blockAbove.isWater()
         val instance = placementState.instance as Instance
 
-        if (!blockAbove.isWater() && !blockAbove.isAir) return currentBlock
+        if (!blockAbove.isWater() && !blockAbove.air()) return currentBlock
         if (plantableOn.any { it.compare(blockBelow) }) {
             setUpperBlock(
                 instance,
@@ -55,7 +55,7 @@ class SmallDripleafPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val belowBlock = updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0))
-        if (!belowBlock.isSolid && !belowBlock.compare(Block.SMALL_DRIPLEAF)) {
+        if (!belowBlock.solid() && !belowBlock.compare(Block.SMALL_DRIPLEAF)) {
             maybeDrop(updateState)
             if (updateState.currentBlock.getProperty("waterlogged")?.toBoolean() == true)
                 return Block.WATER

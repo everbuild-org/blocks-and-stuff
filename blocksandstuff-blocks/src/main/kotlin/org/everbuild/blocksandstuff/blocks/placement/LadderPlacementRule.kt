@@ -10,10 +10,10 @@ class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
         val blockFace = placementState.blockFace() ?: return null
 
         val supporting = placementState.placePosition.add(blockFace.oppositeFace.toDirection().vec())
-        if (!placementState.instance.getBlock(supporting).registry()!!.collisionShape().isFaceFull(blockFace)) {
+        if (!placementState.instance.getBlock(supporting).collisionShape().isFaceFull(blockFace)) {
             return null
         }
-        return block
+        return placementState.block
             .withProperty("facing", blockFace.name.lowercase())
     }
 
@@ -21,7 +21,7 @@ class LadderPlacementRule(block: Block) : BlockPlacementRule(block) {
         val facing = BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())
         val supportingBlockPos = updateState.blockPosition.add(facing.oppositeFace.toDirection().vec())
 
-        if (!updateState.instance.getBlock(supportingBlockPos).isSolid) {
+        if (!updateState.instance.getBlock(supportingBlockPos).solid()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }

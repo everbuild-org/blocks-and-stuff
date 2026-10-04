@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":blocksandstuff-common"))
 
     compileOnly(libs.minestom)
+    compileOnly(libs.slf4j.api)
     compileOnly(libs.jetbrains.annotations)
 
     testImplementation(platform(libs.junit.bom))

@@ -7,7 +7,7 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 
 class BambooPlantPlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val plantableOn = BlockTags.getTaggedWith("minecraft:bamboo_plantable_on")
+    private val plantableOn = BlockTags.getTaggedWith("minecraft:supports_bamboo")
     private val bamboo = BlockTags.getTaggedWith("blocksandstuff:bamboo")
 
     override fun blockPlace(placementState: PlacementState): Block? {

@@ -10,7 +10,6 @@ import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.blocks.placement.util.States
 import org.everbuild.blocksandstuff.common.utils.isWater
 import java.util.*
-import java.util.Map
 
 class StairsPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
@@ -38,9 +37,9 @@ class StairsPlacementRule(block: Block) : BlockPlacementRule(block) {
         val facing = BlockFace.fromYaw(playerPos.yaw())
 
         var block: Block = this.block.withProperties(
-            Map.of(
-                States.HALF, half.name.lowercase(Locale.getDefault()),
-                States.FACING, facing.name.lowercase(Locale.getDefault())
+            mapOf(
+                States.HALF to half.name.lowercase(Locale.getDefault()),
+                States.FACING to facing.name.lowercase(Locale.getDefault())
             )
         )
 

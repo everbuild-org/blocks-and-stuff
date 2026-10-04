@@ -22,7 +22,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
     )
 
     private fun getIsNotFullFace(instance: Block.Getter, position: Point, face: BlockFace): Boolean {
-        return !instance.getBlock(position).registry()!!.collisionShape().isFaceFull(face)
+        return !instance.getBlock(position).collisionShape().isFaceFull(face)
     }
 
     private fun canSupportTorch(instance: Block.Getter, position: Point, blockFace: BlockFace): Boolean {
@@ -49,15 +49,16 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
             return block
         }
 
-        val torch = when (placementState.block.registry()!!.material()) {
-            Block.TORCH.registry()!!.material() -> Block.WALL_TORCH
-            Block.SOUL_TORCH.registry()!!.material() -> Block.SOUL_WALL_TORCH
-            Block.REDSTONE_TORCH.registry()!!.material() -> Block.REDSTONE_WALL_TORCH
-            Block.COPPER_TORCH.registry()!!.material() -> Block.COPPER_WALL_TORCH
+        val torch = when (placementState.block.material()) {
+            Block.TORCH.material() -> Block.WALL_TORCH
+            Block.SOUL_TORCH.material() -> Block.SOUL_WALL_TORCH
+            Block.REDSTONE_TORCH.material() -> Block.REDSTONE_WALL_TORCH
+            Block.COPPER_TORCH.material() -> Block.COPPER_WALL_TORCH
             else -> return null
         }
 
         return torch.withNbt(placementState.block.nbtOrEmpty())
+            .withHandler(placementState.block.handler())
             .withProperty("facing", placementState.blockFace!!.name.lowercase())
     }
 

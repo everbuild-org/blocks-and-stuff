@@ -15,7 +15,7 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
             else -> return null
         }
         val thickness = getThickness(placementState.instance(), placementState.placePosition(), direction == "up")
-        return block.withProperties(mapOf(
+        return placementState.block.withProperties(mapOf(
             "vertical_direction" to direction,
             "thickness" to thickness
         ))
@@ -26,11 +26,11 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
         val newThickness = getThickness(updateState.instance(), updateState.blockPosition(), direction)
         val bottomSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, -1.0, 0.0))
         val topSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, 1.0, 0.0))
-        if (direction && !bottomSupported.registry()!!.collisionShape().isFaceFull(BlockFace.TOP) && !bottomSupported.compare(Block.POINTED_DRIPSTONE)) {
+        if (direction && !bottomSupported.collisionShape().isFaceFull(BlockFace.TOP) && !bottomSupported.compare(block, Block.Comparator.ID)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
-        if (!direction && !topSupported.registry()!!.collisionShape().isFaceFull(BlockFace.BOTTOM) && !topSupported.compare(Block.POINTED_DRIPSTONE)) {
+        if (!direction && !topSupported.collisionShape().isFaceFull(BlockFace.BOTTOM) && !topSupported.compare(block, Block.Comparator.ID)) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
@@ -44,7 +44,7 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
         val belowPosition = blockPosition.add(0.0, if (direction) -1.0 else 1.0, 0.0)
         val belowBlock = instance.getBlock(belowPosition, Block.Getter.Condition.TYPE)
 
-        if (!aboveBlock.compare(Block.POINTED_DRIPSTONE, Block.Comparator.ID)) {
+        if (!aboveBlock.compare(block, Block.Comparator.ID)) {
             return "tip"
         }
         if (aboveBlock.getProperty("vertical_direction") == if (direction) "down" else "up") {
@@ -53,7 +53,7 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
         if (aboveThickness == "tip" || aboveThickness == "tip_merge") {
             return "frustum"
         }
-        if (belowBlock.id() != Block.POINTED_DRIPSTONE.id())
+        if (belowBlock.id() != block.id())
             return "base"
         return "middle"
     }

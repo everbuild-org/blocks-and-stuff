@@ -51,7 +51,7 @@ class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
 
     private fun getUpdatedBlock(current: Block, instance: Block.Getter, position: BlockVec): UpdateResult? {
         val bottomBlock = instance.getBlock(position.sub(0, 1, 0))
-        val supported = bottomBlock.registry()?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
+        val supported = bottomBlock?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
         if (!supported) return null
 
         val sideConnections = getSideConnections(instance, position, true)
@@ -82,7 +82,7 @@ class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
 
         val actualConnections = connections.filter { it.value != ConnectionType.NONE }
         if (actualConnections.isEmpty()) {
-            return UpdateResult(block.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" }), connections)
+            return UpdateResult(current.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" }), connections)
         }
 
         if (actualConnections.size == 1) {

@@ -1,6 +1,7 @@
 #!/usr/bin/env kotlin
 
-@file:DependsOn("net.minestom:minestom:2026.03.03-1.21.11")
+@file:Repository("https://central.sonatype.com/repository/maven-snapshots")
+@file:DependsOn("net.minestom:minestom:26_3-SNAPSHOT")
 
 import java.io.File
 import java.lang.ProcessBuilder
@@ -97,7 +98,7 @@ fun updateReadme() {
     val version = getVersion()
 
     val statsContent =
-        "[${generateBadge("Supported Blocks", "$supportedPercentage%25")}](TODO.md) [${
+        "[${generateBadge("Supported Block Placement Rules", "$supportedPercentage%25")}](TODO.md) [${
             generateBadge(
                 "Latest Version",
                 version

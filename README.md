@@ -6,7 +6,7 @@
 ---
 
 <!-- TAG_REPLACEMENT -->
-[![Supported Blocks](https://img.shields.io/badge/Supported_Blocks-100%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.9.1--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
+[![Supported Block Placement Rules](https://img.shields.io/badge/Supported_Block_Placement_Rules-100%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.11.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
 <!-- /TAG_REPLACEMENT -->
 
 This library provides a set of common implementations for blocks and fluids tailored for the Minestom framework. Its
