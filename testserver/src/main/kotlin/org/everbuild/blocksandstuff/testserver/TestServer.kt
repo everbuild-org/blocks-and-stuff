@@ -23,6 +23,8 @@ import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
+import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeFactory
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
@@ -59,6 +61,8 @@ class TestServer(
         BlockBehaviorRuleRegistrations.registerDefault()
         PlacedHandlerRegistration.registerDefault()
         BlockPickup.enable()
+        DroppedItemFactory.enablePlayerDrops()
+        PlayerInventoryStash.enableCursorReturn()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
 
