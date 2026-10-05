@@ -11,16 +11,19 @@ import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.recipes.api.StashController
 import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
 
 class StonecutterInventory(
     private val stashController: StashController = StashControllerImpl,
-) : Inventory(InventoryType.STONE_CUTTER, Component.translatable("container.stonecutter")) {
+) : Inventory(InventoryType.STONE_CUTTER, Component.translatable("container.stonecutter")), BlockInventoryDrops {
     val inputSlot: Int = 0
     val outputSlot: Int = 1
     var recipeItemList: List<ItemStack>? = null
     var lastClickedButton: Int? = null
+
+    override val dropSlots: Collection<Int> get() = listOf(inputSlot)
 
     init {
         eventNode()
@@ -113,8 +116,6 @@ class StonecutterInventory(
     }
 
     fun onClose(player: Player) {
-        stashController.addToInventoryOrStash(player, getItemStack(inputSlot))
-
         recipeItemList = null
     }
 }

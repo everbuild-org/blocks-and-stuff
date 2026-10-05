@@ -9,7 +9,7 @@ import net.minestom.server.item.ItemStack
 open class BlockInventory(
     type: InventoryType,
     title: Component,
-    protected val backend: PhysicalInventory
+    protected val backend: PhysicalInventory,
 ) : Inventory(type, title) {
     init {
         eventNode().addListener(InventoryItemChangeEvent::class.java, this::updateItemInBackend)
@@ -21,7 +21,10 @@ open class BlockInventory(
         }
     }
 
-    fun updateStackRaw(slot: Int, stack: ItemStack) {
+    fun updateStackRaw(
+        slot: Int,
+        stack: ItemStack,
+    ) {
         this.setItemStack(slot, stack)
     }
 }

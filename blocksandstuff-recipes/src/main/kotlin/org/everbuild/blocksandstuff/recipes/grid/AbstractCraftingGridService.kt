@@ -53,7 +53,7 @@ abstract class AbstractCraftingGridService {
             grid = recipe.takeOne(grid!!)
             if (grid == null) break
             outCount++
-        } while (all && (outCount * result.amount()) < result.maxStackSize() - result.amount() && recipe.matches(grid))
+        } while (all && (outCount + 1) * result.amount() <= result.maxStackSize() && recipe.matches(grid))
         val resultingItem = result.withAmount(outCount * result.amount())
 
         grid?.extendPattern(width, height)

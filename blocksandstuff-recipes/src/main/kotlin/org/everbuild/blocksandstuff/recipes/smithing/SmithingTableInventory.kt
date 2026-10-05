@@ -11,12 +11,15 @@ import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.recipes.RecipeFactory.stashController
 import org.everbuild.blocksandstuff.recipes.util.trimPatterns
 import kotlin.math.min
 
-class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.translatable("container.upgrade")) {
+class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.translatable("container.upgrade")), BlockInventoryDrops {
     private var currentRecipe: AbstractSmithingRecipe? = null
+
+    override val dropSlots: Collection<Int> = (TEMPLATE_SLOT..ADDITION_SLOT).toList()
 
     companion object {
         const val TEMPLATE_SLOT = 0
@@ -69,11 +72,6 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
     }
 
     fun onClose(player: Player) {
-        (TEMPLATE_SLOT..ADDITION_SLOT)
-            .map { getItemStack(it) }
-            .filter { !it.isAir }
-            .forEach { stashController.addToInventoryOrStash(player, it) }
-
         currentRecipe = null
     }
 

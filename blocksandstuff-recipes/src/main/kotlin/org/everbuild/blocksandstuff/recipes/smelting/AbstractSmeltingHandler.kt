@@ -6,6 +6,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.tag.Tag
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHandler
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 
@@ -131,6 +132,12 @@ abstract class AbstractSmeltingHandler(
 
         interaction.player.openInventory(inventory)
         return false
+    }
+
+    override fun onDestroy(destroy: BlockHandler.Destroy) {
+        if (destroy.newBlock.key() == destroy.block.key()) return
+        val inventory = getInventory(destroy.instance, destroy.blockPosition).getViewableInventory()
+        BlockInventoryHandler.closeAndDrop(listOf(inventory), destroy.instance, destroy.blockPosition)
     }
 
     open fun takeFuel(

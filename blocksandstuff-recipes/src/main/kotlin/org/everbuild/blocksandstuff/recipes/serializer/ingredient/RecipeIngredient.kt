@@ -10,7 +10,6 @@ import net.minestom.server.item.Material
 import net.minestom.server.item.component.CustomData
 import net.minestom.server.recipe.Ingredient
 import net.minestom.server.recipe.display.SlotDisplay
-import net.minestom.server.registry.TagKey
 import org.everbuild.blocksandstuff.recipes.api.ItemController
 
 sealed interface RecipeIngredient {
@@ -105,7 +104,8 @@ sealed interface RecipeIngredient {
             throw RuntimeException("Can not parse tag: ${value.asString()}", e)
         }
 
-        override fun asSlotDisplay(): SlotDisplay = SlotDisplay.Tag(TagKey.ofHash("#" + value.asString()))
+        override fun asSlotDisplay(): SlotDisplay =
+            SlotDisplay.Composite(tag.map { SlotDisplay.Item(Material.fromKey(it)!!) })
         override fun asIngredients(): List<Ingredient> {
             val air = Key.key("minecraft:air")
             return tag

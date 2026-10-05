@@ -36,27 +36,31 @@ open class SingleBlockInventoryBackend protected constructor(
 
     override fun getItemStack(slot: Int): ItemStack = itemStacks[slot]
 
-    private fun updateSlotUnsafe(slot: Int, itemStack: ItemStack) {
+    private fun updateSlotUnsafe(
+        slot: Int,
+        itemStack: ItemStack,
+    ) {
         itemStacks[slot] = itemStack
         inventory?.updateStackRaw(slot, itemStack)
     }
 
     fun save() {
-        val itemsNBT = this.itemStacks
-            .mapIndexed { index, itemStack -> index to itemStack }
-            .filter { (_, stack) -> stack != ItemStack.AIR }
-            .map { (i, stack) -> i.toByte() to ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() }
-            .map { (slot, itemNBT) -> (itemNBT as CompoundBinaryTag).putByte("Slot", slot) }
-            .toList()
+        val itemsNBT =
+            this.itemStacks
+                .mapIndexed { index, itemStack -> index to itemStack }
+                .filter { (_, stack) -> stack != ItemStack.AIR }
+                .map { (i, stack) -> i.toByte() to ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() }
+                .map { (slot, itemNBT) -> (itemNBT as CompoundBinaryTag).putByte("Slot", slot) }
+                .toList()
         instance.setBlock(blockPos, instance.getBlock(blockPos).withTag(itemsTag, itemsNBT), false)
     }
 
     fun load(block: Block? = null) {
-        val data = (block ?: instance.getBlock(blockPos)).getTag(itemsTag)
-            ?: return
+        val data =
+            (block ?: instance.getBlock(blockPos)).getTag(itemsTag)
+                ?: return
 
         val slots = data.associateBy { (it as CompoundBinaryTag).getByte("Slot").toInt() }
-
         for (i in itemStacks.indices) {
             val itemNBT = slots[i]
             if (itemNBT == null) {
@@ -70,7 +74,8 @@ open class SingleBlockInventoryBackend protected constructor(
     @Synchronized
     override fun getViewableInventory(): BlockInventory {
         inventory?.let { return it }
-        return archetype.createInventory(this)
+        return archetype
+            .createInventory(this)
             .also { inventory = it }
     }
 
