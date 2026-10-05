@@ -9,7 +9,7 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 
 class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val simpleConnectionPoints = RegistryTag.direct<Block>(
+    private val simpleConnectionPoints = RegistryTag.direct(
         listOf(
             Block.REDSTONE_BLOCK,
             Block.CALIBRATED_SCULK_SENSOR,

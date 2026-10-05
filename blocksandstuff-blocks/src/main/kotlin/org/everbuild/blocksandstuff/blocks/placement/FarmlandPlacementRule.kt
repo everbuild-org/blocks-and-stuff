@@ -2,10 +2,8 @@ package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.registry.TagKey
-import org.everbuild.blocksandstuff.common.utils.isWater
 
 class FarmlandPlacementRule(
     block: Block,

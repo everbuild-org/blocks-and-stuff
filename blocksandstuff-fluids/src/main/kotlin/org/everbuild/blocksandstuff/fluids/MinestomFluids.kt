@@ -27,10 +27,10 @@ object MinestomFluids {
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
     @Suppress("UnstableApiUsage")
-    val registry = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
+    val registry: DynamicRegistry<Fluid> = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
         @JvmStatic get
 
-    val EMPTY = registry.register("minecraft:empty", EmptyFluid())
+    val EMPTY: RegistryKey<Fluid> = registry.register("minecraft:empty", EmptyFluid())
 
     fun getFluidOnBlock(block: Block): RegistryKey<Fluid> =
         registry

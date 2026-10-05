@@ -8,12 +8,11 @@ class VerticallyRotatedPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block {
         val playerDirection = placementState.getHorizontalPlacementDirection()
             ?: return placementState.block
-        val blockFacing = playerDirection.opposite()
 
         return placementState.block
             .withProperty(
                 "facing",
-                (placementState.getHorizontalPlacementDirection() ?: return placementState.block).opposite().name.lowercase()
+                playerDirection.opposite().name.lowercase()
             )
     }
 }

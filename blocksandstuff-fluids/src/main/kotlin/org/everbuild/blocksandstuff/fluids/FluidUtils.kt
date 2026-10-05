@@ -1,7 +1,5 @@
 package org.everbuild.blocksandstuff.fluids
 
-import net.minestom.server.MinecraftServer
-import net.minestom.server.ServerFlag
 import net.minestom.server.collision.BoundingBox
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Vec

@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.recipes.smithing
 import net.kyori.adventure.key.Key
 import net.minestom.server.instance.block.BlockHandler
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHandler
-import org.everbuild.blocksandstuff.common.blockinventory.ItemStash
 import org.everbuild.blocksandstuff.recipes.RecipeFactory
 
 class SmithingTableHandler : BlockInventoryHandler() {
@@ -17,7 +16,7 @@ class SmithingTableHandler : BlockInventoryHandler() {
         trackInventory(
             inventory,
             interaction.blockPosition,
-            ItemStash { player, item -> RecipeFactory.stashController.addToInventoryOrStash(player, item) },
+            { player, item -> RecipeFactory.stashController.addToInventoryOrStash(player, item) },
         )
         interaction.player.openInventory(inventory)
         return false

@@ -8,6 +8,7 @@ import net.minestom.server.event.instance.InstanceChunkLoadEvent
 import net.minestom.server.event.instance.InstanceChunkUnloadEvent
 import net.minestom.server.event.instance.InstanceRegisterEvent
 import net.minestom.server.event.instance.InstanceTickEvent
+import net.minestom.server.event.trait.InstanceEvent
 import net.minestom.server.instance.Chunk
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
@@ -35,7 +36,7 @@ private val innerChunkCache = SimpleInvalidatableCache<Instance, Set<Chunk>> { i
     }.toSet()
 }
 
-fun getRandomTickingEventNode() = EventNode.type("random-ticking", EventFilter.INSTANCE)
+fun getRandomTickingEventNode(): EventNode<InstanceEvent> = EventNode.type("random-ticking", EventFilter.INSTANCE)
     .addListener(InstanceChunkLoadEvent::class.java) { event ->
         innerChunkCache.invalidate(event.instance)
     }

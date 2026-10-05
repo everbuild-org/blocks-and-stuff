@@ -6,8 +6,7 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 
 class HopperPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        val placementFace = placementState.blockFace()
-        val facing = when (placementFace) {
+        val facing = when (val placementFace = placementState.blockFace()) {
             BlockFace.BOTTOM -> "down"
             BlockFace.TOP -> "down"
             BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST -> {
