@@ -6,8 +6,10 @@ import net.minestom.server.instance.block.BlockManager
 import net.minestom.server.network.packet.client.play.ClientClickWindowButtonPacket
 import org.everbuild.blocksandstuff.recipes.api.ItemController
 import org.everbuild.blocksandstuff.recipes.api.StashController
+import org.everbuild.blocksandstuff.recipes.cartography.CartographyTableHandler
 import org.everbuild.blocksandstuff.recipes.grid.CraftingTableHandler
 import org.everbuild.blocksandstuff.recipes.grid.PlayerInventoryCraftingGridService
+import org.everbuild.blocksandstuff.recipes.loom.LoomHandler
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.loader.RecipeLoader
 import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceHandler
@@ -111,6 +113,12 @@ class RecipeRegistrations {
             }),
             STONECUTTING({ blocks ->
                 blocks.registerHandler("minecraft:stonecutter", ::StonecutterHandler)
+            }),
+            LOOM({ blocks ->
+                blocks.registerHandler("minecraft:loom", ::LoomHandler)
+            }),
+            CARTOGRAPHY({ blocks ->
+                blocks.registerHandler("minecraft:cartography_table", ::CartographyTableHandler)
             })
         }
     }
