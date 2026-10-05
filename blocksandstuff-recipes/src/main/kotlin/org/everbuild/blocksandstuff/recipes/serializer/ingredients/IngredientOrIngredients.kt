@@ -26,7 +26,8 @@ sealed interface IngredientOrIngredients {
 
         override fun asIngredient(): MinestomIngredient? {
             val ingredients = ingredient.asIngredients()
-                .flatMap { it.items }
+                .flatMap { it.tag() }
+                .map { Material.fromKey(it.key())!! }
 
             if (ingredients.isEmpty()) return null
             return MinestomIngredient(ingredients)
@@ -46,7 +47,8 @@ sealed interface IngredientOrIngredients {
         override fun asIngredient(): MinestomIngredient? {
             val ingredients = ingredients
                 .flatMap { it.asIngredients() }
-                .flatMap { it.items }
+                .flatMap { it.tag() }
+                .map { Material.fromKey(it.key())!! }
 
             if (ingredients.isEmpty()) return null
             return MinestomIngredient(ingredients)
