@@ -1,19 +1,24 @@
 package org.everbuild.blocksandstuff.recipes.loom
 
 import net.kyori.adventure.text.Component
+import net.minestom.server.MinecraftServer
 import net.minestom.server.color.DyeColor
 import net.minestom.server.component.DataComponents
 import net.minestom.server.entity.Player
+import net.minestom.server.event.inventory.InventoryButtonClickEvent
 import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.inventory.click.Click
+import net.minestom.server.instance.block.banner.BannerPattern
+import net.minestom.server.instance.block.banner.BannerPatternTags
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.item.MaterialTags
 import net.minestom.server.item.component.BannerPatterns
+import net.minestom.server.registry.Holder
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.util.isIn
@@ -32,10 +37,23 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
 
     override val dropSlots: Collection<Int> = listOf(BANNER_SLOT, DYE_SLOT, PATTERN_SLOT)
 
+    /**
+     * The banner pattern selected in the loom UI. Vanilla looms allow choosing a pattern
+     * from the list without consuming a banner pattern item, so the selection must be
+     * tracked here instead of relying only on the pattern slot.
+     */
+    private var selectedPattern: Holder<BannerPattern>? = null
+
     init {
         eventNode()
             .addListener(InventoryItemChangeEvent::class.java) { event ->
                 if (event.slot == RESULT_SLOT) return@addListener
+                if (event.slot == PATTERN_SLOT) selectedPattern = null
+                updateResult()
+            }
+            .addListener(InventoryButtonClickEvent::class.java) { event ->
+                val pattern = selectablePatterns().getOrNull(event.buttonId) ?: return@addListener
+                selectedPattern = pattern
                 updateResult()
             }
             .addListener(InventoryPreClickEvent::class.java) { event ->
@@ -99,15 +117,14 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
     private fun computeResult(): ItemStack {
         val banner = getItemStack(BANNER_SLOT)
         val dye = getItemStack(DYE_SLOT)
-        val pattern = getItemStack(PATTERN_SLOT)
-        if (banner.isAir || dye.isAir || pattern.isAir) return ItemStack.AIR
+        if (banner.isAir || dye.isAir) return ItemStack.AIR
 
         val baseColor = banner.get(DataComponents.BASE_COLOR) ?: baseColorOf(banner.material())
             ?: return ItemStack.AIR
         val dyeColor = dyeColorOf(dye.material()) ?: return ItemStack.AIR
 
-        val patternHolder = pattern.get(DataComponents.PROVIDES_BANNER_PATTERNS)?.firstOrNull()
-            ?: return ItemStack.AIR
+        // A banner pattern item takes precedence, otherwise the pattern selected in the UI is used.
+        val patternHolder = patternItemPattern() ?: selectedPattern ?: return ItemStack.AIR
 
         val existing = banner.get(DataComponents.BANNER_PATTERNS)?.layers() ?: emptyList()
         if (existing.size >= MAX_LAYERS) return ItemStack.AIR
@@ -116,6 +133,28 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
         return banner
             .with(DataComponents.BANNER_PATTERNS, BannerPatterns(layers))
             .with(DataComponents.BASE_COLOR, baseColor)
+            .withAmount(1)
+    }
+
+    /**
+     * The patterns offered by the current banner pattern item, or the vanilla default list
+     * (all patterns that do not require an item) when the slot is empty.
+     */
+    private fun selectablePatterns(): List<Holder<BannerPattern>> {
+        val pattern = getItemStack(PATTERN_SLOT)
+        if (!pattern.isAir) {
+            return pattern.get(DataComponents.PROVIDES_BANNER_PATTERNS)?.toList() ?: emptyList()
+        }
+
+        val registry = MinecraftServer.getBannerPatternRegistry()
+        val noItemRequired = registry.getTag(BannerPatternTags.NO_ITEM_REQUIRED) ?: return emptyList()
+        return registry.keys().filter { noItemRequired.contains(it) }
+    }
+
+    private fun patternItemPattern(): Holder<BannerPattern>? {
+        val pattern = getItemStack(PATTERN_SLOT)
+        if (pattern.isAir) return null
+        return pattern.get(DataComponents.PROVIDES_BANNER_PATTERNS)?.firstOrNull()
     }
 
     private fun takeResult(event: InventoryPreClickEvent) {

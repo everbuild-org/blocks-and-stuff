@@ -45,7 +45,9 @@ abstract class AbstractCraftingGridService {
         val result = recipe.getResult(grid!!)
         val cursorItem = player.inventory.cursorItem
 
-        if (cursorItem.isSimilar(result) && cursorItem.maxStackSize() < result.amount() + cursorItem.amount()) {
+        if (!cursorItem.isAir &&
+            (!cursorItem.isSimilar(result) || cursorItem.amount() + result.amount() > cursorItem.maxStackSize())
+        ) {
             return
         }
 
@@ -75,8 +77,7 @@ abstract class AbstractCraftingGridService {
         if (all) {
             RecipeFactory.stashController.addToInventoryOrStash(player, resultingItem)
         } else {
-            val resultingAmount =
-                (if (player.inventory.cursorItem == ItemStack.AIR) 0 else player.inventory.cursorItem.amount()) + resultingItem.amount()
+            val resultingAmount = (if (cursorItem.isAir) 0 else cursorItem.amount()) + resultingItem.amount()
             player.inventory.cursorItem = resultingItem.withAmount(resultingAmount)
         }
 

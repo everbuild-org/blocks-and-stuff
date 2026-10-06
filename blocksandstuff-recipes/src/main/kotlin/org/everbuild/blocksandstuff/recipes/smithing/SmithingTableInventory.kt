@@ -35,11 +35,6 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
             .addListener(InventoryCloseEvent::class.java) { onClose(it.player) }
 
         eventNode().addListener(InventoryPreClickEvent::class.java) {
-            if (it.click is Click.LeftShift || it.click is Click.RightShift) {
-                it.isCancelled = true
-                // Todo: implement Shift Clicking when the API in Minestom is implemented
-                return@addListener
-            }
             if (it.slot == RESULT_SLOT && !it.player.inventory.cursorItem.isAir) {
                 it.isCancelled = true
                 return@addListener
@@ -75,6 +70,57 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
         currentRecipe = null
     }
 
+    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
+        if (slot < size) {
+            return super.shiftClick(player, slot, button)
+        }
+
+        val playerInventory = player.inventory
+        val clickSlot = slot - size
+        val clicked = playerInventory.getItemStack(clickSlot)
+        if (clicked.isAir) return false
+
+        val targetSlot = smithingSlotFor(clicked) ?: return false
+
+        val clickResult =
+            clickProcessor.shiftClick(
+                playerInventory,
+                this,
+                targetSlot,
+                targetSlot + 1,
+                1,
+                player,
+                clickSlot,
+                clicked,
+                playerInventory.cursorItem,
+            )
+
+        if (clickResult.isCancel) {
+            playerInventory.update()
+            update(player)
+            return false
+        }
+
+        playerInventory.setItemStack(clickSlot, clickResult.clicked)
+        playerInventory.update()
+        update(player)
+        playerInventory.cursorItem = clickResult.cursor
+        return true
+    }
+
+    private fun smithingSlotFor(item: ItemStack): Int? {
+        val recipes =
+            MinecraftServer
+                .getRecipeManager()
+                .recipes
+                .filterIsInstance<AbstractSmithingRecipe>()
+
+        if (recipes.any { it.template?.matches(item) == true }) return TEMPLATE_SLOT
+        if (recipes.any { it.base.matches(item) }) return BASE_SLOT
+        if (recipes.any { it.addition?.matches(item) == true }) return ADDITION_SLOT
+        return null
+    }
+
     private fun onCraftItem(
         player: Player,
         all: Boolean,
@@ -86,33 +132,28 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
         val result = recipe.getResult(template, base, addition)
         val cursorItem = player.inventory.cursorItem
 
-        if (cursorItem.isSimilar(result) && cursorItem.maxStackSize() < result.amount() + cursorItem.amount()) {
+        if (!cursorItem.isAir &&
+            (!cursorItem.isSimilar(result) || cursorItem.amount() + result.amount() > cursorItem.maxStackSize())
+        ) {
             return
         }
 
-        val templateCount = if (template.isAir) template.amount() else Int.MAX_VALUE
-        val baseCount = if (base.isAir) base.amount() else Int.MAX_VALUE
-        val additionCount = if (addition.isAir) addition.amount() else Int.MAX_VALUE
+        val templateCount = if (template.isAir) Int.MAX_VALUE else template.amount()
+        val baseCount = if (base.isAir) Int.MAX_VALUE else base.amount()
+        val additionCount = if (addition.isAir) Int.MAX_VALUE else addition.amount()
 
-        val maxRepetitionsForInput = if (all) min(min(templateCount, baseCount), additionCount) else 1
-        val maxRepetitionsForOutput = (result.maxStackSize() - result.amount()).floorDiv(cursorItem.amount())
-        val maxRepetitions = min(maxRepetitionsForInput, maxRepetitionsForOutput).coerceAtLeast(1)
+        val maxRepetitions = if (all) min(min(templateCount, baseCount), additionCount).coerceAtLeast(1) else 1
         val resultingItem = result.withAmount(maxRepetitions * result.amount())
 
-        val resultingBase = base.withAmount(base.amount() - maxRepetitions)
-        val resultingAddition = addition.withAmount(addition.amount() - maxRepetitions)
-        val resultingTemplate = template.withAmount(template.amount() - maxRepetitions)
-
-        this.setItemStack(TEMPLATE_SLOT, resultingTemplate)
-        this.setItemStack(BASE_SLOT, resultingBase)
-        this.setItemStack(ADDITION_SLOT, resultingAddition)
+        if (!template.isAir) this.setItemStack(TEMPLATE_SLOT, template.withAmount(template.amount() - maxRepetitions))
+        if (!base.isAir) this.setItemStack(BASE_SLOT, base.withAmount(base.amount() - maxRepetitions))
+        if (!addition.isAir) this.setItemStack(ADDITION_SLOT, addition.withAmount(addition.amount() - maxRepetitions))
         this.setItemStack(RESULT_SLOT, ItemStack.AIR)
 
         if (all) {
             stashController.addToInventoryOrStash(player, resultingItem)
         } else {
-            val cursorAmount =
-                if (player.inventory.cursorItem == ItemStack.AIR) 0 else player.inventory.cursorItem.amount()
+            val cursorAmount = if (cursorItem.isAir) 0 else cursorItem.amount()
             val resultingAmount = cursorAmount + resultingItem.amount()
             player.inventory.cursorItem = resultingItem.withAmount(resultingAmount)
         }
