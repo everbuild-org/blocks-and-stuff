@@ -14,6 +14,7 @@ class StonecutterRecipe(
     private val input: IngredientOrIngredients,
     override val result: ItemStack,
     private val group: String?,
+    override val order: Int = NEXT_ORDER.getAndIncrement(),
 ) : Recipe, StonecuttingRecipe {
 
     constructor(recipe: RecipeModel.StonecuttingRecipe) : this(
@@ -21,6 +22,10 @@ class StonecutterRecipe(
         recipe.result.item,
         recipe.group
     )
+
+    companion object {
+        private val NEXT_ORDER = java.util.concurrent.atomic.AtomicInteger()
+    }
 
     override fun matches(itemStack: ItemStack): Boolean = input.matches(itemStack)
 

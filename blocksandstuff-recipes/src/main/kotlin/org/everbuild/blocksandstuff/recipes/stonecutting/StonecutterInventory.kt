@@ -9,11 +9,14 @@ import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.api.StashController
 import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 class StonecutterInventory(
     private val stashController: StashController = StashControllerImpl,
@@ -37,6 +40,39 @@ class StonecutterInventory(
             }
     }
 
+    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
+        val playerInventory = player.inventory
+
+        if (slot == outputSlot) return false
+
+        if (slot < size) {
+            // Shift-click inside the stonecutter -> move the item into the player inventory.
+            val clicked = getItemStack(slot)
+            if (clicked.isAir) return false
+
+            setItemStack(slot, ItemStack.AIR)
+            val leftover = playerInventory.addItemStack(clicked, TransactionOption.ALL)
+            if (!leftover.isAir) {
+                DroppedItemFactory.maybeDropFromPlayer(player, leftover)
+            }
+
+            playerInventory.update()
+            update(player)
+            return true
+        }
+
+        // Shift-click from the player inventory -> route into the input slot only, never the result slot.
+        val clickSlot = slot - size
+        val clicked = playerInventory.getItemStack(clickSlot)
+        if (clicked.isAir) return false
+
+        val leftover = transferInto(clicked, this, listOf(inputSlot))
+        playerInventory.setItemStack(clickSlot, leftover)
+        playerInventory.update()
+        update(player)
+        return true
+    }
+
     fun onChangeItem() {
         val buttonID = lastClickedButton ?: return
         if (getRecipe(buttonID) == null) {
@@ -48,13 +84,15 @@ class StonecutterInventory(
     private fun getRecipe(buttonID: Int): StonecuttingRecipe? {
         val inputItem = getItemStack(inputSlot)
 
+        // The client indexes into the stonecutter list in registration order, so resolve the
+        // button against that exact order instead of an arbitrary/sorted one.
         val recipes =
             MinecraftServer
                 .getRecipeManager()
                 .recipes
                 .filterIsInstance<StonecuttingRecipe>()
                 .filter { it.matches(inputItem) }
-                .sortedByDescending { it.result.material().name() }
+                .sortedBy { it.order }
 
         return recipes.getOrNull(buttonID)
     }
@@ -79,38 +117,30 @@ class StonecutterInventory(
         if (event.slot != outputSlot) return
         event.isCancelled = true
         if (event.clickedItem.isAir) return
-        val itemAmount = getItemStack(inputSlot).amount()
-        val resultItem = event.clickedItem
-        event.inventory.setItemStack(outputSlot, ItemStack.AIR.withAmount(2), true)
 
-        if (event.click == Click.Right(event.slot) || (
-                event.click == Click.Left(event.slot) &&
-                    (
-                        !event.player.inventory.cursorItem
-                            .isSimilar(getItemStack(outputSlot)) &&
-                            !event.player.inventory.cursorItem.isAir
-                    )
-            )
-        ) {
-            event.isCancelled = true
+        val input = getItemStack(inputSlot)
+        val result = event.clickedItem
+        val cursor = event.player.inventory.cursorItem
+        val shift = event.click == Click.LeftShift(event.slot) || event.click == Click.RightShift(event.slot)
+
+        // Right click never takes a result, left click only with an empty or matching cursor.
+        if (!shift && (event.click == Click.Right(event.slot) || (!cursor.isAir && !cursor.isSimilar(result)))) {
             return
-        } else {
-            if (event.click == Click.LeftShift(event.slot) || event.click == Click.RightShift(event.slot)) {
-                stashController.addToInventoryOrStash(event.entity, resultItem.withAmount(itemAmount))
-
-                setItemStack(inputSlot, ItemStack.AIR.withAmount(2), true)
-            } else {
-                val amount =
-                    if (event.player.inventory.cursorItem.isAir) {
-                        0
-                    } else {
-                        event.player.inventory.cursorItem
-                            .amount()
-                    }
-                event.player.inventory.cursorItem = resultItem.withAmount(amount + resultItem.amount())
-                setItemStack(inputSlot, getItemStack(inputSlot).withAmount(itemAmount - 1), true)
-            }
         }
+
+        if (shift) {
+            // Craft the whole input at once, respecting the per-craft result amount.
+            setItemStack(outputSlot, ItemStack.AIR, true)
+            stashController.addToInventoryOrStash(event.entity, result.withAmount(input.amount() * result.amount()))
+            setItemStack(inputSlot, ItemStack.AIR, true)
+        } else {
+            if (!cursor.isAir && cursor.amount() + result.amount() > cursor.maxStackSize()) return
+            setItemStack(outputSlot, ItemStack.AIR, true)
+            val amount = (if (cursor.isAir) 0 else cursor.amount()) + result.amount()
+            event.player.inventory.cursorItem = result.withAmount(amount)
+            setItemStack(inputSlot, input.withAmount(input.amount() - 1))
+        }
+
         updateRecipe(lastClickedButton ?: return)
         update()
     }

@@ -164,11 +164,19 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
         val player = event.player
         val shift = event.click is Click.LeftShift || event.click is Click.RightShift
 
+        // Vanilla: banner and dye are consumed, the banner pattern item is not.
+        val banner = getItemStack(BANNER_SLOT)
+        val dye = getItemStack(DYE_SLOT)
+
         if (shift) {
-            val leftover = player.inventory.addItemStack(result, TransactionOption.ALL)
+            // Craft the whole input at once instead of only a single banner.
+            val crafts = minOf(banner.amount(), dye.amount())
+            val leftover = player.inventory.addItemStack(result.withAmount(crafts), TransactionOption.ALL)
             if (!leftover.isAir) {
                 DroppedItemFactory.maybeDropFromPlayer(player, leftover)
             }
+            setItemStack(BANNER_SLOT, banner.withAmount(banner.amount() - crafts))
+            setItemStack(DYE_SLOT, dye.withAmount(dye.amount() - crafts))
         } else {
             val cursor = player.inventory.cursorItem
             if (!cursor.isAir &&
@@ -178,13 +186,9 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
             }
             val amount = (if (cursor.isAir) 0 else cursor.amount()) + result.amount()
             player.inventory.cursorItem = result.withAmount(amount)
+            setItemStack(BANNER_SLOT, banner.withAmount(banner.amount() - 1))
+            setItemStack(DYE_SLOT, dye.withAmount(dye.amount() - 1))
         }
-
-        // Vanilla: banner and dye are consumed, the banner pattern item is not.
-        val banner = getItemStack(BANNER_SLOT)
-        val dye = getItemStack(DYE_SLOT)
-        setItemStack(BANNER_SLOT, banner.withAmount(banner.amount() - 1))
-        setItemStack(DYE_SLOT, dye.withAmount(dye.amount() - 1))
 
         player.inventory.update()
         update(player)

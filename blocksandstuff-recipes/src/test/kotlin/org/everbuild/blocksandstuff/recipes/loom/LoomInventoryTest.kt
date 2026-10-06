@@ -22,6 +22,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class LoomInventoryTest {
     companion object {
@@ -106,5 +107,24 @@ class LoomInventoryTest {
         assertEquals(Material.WHITE_BANNER, cursor.firstValue.material())
         assertEquals(1, cursor.firstValue.amount())
         assertFalse(cursor.firstValue.isAir)
+    }
+
+    @Test
+    fun `shift click crafts the whole stack and consumes the matching amount`() {
+        val loom = LoomInventory()
+        loom.setItemStack(LoomInventory.BANNER_SLOT, ItemStack.of(Material.WHITE_BANNER, 3))
+        loom.setItemStack(LoomInventory.DYE_SLOT, ItemStack.of(Material.RED_DYE, 5))
+        loom.setItemStack(LoomInventory.PATTERN_SLOT, ItemStack.of(Material.CREEPER_BANNER_PATTERN))
+
+        val playerInventory = PlayerInventory()
+        val player = mock<Player>()
+        whenever(player.inventory).thenReturn(playerInventory)
+
+        EventDispatcher.call(InventoryPreClickEvent(loom, player, Click.LeftShift(LoomInventory.RESULT_SLOT)))
+
+        val banners = playerInventory.itemStacks.filter { it.material() == Material.WHITE_BANNER }.sumOf { it.amount() }
+        assertEquals(3, banners, "min(3 banner, 5 dye) banners must be crafted")
+        assertTrue(loom.getItemStack(LoomInventory.BANNER_SLOT).isAir)
+        assertEquals(2, loom.getItemStack(LoomInventory.DYE_SLOT).amount())
     }
 }
