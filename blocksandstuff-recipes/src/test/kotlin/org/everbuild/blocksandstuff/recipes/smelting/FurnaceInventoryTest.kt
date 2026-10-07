@@ -65,35 +65,61 @@ class FurnaceInventoryTest {
     }
 
     @Test
-    fun `picking up the output with the same item in the cursor is allowed`() {
+    fun `taking the output with a matching cursor stack merges into the cursor`() {
         val inventory = furnace()
-        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT))
+        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT, 5))
+        val (player, playerInventory) = player()
+        playerInventory.cursorItem = ItemStack.of(Material.IRON_INGOT, 3)
 
-        val playerInventory = mock<PlayerInventory>()
-        whenever(playerInventory.cursorItem).thenReturn(ItemStack.of(Material.IRON_INGOT))
-        val player = mock<Player>()
-        whenever(player.inventory).thenReturn(playerInventory)
+        EventDispatcher.call(InventoryPreClickEvent(inventory, player, Click.Left(FurnaceArchetype.SLOT_OUTPUT)))
 
-        val event = InventoryPreClickEvent(inventory, player, Click.Left(FurnaceArchetype.SLOT_OUTPUT))
-        EventDispatcher.call(event)
-
-        assertFalse(event.isCancelled, "a matching cursor stack must be able to take the output")
+        assertEquals(8, playerInventory.cursorItem.amount(), "cursor must gain the output stack")
+        assertTrue(inventory.getItemStack(FurnaceArchetype.SLOT_OUTPUT).isAir, "the output must be emptied")
     }
 
     @Test
-    fun `picking up the output with a different item in the cursor is blocked`() {
+    fun `taking the output with a different cursor stack does nothing`() {
         val inventory = furnace()
-        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT))
+        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT, 5))
+        val (player, playerInventory) = player()
+        playerInventory.cursorItem = ItemStack.of(Material.GOLD_INGOT, 3)
 
-        val playerInventory = mock<PlayerInventory>()
-        whenever(playerInventory.cursorItem).thenReturn(ItemStack.of(Material.GOLD_INGOT))
-        val player = mock<Player>()
-        whenever(player.inventory).thenReturn(playerInventory)
+        EventDispatcher.call(InventoryPreClickEvent(inventory, player, Click.Left(FurnaceArchetype.SLOT_OUTPUT)))
 
-        val event = InventoryPreClickEvent(inventory, player, Click.Left(FurnaceArchetype.SLOT_OUTPUT))
+        assertEquals(Material.GOLD_INGOT, playerInventory.cursorItem.material())
+        assertEquals(3, playerInventory.cursorItem.amount())
+        assertEquals(Material.IRON_INGOT, inventory.getItemStack(FurnaceArchetype.SLOT_OUTPUT).material())
+        assertEquals(5, inventory.getItemStack(FurnaceArchetype.SLOT_OUTPUT).amount(), "output must remain untouched")
+    }
+
+    @Test
+    fun `taking the output with an empty cursor picks up the whole stack`() {
+        val inventory = furnace()
+        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT, 4))
+        val (player, playerInventory) = player()
+
+        EventDispatcher.call(InventoryPreClickEvent(inventory, player, Click.Left(FurnaceArchetype.SLOT_OUTPUT)))
+
+        assertEquals(4, playerInventory.cursorItem.amount())
+        assertTrue(inventory.getItemStack(FurnaceArchetype.SLOT_OUTPUT).isAir)
+    }
+
+    @Test
+    fun `drags cannot fill the output slot`() {
+        val inventory = furnace()
+        inventory.setItemStack(FurnaceArchetype.SLOT_OUTPUT, ItemStack.of(Material.IRON_INGOT, 5))
+        val (player, playerInventory) = player()
+        playerInventory.cursorItem = ItemStack.of(Material.IRON_INGOT, 10)
+
+        val event = InventoryPreClickEvent(inventory, player, Click.LeftDrag(listOf(0, FurnaceArchetype.SLOT_OUTPUT, 3)))
         EventDispatcher.call(event)
 
-        assertTrue(event.isCancelled, "a mismatching cursor stack must not take the output")
+        val click = event.click
+        assertTrue(click is Click.LeftDrag)
+        assertFalse(
+            (click as Click.LeftDrag).slots().contains(FurnaceArchetype.SLOT_OUTPUT),
+            "the result slot must be dropped from the drag slot list",
+        )
     }
 
     @Test

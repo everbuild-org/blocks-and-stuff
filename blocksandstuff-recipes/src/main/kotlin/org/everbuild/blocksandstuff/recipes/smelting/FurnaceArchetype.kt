@@ -22,6 +22,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 abstract class FurnaceArchetype(
@@ -64,24 +65,56 @@ abstract class FurnaceArchetype(
             }
 
             eventNode().addListener(InventoryPreClickEvent::class.java) {
+                it.excludeResultSlotsFromDrag(SLOT_OUTPUT)
+
                 // Shift clicks are handled by the shiftClick override below.
                 if (it.click is Click.LeftShift || it.click is Click.RightShift) {
                     return@addListener
                 }
 
                 val slot = it.slot
-                val cursor = it.player.inventory.cursorItem
-                if (slot == SLOT_OUTPUT && !cursor.isAir &&
-                    (!cursor.isSimilar(it.clickedItem) || cursor.amount() + it.clickedItem.amount() > cursor.maxStackSize())
-                ) {
+                // The output is a result slot: it can only be taken, never filled.
+                if (slot == SLOT_OUTPUT) {
                     it.isCancelled = true
+                    takeOutput(it)
                     return@addListener
                 }
+
+                val cursor = it.player.inventory.cursorItem
                 if (slot == SLOT_FUEL && !(cursor.isAir || FuelLoader.isFuel(cursor))) {
                     it.isCancelled = true
                     return@addListener
                 }
             }
+        }
+
+        /**
+         * Takes the smelting result into the cursor (or merges it with a matching
+         * cursor stack), mirroring how vanilla handles a result slot.
+         */
+        private fun takeOutput(event: InventoryPreClickEvent) {
+            val click = event.click
+            if (click !is Click.Left && click !is Click.Right && click !is Click.Double) return
+
+            val output = getItemStack(SLOT_OUTPUT)
+            if (output.isAir) return
+
+            val playerInventory = event.player.inventory
+            val cursor = playerInventory.cursorItem
+            if (!cursor.isAir && !cursor.isSimilar(output)) return
+
+            val cursorAmount = if (cursor.isAir) 0 else cursor.amount()
+            val space = output.maxStackSize() - cursorAmount
+            if (space <= 0) return
+
+            val requested = if (click is Click.Right) 1 else output.amount()
+            val taken = minOf(requested, output.amount(), space)
+
+            playerInventory.cursorItem = (if (cursor.isAir) output else cursor).withAmount(cursorAmount + taken)
+            setItemStack(SLOT_OUTPUT, output.withAmount(output.amount() - taken))
+
+            playerInventory.update()
+            update(event.player)
         }
 
         override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {

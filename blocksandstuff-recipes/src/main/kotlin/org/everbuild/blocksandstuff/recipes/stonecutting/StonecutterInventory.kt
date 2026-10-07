@@ -16,6 +16,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.api.StashController
 import org.everbuild.blocksandstuff.recipes.impl.StashControllerImpl
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 class StonecutterInventory(
@@ -114,6 +115,7 @@ class StonecutterInventory(
     }
 
     fun onClickItem(event: InventoryPreClickEvent) {
+        event.excludeResultSlotsFromDrag(outputSlot)
         if (event.slot != outputSlot) return
         event.isCancelled = true
         if (event.clickedItem.isAir) return

@@ -7,6 +7,7 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.recipes.RecipeFactory
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 
 abstract class AbstractCraftingGridService {
     private var currentRecipe: CraftingGridRecipe? = null
@@ -26,6 +27,7 @@ abstract class AbstractCraftingGridService {
     }
 
     fun onClickItem(event: InventoryPreClickEvent) {
+        event.excludeResultSlotsFromDrag(outputSlot)
         if (event.slot != outputSlot) return
         event.isCancelled = true
         onCraftItem(event.player, event.click is Click.LeftShift || event.click is Click.RightShift)

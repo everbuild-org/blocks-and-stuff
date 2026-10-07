@@ -21,6 +21,7 @@ import net.minestom.server.item.component.BannerPatterns
 import net.minestom.server.registry.Holder
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.isIn
 import org.everbuild.blocksandstuff.recipes.util.transferInto
 
@@ -57,6 +58,8 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
                 updateResult()
             }
             .addListener(InventoryPreClickEvent::class.java) { event ->
+                event.excludeResultSlotsFromDrag(RESULT_SLOT)
+
                 val slot = event.slot
                 if (slot !in 0 until size) return@addListener
 

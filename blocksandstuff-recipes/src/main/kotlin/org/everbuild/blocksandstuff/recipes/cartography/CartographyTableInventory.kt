@@ -10,6 +10,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 class CartographyTableInventory :
@@ -25,6 +26,8 @@ class CartographyTableInventory :
 
     init {
         eventNode().addListener(InventoryPreClickEvent::class.java) { event ->
+            event.excludeResultSlotsFromDrag(RESULT_SLOT)
+
             val slot = event.slot
             if (slot !in 0 until size) return@addListener
 

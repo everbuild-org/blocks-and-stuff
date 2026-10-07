@@ -13,6 +13,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.recipes.RecipeFactory.stashController
+import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.trimPatterns
 import kotlin.math.min
 
@@ -61,6 +62,7 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
     }
 
     fun onClickItem(event: InventoryPreClickEvent) {
+        event.excludeResultSlotsFromDrag(RESULT_SLOT)
         if (event.slot != RESULT_SLOT) return
         event.isCancelled = true
         onCraftItem(event.player, event.click is Click.LeftShift || event.click is Click.RightShift)
