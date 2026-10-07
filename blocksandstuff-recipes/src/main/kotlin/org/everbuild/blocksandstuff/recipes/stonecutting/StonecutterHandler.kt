@@ -15,11 +15,9 @@ class StonecutterHandler(private val stashController: StashController = StashCon
         }
 
         val inventory = StonecutterInventory(stashController)
-        trackInventory(
-            inventory,
-            interaction.blockPosition,
-            { player, item -> stashController.addToInventoryOrStash(player, item) },
-        )
+        trackInventory(inventory, interaction.blockPosition) { player, item ->
+            stashController.addToInventoryOrStash(player, item)
+        }
         interaction.player.openInventory(inventory)
         return false
     }

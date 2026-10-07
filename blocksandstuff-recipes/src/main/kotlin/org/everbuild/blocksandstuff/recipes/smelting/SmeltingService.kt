@@ -10,7 +10,7 @@ import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype.Companion.
 
 fun useFuel(inventory: PhysicalInventory): Int {
     if (inventory[SLOT_FUEL].isAir) return 0
-    val fuelItem = FuelLoader.loadAllFuels().firstOrNull { it.itemStack.matches(inventory[SLOT_FUEL]) } ?: return 0
+    val burnTime = FuelLoader.burnTime(inventory[SLOT_FUEL]) ?: return 0
     val newFuelSlotItem =
         if (inventory[SLOT_FUEL].isSimilar(ItemStack.of(Material.LAVA_BUCKET))) {
             ItemStack.of(Material.BUCKET)
@@ -23,7 +23,7 @@ fun useFuel(inventory: PhysicalInventory): Int {
         }
     inventory.transact { setter -> setter(SLOT_FUEL, newFuelSlotItem) }
 
-    return fuelItem.burnTime
+    return burnTime
 }
 
 fun insertResult(

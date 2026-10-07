@@ -6,6 +6,7 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.event.inventory.InventoryButtonClickEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
+import net.minestom.server.instance.block.banner.BannerPatternTags
 import net.minestom.server.inventory.PlayerInventory
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
@@ -57,6 +58,30 @@ class LoomInventoryTest {
         assertFalse(result.isAir, "loom did not compute a result")
         assertEquals(Material.WHITE_BANNER, result.material())
         assertEquals(1, result.get(DataComponents.BANNER_PATTERNS)?.layers()?.size)
+    }
+
+    @Test
+    fun `selected button maps to the pattern at the tag index`() {
+        val registry = MinecraftServer.getBannerPatternRegistry()
+        val tag = registry.getTag(BannerPatternTags.NO_ITEM_REQUIRED) ?: error("no_item_required tag missing")
+        assertTrue(tag.size() > 1, "no_item_required tag must contain several patterns")
+        val expected = tag.mapNotNull { registry.get(it) }
+
+        expected.forEachIndexed { index, pattern ->
+            val loom = LoomInventory()
+            loom.setItemStack(LoomInventory.BANNER_SLOT, ItemStack.of(Material.WHITE_BANNER))
+            loom.setItemStack(LoomInventory.DYE_SLOT, ItemStack.of(Material.RED_DYE))
+
+            EventDispatcher.call(InventoryButtonClickEvent(mock<Player>(), loom, index))
+
+            val layer =
+                loom
+                    .getItemStack(LoomInventory.RESULT_SLOT)
+                    .get(DataComponents.BANNER_PATTERNS)
+                    ?.layers()
+                    ?.firstOrNull()
+            assertEquals(pattern, layer?.pattern(), "button $index must select the pattern at tag index $index")
+        }
     }
 
     @Test

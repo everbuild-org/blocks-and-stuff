@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.group
 
-import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.InventoryType
@@ -143,8 +142,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val CONCRETE_POWDER = group(
-        //Inline this when minestom 26.2 is mainline
-        if (MinecraftServer.PROTOCOL_VERSION < 776) byTag("minecraft:concrete_powder") else byTag("minecraft:concrete_powders"),
+        byTag("minecraft:concrete_powders"),
         ::ConcretePowderRule
     )
 

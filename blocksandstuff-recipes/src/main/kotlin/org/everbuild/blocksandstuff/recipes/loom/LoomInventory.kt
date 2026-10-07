@@ -148,7 +148,9 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
 
         val registry = MinecraftServer.getBannerPatternRegistry()
         val noItemRequired = registry.getTag(BannerPatternTags.NO_ITEM_REQUIRED) ?: return emptyList()
-        return registry.keys().filter { noItemRequired.contains(it) }
+        // Iterate the tag itself instead of the registry so the order matches the tag
+        // arrangement sent to the client, which the button ids are based on.
+        return noItemRequired.mapNotNull { registry.get(it) }
     }
 
     private fun patternItemPattern(): Holder<BannerPattern>? {

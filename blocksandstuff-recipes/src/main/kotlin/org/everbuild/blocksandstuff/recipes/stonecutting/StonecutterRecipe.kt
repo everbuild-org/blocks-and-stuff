@@ -9,6 +9,7 @@ import net.minestom.server.recipe.display.RecipeDisplay
 import net.minestom.server.recipe.display.SlotDisplay
 import org.everbuild.blocksandstuff.recipes.loader.RecipeModel
 import org.everbuild.blocksandstuff.recipes.serializer.ingredients.IngredientOrIngredients
+import java.util.concurrent.atomic.AtomicInteger
 
 class StonecutterRecipe(
     private val input: IngredientOrIngredients,
@@ -24,7 +25,7 @@ class StonecutterRecipe(
     )
 
     companion object {
-        private val NEXT_ORDER = java.util.concurrent.atomic.AtomicInteger()
+        private val NEXT_ORDER = AtomicInteger()
     }
 
     override fun matches(itemStack: ItemStack): Boolean = input.matches(itemStack)
