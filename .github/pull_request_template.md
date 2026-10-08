@@ -17,6 +17,7 @@ Describe what changed and why.
 - [ ] `blocksandstuff-common`
 - [ ] `blocksandstuff-blocks`
 - [ ] `blocksandstuff-fluids`
+- [ ] `blocksandstuff-recipes`
 - [ ] `testserver`
 - [ ] Build, publishing, or CI
 - [ ] Documentation
