@@ -20,6 +20,7 @@ object SerializationFactory {
         this.controller = itemController
 
         return Json {
+            ignoreUnknownKeys = true
             serializersModule = SerializersModule {
                 contextual(
                     ItemStackRecipeResult::class,
