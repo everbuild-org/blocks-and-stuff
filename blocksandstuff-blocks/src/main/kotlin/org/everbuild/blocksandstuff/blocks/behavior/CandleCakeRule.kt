@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import kotlin.collections.component1
 import kotlin.collections.component2
 import net.kyori.adventure.key.Key
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler

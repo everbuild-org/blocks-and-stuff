@@ -17,4 +17,5 @@ rootProject.name = "blocksandstuff"
 include("blocksandstuff-common")
 include("blocksandstuff-fluids")
 include("blocksandstuff-blocks")
+include("blocksandstuff-recipes")
 include("testserver")

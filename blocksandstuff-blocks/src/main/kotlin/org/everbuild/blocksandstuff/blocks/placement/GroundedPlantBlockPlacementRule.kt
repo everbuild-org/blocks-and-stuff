@@ -5,8 +5,10 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.registry.TagKey
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
-class GroundedPlantBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
-    private val dirtBlocks = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:dirt"))!!
+class GroundedPlantBlockPlacementRule(
+    block: Block,
+) : BlockPlacementRule(block) {
+    private val dirtBlocks = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:supports_vegetation"))!!
 
     override fun blockPlace(placementState: PlacementState): Block? {
         val blockBelow = placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0))
@@ -15,7 +17,6 @@ class GroundedPlantBlockPlacementRule(block: Block) : BlockPlacementRule(block) 
             return placementState.block
         }
         return null
-
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {
@@ -27,6 +28,5 @@ class GroundedPlantBlockPlacementRule(block: Block) : BlockPlacementRule(block) 
         }
 
         return updateState.currentBlock
-
     }
 }

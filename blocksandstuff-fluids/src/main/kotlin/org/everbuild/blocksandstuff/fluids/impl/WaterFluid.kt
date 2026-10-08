@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.fluids.impl
 
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.Instance
@@ -63,7 +62,7 @@ open class WaterFluid(
                 FluidBlockReplacementEvent(
                     instance,
                     if (isSource(otherBlock)) Block.OBSIDIAN else Block.COBBLESTONE,
-                    BlockVec(otherPoint),
+                    otherPoint.asBlockVec(),
                 )
 
             EventDispatcher.callCancellable(event) {

@@ -6,14 +6,15 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import net.minestom.server.registry.Registry
 import net.minestom.server.registry.RegistryTag
 import org.everbuild.blocksandstuff.blocks.placement.util.States
 
 abstract class AbstractConnectingBlockPlacementRule(block: Block) : BlockPlacementRule(block) {
-    protected val tagManager = Block.staticRegistry()
+    protected val tagManager: Registry<Block> = Block.staticRegistry()
     protected val leaves = tagManager.getTag(Key.key("minecraft:leaves"))!!
     protected val shulkerBoxes = tagManager.getTag(Key.key("minecraft:shulker_boxes"))!!
-    protected val cannotConnect = RegistryTag.direct(
+    protected val cannotConnect: RegistryTag<Block> = RegistryTag.direct(
         shulkerBoxes.toList()
                 + leaves.toList()
                 + listOf(Block.BARRIER, Block.CARVED_PUMPKIN, Block.JACK_O_LANTERN, Block.MELON, Block.PUMPKIN)

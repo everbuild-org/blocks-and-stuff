@@ -2,7 +2,6 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import kotlin.math.atan2
 import net.kyori.adventure.key.Key
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventDispatcher

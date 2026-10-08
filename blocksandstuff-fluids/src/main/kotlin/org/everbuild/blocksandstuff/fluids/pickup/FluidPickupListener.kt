@@ -6,6 +6,7 @@ import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.attribute.Attribute
+import net.minestom.server.event.Event
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.PlayerUseItemEvent
 import net.minestom.server.instance.block.Block
@@ -20,7 +21,7 @@ import org.everbuild.blocksandstuff.fluids.impl.LavaFluid
 import org.everbuild.blocksandstuff.fluids.impl.WaterFluid
 import org.everbuild.blocksandstuff.fluids.raycastForFluid
 
-fun getFluidPickupEventNode() = EventNode.all("fluid-pickup")
+fun getFluidPickupEventNode(): EventNode<Event> = EventNode.all("fluid-pickup")
     .addListener(PlayerUseItemEvent::class.java) { event: PlayerUseItemEvent ->
         // Nur MAIN_HAND behandeln, sonst läuft die Logik oft doppelt (MAIN_HAND + OFF_HAND Event).
         val player = event.player as Player

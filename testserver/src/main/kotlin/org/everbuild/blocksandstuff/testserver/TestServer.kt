@@ -1,31 +1,33 @@
 package org.everbuild.blocksandstuff.testserver
 
+import net.minestom.server.Auth
 import net.minestom.server.MinecraftServer
+import net.minestom.server.component.DataComponents
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.EquipmentSlot
 import net.minestom.server.entity.GameMode
-import net.minestom.server.event.instance.InstanceChunkLoadEvent
+import net.minestom.server.event.EventNode
 import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
+import net.minestom.server.event.player.PlayerGameModeRequestEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.network.player.ResolvableProfile
 import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
+import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
+import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
-import net.minestom.server.Auth
-import net.minestom.server.component.DataComponents
-import net.minestom.server.event.EventNode
-import net.minestom.server.event.player.PlayerGameModeRequestEvent
-import net.minestom.server.network.player.ResolvableProfile
 
 class TestServer(
     generateElements: Boolean,
@@ -43,22 +45,32 @@ class TestServer(
         BlockBehaviorRuleRegistrations.registerDefault()
         PlacedHandlerRegistration.registerDefault()
         BlockPickup.enable()
+        DroppedItemFactory.enablePlayerDrops()
+        PlayerInventoryStash.enableCursorReturn()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+
+        RecipeRegistrations {
+            fuelNamespaces += "everbuild"
+            recipeNamespaces += "everbuild"
+        }
+
         // MinestomFluids.enableAutoIngestion() -- use this. for perf debugging purposes, this is done manually
 
-        MinecraftServer
-            .getGlobalEventHandler()
-            .addListener(InstanceChunkLoadEvent::class.java) {
-                val before = System.nanoTime()
-                MinestomFluids.ingestChunk(it.instance, it.chunk)
-                val after = System.nanoTime()
-                ingestRb[ingestCount++ % ingestRb.size] = after - before
-                if (ingestCount >= 500) {
-                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
-                    ingestCount = 0
-                }
-            }
+        MsptTpsBar()
+
+//        MinecraftServer
+//            .getGlobalEventHandler()
+//            .addListener(InstanceChunkLoadEvent::class.java) {
+//                val before = System.nanoTime()
+//                MinestomFluids.ingestChunk(it.instance, it.chunk)
+//                val after = System.nanoTime()
+//                ingestRb[ingestCount++ % ingestRb.size] = after - before
+//                if (ingestCount >= 500) {
+//                    println("Average ingest time: ${ingestRb.average() / 1000000} ms")
+//                    ingestCount = 0
+//                }
+//            }
 
         if (generateElements) {
             val allPlacementRuleBlockKeys =
@@ -72,28 +84,32 @@ class TestServer(
         }
 
         MinecraftServer.getGlobalEventHandler().addChild(
-            EventNode.all("test-server-ux")
+            EventNode
+                .all("test-server-ux")
                 .addListener(AsyncPlayerConfigurationEvent::class.java) { event ->
                     event.spawningInstance = instance
                     event.player.respawnPoint = Pos(0.0, 65.0, 0.0)
                     event.player.gameMode = GameMode.SURVIVAL
 
-                    event.player.scheduler().buildTask {
-                        event.player.inventory.setEquipment(
-                            EquipmentSlot.MAIN_HAND,
-                            1,
-                            ItemStack.of(Material.PLAYER_HEAD)
-                                .with(
-                                    DataComponents.PROFILE,
-                                    ResolvableProfile(event.player.skin)
-                                )
-                        )
-                    }.delay(1.seconds.toJavaDuration()).schedule()
+                    event.player
+                        .scheduler()
+                        .buildTask {
+                            event.player.inventory.setEquipment(
+                                EquipmentSlot.MAIN_HAND,
+                                1,
+                                ItemStack
+                                    .of(Material.PLAYER_HEAD)
+                                    .with(
+                                        DataComponents.PROFILE,
+                                        ResolvableProfile(event.player.skin),
+                                    ),
+                            )
+                        }.delay(1.seconds.toJavaDuration())
+                        .schedule()
                     event.player.permissionLevel = 4
-                }
-                .addListener(PlayerGameModeRequestEvent::class.java) { event ->
+                }.addListener(PlayerGameModeRequestEvent::class.java) { event ->
                     event.player.gameMode = event.requestedGameMode
-                }
+                },
         )
 
         MinecraftServer.getCommandManager().register(DebugCommand())

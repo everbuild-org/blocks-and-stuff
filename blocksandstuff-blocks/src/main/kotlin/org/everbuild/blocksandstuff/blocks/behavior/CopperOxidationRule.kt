@@ -8,7 +8,6 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler
 import java.util.concurrent.ThreadLocalRandom
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.event.EventDispatcher
 import org.everbuild.blocksandstuff.blocks.event.CopperOxidationEvent
 import org.everbuild.blocksandstuff.blocks.randomticking.RandomTickHandler

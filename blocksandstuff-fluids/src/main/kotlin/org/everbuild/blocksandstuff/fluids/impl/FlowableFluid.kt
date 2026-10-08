@@ -2,7 +2,6 @@ package org.everbuild.blocksandstuff.fluids.impl
 
 import it.unimi.dsi.fastutil.shorts.Short2BooleanMap
 import it.unimi.dsi.fastutil.shorts.Short2BooleanOpenHashMap
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.Instance

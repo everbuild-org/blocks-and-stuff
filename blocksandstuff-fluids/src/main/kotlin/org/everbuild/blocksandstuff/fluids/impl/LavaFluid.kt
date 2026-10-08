@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.fluids.impl
 
 import net.minestom.server.MinecraftServer
-import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.Instance
@@ -71,7 +70,7 @@ open class LavaFluid(defaultBlock: Block, bucket: Material) : FlowableFluid(defa
             val event = FluidBlockReplacementEvent(
                 instance,
                 if (isDown) Block.STONE else Block.COBBLESTONE,
-                BlockVec(point)
+                point.asBlockVec()
             )
 
             EventDispatcher.callCancellable(event) {
