@@ -8,7 +8,9 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
-abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(block) {
+abstract class AbstractRailPlacementRule(
+    block: Block,
+) : BlockPlacementRule(block) {
     override fun blockUpdate(updateState: UpdateState): Block {
         if (!isSupported(updateState.instance, updateState.blockPosition)) {
             DroppedItemFactory.maybeDrop(updateState)
@@ -27,26 +29,36 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
             return FixedPlacementResult.DefinitiveBlock(placementState.block.withProperty("shape", RailShape.EAST_WEST.toString()))
         }
 
-        val lockedDirection = if (fixedSidesNorthSouth.isNotEmpty()) fixedSidesNorthSouth.first().toDirection()
-        else if (fixedSidesEastWest.isNotEmpty()) fixedSidesEastWest.first().toDirection()
-        else null
+        val lockedDirection =
+            if (fixedSidesNorthSouth.isNotEmpty()) {
+                fixedSidesNorthSouth.first().toDirection()
+            } else if (fixedSidesEastWest.isNotEmpty()) {
+                fixedSidesEastWest.first().toDirection()
+            } else {
+                null
+            }
 
         return FixedPlacementResult.LockedDirection(lockedDirection)
     }
 
-    protected fun isSupported(instance: Block.Getter, blockPos: Point): Boolean {
-        return instance
+    protected fun isSupported(
+        instance: Block.Getter,
+        blockPos: Point,
+    ): Boolean =
+        instance
             .getBlock(blockPos.sub(0.0, 1.0, 0.0))
-            .registry()!!
             .collisionShape()
             .isFaceFull(BlockFace.BOTTOM)
-    }
 
-    protected fun createSidedConnection(placementState: PlacementState, rotated: Direction, lockedDirection: Direction?): Block? {
+    protected fun createSidedConnection(
+        placementState: PlacementState,
+        rotated: Direction,
+        lockedDirection: Direction?,
+    ): Block? {
         getSideConnection(
             placementState.instance,
             placementState.placePosition,
-            BlockFace.fromDirection(rotated)
+            BlockFace.fromDirection(rotated),
         )?.let { shape ->
             val sidePos = placementState.placePosition.add(rotated.vec())
             val sideBlock = placementState.instance.getBlock(sidePos)
@@ -55,7 +67,7 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
                 RailShape.fromSides(listOfNotNull(lockedDirection, rotated).map { BlockFace.fromDirection(it) })
             (placementState.instance as Instance).setBlock(
                 sidePos,
-                sideBlock.withProperty("shape", shape.toString())
+                sideBlock.withProperty("shape", shape.toString()),
             )
             return placementState.block.withProperty("shape", ownShape.toString())
         }
@@ -63,7 +75,11 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
         return null
     }
 
-    protected fun getSideConnection(instance: Block.Getter, point: Point, side: BlockFace): RailShape? {
+    protected fun getSideConnection(
+        instance: Block.Getter,
+        point: Point,
+        side: BlockFace,
+    ): RailShape? {
         val sidePos = point.add(side.toDirection().vec())
         val sideBlock = instance.getBlock(sidePos)
         val shape = sideBlock.getProperty("shape")?.let { RailShape.fromString(it) } ?: return null
@@ -82,36 +98,45 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
         }
     }
 
-    protected fun getFixedSides(instance: Block.Getter, point: Point, shape: RailShape): List<BlockFace> {
-        return shape.sides.filter { side ->
+    protected fun getFixedSides(
+        instance: Block.Getter,
+        point: Point,
+        shape: RailShape,
+    ): List<BlockFace> =
+        shape.sides.filter { side ->
             val neighborBlock = instance.getBlock(point.add(side.toDirection().vec()))
             val neighborShape = neighborBlock.getProperty("shape")?.let { RailShape.fromString(it) }
             val directNeighbour = neighborShape != null && neighborShape.sides.contains(side.oppositeFace)
 
             val lowerNeighborBlock = instance.getBlock(point.add(side.toDirection().vec().sub(0.0, 1.0, 0.0)))
             val lowerNeighborShape = lowerNeighborBlock.getProperty("shape")?.let { RailShape.fromString(it) }
-            val lowerNeighbor = lowerNeighborShape != null && lowerNeighborShape.sides.contains(side.oppositeFace) && lowerNeighborShape.isAscending()
+
+            @Suppress("ktlint:standard:max-line-length")
+            val lowerNeighbor =
+                lowerNeighborShape != null && lowerNeighborShape.sides.contains(side.oppositeFace) && lowerNeighborShape.isAscending()
 
             directNeighbour || lowerNeighbor
         }
-    }
 
     protected fun connectVertical(
         shape: RailShape,
-        placementState: PlacementState
+        placementState: PlacementState,
     ): RailShape {
         var mutShape = shape
         for (face in mutShape.sides) {
             val position = placementState.placePosition.add(face.toDirection().vec().add(0.0, 1.0, 0.0))
             val upperShape =
-                placementState.instance.getBlock(position).getProperty("shape")?.let { RailShape.fromString(it) }
+                placementState.instance
+                    .getBlock(position)
+                    .getProperty("shape")
+                    ?.let { RailShape.fromString(it) }
                     ?: continue
             if (!upperShape.sides.any { mutShape.sides.contains(it) }) continue
             // vertical placement
             mutShape = RailShape.getAscendingTowards(face)
         }
 
-        //update verticals below
+        // update verticals below
         for (face in mutShape.sides) {
             val position = placementState.placePosition.add(face.toDirection().vec().add(0.0, -1.0, 0.0))
             val lowerBlock = placementState.instance.getBlock(position)
@@ -121,13 +146,15 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
             (placementState.instance as Instance).setBlock(
                 position,
                 lowerBlock
-                    .withProperty("shape", RailShape.getAscendingTowards(face.oppositeFace).toString())
+                    .withProperty("shape", RailShape.getAscendingTowards(face.oppositeFace).toString()),
             )
         }
         return mutShape
     }
 
-    enum class RailShape(val sides: List<BlockFace> = emptyList()) {
+    enum class RailShape(
+        val sides: List<BlockFace> = emptyList(),
+    ) {
         NORTH_SOUTH(BlockFace.NORTH, BlockFace.SOUTH),
         EAST_WEST(BlockFace.EAST, BlockFace.WEST),
         NORTH_EAST(BlockFace.NORTH, BlockFace.EAST),
@@ -142,51 +169,54 @@ abstract class AbstractRailPlacementRule(block: Block) : BlockPlacementRule(bloc
 
         constructor(vararg sides: BlockFace) : this(sides.toList())
 
-        override fun toString(): String {
-            return super.toString().lowercase()
-        }
+        override fun toString(): String = super.toString().lowercase()
 
-        fun isAscending(): Boolean = when (this) {
-            ASCENDING_EAST, ASCENDING_WEST, ASCENDING_NORTH, ASCENDING_SOUTH -> true
-            else -> false
-        }
+        fun isAscending(): Boolean =
+            when (this) {
+                ASCENDING_EAST, ASCENDING_WEST, ASCENDING_NORTH, ASCENDING_SOUTH -> true
+                else -> false
+            }
 
-        fun isStraight(): Boolean = when (this) {
-            NORTH_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST, ASCENDING_NORTH, ASCENDING_SOUTH -> true
-            else -> false
-        }
+        fun isStraight(): Boolean =
+            when (this) {
+                NORTH_SOUTH, EAST_WEST, ASCENDING_EAST, ASCENDING_WEST, ASCENDING_NORTH, ASCENDING_SOUTH -> true
+                else -> false
+            }
 
         companion object {
-            fun fromString(value: String): RailShape? {
-                return try {
+            fun fromString(value: String): RailShape? =
+                try {
                     valueOf(value.uppercase())
                 } catch (_: IllegalArgumentException) {
                     null
                 }
-            }
 
-            fun fromSides(requiredSides: List<BlockFace>): RailShape? {
-                return entries.filter { shape ->
-                    shape.sides.containsAll(requiredSides)
-                }.minByOrNull { it.ordinal }
-            }
+            fun fromSides(requiredSides: List<BlockFace>): RailShape? =
+                entries
+                    .filter { shape ->
+                        shape.sides.containsAll(requiredSides)
+                    }.minByOrNull { it.ordinal }
 
-            fun getAscendingTowards(face: BlockFace): RailShape {
-                return when (face) {
+            fun getAscendingTowards(face: BlockFace): RailShape =
+                when (face) {
                     BlockFace.NORTH -> ASCENDING_NORTH
                     BlockFace.SOUTH -> ASCENDING_SOUTH
                     BlockFace.EAST -> ASCENDING_EAST
                     BlockFace.WEST -> ASCENDING_WEST
                     else -> throw IllegalArgumentException("Only horizontal faces are supported")
                 }
-            }
         }
     }
 
     sealed interface FixedPlacementResult {
         @JvmInline
-        value class DefinitiveBlock(val block: Block) : FixedPlacementResult
+        value class DefinitiveBlock(
+            val block: Block,
+        ) : FixedPlacementResult
+
         @JvmInline
-        value class LockedDirection(val direction: Direction?) : FixedPlacementResult
+        value class LockedDirection(
+            val direction: Direction?,
+        ) : FixedPlacementResult
     }
 }
