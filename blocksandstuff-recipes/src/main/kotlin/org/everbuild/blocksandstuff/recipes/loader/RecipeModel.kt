@@ -20,7 +20,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:crafting_shaped")
     data class ShapedCraftingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         @SerialName("show_notification") val showNotification: Boolean = true,
         val pattern: List<String>,
@@ -32,7 +32,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:crafting_shapeless")
     data class ShapelessCraftingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         val ingredients: List<IngredientOrIngredients>,
         @Contextual val result: ItemStackRecipeResult
@@ -42,7 +42,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:crafting_transmute")
     data class TransmuteCraftingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         val input: IngredientOrIngredients,
         val material: IngredientOrIngredients,
@@ -72,7 +72,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:smelting")
     data class SmeltingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         @SerialName("cookingtime") val cookingTime: Int = 200,
         val ingredient: IngredientOrIngredients,
@@ -84,7 +84,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:blasting")
     data class BlastingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         @SerialName("cookingtime") val cookingTime: Int = 100,
         val ingredient: IngredientOrIngredients,
@@ -96,7 +96,7 @@ sealed class RecipeModel {
     @SerialName("minecraft:smoking")
     data class SmokingRecipe(
         override val type: String,
-        val category: String,
+        val category: String = "misc",
         val group: String? = null,
         @SerialName("cookingtime") val cookingTime: Int = 100,
         val ingredient: IngredientOrIngredients,

@@ -14,6 +14,8 @@ object RecipeLoader {
 
     private val logger = LoggerFactory.getLogger(RecipeLoader::class.java)
 
+    var showErrors: Boolean = System.getProperty("blocksandstuff.recipes.showErrors")?.toBoolean() ?: false
+
     private fun iterateResources(resourceDir: String, module: Class<*>, action: (Path) -> Unit) {
         val uri: URI = module.getResource(resourceDir)?.toURI() ?: error("Cannot find resources")
         val myPath: Path
@@ -33,6 +35,7 @@ object RecipeLoader {
 
     internal fun loadNamespacedRecipeData(namespace: String, module: Class<*>): List<RecipeModel> {
         val recipes = mutableListOf<RecipeModel>()
+        var failures = 0
 
         iterateResources("/data/$namespace/recipe/", module) { path ->
             if (!path.fileName.toString().endsWith(".json")) return@iterateResources
@@ -43,9 +46,20 @@ object RecipeLoader {
                 val value = SerializationFactory.json().decodeFromString<RecipeModel>(pathSpec.readText())
                 recipes.add(value)
             } catch (e: Exception) {
-                logger.warn("Could not load recipe ${path.fileName} from ${pathSpec.file}: ${e.message}")
+                failures++
+                if (showErrors) {
+                    logger.warn("Could not load recipe ${path.fileName} from ${pathSpec.file}: ${e.message}")
+                }
             }
         }
+
+        if (failures > 0 && !showErrors) {
+            logger.warn(
+                "Could not load $failures recipes from namespace '$namespace'. " +
+                    "Set the system property 'blocksandstuff.recipes.showErrors=true' for details."
+            )
+        }
+
         return recipes
     }
 

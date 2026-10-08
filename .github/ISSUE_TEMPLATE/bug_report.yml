@@ -32,6 +32,7 @@ body:
         - blocksandstuff-blocks
         - blocksandstuff-common
         - blocksandstuff-fluids
+        - blocksandstuff-recipes
         - testserver
         - build or publishing
         - documentation
