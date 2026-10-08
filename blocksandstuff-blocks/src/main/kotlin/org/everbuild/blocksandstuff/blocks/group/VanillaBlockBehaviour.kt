@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.group
 
-import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.InventoryType
@@ -14,7 +13,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.CRAFTING_TABLE,
             InventoryType.CRAFTING,
-            "container.crafting"
+            "container.crafting",
+            returnSlots = (1..9).toList(),
         )
     )
 
@@ -23,7 +23,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.ANVIL,
             InventoryType.ANVIL,
-            "container.repair"
+            "container.repair",
+            returnSlots = listOf(0, 1),
         )
     )
 
@@ -32,7 +33,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.BREWING_STAND,
             InventoryType.BREWING_STAND,
-            "container.brewing"
+            "container.brewing",
+            returnSlots = listOf(0, 1, 2, 3, 4),
         )
     )
 
@@ -41,7 +43,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.LOOM,
             InventoryType.LOOM,
-            "container.loom"
+            "container.loom",
+            returnSlots = listOf(0, 1, 2),
         )
     )
 
@@ -50,7 +53,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.GRINDSTONE,
             InventoryType.GRINDSTONE,
-            "container.grindstone"
+            "container.grindstone",
+            returnSlots = listOf(0, 1),
         )
     )
 
@@ -59,7 +63,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.SMITHING_TABLE,
             InventoryType.SMITHING,
-            "container.upgrade"
+            "container.upgrade",
+            returnSlots = listOf(0, 1, 2),
         )
     )
 
@@ -68,7 +73,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.CARTOGRAPHY_TABLE,
             InventoryType.CARTOGRAPHY,
-            "container.cartography_table"
+            "container.cartography_table",
+            returnSlots = listOf(0, 1),
         )
     )
 
@@ -77,7 +83,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.STONECUTTER,
             InventoryType.STONE_CUTTER,
-            "container.stonecutter"
+            "container.stonecutter",
+            returnSlots = listOf(0),
         )
     )
 
@@ -86,7 +93,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         GenericWorkStationRule(
             Block.ENCHANTING_TABLE,
             InventoryType.ENCHANTMENT,
-            "container.enchant"
+            "container.enchant",
+            returnSlots = listOf(0, 1),
         )
     )
 
@@ -134,8 +142,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
     )
 
     val CONCRETE_POWDER = group(
-        //Inline this when minestom 26.2 is mainline
-        if (MinecraftServer.PROTOCOL_VERSION < 776) byTag("minecraft:concrete_powder") else byTag("minecraft:concrete_powders"),
+        byTag("minecraft:concrete_powders"),
         ::ConcretePowderRule
     )
 

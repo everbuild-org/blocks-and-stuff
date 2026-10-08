@@ -471,9 +471,8 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val GROUNDED_PLANTS =
         group(
             all(
-                byTag("minecraft:saplings"),
                 byTag("minecraft:small_flowers"),
-                byBlock(Block.SWEET_BERRY_BUSH),
+                byTag("minecraft:saplings"),
             ),
             ::GroundedPlantBlockPlacementRule,
         )
