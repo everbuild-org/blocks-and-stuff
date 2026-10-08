@@ -1,0 +1,85 @@
+name: Bug report
+description: Report incorrect behavior, crashes, or regressions.
+title: "fix: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please include enough detail for maintainers to reproduce the behavior.
+  - type: input
+    id: library-version
+    attributes:
+      label: Blocks and Stuff version
+      description: Include the exact version or commit SHA.
+      placeholder: "1.10.2-SNAPSHOT"
+    validations:
+      required: true
+  - type: input
+    id: minestom-version
+    attributes:
+      label: Minestom version
+      description: Include the exact Minestom version or commit SHA.
+      placeholder: "2025.08.14-1.21.8"
+    validations:
+      required: true
+  - type: dropdown
+    id: affected-module
+    attributes:
+      label: Affected module
+      options:
+        - blocksandstuff-blocks
+        - blocksandstuff-common
+        - blocksandstuff-fluids
+        - testserver
+        - build or publishing
+        - documentation
+        - unknown
+    validations:
+      required: true
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current behavior
+      description: What happened? Include stack traces, logs, screenshots, or incorrect block/fluid states when useful.
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest reproduction you can.
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include Java version, Kotlin/Gradle details when relevant, server setup, and operating system.
+      placeholder: |
+        Java:
+        OS:
+        Gradle:
+        Server setup:
+    validations:
+      required: false
+  - type: textarea
+    id: ai-disclosure
+    attributes:
+      label: AI usage disclosure
+      description: If AI helped create this report or reproduction, briefly describe how. Write "None" otherwise.
+      placeholder: "None"
+    validations:
+      required: true

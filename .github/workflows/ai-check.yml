@@ -1,0 +1,26 @@
+name: AI Review Check
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  check-ai-unreviewed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for @AI_UNREVIEWED markers
+        run: |
+          if grep -rl "@AI_UNREVIEWED" . \
+            --exclude="AGENTS.md" \
+            --exclude="CONTRIBUTING.md" \
+            --exclude-dir=".github" \
+            --exclude-dir=".git" \
+            --exclude-dir="target"; then
+            echo "Error: Found files containing @AI_UNREVIEWED"
+            exit 1
+          else
+            echo "No @AI_UNREVIEWED tags found."
+          fi

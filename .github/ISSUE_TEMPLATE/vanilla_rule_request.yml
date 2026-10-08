@@ -1,0 +1,73 @@
+name: Vanilla block or fluid rule
+description: Request or correct vanilla-like placement, behavior, ticking, or fluid logic.
+title: "feat: add vanilla rule for "
+labels:
+  - enhancement
+  - vanilla parity
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for missing or incorrect vanilla block and fluid behavior.
+  - type: input
+    id: minecraft-version
+    attributes:
+      label: Minecraft behavior version
+      description: Which Minecraft version should this match?
+      placeholder: "1.21.8"
+    validations:
+      required: true
+  - type: dropdown
+    id: rule-kind
+    attributes:
+      label: Rule kind
+      options:
+        - block placement
+        - block interaction or behavior
+        - random ticking
+        - fluid placement or flow
+        - fluid pickup or replacement
+        - block group or tag support
+        - other
+    validations:
+      required: true
+  - type: input
+    id: blocks-or-fluids
+    attributes:
+      label: Blocks or fluids
+      description: List the affected block or fluid names.
+      placeholder: "oak_door, iron_door, water"
+    validations:
+      required: true
+  - type: textarea
+    id: vanilla-behavior
+    attributes:
+      label: Vanilla behavior
+      description: Describe the vanilla behavior and include references, commands, screenshots, or videos when possible.
+    validations:
+      required: true
+  - type: textarea
+    id: current-library-behavior
+    attributes:
+      label: Current library behavior
+      description: What does Blocks and Stuff currently do?
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: List the observable cases that should pass when this is implemented.
+      value: |
+        - 
+        - 
+    validations:
+      required: true
+  - type: textarea
+    id: ai-disclosure
+    attributes:
+      label: AI usage disclosure
+      description: If AI helped create this request, briefly describe how. Write "None" otherwise.
+      placeholder: "None"
+    validations:
+      required: true
