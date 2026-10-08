@@ -4,12 +4,12 @@
 
 ## Statistics
  - Total blocks with state: 793
- - Supported blocks: 793
- - Unsupported blocks: 0
- - Implementation progress: 100% (7 blocks = 1%)
+ - Supported blocks: 792
+ - Unsupported blocks: 1
+ - Implementation progress: 99% (7 blocks = 1%)
 
 ## Unsupported Blocks
-
+- [ ] minecraft:sweet_berry_bush
 
 ## Supported Blocks
 - [x] minecraft:acacia_button
@@ -734,7 +734,6 @@
 - [x] minecraft:sulfur_stairs
 - [x] minecraft:sulfur_wall
 - [x] minecraft:sunflower
-- [x] minecraft:sweet_berry_bush
 - [x] minecraft:tall_grass
 - [x] minecraft:tall_seagrass
 - [x] minecraft:torch
