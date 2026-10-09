@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.recipes.stonecutting
 
-// <@AI_UNREVIEWED>
 import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.entity.Player
@@ -83,4 +82,3 @@ class StonecutterDisplayTest {
         assertEquals(Material.OAK_STAIRS, inventory.getItemStack(inventory.outputSlot).material())
     }
 }
-// </<@AI_UNREVIEWED>

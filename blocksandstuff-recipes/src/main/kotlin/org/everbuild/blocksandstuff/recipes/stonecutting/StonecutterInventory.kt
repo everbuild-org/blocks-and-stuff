@@ -12,9 +12,7 @@ import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
-// <@AI_UNREVIEWED>
 import net.minestom.server.recipe.display.SlotDisplay
-// </<@AI_UNREVIEWED>
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.api.StashController
@@ -96,11 +94,9 @@ class StonecutterInventory(
                 .recipes
                 .filterIsInstance<StonecuttingRecipe>()
                 .filter { it.matches(inputItem) }
-                // <@AI_UNREVIEWED>
                 // Minestom only forwards Item/Tag ingredient displays to the client; dropping the
                 // others here keeps our index space identical to the client's recipe list.
                 .filter { it.ingredientDisplay().let { d -> d is SlotDisplay.Item || d is SlotDisplay.Tag } }
-                // </<@AI_UNREVIEWED>
                 .sortedBy { it.order }
 
         return recipes.getOrNull(buttonID)
