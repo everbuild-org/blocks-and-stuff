@@ -7,10 +7,10 @@
   },
   "pattern": [
     "XX",
-    "X#",
+    " #",
     " #"
   ],
   "result": {
-    "id": "minecraft:wooden_axe"
+    "id": "minecraft:wooden_hoe"
   }
 }

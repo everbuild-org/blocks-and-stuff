@@ -30,6 +30,8 @@ class StonecutterRecipe(
 
     override fun matches(itemStack: ItemStack): Boolean = input.matches(itemStack)
 
+    override fun ingredientDisplay(): SlotDisplay = input.asSlotDisplay()
+
     override fun itemProperties(): MutableMap<RecipeProperty, MutableList<Material>> {
         return mutableMapOf()
     }
