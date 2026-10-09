@@ -9,7 +9,10 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":blocksandstuff-common"))
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(projects.blocksandstuffCommon)
+    implementation(libs.twaddle.common.blocks)
+    api(libs.twaddle.stackedBehaviour)
 
     compileOnly(libs.minestom)
     compileOnly(libs.slf4j.api)
@@ -21,7 +24,6 @@ dependencies {
     testImplementation(libs.minestom)
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(kotlin("test"))
-    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks.test {

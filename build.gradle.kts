@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "2.4.20"
+    kotlin("jvm") version "2.4.21"
 }
 
 group = "org.everbuild.blocksandstuff"
@@ -10,6 +10,7 @@ allprojects {
     version = rootProject.version
 
     repositories {
+        mavenLocal()
         mavenCentral()
         maven(url = "https://central.sonatype.com/repository/maven-snapshots/") {
             content {

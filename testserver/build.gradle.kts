@@ -12,9 +12,9 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":blocksandstuff-blocks"))
-    implementation(project(":blocksandstuff-fluids"))
-    implementation(project(":blocksandstuff-recipes"))
+    implementation(projects.blocksandstuffBlocks)
+    implementation(projects.blocksandstuffFluids)
+    implementation(projects.blocksandstuffRecipes)
 
     implementation(libs.minestom)
     implementation(libs.tinylog.api)

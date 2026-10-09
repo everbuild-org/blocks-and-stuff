@@ -11,6 +11,7 @@ import net.minestom.server.event.player.AsyncPlayerConfigurationEvent
 import net.minestom.server.event.player.PlayerGameModeRequestEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.LightingChunk
+import net.minestom.server.instance.block.Block
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.network.player.ResolvableProfile
@@ -18,12 +19,15 @@ import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
+import org.everbuild.blocksandstuff.blocks.OpenTrapdoor
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
+import org.everbuild.blocksandstuff.blocks.VanillaStackedHandlers
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
+import org.everbuild.twaddle.stacked_block_behaviour.ruleset.BlockRuleset
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
@@ -40,6 +44,14 @@ class TestServer(
         val instance: Instance = MinecraftServer.getInstanceManager().createInstanceContainer()
         instance.chunkSupplier = ChunkSupplier { inst, x, z -> LightingChunk(inst, x, z) }
         instance.setGenerator(ExampleGenerator())
+
+        BlockRuleset.applyRulesAsDefault(
+            VanillaStackedHandlers.ruleset.modify {
+                blocks(Block.COPPER_TRAPDOOR) {
+                    interact.remove(OpenTrapdoor)
+                }
+            }
+        )
 
         BlockPlacementRuleRegistrations.registerDefault()
         BlockBehaviorRuleRegistrations.registerDefault()

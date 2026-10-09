@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":blocksandstuff-common"))
+    implementation(projects.blocksandstuffCommon)
 
     compileOnly(libs.minestom)
     compileOnly(libs.jetbrains.annotations)
