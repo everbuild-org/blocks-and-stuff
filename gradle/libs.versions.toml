@@ -12,7 +12,7 @@ kotlinx-serialization = "1.11.0"
 jib = "3.5.4"
 commons-compress = "1.28.0"
 commons-codec = "1.22.1"
-twaddle = "0.1.0"
+twaddle = "0.1.1"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }

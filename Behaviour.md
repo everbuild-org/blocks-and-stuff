@@ -355,7 +355,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 2. **Werkzeug-Mapping** (Beispiel D) – ersetzt `StrippingBehaviorRule` und deckt Kupfer-Wax,
    Schere, Schaufel, Flint ab.
 3. **Türen/Trapdoors/Gates** konsolidieren (Beispiel C) inkl. Metall-Varianten + Redstone
-   → ersetzt `DoorOpenRule`, `WoodenTrapDoorOpenRule`, `GateOpenRule`.
+   → ersetzt `DoorRule`, `WoodenTrapDoorOpenRule`, `GateOpenRule`.
 4. **Buttons/Levers/Plates** (Beispiel A).
 5. **Bestands-Fixes**: `SignEditRule` Rückweg (Text speichern), `SweetBerryBushRule`
    `null` bei unverändert.
@@ -387,7 +387,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 ### Bestand migrieren / korrigieren
 - [x] StrippingRule.kt
 - [x] WaxingRule.kt
-- [x] Türen (Holz) → gemeinsames Toggle-Behaviour
+- [ ] Türen (Holz) → gemeinsames Toggle-Behaviour
 - [x] Trapdoors → gemeinsames Toggle-Behaviour
 - [x] Fence Gates → gemeinsames Toggle-Behaviour
 - [x] SignEditRule Rückweg (Text speichern)

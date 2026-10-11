@@ -47,6 +47,17 @@ fun toolRule(
         RuleResult.Consume
     }
 
+fun playSoundFor(
+    ctx: InteractionActivityContext,
+    event: SoundEvent,
+) {
+    ctx.instance.playSoundExcept(
+        ctx.player,
+        Sound.sound(event, Sound.Source.BLOCK, 1.0f, 1.0f),
+        ctx.blockPosition,
+    )
+}
+
 private fun damageTool(
     player: Player,
     tool: ItemStack,

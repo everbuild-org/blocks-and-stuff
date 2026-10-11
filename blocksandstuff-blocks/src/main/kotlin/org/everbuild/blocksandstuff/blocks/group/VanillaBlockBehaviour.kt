@@ -110,12 +110,6 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             ),
         )
 
-    val TRAPDOOR =
-        group(
-            byTag("minecraft:wooden_trapdoors"),
-            ::WoodenTrapDoorOpenRule,
-        )
-
     val FENCE_GATE =
         group(
             byTag("minecraft:fence_gates"),
@@ -126,15 +120,6 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         group(
             byList(CopperOxidationRule.getOxidizableBlocks()),
             ::CopperOxidationRule,
-        )
-
-    val WOODEN_DOORS =
-        group(
-            byExclusion(
-                byTag("minecraft:doors"),
-                byBlock(Block.IRON_DOOR),
-            ),
-            ::DoorOpenRule,
         )
 
     val SIGNS =
@@ -194,6 +179,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         BlockRuleset.build {
             addStripping()
             addWaxing()
+            addDoors()
+            addTrapdoors()
         }
 
     override fun createGroup(

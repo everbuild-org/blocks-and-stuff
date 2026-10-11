@@ -2,7 +2,9 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
+import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.blocks.behavior.tool.ToolTransform
+import org.everbuild.blocksandstuff.blocks.behavior.tool.playSoundFor
 import org.everbuild.blocksandstuff.blocks.behavior.tool.toolRule
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -78,14 +80,17 @@ private val waxingTransforms: List<ToolTransform> =
                 Material.HONEYCOMB,
                 it,
                 preserveProperties = true,
+                extra = { ctx, _ -> playSoundFor(ctx, SoundEvent.ITEM_HONEYCOMB_WAX_ON) },
             )
         }
     }
 
 val WAXING_RULE: Rule<InteractionActivityContext> = toolRule("blocksandstuff:waxing", waxingTransforms)
 
+internal fun isWaxableCopper(block: Block): Boolean = block in waxableCopper
+
 fun BlockRulesetEditor.addWaxing() {
     waxableCopper.forEach { block ->
-        addBlock(block) { interact.append { install(WAXING_RULE) } }
+        blocks(block) { interact.append { install(WAXING_RULE) } }
     }
 }
