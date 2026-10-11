@@ -1,3 +1,5 @@
+@file:Suppress("ktlint:standard:no-wildcard-imports")
+
 package org.everbuild.blocksandstuff.blocks.group
 
 import net.minestom.server.instance.block.Block
@@ -6,179 +8,204 @@ import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
 
 object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHandler>() {
-    val CRAFTING_TABLE = group(
-        byBlock(Block.CRAFTING_TABLE),
-        GenericWorkStationRule(
-            Block.CRAFTING_TABLE,
-            InventoryType.CRAFTING,
-            "container.crafting",
-            returnSlots = (1..9).toList(),
+    val CRAFTING_TABLE =
+        group(
+            byBlock(Block.CRAFTING_TABLE),
+            GenericWorkStationRule(
+                Block.CRAFTING_TABLE,
+                InventoryType.CRAFTING,
+                "container.crafting",
+                returnSlots = (1..9).toList(),
+            ),
         )
-    )
 
-    val ANVIL = group(
-        byBlock(Block.ANVIL),
-        GenericWorkStationRule(
-            Block.ANVIL,
-            InventoryType.ANVIL,
-            "container.repair",
-            returnSlots = listOf(0, 1),
+    val ANVIL =
+        group(
+            byBlock(Block.ANVIL),
+            GenericWorkStationRule(
+                Block.ANVIL,
+                InventoryType.ANVIL,
+                "container.repair",
+                returnSlots = listOf(0, 1),
+            ),
         )
-    )
 
-    val BREWING_STAND = group(
-        byBlock(Block.BREWING_STAND),
-        GenericWorkStationRule(
-            Block.BREWING_STAND,
-            InventoryType.BREWING_STAND,
-            "container.brewing",
-            returnSlots = listOf(0, 1, 2, 3, 4),
+    val BREWING_STAND =
+        group(
+            byBlock(Block.BREWING_STAND),
+            GenericWorkStationRule(
+                Block.BREWING_STAND,
+                InventoryType.BREWING_STAND,
+                "container.brewing",
+                returnSlots = listOf(0, 1, 2, 3, 4),
+            ),
         )
-    )
 
-    val LOOM = group(
-        byBlock(Block.LOOM),
-        GenericWorkStationRule(
-            Block.LOOM,
-            InventoryType.LOOM,
-            "container.loom",
-            returnSlots = listOf(0, 1, 2),
+    val LOOM =
+        group(
+            byBlock(Block.LOOM),
+            GenericWorkStationRule(
+                Block.LOOM,
+                InventoryType.LOOM,
+                "container.loom",
+                returnSlots = listOf(0, 1, 2),
+            ),
         )
-    )
 
-    val GRINDSTONE = group(
-        byBlock(Block.GRINDSTONE),
-        GenericWorkStationRule(
-            Block.GRINDSTONE,
-            InventoryType.GRINDSTONE,
-            "container.grindstone",
-            returnSlots = listOf(0, 1),
+    val GRINDSTONE =
+        group(
+            byBlock(Block.GRINDSTONE),
+            GenericWorkStationRule(
+                Block.GRINDSTONE,
+                InventoryType.GRINDSTONE,
+                "container.grindstone",
+                returnSlots = listOf(0, 1),
+            ),
         )
-    )
 
-    val SMITHING_TABLE = group(
-        byBlock(Block.SMITHING_TABLE),
-        GenericWorkStationRule(
-            Block.SMITHING_TABLE,
-            InventoryType.SMITHING,
-            "container.upgrade",
-            returnSlots = listOf(0, 1, 2),
+    val SMITHING_TABLE =
+        group(
+            byBlock(Block.SMITHING_TABLE),
+            GenericWorkStationRule(
+                Block.SMITHING_TABLE,
+                InventoryType.SMITHING,
+                "container.upgrade",
+                returnSlots = listOf(0, 1, 2),
+            ),
         )
-    )
 
-    val CARTOGRAPHY_TABLE = group(
-        byBlock(Block.CARTOGRAPHY_TABLE),
-        GenericWorkStationRule(
-            Block.CARTOGRAPHY_TABLE,
-            InventoryType.CARTOGRAPHY,
-            "container.cartography_table",
-            returnSlots = listOf(0, 1),
+    val CARTOGRAPHY_TABLE =
+        group(
+            byBlock(Block.CARTOGRAPHY_TABLE),
+            GenericWorkStationRule(
+                Block.CARTOGRAPHY_TABLE,
+                InventoryType.CARTOGRAPHY,
+                "container.cartography_table",
+                returnSlots = listOf(0, 1),
+            ),
         )
-    )
 
-    val STONECUTTER = group(
-        byBlock(Block.STONECUTTER),
-        GenericWorkStationRule(
-            Block.STONECUTTER,
-            InventoryType.STONE_CUTTER,
-            "container.stonecutter",
-            returnSlots = listOf(0),
+    val STONECUTTER =
+        group(
+            byBlock(Block.STONECUTTER),
+            GenericWorkStationRule(
+                Block.STONECUTTER,
+                InventoryType.STONE_CUTTER,
+                "container.stonecutter",
+                returnSlots = listOf(0),
+            ),
         )
-    )
 
-    val ENCHANTING_TABLE = group(
-        byBlock(Block.ENCHANTING_TABLE),
-        GenericWorkStationRule(
-            Block.ENCHANTING_TABLE,
-            InventoryType.ENCHANTMENT,
-            "container.enchant",
-            returnSlots = listOf(0, 1),
+    val ENCHANTING_TABLE =
+        group(
+            byBlock(Block.ENCHANTING_TABLE),
+            GenericWorkStationRule(
+                Block.ENCHANTING_TABLE,
+                InventoryType.ENCHANTMENT,
+                "container.enchant",
+                returnSlots = listOf(0, 1),
+            ),
         )
-    )
 
-    val TRAPDOOR = group(
-        byTag("minecraft:wooden_trapdoors"),
-        ::WoodenTrapDoorOpenRule
-    )
+    val TRAPDOOR =
+        group(
+            byTag("minecraft:wooden_trapdoors"),
+            ::WoodenTrapDoorOpenRule,
+        )
 
-    val FENCE_GATE = group(
-        byTag("minecraft:fence_gates"),
-        ::GateOpenRule
-    )
+    val FENCE_GATE =
+        group(
+            byTag("minecraft:fence_gates"),
+            ::GateOpenRule,
+        )
 
-    val COPPER = group(
-        byList(CopperOxidationRule.getOxidizableBlocks()),
-        ::CopperOxidationRule
-    )
+    val COPPER =
+        group(
+            byList(CopperOxidationRule.getOxidizableBlocks()),
+            ::CopperOxidationRule,
+        )
 
-    val WOODEN_DOORS = group(
-        byExclusion(
-            byTag("minecraft:doors"),
-            byBlock(Block.IRON_DOOR)
-        ),
-        ::DoorOpenRule
-    )
+    val WOODEN_DOORS =
+        group(
+            byExclusion(
+                byTag("minecraft:doors"),
+                byBlock(Block.IRON_DOOR),
+            ),
+            ::DoorOpenRule,
+        )
 
-    val SIGNS = group(
-        byTag("minecraft:all_signs"),
-        ::SignEditRule
-    )
+    val SIGNS =
+        group(
+            byTag("minecraft:all_signs"),
+            ::SignEditRule,
+        )
 
-    val CAKE = group(
-        byBlock(Block.CAKE),
-        ::CakeEatRule
-    )
+    val CAKE =
+        group(
+            byBlock(Block.CAKE),
+            ::CakeEatRule,
+        )
 
-    val CANDLE_CAKE = group(
-        byTag("minecraft:candle_cakes"),
-        ::CandleCakeRule
-    )
+    val CANDLE_CAKE =
+        group(
+            byTag("minecraft:candle_cakes"),
+            ::CandleCakeRule,
+        )
 
-    val STRIPPABLE_WOOD = group(
-        byList(StrippingBehaviorRule.getStrippableBlocks()),
-        ::StrippingBehaviorRule
-    )
+    val CONCRETE_POWDER =
+        group(
+            byTag("minecraft:concrete_powders"),
+            ::ConcretePowderRule,
+        )
 
-    val CONCRETE_POWDER = group(
-        byTag("minecraft:concrete_powders"),
-        ::ConcretePowderRule
-    )
+    val FARMLAND =
+        group(
+            byBlock(Block.FARMLAND),
+            ::FarmlandRule,
+        )
 
-    val FARMLAND = group(
-        byBlock(Block.FARMLAND),
-        ::FarmlandRule
-    )
+    val CORAL =
+        group(
+            all(
+                byTag("minecraft:corals"),
+                byTag("minecraft:coral_plants"),
+                byTag("minecraft:coral_blocks"),
+                byTag("minecraft:wall_corals"),
+            ),
+            ::CoralRule,
+        )
 
-    val CORAL = group(
-        all(
-            byTag("minecraft:corals"),
-            byTag("minecraft:coral_plants"),
-            byTag("minecraft:coral_blocks"),
-            byTag("minecraft:wall_corals"),
-        ),
-        ::CoralRule
-    )
+    val SWEET_BERRY_BUSH =
+        group(
+            byBlock(Block.SWEET_BERRY_BUSH),
+            ::SweetBerryBushRule,
+        )
 
-    val SWEET_BERRY_BUSH = group(
-        byBlock(Block.SWEET_BERRY_BUSH),
-        ::SweetBerryBushRule
-    )
+    val SKULL =
+        group(
+            byBlock(Block.PLAYER_HEAD),
+            ::SkullDisplayRule,
+        )
 
-    val SKULL = group(
-        byBlock(Block.PLAYER_HEAD),
-        ::SkullDisplayRule
-    )
+    val RULESET: BlockRuleset =
+        BlockRuleset.build {
+            addStripping()
+            addWaxing()
+        }
 
     override fun createGroup(
         blockGroup: BlockGroup,
-        valueFunction: (Block) -> BlockHandler
+        valueFunction: (Block) -> BlockHandler,
     ): BehaviourGroup = BehaviourGroup(blockGroup) { valueFunction(it) }
 
-    fun group(blockGroup: BlockGroup, handler: BlockHandler): BehaviourGroup {
-        return BehaviourGroup(blockGroup) { handler }.also {
+    fun group(
+        blockGroup: BlockGroup,
+        handler: BlockHandler,
+    ): BehaviourGroup =
+        BehaviourGroup(blockGroup) { handler }.also {
             ALL.add(it)
         }
-    }
 }

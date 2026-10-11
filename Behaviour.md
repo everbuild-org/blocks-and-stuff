@@ -372,3 +372,108 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 > **Twaddle-Selektion läuft über Block-IDs** – ein Tag wird beim Ruleset-Bau zu einer
 > Block-Liste aufgelöst (`addBlock` je Block), nicht als Tag übergeben.
 
+---
+
+## Checkliste (Abhaken)
+
+> Automatisch generiert und abgehakt durch `kotlin blocksandstuff_util.main.kts` (Block-Keys als Detektor).
+> Den Bereich zwischen den Markern nicht manuell bearbeiten.
+
+<!-- BEHAVIOUR_CHECKLIST_START -->
+### Phase 0/1 – Grundgerüst
+- [ ] Twaddle-Dependencies in `blocksandstuff-blocks/build.gradle.kts`
+- [ ] Eine Regel end-to-end verifizieren (Trapdoor)
+
+### Bestand migrieren / korrigieren
+- [ ] `StrippingRule.kt` (ersetzt `StrippingBehaviorRule`)
+- [ ] `WaxingRule.kt`
+- [ ] `CarvingRule.kt`
+- [ ] `ExtinguishingRule.kt` (Lagerfeuer aus)
+- [ ] Türen (Holz) → gemeinsames Toggle-Behaviour
+- [ ] Trapdoors (Holz) → gemeinsames Toggle-Behaviour
+- [ ] Fence Gates → gemeinsames Toggle-Behaviour
+- [ ] `SignEditRule` Rückweg (Text speichern)
+- [ ] `SweetBerryBushRule` → `null` bei unverändert
+- [ ] Copper-Oxidation Blockliste erweitern (bars/chains/lanterns/doors/trapdoors/golem/lightning_rod)
+- [ ] Random-Tick auf `twaddle-random-ticking`: Farmland, Coral, SweetBerry, Copper, Concrete
+- [ ] Eigenes `randomticking/`-Paket entfernen
+- [ ] Workstations (zuletzt, transient)
+
+### Interaktions-/Click-Toggles
+- [ ] Button (`minecraft:buttons`, inkl. `_wooden_`/`_stone_`)
+- [ ] Lever (`minecraft:levers`)
+- [ ] Druckplatten (`minecraft:pressure_plates`, `_wooden_`/`_stone_`)
+- [ ] Kerze (`minecraft:candles`, `candle_cakes`)
+- [ ] Kupfer-Bulb (`*_copper_bulb`)
+- [ ] Redstone-Lampe (`minecraft:redstone_lamp`)
+- [ ] Lagerfeuer (`minecraft:campfire`, `soul_campfire`)
+- [ ] Glocke (`minecraft:bell`)
+- [ ] Notenblock (`minecraft:note_block`)
+
+### Türen / Trapdoors / Gates (Redstone + Metall)
+- [ ] Eisentür (`minecraft:iron_door`, nur Redstone)
+- [ ] Kupfertüren (`minecraft:copper_doors`)
+- [ ] Eisen-/Kupfer-Trapdoors (`minecraft:trapdoors` minus wooden)
+- [ ] Fence Gates per Redstone
+
+### Redstone-Komponenten
+- [ ] Redstone-Wire (`minecraft:redstone_wire`)
+- [ ] Redstone-Torch (`minecraft:redstone_torch`, `_wall_torch`)
+- [ ] Repeater (`minecraft:repeater`)
+- [ ] Comparator (`minecraft:comparator`)
+- [ ] Observer (`minecraft:observer`)
+- [ ] Tageslichtsensor (`minecraft:daylight_detector`)
+- [ ] Zielblock (`minecraft:target`)
+- [ ] Blitzableiter (`minecraft:lightning_rod`)
+- [ ] Sculk-Sensor (`minecraft:sculk_sensor`, `calibrated_sculk_sensor`)
+- [ ] Tripwire + Haken (`minecraft:tripwire`, `tripwire_hook`)
+- [ ] Schienen (powered/activator/detector rail)
+- [ ] Notenblock-Ausgang (Redstone) *(falls nicht über Interact gelöst)*
+
+### Container & BlockEntity
+- [ ] Chest / Trapped Chest / Ender Chest
+- [ ] Barrel
+- [ ] Shulker Box
+- [ ] Ofen / Blast Furnace / Smoker (Recipes)
+- [ ] Dispenser / Dropper
+- [ ] Hopper (Twaddle `inventory-transfer`)
+- [ ] Crafter
+- [ ] Lectern
+- [ ] Jukebox
+- [ ] Flower Pot
+- [ ] Composter
+- [ ] Bee Nest / Beehive
+- [ ] Lagerfeuer (Cooking) *(falls nicht über Interact gelöst)*
+- [ ] Respawn Anker
+- [ ] Beacon / Conduit
+- [ ] Decorated Pot
+- [ ] Lodestone
+
+### Betten
+- [ ] Beds (`minecraft:beds`, schlafen/Spawn)
+
+### Random-Tick: Wachstum & Ausbreitung
+- [ ] Crops (`minecraft:crops`, `nether_wart`, `torchflower_crop`, `pitcher_crop`) – generische `age`-Regel
+- [ ] Stems (`pumpkin_stem`, `melon_stem`)
+- [ ] Saplings (`minecraft:saplings`, `mangrove_propagule`)
+- [ ] Sugar Cane / Cactus / Bamboo
+- [ ] Kelp / Seagrass
+- [ ] Chorus Flower
+- [ ] Berries / Cave Vines / Twisting & Weeping Vines
+- [ ] Pointed Dripstone
+- [ ] Amethyst Buds/Clusters
+- [ ] Grass/Mycelium/Podzol/Nylium – Ausbreitung
+- [ ] Leaves – Zerfall
+- [ ] Fire / Soul Fire – Ausbreitung
+- [ ] Ice / Frosted Ice / Snow – schmelzen/gefrieren
+
+### Physik & Sonstiges
+- [ ] Falling Blocks (sand, gravel, suspicious, anvil)
+- [ ] TNT zünden
+- [ ] Sponge / Wet Sponge
+- [ ] Dragon Egg Teleport
+- [ ] Scaffolding
+- [ ] Snow Layer
+<!-- BEHAVIOUR_CHECKLIST_END -->
+
+

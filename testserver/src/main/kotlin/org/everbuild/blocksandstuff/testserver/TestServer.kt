@@ -19,11 +19,15 @@ import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
+import org.everbuild.blocksandstuff.blocks.behavior.addWaxing
+import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
@@ -49,6 +53,7 @@ class TestServer(
         PlayerInventoryStash.enableCursorReturn()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
+        BlockRuleset.applyRulesAsDefault(VanillaBlockBehaviour.RULESET)
 
         RecipeRegistrations {
             fuelNamespaces += "everbuild"
@@ -80,6 +85,17 @@ class TestServer(
 
             File("../.github/list-producer/supported-blocks.txt").writeText(allPlacementRuleBlockKeys.joinToString("\n"))
             println("Written ${allPlacementRuleBlockKeys.size} block keys to file .github/list-producer/supported-blocks.txt")
+
+            val allBehaviourBlockKeys =
+                buildSet {
+                    VanillaBlockBehaviour.ALL.forEach { group ->
+                        group.blockGroup.allMatching().forEach { add(it.key().asString()) }
+                    }
+                    VanillaBlockBehaviour.RULESET.blocks.keys.forEach { add(it.asString()) }
+                }.sorted()
+
+            File("../.github/list-producer/behaviour-supported-blocks.txt").writeText(allBehaviourBlockKeys.joinToString("\n"))
+            println("Written ${allBehaviourBlockKeys.size} block keys to file .github/list-producer/behaviour-supported-blocks.txt")
             exitProcess(0)
         }
 

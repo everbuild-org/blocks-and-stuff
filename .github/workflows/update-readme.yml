@@ -65,7 +65,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Actions"
-          git add README.md TODO-behavior.md TODO-placement.md .github/list-producer
+          git add README.md TODO-behavior.md TODO-placement.md Behaviour.md .github/list-producer
           git commit -m "chore: auto-update blocks documentation [skip ci]"
           git push
 
