@@ -387,7 +387,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 ### Bestand migrieren / korrigieren
 - [x] StrippingRule.kt
 - [x] WaxingRule.kt
-- [ ] Türen (Holz) → gemeinsames Toggle-Behaviour
+- [x] Türen (Holz) → gemeinsames Toggle-Behaviour
 - [x] Trapdoors → gemeinsames Toggle-Behaviour
 - [x] Fence Gates → gemeinsames Toggle-Behaviour
 - [x] SignEditRule Rückweg (Text speichern)

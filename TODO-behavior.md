@@ -959,7 +959,6 @@
 - [ ] minecraft:waxed_copper_golem_statue
 - [ ] minecraft:waxed_copper_grate
 - [ ] minecraft:waxed_copper_lantern
-- [ ] minecraft:waxed_copper_trapdoor
 - [ ] minecraft:waxed_cut_copper
 - [ ] minecraft:waxed_cut_copper_slab
 - [ ] minecraft:waxed_cut_copper_stairs
@@ -972,7 +971,6 @@
 - [ ] minecraft:waxed_exposed_copper_golem_statue
 - [ ] minecraft:waxed_exposed_copper_grate
 - [ ] minecraft:waxed_exposed_copper_lantern
-- [ ] minecraft:waxed_exposed_copper_trapdoor
 - [ ] minecraft:waxed_exposed_cut_copper
 - [ ] minecraft:waxed_exposed_cut_copper_slab
 - [ ] minecraft:waxed_exposed_cut_copper_stairs
@@ -987,7 +985,6 @@
 - [ ] minecraft:waxed_oxidized_copper_golem_statue
 - [ ] minecraft:waxed_oxidized_copper_grate
 - [ ] minecraft:waxed_oxidized_copper_lantern
-- [ ] minecraft:waxed_oxidized_copper_trapdoor
 - [ ] minecraft:waxed_oxidized_cut_copper
 - [ ] minecraft:waxed_oxidized_cut_copper_slab
 - [ ] minecraft:waxed_oxidized_cut_copper_stairs
@@ -1001,7 +998,6 @@
 - [ ] minecraft:waxed_weathered_copper_golem_statue
 - [ ] minecraft:waxed_weathered_copper_grate
 - [ ] minecraft:waxed_weathered_copper_lantern
-- [ ] minecraft:waxed_weathered_copper_trapdoor
 - [ ] minecraft:waxed_weathered_cut_copper
 - [ ] minecraft:waxed_weathered_cut_copper_slab
 - [ ] minecraft:waxed_weathered_cut_copper_stairs
@@ -1270,9 +1266,13 @@
 - [x] minecraft:warped_wall_hanging_sign
 - [x] minecraft:warped_wall_sign
 - [x] minecraft:waxed_copper_door
+- [x] minecraft:waxed_copper_trapdoor
 - [x] minecraft:waxed_exposed_copper_door
+- [x] minecraft:waxed_exposed_copper_trapdoor
 - [x] minecraft:waxed_oxidized_copper_door
+- [x] minecraft:waxed_oxidized_copper_trapdoor
 - [x] minecraft:waxed_weathered_copper_door
+- [x] minecraft:waxed_weathered_copper_trapdoor
 - [x] minecraft:weathered_chiseled_copper
 - [x] minecraft:weathered_copper
 - [x] minecraft:weathered_copper_bars
