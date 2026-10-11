@@ -381,94 +381,84 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 
 <!-- BEHAVIOUR_CHECKLIST_START -->
 ### Phase 0/1 – Grundgerüst
-- [ ] Twaddle-Dependencies in `blocksandstuff-blocks/build.gradle.kts`
-- [ ] Eine Regel end-to-end verifizieren (Trapdoor)
+- [x] Twaddle-Dependencies in blocksandstuff-blocks/build.gradle.kts
+- [x] Eine Regel end-to-end verifizieren (Trapdoor)
 
 ### Bestand migrieren / korrigieren
-- [ ] `StrippingRule.kt` (ersetzt `StrippingBehaviorRule`)
-- [ ] `WaxingRule.kt`
-- [ ] `CarvingRule.kt`
-- [ ] `ExtinguishingRule.kt` (Lagerfeuer aus)
-- [ ] Türen (Holz) → gemeinsames Toggle-Behaviour
-- [ ] Trapdoors (Holz) → gemeinsames Toggle-Behaviour
-- [ ] Fence Gates → gemeinsames Toggle-Behaviour
-- [ ] `SignEditRule` Rückweg (Text speichern)
-- [ ] `SweetBerryBushRule` → `null` bei unverändert
-- [ ] Copper-Oxidation Blockliste erweitern (bars/chains/lanterns/doors/trapdoors/golem/lightning_rod)
-- [ ] Random-Tick auf `twaddle-random-ticking`: Farmland, Coral, SweetBerry, Copper, Concrete
-- [ ] Eigenes `randomticking/`-Paket entfernen
-- [ ] Workstations (zuletzt, transient)
+- [x] StrippingRule.kt
+- [x] WaxingRule.kt
+- [x] Türen (Holz) → gemeinsames Toggle-Behaviour
+- [x] Trapdoors → gemeinsames Toggle-Behaviour
+- [x] Fence Gates → gemeinsames Toggle-Behaviour
+- [x] SignEditRule Rückweg (Text speichern)
+- [x] SweetBerryBushRule → null bei unverändert
+- [x] Copper-Oxidation Blockliste erweitern
+- [x] Random-Tick auf twaddle-random-ticking
 
 ### Interaktions-/Click-Toggles
-- [ ] Button (`minecraft:buttons`, inkl. `_wooden_`/`_stone_`)
-- [ ] Lever (`minecraft:levers`)
-- [ ] Druckplatten (`minecraft:pressure_plates`, `_wooden_`/`_stone_`)
-- [ ] Kerze (`minecraft:candles`, `candle_cakes`)
-- [ ] Kupfer-Bulb (`*_copper_bulb`)
-- [ ] Redstone-Lampe (`minecraft:redstone_lamp`)
-- [ ] Lagerfeuer (`minecraft:campfire`, `soul_campfire`)
-- [ ] Glocke (`minecraft:bell`)
-- [ ] Notenblock (`minecraft:note_block`)
+- [ ] Button (minecraft:buttons)
+- [ ] Lever (minecraft:levers)
+- [ ] Druckplatten
+- [ ] Kerze (minecraft:candles)
+- [x] Kupfer-Bulb
+- [ ] Redstone-Lampe
+- [ ] Lagerfeuer
+- [ ] Glocke
+- [ ] Notenblock
 
-### Türen / Trapdoors / Gates (Redstone + Metall)
-- [ ] Eisentür (`minecraft:iron_door`, nur Redstone)
-- [ ] Kupfertüren (`minecraft:copper_doors`)
-- [ ] Eisen-/Kupfer-Trapdoors (`minecraft:trapdoors` minus wooden)
-- [ ] Fence Gates per Redstone
+### Türen / Trapdoors / Gates
+- [ ] Eisentür (nur Redstone)
+- [x] Kupfertüren
+- [x] Eisen-/Kupfer-Trapdoors
+- [x] Fence Gates per Redstone
 
 ### Redstone-Komponenten
-- [ ] Redstone-Wire (`minecraft:redstone_wire`)
-- [ ] Redstone-Torch (`minecraft:redstone_torch`, `_wall_torch`)
-- [ ] Repeater (`minecraft:repeater`)
-- [ ] Comparator (`minecraft:comparator`)
-- [ ] Observer (`minecraft:observer`)
-- [ ] Tageslichtsensor (`minecraft:daylight_detector`)
-- [ ] Zielblock (`minecraft:target`)
-- [ ] Blitzableiter (`minecraft:lightning_rod`)
-- [ ] Sculk-Sensor (`minecraft:sculk_sensor`, `calibrated_sculk_sensor`)
-- [ ] Tripwire + Haken (`minecraft:tripwire`, `tripwire_hook`)
-- [ ] Schienen (powered/activator/detector rail)
-- [ ] Notenblock-Ausgang (Redstone) *(falls nicht über Interact gelöst)*
+- [ ] Redstone-Wire
+- [ ] Redstone-Torch
+- [ ] Repeater
+- [ ] Comparator
+- [ ] Observer
+- [ ] Tageslichtsensor
+- [ ] Zielblock (Target)
+- [x] Blitzableiter
+- [ ] Sculk-Sensor
+- [ ] Tripwire + Haken
+- [ ] Schienen
 
 ### Container & BlockEntity
 - [ ] Chest / Trapped Chest / Ender Chest
 - [ ] Barrel
 - [ ] Shulker Box
-- [ ] Ofen / Blast Furnace / Smoker (Recipes)
+- [ ] Ofen / Blast Furnace / Smoker
 - [ ] Dispenser / Dropper
-- [ ] Hopper (Twaddle `inventory-transfer`)
+- [ ] Hopper
 - [ ] Crafter
 - [ ] Lectern
 - [ ] Jukebox
 - [ ] Flower Pot
 - [ ] Composter
 - [ ] Bee Nest / Beehive
-- [ ] Lagerfeuer (Cooking) *(falls nicht über Interact gelöst)*
 - [ ] Respawn Anker
 - [ ] Beacon / Conduit
 - [ ] Decorated Pot
 - [ ] Lodestone
 
 ### Betten
-- [ ] Beds (`minecraft:beds`, schlafen/Spawn)
+- [ ] Beds (schlafen/Spawn)
 
 ### Random-Tick: Wachstum & Ausbreitung
-- [ ] Crops (`minecraft:crops`, `nether_wart`, `torchflower_crop`, `pitcher_crop`) – generische `age`-Regel
-- [ ] Stems (`pumpkin_stem`, `melon_stem`)
-- [ ] Saplings (`minecraft:saplings`, `mangrove_propagule`)
+- [ ] Crops
+- [ ] Saplings
 - [ ] Sugar Cane / Cactus / Bamboo
 - [ ] Kelp / Seagrass
 - [ ] Chorus Flower
-- [ ] Berries / Cave Vines / Twisting & Weeping Vines
-- [ ] Pointed Dripstone
-- [ ] Amethyst Buds/Clusters
-- [ ] Grass/Mycelium/Podzol/Nylium – Ausbreitung
+- [ ] Gras-Ausbreitung
 - [ ] Leaves – Zerfall
-- [ ] Fire / Soul Fire – Ausbreitung
-- [ ] Ice / Frosted Ice / Snow – schmelzen/gefrieren
+- [ ] Pointed Dripstone
+- [ ] Amethyst
 
 ### Physik & Sonstiges
-- [ ] Falling Blocks (sand, gravel, suspicious, anvil)
+- [ ] Falling Blocks
 - [ ] TNT zünden
 - [ ] Sponge / Wet Sponge
 - [ ] Dragon Egg Teleport

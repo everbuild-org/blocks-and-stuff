@@ -4,23 +4,14 @@
 
 ## Unsupported Blocks
 - [ ] minecraft:acacia_button
-- [ ] minecraft:acacia_door
 - [ ] minecraft:acacia_fence
-- [ ] minecraft:acacia_fence_gate
-- [ ] minecraft:acacia_hanging_sign
 - [ ] minecraft:acacia_leaves
-- [ ] minecraft:acacia_log
 - [ ] minecraft:acacia_planks
 - [ ] minecraft:acacia_pressure_plate
 - [ ] minecraft:acacia_sapling
 - [ ] minecraft:acacia_shelf
-- [ ] minecraft:acacia_sign
 - [ ] minecraft:acacia_slab
 - [ ] minecraft:acacia_stairs
-- [ ] minecraft:acacia_trapdoor
-- [ ] minecraft:acacia_wall_hanging_sign
-- [ ] minecraft:acacia_wall_sign
-- [ ] minecraft:acacia_wood
 - [ ] minecraft:activator_rail
 - [ ] minecraft:air
 - [ ] minecraft:allium
@@ -31,19 +22,14 @@
 - [ ] minecraft:andesite_slab
 - [ ] minecraft:andesite_stairs
 - [ ] minecraft:andesite_wall
-- [ ] minecraft:anvil
 - [ ] minecraft:attached_melon_stem
 - [ ] minecraft:attached_pumpkin_stem
 - [ ] minecraft:azalea
 - [ ] minecraft:azalea_leaves
 - [ ] minecraft:azure_bluet
 - [ ] minecraft:bamboo
-- [ ] minecraft:bamboo_block
 - [ ] minecraft:bamboo_button
-- [ ] minecraft:bamboo_door
 - [ ] minecraft:bamboo_fence
-- [ ] minecraft:bamboo_fence_gate
-- [ ] minecraft:bamboo_hanging_sign
 - [ ] minecraft:bamboo_mosaic
 - [ ] minecraft:bamboo_mosaic_slab
 - [ ] minecraft:bamboo_mosaic_stairs
@@ -51,12 +37,8 @@
 - [ ] minecraft:bamboo_pressure_plate
 - [ ] minecraft:bamboo_sapling
 - [ ] minecraft:bamboo_shelf
-- [ ] minecraft:bamboo_sign
 - [ ] minecraft:bamboo_slab
 - [ ] minecraft:bamboo_stairs
-- [ ] minecraft:bamboo_trapdoor
-- [ ] minecraft:bamboo_wall_hanging_sign
-- [ ] minecraft:bamboo_wall_sign
 - [ ] minecraft:barrel
 - [ ] minecraft:barrier
 - [ ] minecraft:basalt
@@ -69,30 +51,19 @@
 - [ ] minecraft:big_dripleaf
 - [ ] minecraft:big_dripleaf_stem
 - [ ] minecraft:birch_button
-- [ ] minecraft:birch_door
 - [ ] minecraft:birch_fence
-- [ ] minecraft:birch_fence_gate
-- [ ] minecraft:birch_hanging_sign
 - [ ] minecraft:birch_leaves
-- [ ] minecraft:birch_log
 - [ ] minecraft:birch_planks
 - [ ] minecraft:birch_pressure_plate
 - [ ] minecraft:birch_sapling
 - [ ] minecraft:birch_shelf
-- [ ] minecraft:birch_sign
 - [ ] minecraft:birch_slab
 - [ ] minecraft:birch_stairs
-- [ ] minecraft:birch_trapdoor
-- [ ] minecraft:birch_wall_hanging_sign
-- [ ] minecraft:birch_wall_sign
-- [ ] minecraft:birch_wood
 - [ ] minecraft:black_banner
 - [ ] minecraft:black_bed
 - [ ] minecraft:black_candle
-- [ ] minecraft:black_candle_cake
 - [ ] minecraft:black_carpet
 - [ ] minecraft:black_concrete
-- [ ] minecraft:black_concrete_powder
 - [ ] minecraft:black_concrete_slab
 - [ ] minecraft:black_concrete_stairs
 - [ ] minecraft:black_glazed_terracotta
@@ -112,10 +83,8 @@
 - [ ] minecraft:blue_banner
 - [ ] minecraft:blue_bed
 - [ ] minecraft:blue_candle
-- [ ] minecraft:blue_candle_cake
 - [ ] minecraft:blue_carpet
 - [ ] minecraft:blue_concrete
-- [ ] minecraft:blue_concrete_powder
 - [ ] minecraft:blue_concrete_slab
 - [ ] minecraft:blue_concrete_stairs
 - [ ] minecraft:blue_glazed_terracotta
@@ -131,11 +100,6 @@
 - [ ] minecraft:blue_wool_stairs
 - [ ] minecraft:bone_block
 - [ ] minecraft:bookshelf
-- [ ] minecraft:brain_coral
-- [ ] minecraft:brain_coral_block
-- [ ] minecraft:brain_coral_fan
-- [ ] minecraft:brain_coral_wall_fan
-- [ ] minecraft:brewing_stand
 - [ ] minecraft:brick_slab
 - [ ] minecraft:brick_stairs
 - [ ] minecraft:brick_wall
@@ -143,10 +107,8 @@
 - [ ] minecraft:brown_banner
 - [ ] minecraft:brown_bed
 - [ ] minecraft:brown_candle
-- [ ] minecraft:brown_candle_cake
 - [ ] minecraft:brown_carpet
 - [ ] minecraft:brown_concrete
-- [ ] minecraft:brown_concrete_powder
 - [ ] minecraft:brown_concrete_slab
 - [ ] minecraft:brown_concrete_stairs
 - [ ] minecraft:brown_glazed_terracotta
@@ -161,22 +123,15 @@
 - [ ] minecraft:brown_wool_slab
 - [ ] minecraft:brown_wool_stairs
 - [ ] minecraft:bubble_column
-- [ ] minecraft:bubble_coral
-- [ ] minecraft:bubble_coral_block
-- [ ] minecraft:bubble_coral_fan
-- [ ] minecraft:bubble_coral_wall_fan
 - [ ] minecraft:budding_amethyst
 - [ ] minecraft:bush
 - [ ] minecraft:cactus
 - [ ] minecraft:cactus_flower
-- [ ] minecraft:cake
 - [ ] minecraft:calcite
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:campfire
 - [ ] minecraft:candle
-- [ ] minecraft:candle_cake
 - [ ] minecraft:carrots
-- [ ] minecraft:cartography_table
 - [ ] minecraft:carved_pumpkin
 - [ ] minecraft:cauldron
 - [ ] minecraft:cave_air
@@ -184,28 +139,18 @@
 - [ ] minecraft:cave_vines_plant
 - [ ] minecraft:chain_command_block
 - [ ] minecraft:cherry_button
-- [ ] minecraft:cherry_door
 - [ ] minecraft:cherry_fence
-- [ ] minecraft:cherry_fence_gate
-- [ ] minecraft:cherry_hanging_sign
 - [ ] minecraft:cherry_leaves
-- [ ] minecraft:cherry_log
 - [ ] minecraft:cherry_planks
 - [ ] minecraft:cherry_pressure_plate
 - [ ] minecraft:cherry_sapling
 - [ ] minecraft:cherry_shelf
-- [ ] minecraft:cherry_sign
 - [ ] minecraft:cherry_slab
 - [ ] minecraft:cherry_stairs
-- [ ] minecraft:cherry_trapdoor
-- [ ] minecraft:cherry_wall_hanging_sign
-- [ ] minecraft:cherry_wall_sign
-- [ ] minecraft:cherry_wood
 - [ ] minecraft:chest
 - [ ] minecraft:chipped_anvil
 - [ ] minecraft:chiseled_bookshelf
 - [ ] minecraft:chiseled_cinnabar
-- [ ] minecraft:chiseled_copper
 - [ ] minecraft:chiseled_deepslate
 - [ ] minecraft:chiseled_nether_bricks
 - [ ] minecraft:chiseled_polished_blackstone
@@ -246,18 +191,9 @@
 - [ ] minecraft:comparator
 - [ ] minecraft:composter
 - [ ] minecraft:conduit
-- [ ] minecraft:copper_bars
-- [ ] minecraft:copper_block
-- [ ] minecraft:copper_bulb
-- [ ] minecraft:copper_chain
 - [ ] minecraft:copper_chest
-- [ ] minecraft:copper_door
-- [ ] minecraft:copper_golem_statue
-- [ ] minecraft:copper_grate
-- [ ] minecraft:copper_lantern
 - [ ] minecraft:copper_ore
 - [ ] minecraft:copper_torch
-- [ ] minecraft:copper_trapdoor
 - [ ] minecraft:copper_wall_torch
 - [ ] minecraft:cornflower
 - [ ] minecraft:cracked_deepslate_bricks
@@ -266,33 +202,20 @@
 - [ ] minecraft:cracked_polished_blackstone_bricks
 - [ ] minecraft:cracked_stone_bricks
 - [ ] minecraft:crafter
-- [ ] minecraft:crafting_table
 - [ ] minecraft:creaking_heart
 - [ ] minecraft:creeper_head
 - [ ] minecraft:creeper_wall_head
 - [ ] minecraft:crimson_button
-- [ ] minecraft:crimson_door
 - [ ] minecraft:crimson_fence
-- [ ] minecraft:crimson_fence_gate
 - [ ] minecraft:crimson_fungus
-- [ ] minecraft:crimson_hanging_sign
-- [ ] minecraft:crimson_hyphae
 - [ ] minecraft:crimson_nylium
 - [ ] minecraft:crimson_planks
 - [ ] minecraft:crimson_pressure_plate
 - [ ] minecraft:crimson_roots
 - [ ] minecraft:crimson_shelf
-- [ ] minecraft:crimson_sign
 - [ ] minecraft:crimson_slab
 - [ ] minecraft:crimson_stairs
-- [ ] minecraft:crimson_stem
-- [ ] minecraft:crimson_trapdoor
-- [ ] minecraft:crimson_wall_hanging_sign
-- [ ] minecraft:crimson_wall_sign
 - [ ] minecraft:crying_obsidian
-- [ ] minecraft:cut_copper
-- [ ] minecraft:cut_copper_slab
-- [ ] minecraft:cut_copper_stairs
 - [ ] minecraft:cut_red_sandstone
 - [ ] minecraft:cut_red_sandstone_slab
 - [ ] minecraft:cut_sandstone
@@ -300,10 +223,8 @@
 - [ ] minecraft:cyan_banner
 - [ ] minecraft:cyan_bed
 - [ ] minecraft:cyan_candle
-- [ ] minecraft:cyan_candle_cake
 - [ ] minecraft:cyan_carpet
 - [ ] minecraft:cyan_concrete
-- [ ] minecraft:cyan_concrete_powder
 - [ ] minecraft:cyan_concrete_slab
 - [ ] minecraft:cyan_concrete_stairs
 - [ ] minecraft:cyan_glazed_terracotta
@@ -318,23 +239,14 @@
 - [ ] minecraft:damaged_anvil
 - [ ] minecraft:dandelion
 - [ ] minecraft:dark_oak_button
-- [ ] minecraft:dark_oak_door
 - [ ] minecraft:dark_oak_fence
-- [ ] minecraft:dark_oak_fence_gate
-- [ ] minecraft:dark_oak_hanging_sign
 - [ ] minecraft:dark_oak_leaves
-- [ ] minecraft:dark_oak_log
 - [ ] minecraft:dark_oak_planks
 - [ ] minecraft:dark_oak_pressure_plate
 - [ ] minecraft:dark_oak_sapling
 - [ ] minecraft:dark_oak_shelf
-- [ ] minecraft:dark_oak_sign
 - [ ] minecraft:dark_oak_slab
 - [ ] minecraft:dark_oak_stairs
-- [ ] minecraft:dark_oak_trapdoor
-- [ ] minecraft:dark_oak_wall_hanging_sign
-- [ ] minecraft:dark_oak_wall_sign
-- [ ] minecraft:dark_oak_wood
 - [ ] minecraft:dark_prismarine
 - [ ] minecraft:dark_prismarine_slab
 - [ ] minecraft:dark_prismarine_stairs
@@ -397,7 +309,6 @@
 - [ ] minecraft:dropper
 - [ ] minecraft:emerald_block
 - [ ] minecraft:emerald_ore
-- [ ] minecraft:enchanting_table
 - [ ] minecraft:end_gateway
 - [ ] minecraft:end_portal
 - [ ] minecraft:end_portal_frame
@@ -408,28 +319,9 @@
 - [ ] minecraft:end_stone_brick_wall
 - [ ] minecraft:end_stone_bricks
 - [ ] minecraft:ender_chest
-- [ ] minecraft:exposed_chiseled_copper
-- [ ] minecraft:exposed_copper
-- [ ] minecraft:exposed_copper_bars
-- [ ] minecraft:exposed_copper_bulb
-- [ ] minecraft:exposed_copper_chain
 - [ ] minecraft:exposed_copper_chest
-- [ ] minecraft:exposed_copper_door
-- [ ] minecraft:exposed_copper_golem_statue
-- [ ] minecraft:exposed_copper_grate
-- [ ] minecraft:exposed_copper_lantern
-- [ ] minecraft:exposed_copper_trapdoor
-- [ ] minecraft:exposed_cut_copper
-- [ ] minecraft:exposed_cut_copper_slab
-- [ ] minecraft:exposed_cut_copper_stairs
-- [ ] minecraft:exposed_lightning_rod
-- [ ] minecraft:farmland
 - [ ] minecraft:fern
 - [ ] minecraft:fire
-- [ ] minecraft:fire_coral
-- [ ] minecraft:fire_coral_block
-- [ ] minecraft:fire_coral_fan
-- [ ] minecraft:fire_coral_wall_fan
 - [ ] minecraft:firefly_bush
 - [ ] minecraft:fletching_table
 - [ ] minecraft:flower_pot
@@ -455,10 +347,8 @@
 - [ ] minecraft:gray_banner
 - [ ] minecraft:gray_bed
 - [ ] minecraft:gray_candle
-- [ ] minecraft:gray_candle_cake
 - [ ] minecraft:gray_carpet
 - [ ] minecraft:gray_concrete
-- [ ] minecraft:gray_concrete_powder
 - [ ] minecraft:gray_concrete_slab
 - [ ] minecraft:gray_concrete_stairs
 - [ ] minecraft:gray_glazed_terracotta
@@ -473,10 +363,8 @@
 - [ ] minecraft:green_banner
 - [ ] minecraft:green_bed
 - [ ] minecraft:green_candle
-- [ ] minecraft:green_candle_cake
 - [ ] minecraft:green_carpet
 - [ ] minecraft:green_concrete
-- [ ] minecraft:green_concrete_powder
 - [ ] minecraft:green_concrete_slab
 - [ ] minecraft:green_concrete_stairs
 - [ ] minecraft:green_glazed_terracotta
@@ -488,7 +376,6 @@
 - [ ] minecraft:green_wool
 - [ ] minecraft:green_wool_slab
 - [ ] minecraft:green_wool_stairs
-- [ ] minecraft:grindstone
 - [ ] minecraft:hanging_roots
 - [ ] minecraft:hay_block
 - [ ] minecraft:heavy_core
@@ -496,10 +383,6 @@
 - [ ] minecraft:honey_block
 - [ ] minecraft:honeycomb_block
 - [ ] minecraft:hopper
-- [ ] minecraft:horn_coral
-- [ ] minecraft:horn_coral_block
-- [ ] minecraft:horn_coral_fan
-- [ ] minecraft:horn_coral_wall_fan
 - [ ] minecraft:ice
 - [ ] minecraft:infested_chiseled_stone_bricks
 - [ ] minecraft:infested_cobblestone
@@ -518,23 +401,14 @@
 - [ ] minecraft:jigsaw
 - [ ] minecraft:jukebox
 - [ ] minecraft:jungle_button
-- [ ] minecraft:jungle_door
 - [ ] minecraft:jungle_fence
-- [ ] minecraft:jungle_fence_gate
-- [ ] minecraft:jungle_hanging_sign
 - [ ] minecraft:jungle_leaves
-- [ ] minecraft:jungle_log
 - [ ] minecraft:jungle_planks
 - [ ] minecraft:jungle_pressure_plate
 - [ ] minecraft:jungle_sapling
 - [ ] minecraft:jungle_shelf
-- [ ] minecraft:jungle_sign
 - [ ] minecraft:jungle_slab
 - [ ] minecraft:jungle_stairs
-- [ ] minecraft:jungle_trapdoor
-- [ ] minecraft:jungle_wall_hanging_sign
-- [ ] minecraft:jungle_wall_sign
-- [ ] minecraft:jungle_wood
 - [ ] minecraft:kelp
 - [ ] minecraft:kelp_plant
 - [ ] minecraft:ladder
@@ -552,10 +426,8 @@
 - [ ] minecraft:light_blue_banner
 - [ ] minecraft:light_blue_bed
 - [ ] minecraft:light_blue_candle
-- [ ] minecraft:light_blue_candle_cake
 - [ ] minecraft:light_blue_carpet
 - [ ] minecraft:light_blue_concrete
-- [ ] minecraft:light_blue_concrete_powder
 - [ ] minecraft:light_blue_concrete_slab
 - [ ] minecraft:light_blue_concrete_stairs
 - [ ] minecraft:light_blue_glazed_terracotta
@@ -570,10 +442,8 @@
 - [ ] minecraft:light_gray_banner
 - [ ] minecraft:light_gray_bed
 - [ ] minecraft:light_gray_candle
-- [ ] minecraft:light_gray_candle_cake
 - [ ] minecraft:light_gray_carpet
 - [ ] minecraft:light_gray_concrete
-- [ ] minecraft:light_gray_concrete_powder
 - [ ] minecraft:light_gray_concrete_slab
 - [ ] minecraft:light_gray_concrete_stairs
 - [ ] minecraft:light_gray_glazed_terracotta
@@ -586,17 +456,14 @@
 - [ ] minecraft:light_gray_wool_slab
 - [ ] minecraft:light_gray_wool_stairs
 - [ ] minecraft:light_weighted_pressure_plate
-- [ ] minecraft:lightning_rod
 - [ ] minecraft:lilac
 - [ ] minecraft:lily_of_the_valley
 - [ ] minecraft:lily_pad
 - [ ] minecraft:lime_banner
 - [ ] minecraft:lime_bed
 - [ ] minecraft:lime_candle
-- [ ] minecraft:lime_candle_cake
 - [ ] minecraft:lime_carpet
 - [ ] minecraft:lime_concrete
-- [ ] minecraft:lime_concrete_powder
 - [ ] minecraft:lime_concrete_slab
 - [ ] minecraft:lime_concrete_stairs
 - [ ] minecraft:lime_glazed_terracotta
@@ -609,14 +476,11 @@
 - [ ] minecraft:lime_wool_slab
 - [ ] minecraft:lime_wool_stairs
 - [ ] minecraft:lodestone
-- [ ] minecraft:loom
 - [ ] minecraft:magenta_banner
 - [ ] minecraft:magenta_bed
 - [ ] minecraft:magenta_candle
-- [ ] minecraft:magenta_candle_cake
 - [ ] minecraft:magenta_carpet
 - [ ] minecraft:magenta_concrete
-- [ ] minecraft:magenta_concrete_powder
 - [ ] minecraft:magenta_concrete_slab
 - [ ] minecraft:magenta_concrete_stairs
 - [ ] minecraft:magenta_glazed_terracotta
@@ -630,24 +494,15 @@
 - [ ] minecraft:magenta_wool_stairs
 - [ ] minecraft:magma_block
 - [ ] minecraft:mangrove_button
-- [ ] minecraft:mangrove_door
 - [ ] minecraft:mangrove_fence
-- [ ] minecraft:mangrove_fence_gate
-- [ ] minecraft:mangrove_hanging_sign
 - [ ] minecraft:mangrove_leaves
-- [ ] minecraft:mangrove_log
 - [ ] minecraft:mangrove_planks
 - [ ] minecraft:mangrove_pressure_plate
 - [ ] minecraft:mangrove_propagule
 - [ ] minecraft:mangrove_roots
 - [ ] minecraft:mangrove_shelf
-- [ ] minecraft:mangrove_sign
 - [ ] minecraft:mangrove_slab
 - [ ] minecraft:mangrove_stairs
-- [ ] minecraft:mangrove_trapdoor
-- [ ] minecraft:mangrove_wall_hanging_sign
-- [ ] minecraft:mangrove_wall_sign
-- [ ] minecraft:mangrove_wood
 - [ ] minecraft:medium_amethyst_bud
 - [ ] minecraft:melon
 - [ ] minecraft:melon_stem
@@ -685,23 +540,14 @@
 - [ ] minecraft:netherrack
 - [ ] minecraft:note_block
 - [ ] minecraft:oak_button
-- [ ] minecraft:oak_door
 - [ ] minecraft:oak_fence
-- [ ] minecraft:oak_fence_gate
-- [ ] minecraft:oak_hanging_sign
 - [ ] minecraft:oak_leaves
-- [ ] minecraft:oak_log
 - [ ] minecraft:oak_planks
 - [ ] minecraft:oak_pressure_plate
 - [ ] minecraft:oak_sapling
 - [ ] minecraft:oak_shelf
-- [ ] minecraft:oak_sign
 - [ ] minecraft:oak_slab
 - [ ] minecraft:oak_stairs
-- [ ] minecraft:oak_trapdoor
-- [ ] minecraft:oak_wall_hanging_sign
-- [ ] minecraft:oak_wall_sign
-- [ ] minecraft:oak_wood
 - [ ] minecraft:observer
 - [ ] minecraft:obsidian
 - [ ] minecraft:ochre_froglight
@@ -709,10 +555,8 @@
 - [ ] minecraft:orange_banner
 - [ ] minecraft:orange_bed
 - [ ] minecraft:orange_candle
-- [ ] minecraft:orange_candle_cake
 - [ ] minecraft:orange_carpet
 - [ ] minecraft:orange_concrete
-- [ ] minecraft:orange_concrete_powder
 - [ ] minecraft:orange_concrete_slab
 - [ ] minecraft:orange_concrete_stairs
 - [ ] minecraft:orange_glazed_terracotta
@@ -727,43 +571,22 @@
 - [ ] minecraft:orange_wool_slab
 - [ ] minecraft:orange_wool_stairs
 - [ ] minecraft:oxeye_daisy
-- [ ] minecraft:oxidized_chiseled_copper
-- [ ] minecraft:oxidized_copper
-- [ ] minecraft:oxidized_copper_bars
-- [ ] minecraft:oxidized_copper_bulb
-- [ ] minecraft:oxidized_copper_chain
 - [ ] minecraft:oxidized_copper_chest
-- [ ] minecraft:oxidized_copper_door
-- [ ] minecraft:oxidized_copper_golem_statue
-- [ ] minecraft:oxidized_copper_grate
-- [ ] minecraft:oxidized_copper_lantern
-- [ ] minecraft:oxidized_copper_trapdoor
-- [ ] minecraft:oxidized_cut_copper
-- [ ] minecraft:oxidized_cut_copper_slab
-- [ ] minecraft:oxidized_cut_copper_stairs
-- [ ] minecraft:oxidized_lightning_rod
 - [ ] minecraft:packed_ice
 - [ ] minecraft:packed_mud
 - [ ] minecraft:pale_hanging_moss
 - [ ] minecraft:pale_moss_block
 - [ ] minecraft:pale_moss_carpet
 - [ ] minecraft:pale_oak_button
-- [ ] minecraft:pale_oak_door
 - [ ] minecraft:pale_oak_fence
-- [ ] minecraft:pale_oak_fence_gate
-- [ ] minecraft:pale_oak_hanging_sign
 - [ ] minecraft:pale_oak_leaves
 - [ ] minecraft:pale_oak_log
 - [ ] minecraft:pale_oak_planks
 - [ ] minecraft:pale_oak_pressure_plate
 - [ ] minecraft:pale_oak_sapling
 - [ ] minecraft:pale_oak_shelf
-- [ ] minecraft:pale_oak_sign
 - [ ] minecraft:pale_oak_slab
 - [ ] minecraft:pale_oak_stairs
-- [ ] minecraft:pale_oak_trapdoor
-- [ ] minecraft:pale_oak_wall_hanging_sign
-- [ ] minecraft:pale_oak_wall_sign
 - [ ] minecraft:pale_oak_wood
 - [ ] minecraft:pearlescent_froglight
 - [ ] minecraft:peony
@@ -773,10 +596,8 @@
 - [ ] minecraft:pink_banner
 - [ ] minecraft:pink_bed
 - [ ] minecraft:pink_candle
-- [ ] minecraft:pink_candle_cake
 - [ ] minecraft:pink_carpet
 - [ ] minecraft:pink_concrete
-- [ ] minecraft:pink_concrete_powder
 - [ ] minecraft:pink_concrete_slab
 - [ ] minecraft:pink_concrete_stairs
 - [ ] minecraft:pink_glazed_terracotta
@@ -794,7 +615,6 @@
 - [ ] minecraft:piston_head
 - [ ] minecraft:pitcher_crop
 - [ ] minecraft:pitcher_plant
-- [ ] minecraft:player_head
 - [ ] minecraft:player_wall_head
 - [ ] minecraft:podzol
 - [ ] minecraft:pointed_dripstone
@@ -835,21 +655,14 @@
 - [ ] minecraft:polished_tuff_stairs
 - [ ] minecraft:polished_tuff_wall
 - [ ] minecraft:poplar_button
-- [ ] minecraft:poplar_door
 - [ ] minecraft:poplar_fence
-- [ ] minecraft:poplar_fence_gate
-- [ ] minecraft:poplar_hanging_sign
 - [ ] minecraft:poplar_log
 - [ ] minecraft:poplar_planks
 - [ ] minecraft:poplar_pressure_plate
 - [ ] minecraft:poplar_sapling
 - [ ] minecraft:poplar_shelf
-- [ ] minecraft:poplar_sign
 - [ ] minecraft:poplar_slab
 - [ ] minecraft:poplar_stairs
-- [ ] minecraft:poplar_trapdoor
-- [ ] minecraft:poplar_wall_hanging_sign
-- [ ] minecraft:poplar_wall_sign
 - [ ] minecraft:poplar_wood
 - [ ] minecraft:poppy
 - [ ] minecraft:potatoes
@@ -908,10 +721,8 @@
 - [ ] minecraft:purple_banner
 - [ ] minecraft:purple_bed
 - [ ] minecraft:purple_candle
-- [ ] minecraft:purple_candle_cake
 - [ ] minecraft:purple_carpet
 - [ ] minecraft:purple_concrete
-- [ ] minecraft:purple_concrete_powder
 - [ ] minecraft:purple_concrete_slab
 - [ ] minecraft:purple_concrete_stairs
 - [ ] minecraft:purple_glazed_terracotta
@@ -939,10 +750,8 @@
 - [ ] minecraft:red_banner
 - [ ] minecraft:red_bed
 - [ ] minecraft:red_candle
-- [ ] minecraft:red_candle_cake
 - [ ] minecraft:red_carpet
 - [ ] minecraft:red_concrete
-- [ ] minecraft:red_concrete_powder
 - [ ] minecraft:red_concrete_slab
 - [ ] minecraft:red_concrete_stairs
 - [ ] minecraft:red_glazed_terracotta
@@ -1010,7 +819,6 @@
 - [ ] minecraft:slime_block
 - [ ] minecraft:small_amethyst_bud
 - [ ] minecraft:small_dripleaf
-- [ ] minecraft:smithing_table
 - [ ] minecraft:smoker
 - [ ] minecraft:smooth_basalt
 - [ ] minecraft:smooth_quartz
@@ -1038,23 +846,14 @@
 - [ ] minecraft:sponge
 - [ ] minecraft:spore_blossom
 - [ ] minecraft:spruce_button
-- [ ] minecraft:spruce_door
 - [ ] minecraft:spruce_fence
-- [ ] minecraft:spruce_fence_gate
-- [ ] minecraft:spruce_hanging_sign
 - [ ] minecraft:spruce_leaves
-- [ ] minecraft:spruce_log
 - [ ] minecraft:spruce_planks
 - [ ] minecraft:spruce_pressure_plate
 - [ ] minecraft:spruce_sapling
 - [ ] minecraft:spruce_shelf
-- [ ] minecraft:spruce_sign
 - [ ] minecraft:spruce_slab
 - [ ] minecraft:spruce_stairs
-- [ ] minecraft:spruce_trapdoor
-- [ ] minecraft:spruce_wall_hanging_sign
-- [ ] minecraft:spruce_wall_sign
-- [ ] minecraft:spruce_wood
 - [ ] minecraft:sticky_piston
 - [ ] minecraft:stone
 - [ ] minecraft:stone_brick_slab
@@ -1065,7 +864,6 @@
 - [ ] minecraft:stone_pressure_plate
 - [ ] minecraft:stone_slab
 - [ ] minecraft:stone_stairs
-- [ ] minecraft:stonecutter
 - [ ] minecraft:straw_bed
 - [ ] minecraft:stripped_acacia_log
 - [ ] minecraft:stripped_acacia_wood
@@ -1107,7 +905,6 @@
 - [ ] minecraft:sunflower
 - [ ] minecraft:suspicious_gravel
 - [ ] minecraft:suspicious_sand
-- [ ] minecraft:sweet_berry_bush
 - [ ] minecraft:tall_dry_grass
 - [ ] minecraft:tall_grass
 - [ ] minecraft:tall_seagrass
@@ -1124,10 +921,6 @@
 - [ ] minecraft:trial_spawner
 - [ ] minecraft:tripwire
 - [ ] minecraft:tripwire_hook
-- [ ] minecraft:tube_coral
-- [ ] minecraft:tube_coral_block
-- [ ] minecraft:tube_coral_fan
-- [ ] minecraft:tube_coral_wall_fan
 - [ ] minecraft:tuff
 - [ ] minecraft:tuff_brick_slab
 - [ ] minecraft:tuff_brick_stairs
@@ -1145,24 +938,15 @@
 - [ ] minecraft:void_air
 - [ ] minecraft:wall_torch
 - [ ] minecraft:warped_button
-- [ ] minecraft:warped_door
 - [ ] minecraft:warped_fence
-- [ ] minecraft:warped_fence_gate
 - [ ] minecraft:warped_fungus
-- [ ] minecraft:warped_hanging_sign
-- [ ] minecraft:warped_hyphae
 - [ ] minecraft:warped_nylium
 - [ ] minecraft:warped_planks
 - [ ] minecraft:warped_pressure_plate
 - [ ] minecraft:warped_roots
 - [ ] minecraft:warped_shelf
-- [ ] minecraft:warped_sign
 - [ ] minecraft:warped_slab
 - [ ] minecraft:warped_stairs
-- [ ] minecraft:warped_stem
-- [ ] minecraft:warped_trapdoor
-- [ ] minecraft:warped_wall_hanging_sign
-- [ ] minecraft:warped_wall_sign
 - [ ] minecraft:warped_wart_block
 - [ ] minecraft:water
 - [ ] minecraft:water_cauldron
@@ -1172,7 +956,6 @@
 - [ ] minecraft:waxed_copper_bulb
 - [ ] minecraft:waxed_copper_chain
 - [ ] minecraft:waxed_copper_chest
-- [ ] minecraft:waxed_copper_door
 - [ ] minecraft:waxed_copper_golem_statue
 - [ ] minecraft:waxed_copper_grate
 - [ ] minecraft:waxed_copper_lantern
@@ -1186,7 +969,6 @@
 - [ ] minecraft:waxed_exposed_copper_bulb
 - [ ] minecraft:waxed_exposed_copper_chain
 - [ ] minecraft:waxed_exposed_copper_chest
-- [ ] minecraft:waxed_exposed_copper_door
 - [ ] minecraft:waxed_exposed_copper_golem_statue
 - [ ] minecraft:waxed_exposed_copper_grate
 - [ ] minecraft:waxed_exposed_copper_lantern
@@ -1202,7 +984,6 @@
 - [ ] minecraft:waxed_oxidized_copper_bulb
 - [ ] minecraft:waxed_oxidized_copper_chain
 - [ ] minecraft:waxed_oxidized_copper_chest
-- [ ] minecraft:waxed_oxidized_copper_door
 - [ ] minecraft:waxed_oxidized_copper_golem_statue
 - [ ] minecraft:waxed_oxidized_copper_grate
 - [ ] minecraft:waxed_oxidized_copper_lantern
@@ -1217,7 +998,6 @@
 - [ ] minecraft:waxed_weathered_copper_bulb
 - [ ] minecraft:waxed_weathered_copper_chain
 - [ ] minecraft:waxed_weathered_copper_chest
-- [ ] minecraft:waxed_weathered_copper_door
 - [ ] minecraft:waxed_weathered_copper_golem_statue
 - [ ] minecraft:waxed_weathered_copper_grate
 - [ ] minecraft:waxed_weathered_copper_lantern
@@ -1226,21 +1006,7 @@
 - [ ] minecraft:waxed_weathered_cut_copper_slab
 - [ ] minecraft:waxed_weathered_cut_copper_stairs
 - [ ] minecraft:waxed_weathered_lightning_rod
-- [ ] minecraft:weathered_chiseled_copper
-- [ ] minecraft:weathered_copper
-- [ ] minecraft:weathered_copper_bars
-- [ ] minecraft:weathered_copper_bulb
-- [ ] minecraft:weathered_copper_chain
 - [ ] minecraft:weathered_copper_chest
-- [ ] minecraft:weathered_copper_door
-- [ ] minecraft:weathered_copper_golem_statue
-- [ ] minecraft:weathered_copper_grate
-- [ ] minecraft:weathered_copper_lantern
-- [ ] minecraft:weathered_copper_trapdoor
-- [ ] minecraft:weathered_cut_copper
-- [ ] minecraft:weathered_cut_copper_slab
-- [ ] minecraft:weathered_cut_copper_stairs
-- [ ] minecraft:weathered_lightning_rod
 - [ ] minecraft:weeping_vines
 - [ ] minecraft:weeping_vines_plant
 - [ ] minecraft:wet_sponge
@@ -1248,10 +1014,8 @@
 - [ ] minecraft:white_banner
 - [ ] minecraft:white_bed
 - [ ] minecraft:white_candle
-- [ ] minecraft:white_candle_cake
 - [ ] minecraft:white_carpet
 - [ ] minecraft:white_concrete
-- [ ] minecraft:white_concrete_powder
 - [ ] minecraft:white_concrete_slab
 - [ ] minecraft:white_concrete_stairs
 - [ ] minecraft:white_glazed_terracotta
@@ -1271,10 +1035,8 @@
 - [ ] minecraft:yellow_banner
 - [ ] minecraft:yellow_bed
 - [ ] minecraft:yellow_candle
-- [ ] minecraft:yellow_candle_cake
 - [ ] minecraft:yellow_carpet
 - [ ] minecraft:yellow_concrete
-- [ ] minecraft:yellow_concrete_powder
 - [ ] minecraft:yellow_concrete_slab
 - [ ] minecraft:yellow_concrete_stairs
 - [ ] minecraft:yellow_glazed_terracotta
@@ -1291,3 +1053,241 @@
 - [ ] minecraft:zombie_wall_head
 
 ## Supported Blocks
+- [x] minecraft:acacia_door
+- [x] minecraft:acacia_fence_gate
+- [x] minecraft:acacia_hanging_sign
+- [x] minecraft:acacia_log
+- [x] minecraft:acacia_sign
+- [x] minecraft:acacia_trapdoor
+- [x] minecraft:acacia_wall_hanging_sign
+- [x] minecraft:acacia_wall_sign
+- [x] minecraft:acacia_wood
+- [x] minecraft:anvil
+- [x] minecraft:bamboo_block
+- [x] minecraft:bamboo_door
+- [x] minecraft:bamboo_fence_gate
+- [x] minecraft:bamboo_hanging_sign
+- [x] minecraft:bamboo_sign
+- [x] minecraft:bamboo_trapdoor
+- [x] minecraft:bamboo_wall_hanging_sign
+- [x] minecraft:bamboo_wall_sign
+- [x] minecraft:birch_door
+- [x] minecraft:birch_fence_gate
+- [x] minecraft:birch_hanging_sign
+- [x] minecraft:birch_log
+- [x] minecraft:birch_sign
+- [x] minecraft:birch_trapdoor
+- [x] minecraft:birch_wall_hanging_sign
+- [x] minecraft:birch_wall_sign
+- [x] minecraft:birch_wood
+- [x] minecraft:black_candle_cake
+- [x] minecraft:black_concrete_powder
+- [x] minecraft:blue_candle_cake
+- [x] minecraft:blue_concrete_powder
+- [x] minecraft:brain_coral
+- [x] minecraft:brain_coral_block
+- [x] minecraft:brain_coral_fan
+- [x] minecraft:brain_coral_wall_fan
+- [x] minecraft:brewing_stand
+- [x] minecraft:brown_candle_cake
+- [x] minecraft:brown_concrete_powder
+- [x] minecraft:bubble_coral
+- [x] minecraft:bubble_coral_block
+- [x] minecraft:bubble_coral_fan
+- [x] minecraft:bubble_coral_wall_fan
+- [x] minecraft:cake
+- [x] minecraft:candle_cake
+- [x] minecraft:cartography_table
+- [x] minecraft:cherry_door
+- [x] minecraft:cherry_fence_gate
+- [x] minecraft:cherry_hanging_sign
+- [x] minecraft:cherry_log
+- [x] minecraft:cherry_sign
+- [x] minecraft:cherry_trapdoor
+- [x] minecraft:cherry_wall_hanging_sign
+- [x] minecraft:cherry_wall_sign
+- [x] minecraft:cherry_wood
+- [x] minecraft:chiseled_copper
+- [x] minecraft:copper_bars
+- [x] minecraft:copper_block
+- [x] minecraft:copper_bulb
+- [x] minecraft:copper_chain
+- [x] minecraft:copper_door
+- [x] minecraft:copper_golem_statue
+- [x] minecraft:copper_grate
+- [x] minecraft:copper_lantern
+- [x] minecraft:copper_trapdoor
+- [x] minecraft:crafting_table
+- [x] minecraft:crimson_door
+- [x] minecraft:crimson_fence_gate
+- [x] minecraft:crimson_hanging_sign
+- [x] minecraft:crimson_hyphae
+- [x] minecraft:crimson_sign
+- [x] minecraft:crimson_stem
+- [x] minecraft:crimson_trapdoor
+- [x] minecraft:crimson_wall_hanging_sign
+- [x] minecraft:crimson_wall_sign
+- [x] minecraft:cut_copper
+- [x] minecraft:cut_copper_slab
+- [x] minecraft:cut_copper_stairs
+- [x] minecraft:cyan_candle_cake
+- [x] minecraft:cyan_concrete_powder
+- [x] minecraft:dark_oak_door
+- [x] minecraft:dark_oak_fence_gate
+- [x] minecraft:dark_oak_hanging_sign
+- [x] minecraft:dark_oak_log
+- [x] minecraft:dark_oak_sign
+- [x] minecraft:dark_oak_trapdoor
+- [x] minecraft:dark_oak_wall_hanging_sign
+- [x] minecraft:dark_oak_wall_sign
+- [x] minecraft:dark_oak_wood
+- [x] minecraft:enchanting_table
+- [x] minecraft:exposed_chiseled_copper
+- [x] minecraft:exposed_copper
+- [x] minecraft:exposed_copper_bars
+- [x] minecraft:exposed_copper_bulb
+- [x] minecraft:exposed_copper_chain
+- [x] minecraft:exposed_copper_door
+- [x] minecraft:exposed_copper_golem_statue
+- [x] minecraft:exposed_copper_grate
+- [x] minecraft:exposed_copper_lantern
+- [x] minecraft:exposed_copper_trapdoor
+- [x] minecraft:exposed_cut_copper
+- [x] minecraft:exposed_cut_copper_slab
+- [x] minecraft:exposed_cut_copper_stairs
+- [x] minecraft:exposed_lightning_rod
+- [x] minecraft:farmland
+- [x] minecraft:fire_coral
+- [x] minecraft:fire_coral_block
+- [x] minecraft:fire_coral_fan
+- [x] minecraft:fire_coral_wall_fan
+- [x] minecraft:gray_candle_cake
+- [x] minecraft:gray_concrete_powder
+- [x] minecraft:green_candle_cake
+- [x] minecraft:green_concrete_powder
+- [x] minecraft:grindstone
+- [x] minecraft:horn_coral
+- [x] minecraft:horn_coral_block
+- [x] minecraft:horn_coral_fan
+- [x] minecraft:horn_coral_wall_fan
+- [x] minecraft:jungle_door
+- [x] minecraft:jungle_fence_gate
+- [x] minecraft:jungle_hanging_sign
+- [x] minecraft:jungle_log
+- [x] minecraft:jungle_sign
+- [x] minecraft:jungle_trapdoor
+- [x] minecraft:jungle_wall_hanging_sign
+- [x] minecraft:jungle_wall_sign
+- [x] minecraft:jungle_wood
+- [x] minecraft:light_blue_candle_cake
+- [x] minecraft:light_blue_concrete_powder
+- [x] minecraft:light_gray_candle_cake
+- [x] minecraft:light_gray_concrete_powder
+- [x] minecraft:lightning_rod
+- [x] minecraft:lime_candle_cake
+- [x] minecraft:lime_concrete_powder
+- [x] minecraft:loom
+- [x] minecraft:magenta_candle_cake
+- [x] minecraft:magenta_concrete_powder
+- [x] minecraft:mangrove_door
+- [x] minecraft:mangrove_fence_gate
+- [x] minecraft:mangrove_hanging_sign
+- [x] minecraft:mangrove_log
+- [x] minecraft:mangrove_sign
+- [x] minecraft:mangrove_trapdoor
+- [x] minecraft:mangrove_wall_hanging_sign
+- [x] minecraft:mangrove_wall_sign
+- [x] minecraft:mangrove_wood
+- [x] minecraft:oak_door
+- [x] minecraft:oak_fence_gate
+- [x] minecraft:oak_hanging_sign
+- [x] minecraft:oak_log
+- [x] minecraft:oak_sign
+- [x] minecraft:oak_trapdoor
+- [x] minecraft:oak_wall_hanging_sign
+- [x] minecraft:oak_wall_sign
+- [x] minecraft:oak_wood
+- [x] minecraft:orange_candle_cake
+- [x] minecraft:orange_concrete_powder
+- [x] minecraft:oxidized_chiseled_copper
+- [x] minecraft:oxidized_copper
+- [x] minecraft:oxidized_copper_bars
+- [x] minecraft:oxidized_copper_bulb
+- [x] minecraft:oxidized_copper_chain
+- [x] minecraft:oxidized_copper_door
+- [x] minecraft:oxidized_copper_golem_statue
+- [x] minecraft:oxidized_copper_grate
+- [x] minecraft:oxidized_copper_lantern
+- [x] minecraft:oxidized_copper_trapdoor
+- [x] minecraft:oxidized_cut_copper
+- [x] minecraft:oxidized_cut_copper_slab
+- [x] minecraft:oxidized_cut_copper_stairs
+- [x] minecraft:oxidized_lightning_rod
+- [x] minecraft:pale_oak_door
+- [x] minecraft:pale_oak_fence_gate
+- [x] minecraft:pale_oak_hanging_sign
+- [x] minecraft:pale_oak_sign
+- [x] minecraft:pale_oak_trapdoor
+- [x] minecraft:pale_oak_wall_hanging_sign
+- [x] minecraft:pale_oak_wall_sign
+- [x] minecraft:pink_candle_cake
+- [x] minecraft:pink_concrete_powder
+- [x] minecraft:player_head
+- [x] minecraft:poplar_door
+- [x] minecraft:poplar_fence_gate
+- [x] minecraft:poplar_hanging_sign
+- [x] minecraft:poplar_sign
+- [x] minecraft:poplar_trapdoor
+- [x] minecraft:poplar_wall_hanging_sign
+- [x] minecraft:poplar_wall_sign
+- [x] minecraft:purple_candle_cake
+- [x] minecraft:purple_concrete_powder
+- [x] minecraft:red_candle_cake
+- [x] minecraft:red_concrete_powder
+- [x] minecraft:smithing_table
+- [x] minecraft:spruce_door
+- [x] minecraft:spruce_fence_gate
+- [x] minecraft:spruce_hanging_sign
+- [x] minecraft:spruce_log
+- [x] minecraft:spruce_sign
+- [x] minecraft:spruce_trapdoor
+- [x] minecraft:spruce_wall_hanging_sign
+- [x] minecraft:spruce_wall_sign
+- [x] minecraft:spruce_wood
+- [x] minecraft:stonecutter
+- [x] minecraft:sweet_berry_bush
+- [x] minecraft:tube_coral
+- [x] minecraft:tube_coral_block
+- [x] minecraft:tube_coral_fan
+- [x] minecraft:tube_coral_wall_fan
+- [x] minecraft:warped_door
+- [x] minecraft:warped_fence_gate
+- [x] minecraft:warped_hanging_sign
+- [x] minecraft:warped_hyphae
+- [x] minecraft:warped_sign
+- [x] minecraft:warped_stem
+- [x] minecraft:warped_trapdoor
+- [x] minecraft:warped_wall_hanging_sign
+- [x] minecraft:warped_wall_sign
+- [x] minecraft:waxed_copper_door
+- [x] minecraft:waxed_exposed_copper_door
+- [x] minecraft:waxed_oxidized_copper_door
+- [x] minecraft:waxed_weathered_copper_door
+- [x] minecraft:weathered_chiseled_copper
+- [x] minecraft:weathered_copper
+- [x] minecraft:weathered_copper_bars
+- [x] minecraft:weathered_copper_bulb
+- [x] minecraft:weathered_copper_chain
+- [x] minecraft:weathered_copper_door
+- [x] minecraft:weathered_copper_golem_statue
+- [x] minecraft:weathered_copper_grate
+- [x] minecraft:weathered_copper_lantern
+- [x] minecraft:weathered_copper_trapdoor
+- [x] minecraft:weathered_cut_copper
+- [x] minecraft:weathered_cut_copper_slab
+- [x] minecraft:weathered_cut_copper_stairs
+- [x] minecraft:weathered_lightning_rod
+- [x] minecraft:white_candle_cake
+- [x] minecraft:white_concrete_powder
+- [x] minecraft:yellow_candle_cake
+- [x] minecraft:yellow_concrete_powder
