@@ -5,10 +5,12 @@ on:
     types: [opened, synchronize]
     branches:
       - main
+      - dev
     paths-ignore:
       - 'README.md'
       - 'TODO-behavior.md'
       - 'TODO-placement.md'
+      - 'Behaviour.md'
 
 jobs:
   update-blocks-documentation:
