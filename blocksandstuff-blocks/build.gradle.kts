@@ -12,7 +12,7 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(projects.blocksandstuffCommon)
     implementation(libs.twaddle.common.blocks)
-    api(libs.twaddle.stackedBehaviour)
+    api(libs.twaddle.stackedBehaviour.block)
 
     compileOnly(libs.minestom)
     compileOnly(libs.slf4j.api)

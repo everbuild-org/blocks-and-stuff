@@ -27,7 +27,8 @@ import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
-import org.everbuild.twaddle.stacked_block_behaviour.ruleset.BlockRuleset
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds

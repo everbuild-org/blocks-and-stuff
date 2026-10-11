@@ -3,10 +3,11 @@ package org.everbuild.blocksandstuff.blocks
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.Material
 import net.minestom.server.item.MaterialTags
-import org.everbuild.twaddle.stacked_block_behaviour.Rule
-import org.everbuild.twaddle.stacked_block_behaviour.RuleResult
-import org.everbuild.twaddle.stacked_block_behaviour.ruleset.BlockRuleset
-import org.everbuild.twaddle.stacked_block_behaviour.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
+import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 
 private fun Block.asVariant(variant: Block): Block =
     variant

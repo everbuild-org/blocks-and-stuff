@@ -15,7 +15,7 @@ kotlinx-serialization = "1.9.0"
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
 twaddle-common-blocks = { module = "org.everbuild.twaddle:twaddle-common-block", version.ref = "twaddle"}
-twaddle-stackedBehaviour = { module = "org.everbuild.twaddle:twaddle-stacked-block-behaviour", version.ref = "twaddle"}
+twaddle-stackedBehaviour-block = { module = "org.everbuild.twaddle:twaddle-stacked-behaviour-block", version.ref = "twaddle"}
 
 slf4j-api = { group = "org.slf4j", name = "slf4j-api", version.ref = "slf4j" }
 tinylog-api = { group = "org.tinylog", name = "tinylog-api", version.ref = "tinylog" }
