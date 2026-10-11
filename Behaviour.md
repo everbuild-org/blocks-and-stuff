@@ -389,18 +389,18 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] WaxingRule.kt
 - [x] Türen (Holz) → gemeinsames Toggle-Behaviour
 - [x] Trapdoors → gemeinsames Toggle-Behaviour
-- [ ] Fence Gates → gemeinsames Toggle-Behaviour
-- [ ] SignEditRule Rückweg (Text speichern)
-- [ ] SweetBerryBushRule → null bei unverändert
-- [ ] Copper-Oxidation Blockliste erweitern
-- [ ] Random-Tick auf twaddle-random-ticking
+- [x] Fence Gates → gemeinsames Toggle-Behaviour
+- [x] SignEditRule Rückweg (Text speichern)
+- [x] SweetBerryBushRule → null bei unverändert
+- [x] Copper-Oxidation Blockliste erweitern
+- [x] Random-Tick auf twaddle-random-ticking
 
 ### Interaktions-/Click-Toggles
 - [ ] Button (minecraft:buttons)
 - [ ] Lever (minecraft:levers)
 - [ ] Druckplatten
 - [ ] Kerze (minecraft:candles)
-- [ ] Kupfer-Bulb
+- [x] Kupfer-Bulb
 - [ ] Redstone-Lampe
 - [ ] Lagerfeuer
 - [ ] Glocke
@@ -420,7 +420,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [ ] Observer
 - [ ] Tageslichtsensor
 - [ ] Zielblock (Target)
-- [ ] Blitzableiter
+- [x] Blitzableiter
 - [ ] Sculk-Sensor
 - [ ] Tripwire + Haken
 - [ ] Schienen
