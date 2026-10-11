@@ -16,8 +16,6 @@ jobs:
   update-blocks-documentation:
     runs-on: ubuntu-latest
 
-    if: github.head_ref == 'dev'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v7
