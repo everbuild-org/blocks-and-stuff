@@ -110,24 +110,6 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             ),
         )
 
-    val FENCE_GATE =
-        group(
-            byTag("minecraft:fence_gates"),
-            ::GateOpenRule,
-        )
-
-    val COPPER =
-        group(
-            byList(CopperOxidationRule.getOxidizableBlocks()),
-            ::CopperOxidationRule,
-        )
-
-    val SIGNS =
-        group(
-            byTag("minecraft:all_signs"),
-            ::SignEditRule,
-        )
-
     val CAKE =
         group(
             byBlock(Block.CAKE),
@@ -146,29 +128,6 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             ::ConcretePowderRule,
         )
 
-    val FARMLAND =
-        group(
-            byBlock(Block.FARMLAND),
-            ::FarmlandRule,
-        )
-
-    val CORAL =
-        group(
-            all(
-                byTag("minecraft:corals"),
-                byTag("minecraft:coral_plants"),
-                byTag("minecraft:coral_blocks"),
-                byTag("minecraft:wall_corals"),
-            ),
-            ::CoralRule,
-        )
-
-    val SWEET_BERRY_BUSH =
-        group(
-            byBlock(Block.SWEET_BERRY_BUSH),
-            ::SweetBerryBushRule,
-        )
-
     val SKULL =
         group(
             byBlock(Block.PLAYER_HEAD),
@@ -181,6 +140,12 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addWaxing()
             addDoors()
             addTrapdoors()
+            addFenceGates()
+            addSigns()
+            addFarmland()
+            addCorals()
+            addSweetBerryBushes()
+            addCopperOxidation()
         }
 
     override fun createGroup(

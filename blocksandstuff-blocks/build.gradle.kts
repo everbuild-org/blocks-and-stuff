@@ -12,6 +12,7 @@ dependencies {
     implementation(project(":blocksandstuff-common"))
     implementation(libs.twaddle.stacked.behaviour.block)
     implementation(libs.twaddle.common.blocks)
+    implementation(libs.twaddle.random.ticking)
 
     compileOnly(libs.minestom)
     compileOnly(libs.slf4j.api)

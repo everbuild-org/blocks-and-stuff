@@ -366,9 +366,19 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val SIGNS =
         group(
             all(
-                byTag("minecraft:all_signs"),
+                byTag("minecraft:standing_signs"),
+                byTag("minecraft:wall_signs"),
             ),
             ::SignPlacementRule,
+        )
+
+    val HANGING_SIGNS =
+        group(
+            all(
+                byTag("minecraft:ceiling_hanging_signs"),
+                byTag("minecraft:wall_hanging_signs"),
+            ),
+            ::HangingSignPlacementRule,
         )
 
     val CHESTS =

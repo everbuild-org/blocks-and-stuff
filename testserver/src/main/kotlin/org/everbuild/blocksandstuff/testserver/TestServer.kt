@@ -91,7 +91,8 @@ class TestServer(
                     VanillaBlockBehaviour.ALL.forEach { group ->
                         group.blockGroup.allMatching().forEach { add(it.key().asString()) }
                     }
-                    VanillaBlockBehaviour.RULESET.blocks.keys.forEach { add(it.asString()) }
+                    VanillaBlockBehaviour.RULESET.blocks.keys
+                        .forEach { add(it.asString()) }
                 }.sorted()
 
             File("../.github/list-producer/behaviour-supported-blocks.txt").writeText(allBehaviourBlockKeys.joinToString("\n"))
