@@ -1,40 +1,42 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import kotlin.collections.component1
-import kotlin.collections.component2
-import net.kyori.adventure.key.Key
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
 import org.everbuild.blocksandstuff.blocks.event.CakeEatEvent
 import org.everbuild.blocksandstuff.blocks.placement.CandlePlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.blocksandstuff.common.utils.withDefaultHandler
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 
-class CandleCakeRule(val block: Block) : BlockHandler {
-    override fun getKey(): Key = block.key()
+private val candleCakes: Collection<Block> = BlockTags.getTaggedWith("minecraft:candle_cakes")
+private val candleForCakeCake =
+    CandlePlacementRule.CANDLE_CAKE.entries.associate { (candle, cakeCake) -> cakeCake to candle }
 
-    override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
-        if (interaction.player.isSneaking) return super.onInteract(interaction)
+val CANDLE_CAKE_EAT_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:candle_cake_eat") { ctx ->
+        if (ctx.player.isSneaking) return@Rule RuleResult.Next
+
         EventDispatcher.callCancellable(
-            CakeEatEvent(
-                interaction.player,
-                interaction.block,
-                interaction.blockPosition.asBlockVec()
-            )
+            CakeEatEvent(ctx.player, ctx.block, ctx.blockPosition.asBlockVec()),
         ) {
-            interaction.instance.setBlock(
-                interaction.blockPosition,
-                Block.CAKE
-                    .withDefaultHandler()
-                    .withProperty("bites", "1")
+            val candle = candleForCakeCake[ctx.block.defaultState()] ?: return@callCancellable
+            ctx.instance.setBlock(
+                ctx.blockPosition,
+                Block.CAKE.withDefaultHandler().withProperty("bites", "1"),
             )
-            DroppedItemFactory.maybeDrop(interaction.instance, interaction.blockPosition, CAKE_CANDLE[block] ?: return@callCancellable)
+            DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, candle)
         }
-        return false
+
+        RuleResult.Consume
     }
 
-    companion object {
-        val CAKE_CANDLE = CandlePlacementRule.CANDLE_CAKE.entries.associate { (k, v) -> v to k }
+fun BlockRulesetEditor.addCandleCakes() {
+    candleCakes.forEach { block ->
+        blocks(block) { interact.append { install(CANDLE_CAKE_EAT_RULE) } }
     }
 }

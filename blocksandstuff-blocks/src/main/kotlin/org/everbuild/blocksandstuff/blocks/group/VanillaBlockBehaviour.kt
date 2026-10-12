@@ -4,144 +4,25 @@ package org.everbuild.blocksandstuff.blocks.group
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
-import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.blocks.behavior.*
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
 
 object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHandler>() {
-    val CRAFTING_TABLE =
-        group(
-            byBlock(Block.CRAFTING_TABLE),
-            GenericWorkStationRule(
-                Block.CRAFTING_TABLE,
-                InventoryType.CRAFTING,
-                "container.crafting",
-                returnSlots = (1..9).toList(),
-            ),
-        )
-
-    val ANVIL =
-        group(
-            byBlock(Block.ANVIL),
-            GenericWorkStationRule(
-                Block.ANVIL,
-                InventoryType.ANVIL,
-                "container.repair",
-                returnSlots = listOf(0, 1),
-            ),
-        )
-
-    val BREWING_STAND =
-        group(
-            byBlock(Block.BREWING_STAND),
-            GenericWorkStationRule(
-                Block.BREWING_STAND,
-                InventoryType.BREWING_STAND,
-                "container.brewing",
-                returnSlots = listOf(0, 1, 2, 3, 4),
-            ),
-        )
-
-    val LOOM =
-        group(
-            byBlock(Block.LOOM),
-            GenericWorkStationRule(
-                Block.LOOM,
-                InventoryType.LOOM,
-                "container.loom",
-                returnSlots = listOf(0, 1, 2),
-            ),
-        )
-
-    val GRINDSTONE =
-        group(
-            byBlock(Block.GRINDSTONE),
-            GenericWorkStationRule(
-                Block.GRINDSTONE,
-                InventoryType.GRINDSTONE,
-                "container.grindstone",
-                returnSlots = listOf(0, 1),
-            ),
-        )
-
-    val SMITHING_TABLE =
-        group(
-            byBlock(Block.SMITHING_TABLE),
-            GenericWorkStationRule(
-                Block.SMITHING_TABLE,
-                InventoryType.SMITHING,
-                "container.upgrade",
-                returnSlots = listOf(0, 1, 2),
-            ),
-        )
-
-    val CARTOGRAPHY_TABLE =
-        group(
-            byBlock(Block.CARTOGRAPHY_TABLE),
-            GenericWorkStationRule(
-                Block.CARTOGRAPHY_TABLE,
-                InventoryType.CARTOGRAPHY,
-                "container.cartography_table",
-                returnSlots = listOf(0, 1),
-            ),
-        )
-
-    val STONECUTTER =
-        group(
-            byBlock(Block.STONECUTTER),
-            GenericWorkStationRule(
-                Block.STONECUTTER,
-                InventoryType.STONE_CUTTER,
-                "container.stonecutter",
-                returnSlots = listOf(0),
-            ),
-        )
-
-    val ENCHANTING_TABLE =
-        group(
-            byBlock(Block.ENCHANTING_TABLE),
-            GenericWorkStationRule(
-                Block.ENCHANTING_TABLE,
-                InventoryType.ENCHANTMENT,
-                "container.enchant",
-                returnSlots = listOf(0, 1),
-            ),
-        )
-
-    val CAKE =
-        group(
-            byBlock(Block.CAKE),
-            ::CakeEatRule,
-        )
-
-    val CANDLE_CAKE =
-        group(
-            byTag("minecraft:candle_cakes"),
-            ::CandleCakeRule,
-        )
-
-    val CONCRETE_POWDER =
-        group(
-            byTag("minecraft:concrete_powders"),
-            ::ConcretePowderRule,
-        )
-
-    val SKULL =
-        group(
-            byBlock(Block.PLAYER_HEAD),
-            ::SkullDisplayRule,
-        )
-
     val RULESET: BlockRuleset =
         BlockRuleset.build {
             addStripping()
             addWaxing()
+            addWorkStations()
             addDoors()
             addTrapdoors()
             addFenceGates()
             addSigns()
+            addCakes()
+            addCandleCakes()
+            addConcretePowders()
+            addSkulls()
             addFarmland()
             addCorals()
             addSweetBerryBushes()
