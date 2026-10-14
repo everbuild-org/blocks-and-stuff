@@ -58,7 +58,7 @@ fun playSoundFor(
     )
 }
 
-private fun damageTool(
+internal fun damageTool(
     player: Player,
     tool: ItemStack,
 ) {

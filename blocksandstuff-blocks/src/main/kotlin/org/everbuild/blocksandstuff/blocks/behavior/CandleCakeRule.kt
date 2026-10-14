@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.sound.Sound
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.blocks.event.CakeEatEvent
@@ -16,6 +17,26 @@ import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 private val candleCakes: Collection<Block> = BlockTags.getTaggedWith("minecraft:candle_cakes")
 private val candleForCakeCake =
     CandlePlacementRule.CANDLE_CAKE.entries.associate { (candle, cakeCake) -> cakeCake to candle }
+
+val CANDLE_CAKE_LIGHT_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:candle_cake_light") { ctx ->
+        val item = ctx.player.getItemInHand(ctx.hand)
+        if (!isLighter(item)) return@Rule RuleResult.Next
+
+        val block = ctx.block
+        val waterlogged = block.getProperty("waterlogged") == "true"
+        if (block.getProperty("lit") != "true" && !waterlogged) {
+            ctx.replaceBlock(block.withProperty("lit", "true"))
+            ctx.instance.playSoundExcept(
+                ctx.player,
+                Sound.sound(lighterSound(item), Sound.Source.BLOCK, 1.0f, 1.0f),
+                ctx.blockPosition,
+            )
+            consumeLighter(ctx.player, ctx.hand, item)
+        }
+
+        RuleResult.Consume
+    }
 
 val CANDLE_CAKE_EAT_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:candle_cake_eat") { ctx ->
@@ -37,6 +58,9 @@ val CANDLE_CAKE_EAT_RULE: Rule<InteractionActivityContext> =
 
 fun BlockRulesetEditor.addCandleCakes() {
     candleCakes.forEach { block ->
-        blocks(block) { interact.append { install(CANDLE_CAKE_EAT_RULE) } }
+        blocks(block) {
+            interact.append { install(CANDLE_CAKE_LIGHT_RULE) }
+            interact.append { install(CANDLE_CAKE_EAT_RULE) }
+        }
     }
 }

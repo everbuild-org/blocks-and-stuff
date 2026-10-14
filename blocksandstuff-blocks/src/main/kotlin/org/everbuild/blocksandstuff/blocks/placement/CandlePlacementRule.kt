@@ -22,11 +22,12 @@ class CandlePlacementRule(block: Block) : BlockPlacementRule(block) {
         if (!blockBelow.collisionShape().isFaceFull(BlockFace.TOP)) return null
 
         val oldBlock = placementState.instance.getBlock(placementState.placePosition)
-        if (!oldBlock.compare(block, Block.Comparator.ID)) {
+        val placed = placementState.block
+        if (!oldBlock.compare(placed, Block.Comparator.ID)) {
             return if (oldBlock.isWater()) {
-                block.withProperty("waterlogged", "true")
+                placed.withProperty("waterlogged", "true")
             } else {
-                block
+                placed
             }
         }
 
