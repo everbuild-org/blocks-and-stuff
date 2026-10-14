@@ -396,10 +396,10 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Random-Tick auf twaddle-random-ticking
 
 ### Interaktions-/Click-Toggles
-- [ ] Button (minecraft:buttons)
-- [ ] Lever (minecraft:levers)
-- [ ] Druckplatten
-- [ ] Kerze (minecraft:candles)
+- [x] Button (minecraft:buttons)
+- [x] Lever (minecraft:levers)
+- [x] Druckplatten
+- [x] Kerze (minecraft:candles)
 - [x] Kupfer-Bulb
 - [ ] Redstone-Lampe
 - [ ] Lagerfeuer
