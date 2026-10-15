@@ -746,6 +746,18 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             ::ShelfMushroomPlacementRule
         )
 
+    val FALLING =
+        group(
+            all(
+                byBlock(Block.SAND),
+                byBlock(Block.RED_SAND),
+                byBlock(Block.GRAVEL),
+                byBlock(Block.SUSPICIOUS_SAND),
+                byBlock(Block.SUSPICIOUS_GRAVEL),
+            ),
+            ::FallingBlockPlacementRule,
+        )
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: Function<Block, BlockPlacementRule>,
