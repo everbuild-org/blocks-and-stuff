@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import java.util.Random
 import net.kyori.adventure.key.Key
 import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.coordinate.Point
@@ -11,6 +10,7 @@ import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
 import org.everbuild.twaddle.stacked_behaviour_block.type.RandomTickActivityContext
 import org.everbuild.twaddle.stacked_behaviour_block.type.randomTick
+import java.util.Random
 
 /**
  * Shared random-tick growth for saplings. A 2x2 arrangement of the same sapling grows a large tree
@@ -107,5 +107,3 @@ fun BlockRulesetEditor.addSaplingGrowth() {
         blocks(sapling) { randomTick.append { install(rule) } }
     }
 }
-
-
