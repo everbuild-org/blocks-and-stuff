@@ -2,8 +2,11 @@ package org.everbuild.blocksandstuff.blocks
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
+import org.everbuild.blocksandstuff.blocks.util.applyItemBlockEntityData
+import org.everbuild.blocksandstuff.blocks.util.applyItemContainerContents
 
 object BlockPlacementRuleRegistrations {
     private val logger = MinecraftServer.LOGGER
@@ -33,10 +36,27 @@ object BlockPlacementRuleRegistrations {
             for (block in blockGroup.allMatching()) {
                 if (exclude.contains(block)) continue
                 count++
-                blockManager.registerBlockPlacementRule(placementGroup.createRule(block))
+                blockManager.registerBlockPlacementRule(withBlockEntityData(placementGroup.createRule(block)))
             }
         }
 
         logger.info("Registered $count block placement rules")
+    }
+
+    private fun withBlockEntityData(rule: BlockPlacementRule): BlockPlacementRule {
+        val block = rule.block
+        return object : BlockPlacementRule(block) {
+            override fun blockPlace(placementState: PlacementState): Block? =
+                rule.blockPlace(placementState)
+                    ?.applyItemBlockEntityData(placementState.usedItemStack)
+                    ?.applyItemContainerContents(placementState.usedItemStack)
+
+            override fun blockUpdate(updateState: UpdateState): Block = rule.blockUpdate(updateState)
+
+            override fun isSelfReplaceable(replacement: Replacement): Boolean =
+                rule.isSelfReplaceable(replacement)
+
+            override fun maxUpdateDistance(): Int = rule.maxUpdateDistance()
+        }
     }
 }

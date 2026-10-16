@@ -18,6 +18,8 @@ data class ToolTransform(
     val tool: Material,
     val to: Block,
     val preserveProperties: Boolean = false, // <- war preserveAxis
+    val damagesTool: Boolean = false,
+    val guard: ((ctx: InteractionActivityContext) -> Boolean)? = null,
     val extra: ((ctx: InteractionActivityContext, transformed: Block) -> Unit)? = null,
 )
 
@@ -32,6 +34,8 @@ fun toolRule(
                 ctx.block.key() == it.from.key() && held.material() == it.tool
             } ?: return@Rule RuleResult.Next
 
+        if (match.guard?.invoke(ctx) == false) return@Rule RuleResult.Next
+
         val result =
             if (match.preserveProperties) {
                 ctx.block.getProperty("axis")?.let { match.to.withProperty("axis", it) } ?: match.to
@@ -42,7 +46,7 @@ fun toolRule(
         ctx.replaceBlock(result)
         match.extra?.invoke(ctx, result)
 
-        if (held.material().name().endsWith("_axe")) damageTool(ctx.player, held)
+        if (match.damagesTool) damageTool(ctx.player, held)
 
         RuleResult.Consume
     }

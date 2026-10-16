@@ -57,6 +57,7 @@ private val strippingTransforms: List<ToolTransform> =
                         axe,
                         to,
                         preserveProperties = true,
+                        damagesTool = true,
                         extra = { ctx, _ -> playSoundFor(ctx, SoundEvent.ITEM_AXE_STRIP) },
                     ),
                 )

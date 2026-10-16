@@ -16,10 +16,10 @@ import net.minestom.server.item.Material
 import net.minestom.server.network.player.ResolvableProfile
 import net.minestom.server.utils.chunk.ChunkSupplier
 import org.everbuild.blocksandstuff.blocks.BlockBehaviorRuleRegistrations
-import org.everbuild.blocksandstuff.blocks.BlockPickup
 import org.everbuild.blocksandstuff.blocks.BlockPlacementRuleRegistrations
+import org.everbuild.blocksandstuff.blocks.ContainerRegistrations
 import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
-import org.everbuild.blocksandstuff.blocks.behavior.addWaxing
+import org.everbuild.blocksandstuff.blocks.PlayerPickBlockHandler
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
 import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
@@ -27,7 +27,6 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
-import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
 import java.io.File
 import kotlin.system.exitProcess
 import kotlin.time.Duration.Companion.seconds
@@ -47,9 +46,11 @@ class TestServer(
 
         BlockPlacementRuleRegistrations.registerDefault()
         BlockBehaviorRuleRegistrations.registerDefault()
+        ContainerRegistrations.registerDefault()
         PlacedHandlerRegistration.registerDefault()
-        BlockPickup.enable()
+        PlayerPickBlockHandler.enable()
         DroppedItemFactory.enablePlayerDrops()
+        DroppedItemFactory.enableItemPickup()
         PlayerInventoryStash.enableCursorReturn()
         MinestomFluids.enableFluids()
         MinestomFluids.enableVanillaFluids()
@@ -130,6 +131,7 @@ class TestServer(
         )
 
         MinecraftServer.getCommandManager().register(DebugCommand())
+        MinecraftServer.getCommandManager().register(RandomTickSpeedCommand())
     }
 
     fun bind() {

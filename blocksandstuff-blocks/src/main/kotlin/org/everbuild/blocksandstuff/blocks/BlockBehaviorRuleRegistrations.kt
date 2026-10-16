@@ -5,7 +5,6 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
-import net.minestom.server.event.trait.InstanceEvent
 import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.blocks.behavior.SignEditListener
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
@@ -42,6 +41,7 @@ object BlockBehaviorRuleRegistrations {
     fun registerDefault(exclude: List<Block>) {
         register(exclude, *VanillaBlockBehaviour.ALL.toTypedArray<BehaviourGroup>())
         registerRandomTickingGlobally()
+        NaturalBlockInteract.enable()
         SignEditListener.enable()
     }
 

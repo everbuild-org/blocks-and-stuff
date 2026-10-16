@@ -14,6 +14,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         BlockRuleset.build {
             addStripping()
             addWaxing()
+            addHoes()
             addWorkStations()
             addDoors()
             addTrapdoors()
@@ -31,6 +32,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addCorals()
             addSweetBerryBushes()
             addCopperOxidation()
+            addPlantGrowth()
+            addStemGrowth()
+            addVerticalGrowth()
+            addSaplingGrowth()
+            addBoneMeal()
         }
 
     override fun createGroup(
