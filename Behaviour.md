@@ -447,12 +447,12 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [ ] Beds (schlafen/Spawn)
 
 ### Random-Tick: Wachstum & Ausbreitung
-- [ ] Crops
-- [ ] Saplings
-- [ ] Sugar Cane / Cactus / Bamboo
+- [x] Crops
+- [x] Saplings
+- [x] Sugar Cane / Cactus / Bamboo
 - [ ] Kelp / Seagrass
 - [ ] Chorus Flower
-- [ ] Gras-Ausbreitung
+- [x] Gras-Ausbreitung
 - [ ] Leaves – Zerfall
 - [ ] Pointed Dripstone
 - [ ] Amethyst
