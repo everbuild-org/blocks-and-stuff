@@ -10,6 +10,10 @@ repositories {
 
 dependencies {
     implementation(project(":blocksandstuff-common"))
+    implementation(libs.twaddle.stacked.behaviour.block)
+    implementation(libs.twaddle.common.blocks)
+    implementation(libs.twaddle.random.ticking)
+    implementation(libs.kotlinx.coroutines.core)
 
     compileOnly(libs.minestom)
     compileOnly(libs.slf4j.api)
@@ -19,6 +23,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.minestom)
+    testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(kotlin("test"))
     implementation(kotlin("stdlib-jdk8"))

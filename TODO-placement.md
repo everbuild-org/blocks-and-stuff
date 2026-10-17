@@ -307,6 +307,7 @@
 - [x] minecraft:granite_stairs
 - [x] minecraft:granite_wall
 - [x] minecraft:grass_block
+- [x] minecraft:gravel
 - [x] minecraft:gray_banner
 - [x] minecraft:gray_bed
 - [x] minecraft:gray_candle
@@ -630,6 +631,7 @@
 - [x] minecraft:red_nether_brick_slab
 - [x] minecraft:red_nether_brick_stairs
 - [x] minecraft:red_nether_brick_wall
+- [x] minecraft:red_sand
 - [x] minecraft:red_sandstone_slab
 - [x] minecraft:red_sandstone_stairs
 - [x] minecraft:red_sandstone_wall
@@ -649,6 +651,7 @@
 - [x] minecraft:resin_brick_wall
 - [x] minecraft:resin_clump
 - [x] minecraft:rose_bush
+- [x] minecraft:sand
 - [x] minecraft:sandstone_slab
 - [x] minecraft:sandstone_stairs
 - [x] minecraft:sandstone_wall
@@ -734,6 +737,8 @@
 - [x] minecraft:sulfur_stairs
 - [x] minecraft:sulfur_wall
 - [x] minecraft:sunflower
+- [x] minecraft:suspicious_gravel
+- [x] minecraft:suspicious_sand
 - [x] minecraft:tall_grass
 - [x] minecraft:tall_seagrass
 - [x] minecraft:torch

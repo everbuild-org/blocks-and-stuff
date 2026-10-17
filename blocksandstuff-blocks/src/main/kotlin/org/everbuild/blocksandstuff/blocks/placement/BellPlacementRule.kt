@@ -8,7 +8,7 @@ import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDire
 
 class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        val blockFace = placementState.blockFace ?: return block
+        val blockFace = placementState.blockFace ?: return placementState.block
 
         return when (blockFace) {
             BlockFace.BOTTOM -> placementState.block

@@ -846,3 +846,8 @@ minecraft:scaffolding
 minecraft:chorus_plant
 minecraft:chorus_flower
 minecraft:shelf_mushroom
+minecraft:sand
+minecraft:red_sand
+minecraft:gravel
+minecraft:suspicious_sand
+minecraft:suspicious_gravel

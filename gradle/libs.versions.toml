@@ -9,9 +9,11 @@ mockito-kotlin = "6.4.0"
 fastutil = "8.5.19"
 jetbrains-annotations = "26.1.0"
 kotlinx-serialization = "1.11.0"
+kotlinx-coroutines = "1.10.2"
 jib = "3.5.4"
 commons-compress = "1.28.0"
 commons-codec = "1.23.0"
+twaddle = "0.1.1"
 
 [libraries]
 minestom = { group = "net.minestom", name = "minestom", version.ref = "minestom" }
@@ -23,8 +25,13 @@ fastutil = { module = "it.unimi.dsi:fastutil", version.ref = "fastutil" }
 jetbrains-annotations = { group = "org.jetbrains", name = "annotations", version.ref = "jetbrains-annotations" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 commons-compress = { module = "org.apache.commons:commons-compress", version.ref = "commons-compress" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons-codec" }
+twaddle-common-blocks = { module = "org.everbuild.twaddle:twaddle-common-block", version.ref = "twaddle"}
+twaddle-stacked-behaviour-block = { module = "org.everbuild.twaddle:twaddle-stacked-behaviour-block", version.ref = "twaddle"}
+twaddle-random-ticking = { module = "org.everbuild.twaddle:twaddle-random-ticking", version.ref = "twaddle"}
 
 junit-bom = { group = "org.junit", name = "junit-bom", version.ref = "junit" }
 mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
