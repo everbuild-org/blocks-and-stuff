@@ -1,10 +1,12 @@
+@file:Suppress("UnstableApiUsage")
+
 package org.everbuild.blocksandstuff.blocks
 
-import java.util.concurrent.ConcurrentHashMap
 import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.event.player.PlayerBlockInteractEvent
 import net.minestom.server.instance.block.BlockHandler
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Minestom only calls [BlockHandler.onInteract] when the interacted block already has a handler
@@ -14,9 +16,7 @@ import net.minestom.server.instance.block.BlockHandler
  */
 object NaturalBlockInteract {
     private val noHandler =
-        object : BlockHandler {
-            override fun getKey(): Key = Key.key("blocksandstuff:no_handler")
-        }
+        BlockHandler { Key.key("blocksandstuff:no_handler") }
     private val handlers = ConcurrentHashMap<String, BlockHandler>()
 
     @JvmStatic

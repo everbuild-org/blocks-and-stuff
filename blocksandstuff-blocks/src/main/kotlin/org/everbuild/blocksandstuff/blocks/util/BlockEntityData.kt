@@ -60,11 +60,13 @@ internal fun Block.toContainerItem(): ItemStack? {
 private fun decodeContainerItems(nbt: CompoundBinaryTag?): List<ItemStack> {
     val listed = nbt?.getList("Items") ?: return emptyList()
     return listed
-        .mapNotNull { it as? CompoundBinaryTag }
+        .asSequence()
+        .filterIsInstance<CompoundBinaryTag>()
         .map { tag -> tag.getByte("Slot").toInt() to ItemStack.CODEC.decode(Transcoder.NBT, tag).orElseThrow() }
         .filter { (_, stack) -> !stack.isAir }
         .sortedBy { (slot, _) -> slot }
         .map { (_, stack) -> stack }
+        .toList()
 }
 
 private fun encodeItem(
