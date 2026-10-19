@@ -74,6 +74,7 @@ minecraft:cherry_wall_sign
 minecraft:cherry_wood
 minecraft:chiseled_copper
 minecraft:coarse_dirt
+minecraft:comparator
 minecraft:copper_bars
 minecraft:copper_block
 minecraft:copper_bulb
@@ -254,6 +255,7 @@ minecraft:purple_concrete_powder
 minecraft:red_candle
 minecraft:red_candle_cake
 minecraft:red_concrete_powder
+minecraft:repeater
 minecraft:rooted_dirt
 minecraft:smithing_table
 minecraft:spruce_button
