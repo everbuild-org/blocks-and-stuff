@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
     implementation(project(":blocksandstuff-common"))
+    implementation(project(":blocksandstuff-redstone"))
     implementation(libs.twaddle.stacked.behaviour.block)
     implementation(libs.twaddle.common.blocks)
     implementation(libs.twaddle.random.ticking)

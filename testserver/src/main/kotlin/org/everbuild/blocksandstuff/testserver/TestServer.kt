@@ -22,10 +22,12 @@ import org.everbuild.blocksandstuff.blocks.PlacedHandlerRegistration
 import org.everbuild.blocksandstuff.blocks.PlayerPickBlockHandler
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.VanillaPlacementRules
+import org.everbuild.blocksandstuff.blocks.redstone.vanilla.registerVanillaComponents
 import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.fluids.MinestomFluids
 import org.everbuild.blocksandstuff.recipes.RecipeRegistrations
+import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
 import java.io.File
 import kotlin.system.exitProcess
@@ -47,6 +49,8 @@ class TestServer(
         BlockPlacementRuleRegistrations.registerDefault()
         BlockBehaviorRuleRegistrations.registerDefault()
         ContainerRegistrations.registerDefault()
+        RedstoneRegistrations.registry.registerVanillaComponents()
+        RedstoneRegistrations.enable()
         PlacedHandlerRegistration.registerDefault()
         PlayerPickBlockHandler.enable()
         DroppedItemFactory.enablePlayerDrops()

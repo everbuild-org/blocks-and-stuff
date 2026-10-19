@@ -1,0 +1,53 @@
+package org.everbuild.blocksandstuff.blocks.redstone.vanilla
+
+import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.blocks.placement.WireConnections
+import org.everbuild.blocksandstuff.redstone.ALL_FACES
+import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
+import org.everbuild.blocksandstuff.redstone.Emit
+import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
+import org.everbuild.blocksandstuff.redstone.ReadContext
+import org.everbuild.blocksandstuff.redstone.RedstoneComponent
+import org.everbuild.blocksandstuff.redstone.UpdateContext
+
+/**
+ * Redstone wire. Stores its strength in the `power` property and decays by one per wire step.
+ */
+class WireComponent : RedstoneComponent {
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
+        val block = ctx.block()
+        val connected = WireConnections.updatedWire(ctx.instance, ctx.position, block) ?: block
+        val updated = connected.withProperty("power", computePower(ctx).toString())
+        if (updated.stateId() == block.stateId() && updated.nbt() == block.nbt()) return ComponentEvaluation.None
+        return ComponentEvaluation.SetState(updated)
+    }
+
+    override fun emit(
+        ctx: ReadContext,
+        face: BlockFace,
+    ): Emit = Emit(powerOf(ctx.block()))
+
+    private fun computePower(ctx: ReadContext): Int {
+        var best = 0
+        for (face in ALL_FACES) {
+            val neighbour = ctx.position.relative(face)
+            val block = ctx.block(neighbour)
+            val into = face.oppositeFace
+            val contribution =
+                if (isWire(block)) {
+                    ctx.power().weakSignal(neighbour, into) - 1
+                } else {
+                    maxOf(ctx.power().weakSignal(neighbour, into), ctx.power().directSignal(neighbour, into))
+                }
+            if (contribution > best) best = contribution
+        }
+        return best.coerceIn(0, REDSTONE_MAX_POWER)
+    }
+
+    companion object {
+        fun isWire(block: Block): Boolean = block.compare(Block.REDSTONE_WIRE)
+
+        fun powerOf(block: Block): Int = block.getProperty("power")?.toIntOrNull()?.coerceIn(0, REDSTONE_MAX_POWER) ?: 0
+    }
+}

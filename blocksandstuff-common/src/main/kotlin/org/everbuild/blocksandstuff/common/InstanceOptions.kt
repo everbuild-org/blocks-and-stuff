@@ -3,7 +3,8 @@ package org.everbuild.blocksandstuff.common
 import net.minestom.server.instance.Instance
 
 data class InstanceOptions(
-    var randomTickSpeed: Int = 3
+    var randomTickSpeed: Int = 3,
+    var redstoneEnabled: Boolean = true,
 )
 
 object InstanceOptionsProvider {
@@ -12,4 +13,9 @@ object InstanceOptionsProvider {
 
     @JvmStatic
     fun getForInstance(instance: Instance) = perInstance.getOrPut(instance) { default }
+
+    @JvmStatic
+    fun remove(instance: Instance) {
+        perInstance.remove(instance)
+    }
 }
