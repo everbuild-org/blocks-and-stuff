@@ -23,6 +23,8 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addLevers()
             addPressurePlates()
             addCandles()
+            addRepeaters()
+            addComparators()
             addSigns()
             addCakes()
             addCandleCakes()

@@ -167,7 +167,6 @@
 - [ ] minecraft:cobweb
 - [ ] minecraft:cocoa
 - [ ] minecraft:command_block
-- [ ] minecraft:comparator
 - [ ] minecraft:composter
 - [ ] minecraft:conduit
 - [ ] minecraft:copper_chest
@@ -719,7 +718,6 @@
 - [ ] minecraft:redstone_wall_torch
 - [ ] minecraft:redstone_wire
 - [ ] minecraft:reinforced_deepslate
-- [ ] minecraft:repeater
 - [ ] minecraft:repeating_command_block
 - [ ] minecraft:resin_block
 - [ ] minecraft:resin_brick_slab
@@ -1047,6 +1045,7 @@
 - [x] minecraft:cherry_wood
 - [x] minecraft:chiseled_copper
 - [x] minecraft:coarse_dirt
+- [x] minecraft:comparator
 - [x] minecraft:copper_bars
 - [x] minecraft:copper_block
 - [x] minecraft:copper_bulb
@@ -1227,6 +1226,7 @@
 - [x] minecraft:red_candle
 - [x] minecraft:red_candle_cake
 - [x] minecraft:red_concrete_powder
+- [x] minecraft:repeater
 - [x] minecraft:rooted_dirt
 - [x] minecraft:smithing_table
 - [x] minecraft:spruce_button
