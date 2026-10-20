@@ -27,7 +27,17 @@ class TorchComponent : RedstoneComponent {
     override fun emit(
         ctx: ReadContext,
         face: BlockFace,
-    ): Emit = if (ctx.block().getProperty("lit") == "true") Emit(REDSTONE_MAX_POWER, REDSTONE_MAX_POWER) else Emit.ZERO
+    ): Emit {
+        val block = ctx.block()
+        if (block.getProperty("lit") != "true") return Emit.ZERO
+        val support = supportOf(block, ctx.position)
+        if (support != null && ctx.position.relative(face) == support) return Emit.ZERO
+        return if (face == BlockFace.TOP) {
+            Emit(REDSTONE_MAX_POWER, REDSTONE_MAX_POWER)
+        } else {
+            Emit(REDSTONE_MAX_POWER, 0)
+        }
+    }
 
     private fun isPowered(
         ctx: ReadContext,
@@ -54,20 +64,27 @@ class TorchComponent : RedstoneComponent {
         fun supportOf(
             block: Block,
             position: Point,
-        ): Point? = when {
-            block.compare(Block.REDSTONE_WALL_TORCH) -> {
-                val facing = when (block.getProperty("facing")) {
-                    "north" -> BlockFace.NORTH
-                    "south" -> BlockFace.SOUTH
-                    "east" -> BlockFace.EAST
-                    "west" -> BlockFace.WEST
-                    else -> null
+        ): Point? =
+            when {
+                block.compare(Block.REDSTONE_WALL_TORCH) -> {
+                    val facing =
+                        when (block.getProperty("facing")) {
+                            "north" -> BlockFace.NORTH
+                            "south" -> BlockFace.SOUTH
+                            "east" -> BlockFace.EAST
+                            "west" -> BlockFace.WEST
+                            else -> null
+                        }
+                    facing?.let { position.relative(it.oppositeFace) }
                 }
-                facing?.let { position.relative(it) }
-            }
 
-            block.compare(Block.REDSTONE_TORCH) -> position.relative(BlockFace.BOTTOM)
-            else -> null
-        }
+                block.compare(Block.REDSTONE_TORCH) -> {
+                    position.relative(BlockFace.BOTTOM)
+                }
+
+                else -> {
+                    null
+                }
+            }
     }
 }
