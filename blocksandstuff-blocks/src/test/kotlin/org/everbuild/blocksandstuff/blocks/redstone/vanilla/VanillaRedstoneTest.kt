@@ -93,6 +93,50 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun wallTorchTurnsOffWhenSupportPowered() {
+        val support = base
+        val torch = base.add(1.0, 0.0, 0.0)
+
+        instance.setBlock(support, Block.STONE)
+        instance.setBlock(torch, Block.REDSTONE_WALL_TORCH.withProperty("facing", "east").withProperty("lit", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(torch).getProperty("lit"))
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(torch).getProperty("lit"))
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.AIR)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(torch).getProperty("lit"))
+    }
+
+    @Test
+    fun torchesOnSameBlockDoNotTurnEachOtherOff() {
+        val support = base
+        val topTorch = base.add(0.0, 1.0, 0.0)
+        val eastTorch = base.add(1.0, 0.0, 0.0)
+        val southTorch = base.add(0.0, 0.0, 1.0)
+
+        instance.setBlock(support, Block.STONE)
+        instance.setBlock(topTorch, Block.REDSTONE_TORCH.withProperty("lit", "true"))
+        instance.setBlock(eastTorch, Block.REDSTONE_WALL_TORCH.withProperty("facing", "east").withProperty("lit", "true"))
+        instance.setBlock(southTorch, Block.REDSTONE_WALL_TORCH.withProperty("facing", "south").withProperty("lit", "true"))
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(topTorch).getProperty("lit"))
+        Assertions.assertEquals("true", instance.getBlock(eastTorch).getProperty("lit"))
+        Assertions.assertEquals("true", instance.getBlock(southTorch).getProperty("lit"))
+
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("false", instance.getBlock(topTorch).getProperty("lit"))
+        Assertions.assertEquals("false", instance.getBlock(eastTorch).getProperty("lit"))
+        Assertions.assertEquals("false", instance.getBlock(southTorch).getProperty("lit"))
+    }
+
+    @Test
     fun ironDoorOpensAndClosesWithRedstone() {
         val lower = Block.IRON_DOOR.withProperty("half", "lower")
         val upper = Block.IRON_DOOR.withProperty("half", "upper")

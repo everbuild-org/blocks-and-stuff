@@ -1,12 +1,15 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.kyori.adventure.key.Key
+import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
+import java.util.concurrent.ThreadLocalRandom
 
 /**
  * Piston and sticky piston. Follows power transitions (extend on rising edge, retract on falling
@@ -48,6 +51,7 @@ class PistonComponent(
 
         ctx.instance.setBlock(ctx.position.relative(facing), head(block, facing))
         ctx.setState(ctx.position, block.withProperty("extended", "true"))
+        playSound(ctx, SoundEvent.BLOCK_PISTON_EXTEND)
     }
 
     private fun retract(ctx: UpdateContext) {
@@ -69,6 +73,18 @@ class PistonComponent(
         }
 
         ctx.setState(ctx.position, block.withProperty("extended", "false"))
+        playSound(ctx, SoundEvent.BLOCK_PISTON_CONTRACT)
+    }
+
+    private fun playSound(
+        ctx: UpdateContext,
+        event: SoundEvent,
+    ) {
+        ctx.instance.playSoundExcept(
+            null,
+            Sound.sound(event, Sound.Source.BLOCK, 0.5f, 0.6f + ThreadLocalRandom.current().nextFloat() * 0.25f),
+            ctx.position,
+        )
     }
 
     private fun head(
@@ -82,27 +98,28 @@ class PistonComponent(
     private companion object {
         private const val MAX_PUSH = 12
 
-        private val immovableKeys: Set<Key> = setOf(
-            Key.key("minecraft:bedrock"),
-            Key.key("minecraft:obsidian"),
-            Key.key("minecraft:crying_obsidian"),
-            Key.key("minecraft:ancient_debris"),
-            Key.key("minecraft:reinforced_deepslate"),
-            Key.key("minecraft:enchanting_table"),
-            Key.key("minecraft:beacon"),
-            Key.key("minecraft:end_portal"),
-            Key.key("minecraft:end_portal_frame"),
-            Key.key("minecraft:ender_chest"),
-            Key.key("minecraft:nether_portal"),
-            Key.key("minecraft:respawn_anchor"),
-            Key.key("minecraft:barrier"),
-            Key.key("minecraft:command_block"),
-            Key.key("minecraft:chain_command_block"),
-            Key.key("minecraft:repeating_command_block"),
-            Key.key("minecraft:structure_block"),
-            Key.key("minecraft:jigsaw"),
-            Key.key("minecraft:moving_piston"),
-        )
+        private val immovableKeys: Set<Key> =
+            setOf(
+                Key.key("minecraft:bedrock"),
+                Key.key("minecraft:obsidian"),
+                Key.key("minecraft:crying_obsidian"),
+                Key.key("minecraft:ancient_debris"),
+                Key.key("minecraft:reinforced_deepslate"),
+                Key.key("minecraft:enchanting_table"),
+                Key.key("minecraft:beacon"),
+                Key.key("minecraft:end_portal"),
+                Key.key("minecraft:end_portal_frame"),
+                Key.key("minecraft:ender_chest"),
+                Key.key("minecraft:nether_portal"),
+                Key.key("minecraft:respawn_anchor"),
+                Key.key("minecraft:barrier"),
+                Key.key("minecraft:command_block"),
+                Key.key("minecraft:chain_command_block"),
+                Key.key("minecraft:repeating_command_block"),
+                Key.key("minecraft:structure_block"),
+                Key.key("minecraft:jigsaw"),
+                Key.key("minecraft:moving_piston"),
+            )
 
         private fun isImmovable(block: Block): Boolean = block.key() in immovableKeys
     }
