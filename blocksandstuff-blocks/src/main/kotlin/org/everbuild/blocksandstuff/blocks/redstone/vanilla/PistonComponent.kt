@@ -51,7 +51,6 @@ class PistonComponent(
 
         ctx.instance.setBlock(ctx.position.relative(facing), head(block, facing))
         ctx.setState(ctx.position, block.withProperty("extended", "true"))
-        playSound(ctx, SoundEvent.BLOCK_PISTON_EXTEND)
     }
 
     private fun retract(ctx: UpdateContext) {
