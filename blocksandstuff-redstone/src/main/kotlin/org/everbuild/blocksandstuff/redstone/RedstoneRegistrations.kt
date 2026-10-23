@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.redstone
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Point
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceBlockUpdateEvent
 import net.minestom.server.event.instance.InstanceTickEvent
@@ -46,8 +47,7 @@ object RedstoneRegistrations {
     }
 
     @JvmStatic
-    fun install(instance: Instance): RedstoneSimulator =
-        simulators.getOrPut(instance) { RedstoneSimulator(instance, registry) }
+    fun install(instance: Instance): RedstoneSimulator = simulators.getOrPut(instance) { RedstoneSimulator(instance, registry) }
 
     @JvmStatic
     fun uninstall(instance: Instance) {
@@ -56,6 +56,15 @@ object RedstoneRegistrations {
 
     @JvmStatic
     fun simulator(instance: Instance): RedstoneSimulator? = simulators[instance]
+
+    /** Re-evaluates redstone around a block whose inventory contents changed (e.g. comparator input). */
+    @JvmStatic
+    fun notifyContainerChanged(
+        instance: Instance,
+        position: Point,
+    ) {
+        simulator(instance)?.onBlockChanged(position)
+    }
 
     private fun simulatorOrNull(instance: Instance): RedstoneSimulator? {
         simulator(instance)?.let { return it }

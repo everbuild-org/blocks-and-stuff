@@ -4,15 +4,19 @@ import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.inventory.InventoryCloseEvent
+import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryOpenEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.blocks.util.toContainerItem
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventory
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHandler
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
+import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
-import org.everbuild.blocksandstuff.blocks.util.toContainerItem
+import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 
 enum class ContainerAnimation {
     /** Client lid animation driven by a block action (chest, shulker box). */
@@ -29,13 +33,19 @@ class BlockContainerHandler(
     private val closeSound: SoundEvent,
     private val animation: ContainerAnimation,
     private val keepContentsInItem: Boolean = false,
-) : BlockHandler {
+) : BlockHandler,
+    BlockInventoryHolder {
     private var backend: SingleBlockInventoryBackend? = null
     private var listenersInstalled = false
     private var openCount = 0
     private var destroying = false
 
     override fun getKey(): Key = key
+
+    override fun getInventory(
+        instance: Instance,
+        blockPos: Point,
+    ): PhysicalInventory = backendOf(instance, blockPos)
 
     override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
         if (interaction.player.isSneaking) return true
@@ -53,7 +63,11 @@ class BlockContainerHandler(
 
         destroying = true
         if (keepContentsInItem) {
-            backend?.getViewableInventory()?.viewers?.toList()?.forEach { it.closeInventory() }
+            backend
+                ?.getViewableInventory()
+                ?.viewers
+                ?.toList()
+                ?.forEach { it.closeInventory() }
             destroy.block.toContainerItem()?.let {
                 DroppedItemFactory.maybeDrop(destroy.instance, destroy.blockPosition, it)
             }
@@ -78,6 +92,9 @@ class BlockContainerHandler(
 
         inventory.eventNode().addListener(InventoryOpenEvent::class.java) { handleOpen(instance, position) }
         inventory.eventNode().addListener(InventoryCloseEvent::class.java) { handleClose(instance, position) }
+        inventory.eventNode().addListener(InventoryItemChangeEvent::class.java) {
+            RedstoneRegistrations.notifyContainerChanged(instance, position)
+        }
     }
 
     private fun handleOpen(

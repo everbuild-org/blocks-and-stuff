@@ -9,6 +9,7 @@ import org.everbuild.blocksandstuff.blocks.behavior.BlockContainerHandler
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerAnimation
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerArchetype
 import org.everbuild.blocksandstuff.blocks.behavior.EnderChestHandler
+import org.everbuild.blocksandstuff.blocks.behavior.HopperHandler
 
 object ContainerRegistrations {
     private val colors =
@@ -47,7 +48,21 @@ object ContainerRegistrations {
         for (color in colors) {
             registerShulker("minecraft:${color}_shulker_box")
         }
+        registerHopper()
         MinecraftServer.getBlockManager().registerHandler("minecraft:ender_chest") { EnderChestHandler() }
+    }
+
+    private fun registerHopper() {
+        val key = Key.key("minecraft:hopper")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.hopper"),
+                InventoryType.HOPPER,
+                InventoryType.HOPPER.size,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:hopper") {
+            HopperHandler(key, archetype)
+        }
     }
 
     private fun registerChest(blockKey: String) {

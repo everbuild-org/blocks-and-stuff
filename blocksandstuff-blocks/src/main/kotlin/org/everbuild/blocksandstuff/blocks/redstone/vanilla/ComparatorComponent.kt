@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
 import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
@@ -21,7 +22,11 @@ class ComparatorComponent : RedstoneComponent {
         val facing = Facing.of(block) ?: return ComponentEvaluation.None
 
         // A diode's `facing` points at its input side; the output is the opposite face.
-        val rear = inputFrom(ctx, facing, facing.oppositeFace)
+        val rear =
+            maxOf(
+                inputFrom(ctx, facing, facing.oppositeFace),
+                containerSignal(ctx.instance, ctx.position.relative(facing)),
+            )
         val side = Facing.sides(facing).maxOf { s -> inputFrom(ctx, s, s.oppositeFace) }
         val value =
             if (block.getProperty("mode") == "subtract") {
