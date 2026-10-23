@@ -52,24 +52,26 @@ class RedstoneSimulator(
         from: Point,
         face: BlockFace,
     ): Int {
-        val component = componentAt(from) ?: return 0
-        return component.emit(ReadContextImpl(from), face).weak.coerceIn(0, REDSTONE_MAX_POWER)
+        val position = canonical(from)
+        val component = componentAt(position) ?: return 0
+        return component.emit(ReadContextImpl(position), face).weak.coerceIn(0, REDSTONE_MAX_POWER)
     }
 
     override fun directSignal(
         from: Point,
         face: BlockFace,
     ): Int {
-        val component = componentAt(from) ?: return 0
-        return component.emit(ReadContextImpl(from), face).direct.coerceIn(0, REDSTONE_MAX_POWER)
+        val position = canonical(from)
+        val component = componentAt(position) ?: return 0
+        return component.emit(ReadContextImpl(position), face).direct.coerceIn(0, REDSTONE_MAX_POWER)
     }
-
     /** Called when a block in the instance changed; schedules re-evaluation for the next tick. */
     fun onBlockChanged(position: Point) {
-        invalidate(position)
-        schedule(position, 1)
+        val pos = canonical(position)
+        invalidate(pos)
+        schedule(pos, 1)
         for (face in BlockFace.entries) {
-            val neighbour = position.relative(face)
+            val neighbour = pos.relative(face)
             schedule(neighbour, 1)
 
             // Also reach components attached to a solid conductor one step out (e.g. a wire on the
@@ -80,7 +82,6 @@ class RedstoneSimulator(
             }
         }
     }
-
     /** Processes all updates due for the current server tick. */
     fun tick() {
         currentTick++
@@ -137,46 +138,49 @@ class RedstoneSimulator(
     }
 
     private fun componentAt(position: Point): RedstoneComponent? {
-        val block = instance.getBlock(position)
-        val cached = components[position]
+        val pos = canonical(position)
+        val block = instance.getBlock(pos)
+        val cached = components[pos]
         if (cached != null && cached.blockKey == block.key()) return cached.component
 
         val factory = registry.factoryFor(block)
         if (factory == null) {
-            components.remove(position)
+            components.remove(pos)
             return null
         }
 
         val component = factory(block)
-        components[position] = Cached(block.key(), component)
+        components[pos] = Cached(block.key(), component)
         return component
     }
-
     private fun sameState(
         a: Block,
         b: Block,
     ): Boolean = a.stateId() == b.stateId() && a.nbt() == b.nbt()
 
     private fun invalidate(position: Point) {
-        val cached = components[position] ?: return
-        if (cached.blockKey != instance.getBlock(position).key()) components.remove(position)
+        val pos = canonical(position)
+        val cached = components[pos] ?: return
+        if (cached.blockKey != instance.getBlock(pos).key()) components.remove(pos)
     }
-
+    /** Canonical block coordinates so `Pos` and `Vec` keys for the same block are treated equally. */
+    private fun canonical(position: Point): Point = position.asBlockVec()
     private fun schedule(
         position: Point,
         delayTicks: Int,
     ) {
-        tickQueue.add(ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, position))
+        val pos = canonical(position)
+        tickQueue.add(ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos))
     }
 
     private fun enqueue(position: Point) {
+        val pos = canonical(position)
         if (!processing) {
-            schedule(position, 1)
+            schedule(pos, 1)
             return
         }
-        if (deltaSet.add(position)) delta.add(position)
+        if (deltaSet.add(pos)) delta.add(pos)
     }
-
     private fun enqueueNeighbours(position: Point) {
         for (face in BlockFace.entries) {
             val neighbour = position.relative(face)

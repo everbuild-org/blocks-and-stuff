@@ -18,8 +18,8 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.PISTON)) { PistonComponent(sticky = false) }
     register(ComponentSelector.ByBlock(Block.STICKY_PISTON)) { PistonComponent(sticky = true) }
     register(ComponentSelector.ByBlock(Block.OBSERVER)) { ObserverComponent() }
-    register(ComponentSelector.ByBlock(Block.DISPENSER)) { TriggeredComponent() }
-    register(ComponentSelector.ByBlock(Block.DROPPER)) { TriggeredComponent() }
+    register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
+    register(ComponentSelector.ByBlock(Block.DROPPER)) { DropperComponent() }
     register(ComponentSelector.ByBlock(Block.TNT)) { TntComponent() }
     register(ComponentSelector.ByBlock(Block.LEVER)) { SwitchComponent() }
     register(ComponentSelector.ByTag("minecraft:buttons")) { SwitchComponent() }

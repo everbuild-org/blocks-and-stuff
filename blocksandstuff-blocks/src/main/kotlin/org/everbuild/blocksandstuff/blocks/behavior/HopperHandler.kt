@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.kyori.adventure.key.Key
-import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.ItemEntity
 import net.minestom.server.event.inventory.InventoryItemChangeEvent
@@ -15,6 +14,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
 import org.everbuild.blocksandstuff.common.blockinventory.extractOne
 import org.everbuild.blocksandstuff.common.blockinventory.insertStack
+import org.everbuild.blocksandstuff.common.utils.handlerOrRegistered
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 
 /**
@@ -178,10 +178,7 @@ class HopperHandler(
         val block = instance.getBlock(position)
         if (block.air()) return null
 
-        val handler =
-            block.handler()
-                ?: MinecraftServer.getBlockManager().getHandler(block.key().asString())
-        val holder = handler as? BlockInventoryHolder ?: return null
+        val holder = block.handlerOrRegistered() as? BlockInventoryHolder ?: return null
         return ContainerRef(holder, holder.getInventory(instance, position))
     }
 

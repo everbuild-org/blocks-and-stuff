@@ -8,10 +8,13 @@ import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.blocks.behavior.BlockContainerHandler
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerAnimation
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerArchetype
+import org.everbuild.blocksandstuff.blocks.behavior.DispenserHandler
+import org.everbuild.blocksandstuff.blocks.behavior.DropperHandler
 import org.everbuild.blocksandstuff.blocks.behavior.EnderChestHandler
 import org.everbuild.blocksandstuff.blocks.behavior.HopperHandler
 
 object ContainerRegistrations {
+    private const val EJECTOR_SIZE = 9
     private val colors =
         listOf(
             "white",
@@ -49,6 +52,8 @@ object ContainerRegistrations {
             registerShulker("minecraft:${color}_shulker_box")
         }
         registerHopper()
+        registerDropper()
+        registerDispenser()
         MinecraftServer.getBlockManager().registerHandler("minecraft:ender_chest") { EnderChestHandler() }
     }
 
@@ -65,6 +70,31 @@ object ContainerRegistrations {
         }
     }
 
+    private fun registerDropper() {
+        val key = Key.key("minecraft:dropper")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.dropper"),
+                InventoryType.WINDOW_3X3,
+                EJECTOR_SIZE,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:dropper") {
+            DropperHandler(key, archetype)
+        }
+    }
+
+    private fun registerDispenser() {
+        val key = Key.key("minecraft:dispenser")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.dispenser"),
+                InventoryType.WINDOW_3X3,
+                EJECTOR_SIZE,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:dispenser") {
+            DispenserHandler(key, archetype)
+        }
+    }
     private fun registerChest(blockKey: String) {
         register(
             blockKey,
