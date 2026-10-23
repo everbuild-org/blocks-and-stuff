@@ -353,6 +353,74 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun staircaseWireReceivesPowerFromUpperWire() {
+        val upper = base.add(1.0, 0.0, 0.0)
+        val lower = base.add(1.0, -1.0, 1.0)
+        instance.setBlock(upper.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(lower.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        instance.setBlock(upper, Block.REDSTONE_WIRE)
+        settle()
+        Assertions.assertEquals("15", instance.getBlock(upper).getProperty("power"))
+
+        instance.setBlock(lower, Block.REDSTONE_WIRE)
+        settle()
+
+        Assertions.assertEquals("14", instance.getBlock(lower).getProperty("power"))
+    }
+
+    @Test
+    fun staircaseWireReceivesPowerFromLowerWire() {
+        val lower = base.add(1.0, 0.0, 0.0)
+        val upper = base.add(1.0, 1.0, 1.0)
+        instance.setBlock(lower.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(upper.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        instance.setBlock(lower, Block.REDSTONE_WIRE)
+        instance.setBlock(upper, Block.REDSTONE_WIRE)
+        settle()
+
+        Assertions.assertEquals("15", instance.getBlock(lower).getProperty("power"))
+        Assertions.assertEquals("14", instance.getBlock(upper).getProperty("power"))
+    }
+
+    @Test
+    fun removingStaircaseWireClearsLowerPower() {
+        val upper = base.add(1.0, 0.0, 0.0)
+        val lower = base.add(1.0, -1.0, 1.0)
+        instance.setBlock(upper.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(lower.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        instance.setBlock(upper, Block.REDSTONE_WIRE)
+        instance.setBlock(lower, Block.REDSTONE_WIRE)
+        settle()
+        Assertions.assertEquals("14", instance.getBlock(lower).getProperty("power"))
+
+        instance.setBlock(upper, Block.AIR)
+        settle()
+
+        Assertions.assertEquals("0", instance.getBlock(lower).getProperty("power"))
+    }
+
+    @Test
+    fun staircasePowerPropagatesWhenSourceChanges() {
+        val upper = base.add(1.0, 0.0, 0.0)
+        val lower = base.add(1.0, -1.0, 1.0)
+        instance.setBlock(upper.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(lower.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(upper, Block.REDSTONE_WIRE)
+        instance.setBlock(lower, Block.REDSTONE_WIRE)
+        settle()
+        Assertions.assertEquals("0", instance.getBlock(lower).getProperty("power"))
+
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("15", instance.getBlock(upper).getProperty("power"))
+        Assertions.assertEquals("14", instance.getBlock(lower).getProperty("power"))
+    }
+
+    @Test
     fun manuallyOpenedTrapdoorStaysOpen() {
         val trapdoor = base.add(1.0, 0.0, 0.0)
         instance.setBlock(trapdoor, Block.OAK_TRAPDOOR.withProperty("open", "true"))
