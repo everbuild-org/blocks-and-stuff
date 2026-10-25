@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
+import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
@@ -16,30 +17,61 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
  */
 class ComparatorComponent : RedstoneComponent {
     private var output = 0
+    private var tickScheduled = false
+    private var scheduledAt = 0L
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         val block = ctx.block()
         val facing = Facing.of(block) ?: return ComponentEvaluation.None
+        val now = ctx.tick()
+        val currentPowered = block.getProperty("powered") == "true"
 
-        // A diode's `facing` points at its input side; the output is the opposite face.
+        if (tickScheduled && now >= scheduledAt) {
+            tickScheduled = false
+            val value = calculateOutput(ctx, block, facing)
+            val powered = value > 0
+            val changed = value != output || powered != currentPowered
+            output = value
+            if (!changed && block.getProperty("mode") != "compare") return ComponentEvaluation.None
+            return if (powered == currentPowered) {
+                ComponentEvaluation.SetState(block)
+            } else {
+                ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
+            }
+        }
+
+        if (!tickScheduled) {
+            val value = calculateOutput(ctx, block, facing)
+            if (value != output || (value > 0) != currentPowered) {
+                tickScheduled = true
+                scheduledAt = now + DELAY_TICKS
+                ctx.scheduleTick(DELAY_TICKS)
+            }
+        }
+        return ComponentEvaluation.None
+    }
+
+    private fun calculateOutput(
+        ctx: UpdateContext,
+        block: Block,
+        facing: BlockFace,
+    ): Int {
         val rear =
             maxOf(
                 inputFrom(ctx, facing, facing.oppositeFace),
                 containerSignal(ctx.instance, ctx.position.relative(facing)),
             )
         val side = Facing.sides(facing).maxOf { s -> inputFrom(ctx, s, s.oppositeFace) }
-        val value =
-            if (block.getProperty("mode") == "subtract") {
-                (rear - side).coerceAtLeast(0)
-            } else {
-                if (rear >= side) rear else 0
-            }
+        return if (block.getProperty("mode") == "subtract") {
+            (rear - side).coerceAtLeast(0)
+        } else {
+            if (rear >= side) rear else 0
+        }
+    }
 
-        val powered = value > 0
-        if (value == output && (block.getProperty("powered") == "true") == powered) return ComponentEvaluation.None
-
-        output = value
-        return ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
+    private companion object {
+        /** Vanilla comparator delay: one redstone tick (two game ticks). */
+        private const val DELAY_TICKS = 2
     }
 
     override fun emit(
@@ -47,7 +79,8 @@ class ComparatorComponent : RedstoneComponent {
         face: BlockFace,
     ): Emit =
         if (Facing.of(ctx.block())?.oppositeFace == face) {
-            Emit(output.coerceIn(0, REDSTONE_MAX_POWER))
+            val value = output.coerceIn(0, REDSTONE_MAX_POWER)
+            Emit(value, value)
         } else {
             Emit.ZERO
         }

@@ -21,6 +21,16 @@ class SwitchComponent : RedstoneComponent {
             block.getProperty("powered") == "true" -> REDSTONE_MAX_POWER
             else -> block.getProperty("power")?.toIntOrNull()?.coerceIn(0, REDSTONE_MAX_POWER) ?: 0
         }
-        return if (strength > 0) Emit(strength, strength) else Emit.ZERO
+        if (strength <= 0) return Emit.ZERO
+        return if (face == supportFace(block)) Emit(strength, strength) else Emit(strength, 0)
     }
+
+    /** Direction from the switch to the block it is attached to; only that block is strongly powered. */
+    private fun supportFace(block: Block): BlockFace? =
+        when (block.getProperty("face") ?: "floor") {
+            "floor" -> BlockFace.BOTTOM
+            "ceiling" -> BlockFace.TOP
+            "wall" -> block.getProperty("facing")?.let { BlockFace.valueOf(it.uppercase()).oppositeFace }
+            else -> null
+        }
 }

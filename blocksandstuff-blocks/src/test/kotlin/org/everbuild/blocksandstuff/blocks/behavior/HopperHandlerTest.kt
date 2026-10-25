@@ -227,14 +227,14 @@ class HopperHandlerTest {
 
         inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.STONE, 1)) }
         simulator.onBlockChanged(comparator)
-        simulator.tick()
+        repeat(3) { simulator.tick() } // comparator delay = one redstone tick
         Assertions.assertEquals(1, simulator.weakSignal(comparator, BlockFace.EAST))
 
         inventoryAt(base).transact { set ->
             for (slot in 0 until 5) set(slot, ItemStack.of(Material.STONE, 64))
         }
         simulator.onBlockChanged(comparator)
-        simulator.tick()
+        repeat(3) { simulator.tick() }
         Assertions.assertEquals(15, simulator.weakSignal(comparator, BlockFace.EAST))
     }
 

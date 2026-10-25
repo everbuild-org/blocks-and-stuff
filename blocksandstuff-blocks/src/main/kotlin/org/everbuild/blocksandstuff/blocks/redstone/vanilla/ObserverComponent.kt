@@ -15,32 +15,53 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
  */
 class ObserverComponent : RedstoneComponent {
     private var lastWatched: Block? = null
-    private var pulsing = false
-    private var pulseAt = 0L
+    private var tickScheduled = false
+    private var scheduledAt = 0L
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         val block = ctx.block()
         val facing = Facing.of(block) ?: return ComponentEvaluation.None
         val watched = ctx.block(ctx.position.relative(facing))
         val now = ctx.tick()
+        val powered = block.getProperty("powered") == "true"
 
-        if (pulsing && now >= pulseAt) {
-            pulsing = false
-            return ComponentEvaluation.SetState(block.withProperty("powered", "false"))
-        }
-
-        val previous = lastWatched
-        lastWatched = watched
-        if (previous == null) return ComponentEvaluation.None
-
-        if (!pulsing && changed(previous, watched)) {
-            pulsing = true
-            pulseAt = now + 1
-            ctx.scheduleTick(1)
+        if (tickScheduled && now >= scheduledAt) {
+            tickScheduled = false
+            if (powered) {
+                lastWatched = watched
+                return ComponentEvaluation.SetState(block.withProperty("powered", "false"))
+            }
+            scheduleTick(ctx, now)
             return ComponentEvaluation.SetState(block.withProperty("powered", "true"))
         }
 
+        if (powered) {
+            // A loaded observer with no scheduled end tick is cleared, like vanilla's onPlace.
+            lastWatched = watched
+            if (!tickScheduled) return ComponentEvaluation.SetState(block.withProperty("powered", "false"))
+            return ComponentEvaluation.None
+        }
+
+        if (tickScheduled) return ComponentEvaluation.None
+
+        val previous = lastWatched
+        lastWatched = watched
+        if (previous != null && changed(previous, watched)) scheduleTick(ctx, now)
         return ComponentEvaluation.None
+    }
+
+    private fun scheduleTick(
+        ctx: UpdateContext,
+        now: Long,
+    ) {
+        tickScheduled = true
+        scheduledAt = now + DELAY_TICKS
+        ctx.scheduleTick(DELAY_TICKS)
+    }
+
+    private companion object {
+        /** Vanilla observer delay: one redstone tick (two game ticks). */
+        private const val DELAY_TICKS = 2
     }
 
     override fun emit(

@@ -48,13 +48,34 @@ class RedstoneSimulator(
     private var sequence = 0L
     private var processing = false
 
+    /** Delta-cycle steps processed by the most recent [tick]. Diagnostic hook for tests/metrics. */
+    var lastDeltaSteps: Int = 0
+        private set
+
     override fun weakSignal(
         from: Point,
         face: BlockFace,
     ): Int {
         val position = canonical(from)
-        val component = componentAt(position) ?: return 0
+        val component =
+            componentAt(position)
+                ?: // Strongly powered solid blocks conduct their strength as weak power to their neighbours.
+                return conductedSignal(position).coerceIn(0, REDSTONE_MAX_POWER)
         return component.emit(ReadContextImpl(position), face).weak.coerceIn(0, REDSTONE_MAX_POWER)
+    }
+
+    private fun conductedSignal(position: Point): Int {
+        if (!instance.getBlock(position).solid()) return 0
+        var best = 0
+        for (face in BlockFace.entries) {
+            val neighbour = position.relative(face)
+            val signal = directSignal(neighbour, face.oppositeFace)
+            if (signal > best) {
+                best = signal
+                if (best >= REDSTONE_MAX_POWER) break
+            }
+        }
+        return best
     }
 
     override fun directSignal(
@@ -65,6 +86,7 @@ class RedstoneSimulator(
         val component = componentAt(position) ?: return 0
         return component.emit(ReadContextImpl(position), face).direct.coerceIn(0, REDSTONE_MAX_POWER)
     }
+
     /** Called when a block in the instance changed; schedules re-evaluation for the next tick. */
     fun onBlockChanged(position: Point) {
         val pos = canonical(position)
@@ -74,14 +96,13 @@ class RedstoneSimulator(
             val neighbour = pos.relative(face)
             schedule(neighbour, 1)
 
-            // Also reach components attached to a solid conductor one step out (e.g. a wire on the
-            // next staircase step), which Minestom never notifies about directly.
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
                 for (secondFace in BlockFace.entries) schedule(neighbour.relative(secondFace), 1)
             }
         }
     }
+
     /** Processes all updates due for the current server tick. */
     fun tick() {
         currentTick++
@@ -92,20 +113,26 @@ class RedstoneSimulator(
             val next = tickQueue.poll()
             if (deltaSet.add(next.position)) delta.add(next.position)
         }
-        if (delta.isEmpty()) return
+        if (delta.isEmpty()) {
+            lastDeltaSteps = 0
+            return
+        }
 
         processing = true
         try {
             var guard = 0
+            var steps = 0
             while (delta.isNotEmpty()) {
                 if (guard++ >= DELTA_LIMIT) {
                     logger.warn("Redstone delta cycle did not settle after {} steps in {}", DELTA_LIMIT, instance.uuid)
                     break
                 }
+                steps++
                 val position = delta.removeFirst()
                 deltaSet.remove(position)
                 evaluate(position)
             }
+            lastDeltaSteps = steps
         } finally {
             processing = false
         }
@@ -117,7 +144,9 @@ class RedstoneSimulator(
         val ctx = UpdateContextImpl(position)
 
         when (val evaluation = component.evaluate(ctx)) {
-            is ComponentEvaluation.None -> Unit
+            is ComponentEvaluation.None -> {
+                Unit
+            }
 
             is ComponentEvaluation.SetState -> {
                 if (!sameState(evaluation.block, block)) {
@@ -153,6 +182,7 @@ class RedstoneSimulator(
         components[pos] = Cached(block.key(), component)
         return component
     }
+
     private fun sameState(
         a: Block,
         b: Block,
@@ -163,8 +193,10 @@ class RedstoneSimulator(
         val cached = components[pos] ?: return
         if (cached.blockKey != instance.getBlock(pos).key()) components.remove(pos)
     }
+
     /** Canonical block coordinates so `Pos` and `Vec` keys for the same block are treated equally. */
     private fun canonical(position: Point): Point = position.asBlockVec()
+
     private fun schedule(
         position: Point,
         delayTicks: Int,
@@ -181,6 +213,7 @@ class RedstoneSimulator(
         }
         if (deltaSet.add(pos)) delta.add(pos)
     }
+
     private fun enqueueNeighbours(position: Point) {
         for (face in BlockFace.entries) {
             val neighbour = position.relative(face)
@@ -204,15 +237,16 @@ class RedstoneSimulator(
 
         override fun block(pos: Point): Block = instance.getBlock(pos)
 
-        override fun facing(block: Block): BlockFace? = when (block.getProperty("facing")) {
-            "north" -> BlockFace.NORTH
-            "south" -> BlockFace.SOUTH
-            "east" -> BlockFace.EAST
-            "west" -> BlockFace.WEST
-            "up" -> BlockFace.TOP
-            "down" -> BlockFace.BOTTOM
-            else -> null
-        }
+        override fun facing(block: Block): BlockFace? =
+            when (block.getProperty("facing")) {
+                "north" -> BlockFace.NORTH
+                "south" -> BlockFace.SOUTH
+                "east" -> BlockFace.EAST
+                "west" -> BlockFace.WEST
+                "up" -> BlockFace.TOP
+                "down" -> BlockFace.BOTTOM
+                else -> null
+            }
 
         override fun power(): PowerQuery = this@RedstoneSimulator
 
@@ -223,7 +257,8 @@ class RedstoneSimulator(
 
     private inner class UpdateContextImpl(
         position: Point,
-    ) : ReadContextImpl(position), UpdateContext {
+    ) : ReadContextImpl(position),
+        UpdateContext {
         override fun setState(
             pos: Point,
             block: Block,

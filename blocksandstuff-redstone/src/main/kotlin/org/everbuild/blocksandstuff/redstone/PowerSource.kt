@@ -9,4 +9,7 @@ interface PowerSource {
 
     /** When `true`, power is only emitted through the `facing` side. */
     fun directional(block: Block): Boolean = false
+
+    /** Whether the source strongly powers adjacent blocks (false for redstone blocks). */
+    fun direct(block: Block): Boolean = true
 }

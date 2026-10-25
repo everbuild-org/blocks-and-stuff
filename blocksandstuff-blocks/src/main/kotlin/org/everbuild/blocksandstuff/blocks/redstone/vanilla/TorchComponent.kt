@@ -16,12 +16,28 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
  * source; the torch's own contribution to that block is ignored.
  */
 class TorchComponent : RedstoneComponent {
+    private var tickScheduled = false
+    private var scheduledAt = 0L
+
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         val block = ctx.block()
         val support = supportOf(block, ctx.position) ?: return ComponentEvaluation.None
-        val lit = !isPowered(ctx, support, ctx.position)
-        if ((block.getProperty("lit") == "true") == lit) return ComponentEvaluation.None
-        return ComponentEvaluation.SetState(block.withProperty("lit", lit.toString()))
+        val now = ctx.tick()
+        val currentLit = block.getProperty("lit") == "true"
+
+        if (tickScheduled && now >= scheduledAt) {
+            tickScheduled = false
+            val lit = !isPowered(ctx, support, ctx.position)
+            if (lit == currentLit) return ComponentEvaluation.None
+            return ComponentEvaluation.SetState(block.withProperty("lit", lit.toString()))
+        }
+
+        if (!tickScheduled && currentLit == isPowered(ctx, support, ctx.position)) {
+            tickScheduled = true
+            scheduledAt = now + DELAY_TICKS
+            ctx.scheduleTick(DELAY_TICKS)
+        }
+        return ComponentEvaluation.None
     }
 
     override fun emit(
@@ -61,6 +77,9 @@ class TorchComponent : RedstoneComponent {
     }
 
     companion object {
+        /** Vanilla redstone torch delay: one redstone tick (two game ticks). */
+        private const val DELAY_TICKS = 2
+
         fun supportOf(
             block: Block,
             position: Point,

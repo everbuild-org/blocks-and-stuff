@@ -418,7 +418,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Repeater
 - [x] Comparator
 - [ ] Observer
-- [ ] Tageslichtsensor
+- [x] Tageslichtsensor
 - [ ] Zielblock (Target)
 - [x] Blitzableiter
 - [ ] Sculk-Sensor

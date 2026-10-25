@@ -122,6 +122,19 @@ class DispenserHandlerTest {
     }
 
     @Test
+    fun dispensesPowderSnowBucket() {
+        val handler =
+            requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
+        instance.setBlock(base, Block.DISPENSER.withProperty("facing", "north").withHandler(handler))
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.POWDER_SNOW_BUCKET)) }
+
+        handler.dispense(instance, base)
+
+        Assertions.assertEquals(Block.POWDER_SNOW.key(), instance.getBlock(base.relative(BlockFace.NORTH)).key())
+        Assertions.assertEquals(Material.BUCKET, inventoryAt(base).getItemStack(0).material())
+    }
+
+    @Test
     fun picksUpPlacedWaterAgain() {
         val handler =
             requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
@@ -134,6 +147,21 @@ class DispenserHandlerTest {
 
         Assertions.assertEquals(Block.AIR.key(), instance.getBlock(target).key())
         Assertions.assertEquals(Material.WATER_BUCKET, inventoryAt(base).getItemStack(0).material())
+    }
+
+    @Test
+    fun picksUpPlacedPowderSnowAgain() {
+        val handler =
+            requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
+        instance.setBlock(base, Block.DISPENSER.withProperty("facing", "north").withHandler(handler))
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.POWDER_SNOW_BUCKET)) }
+        val target = base.relative(BlockFace.NORTH)
+
+        handler.dispense(instance, base)
+        handler.dispense(instance, base)
+
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(target).key())
+        Assertions.assertEquals(Material.POWDER_SNOW_BUCKET, inventoryAt(base).getItemStack(0).material())
     }
 
     @Test

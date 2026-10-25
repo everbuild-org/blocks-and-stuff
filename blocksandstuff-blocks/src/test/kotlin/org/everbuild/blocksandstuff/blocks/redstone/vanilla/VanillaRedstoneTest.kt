@@ -3,6 +3,8 @@ package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.instance.Instance
+import net.minestom.server.instance.InstanceContainer
+import net.minestom.server.instance.LightingChunk
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
@@ -25,6 +27,7 @@ class VanillaRedstoneTest {
         RedstoneRegistrations.enable()
         RedstoneRegistrations.registry.registerVanillaComponents()
         instance = MinecraftServer.getInstanceManager().createInstanceContainer()
+        (instance as InstanceContainer).setChunkSupplier(::LightingChunk)
         instance.loadChunk(0, 0).join()
         simulator = RedstoneRegistrations.install(instance)
     }
@@ -238,6 +241,144 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun comparatorDelaysByOneRedstoneTick() {
+        val comparator = base.add(1.0, 0.0, 0.0)
+        val lamp = base.add(2.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        simulator.tick()
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+
+        settle(2)
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
+    fun comparatorClockDoesNotSpamDeltaCycle() {
+        val output = base.add(1.0, 0.0, 0.0)
+        val corner = base.add(1.0, 0.0, 1.0)
+        val side = base.add(0.0, 0.0, 1.0)
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        instance.setBlock(base, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "subtract"))
+        instance.setBlock(output, Block.REDSTONE_WIRE)
+        instance.setBlock(corner, Block.REDSTONE_WIRE)
+        instance.setBlock(side, Block.REDSTONE_WIRE)
+        settle(8)
+
+        val values = HashSet<String>()
+        repeat(20) {
+            simulator.tick()
+            values.add(instance.getBlock(output).getProperty("power") ?: "0")
+            Assertions.assertTrue(simulator.lastDeltaSteps < 256, "delta steps: ${simulator.lastDeltaSteps}")
+        }
+        Assertions.assertTrue(values.size > 1, "comparator clock did not oscillate")
+    }
+
+    @Test
+    fun comparatorSubtractionClockWithConductingBlock() {
+        val outputBlock = base.add(1.0, 0.0, 0.0)
+        val outputDust = base.add(1.0, 0.0, 1.0)
+        val sideDust = base.add(0.0, 0.0, 1.0)
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        instance.setBlock(base, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "subtract"))
+        instance.setBlock(outputBlock, Block.STONE)
+        instance.setBlock(outputDust, Block.REDSTONE_WIRE)
+        instance.setBlock(sideDust, Block.REDSTONE_WIRE)
+        settle(8)
+
+        val outputValues = HashSet<String>()
+        val sideValues = HashSet<String>()
+        repeat(20) {
+            simulator.tick()
+            outputValues.add(instance.getBlock(outputDust).getProperty("power") ?: "0")
+            sideValues.add(instance.getBlock(sideDust).getProperty("power") ?: "0")
+            Assertions.assertTrue(simulator.lastDeltaSteps < 256, "delta steps: ${simulator.lastDeltaSteps}")
+        }
+        Assertions.assertTrue(outputValues.size > 1, "comparator clock did not oscillate")
+        Assertions.assertTrue(sideValues.size > 1, "comparator side input did not oscillate")
+    }
+
+    @Test
+    fun repeaterStretchesShortPulses() {
+        val repeater = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(repeater, Block.REPEATER.withProperty("facing", "west"))
+        settle()
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        simulator.tick()
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        simulator.tick()
+        simulator.tick()
+        Assertions.assertEquals("true", instance.getBlock(repeater).getProperty("powered"))
+
+        settle(2)
+        Assertions.assertEquals("false", instance.getBlock(repeater).getProperty("powered"))
+    }
+
+    @Test
+    fun repeaterWritesLockedStateAndFreezes() {
+        val target = base
+        val rear = base.sub(1.0, 0.0, 0.0)
+        val side = base.add(0.0, 0.0, -1.0)
+        val sideSource = base.add(0.0, 0.0, -2.0)
+
+        instance.setBlock(rear, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(target, Block.REPEATER.withProperty("facing", "west"))
+        instance.setBlock(side, Block.REPEATER.withProperty("facing", "north"))
+        instance.setBlock(sideSource, Block.REDSTONE_BLOCK)
+        settle(6)
+
+        Assertions.assertEquals("true", instance.getBlock(target).getProperty("locked"))
+        Assertions.assertEquals("false", instance.getBlock(target).getProperty("powered"))
+
+        instance.setBlock(rear, Block.LEVER.withProperty("powered", "true"))
+        settle(4)
+        Assertions.assertEquals("false", instance.getBlock(target).getProperty("powered"))
+
+        instance.setBlock(sideSource, Block.AIR)
+        settle(8)
+        Assertions.assertEquals("false", instance.getBlock(target).getProperty("locked"))
+        Assertions.assertEquals("true", instance.getBlock(target).getProperty("powered"))
+    }
+
+    @Test
+    fun daylightDetectorTracksTimeOfDay() {
+        instance.setTime(6000)
+        instance.setBlock(base, Block.DAYLIGHT_DETECTOR)
+        settle()
+        Assertions.assertEquals("15", instance.getBlock(base).getProperty("power"))
+
+        instance.setTime(18000)
+        settle(21)
+        Assertions.assertEquals("0", instance.getBlock(base).getProperty("power"))
+    }
+
+    @Test
+    fun invertedDaylightDetectorReturnsNightSkyLight() {
+        instance.setTime(18000)
+        instance.setBlock(base, Block.DAYLIGHT_DETECTOR.withProperty("inverted", "true"))
+        settle()
+        Assertions.assertEquals("11", instance.getBlock(base).getProperty("power"))
+    }
+
+    @Test
+    fun daylightDetectorOnSolidBlockSettles() {
+        instance.setTime(6000)
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(base, Block.DAYLIGHT_DETECTOR)
+        settle()
+        Assertions.assertEquals("15", instance.getBlock(base).getProperty("power"))
+    }
+
+    @Test
     fun pistonExtendsAndRetracts() {
         val front = base.add(1.0, 0.0, 0.0)
         val pushed = base.add(2.0, 0.0, 0.0)
@@ -258,6 +399,454 @@ class VanillaRedstoneTest {
         Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
         Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
         Assertions.assertEquals(Block.STONE.key(), instance.getBlock(pushed).key())
+    }
+
+    @Test
+    fun pistonExtendsUpward() {
+        val front = base.add(0.0, 1.0, 0.0)
+        val pushed = base.add(0.0, 2.0, 0.0)
+        val source = base.add(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        instance.setBlock(front, Block.STONE)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+        Assertions.assertEquals("up", instance.getBlock(front).getProperty("facing"))
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(pushed).key())
+    }
+
+    @Test
+    fun pistonPoweredFromAbove() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(base.add(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonQuasiPoweredFromAboveFrontAfterUpdate() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(base.add(1.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.STONE)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun upwardPistonQuasiPoweredFromTwoAboveAfterUpdate() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        instance.setBlock(base.add(0.0, 2.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+
+        instance.setBlock(base.add(0.0, 0.0, 1.0), Block.STONE)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun extendedUpwardPistonStaysExtendedWithRedstoneBlockOnHead() {
+        val source = base.sub(1.0, 0.0, 0.0)
+        val head = base.add(0.0, 1.0, 0.0)
+        val onHead = base.add(0.0, 2.0, 0.0)
+
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "up"))
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(head).key())
+
+        instance.setBlock(onHead, Block.REDSTONE_BLOCK)
+        instance.setBlock(source, Block.AIR)
+        settle(6)
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(head).key())
+        Assertions.assertEquals(Block.REDSTONE_BLOCK.key(), instance.getBlock(onHead).key())
+    }
+
+    @Test
+    fun pistonPushesRedstoneBlockOnBudUpdateAndHoldsIt() {
+        val front = base.add(0.0, 1.0, 0.0)
+        val pushed = base.add(0.0, 2.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        setBlockSilently(instance, front, Block.REDSTONE_BLOCK)
+
+        instance.setBlock(base.add(0.0, 0.0, 1.0), Block.STONE)
+        settle(4)
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.REDSTONE_BLOCK.key(), instance.getBlock(pushed).key())
+
+        settle(10)
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.REDSTONE_BLOCK.key(), instance.getBlock(pushed).key())
+    }
+
+    @Test
+    fun upwardPistonPoweredFromHeadDirectionByQc() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        instance.setBlock(base.add(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(base.add(0.0, 1.0, 0.0)).key())
+        Assertions.assertEquals(Block.REDSTONE_BLOCK.key(), instance.getBlock(base.add(0.0, 2.0, 0.0)).key())
+    }
+
+    @Test
+    fun upwardPistonPoweredFromBelow() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonPoweredThroughStronglyPoweredBlockBehind() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        val support = base.sub(1.0, 0.0, 0.0)
+        instance.setBlock(support, Block.STONE)
+        instance.setBlock(
+            support.add(0.0, 1.0, 0.0),
+            Block.LEVER
+                .withProperty("face", "floor")
+                .withProperty("facing", "north")
+                .withProperty("powered", "true"),
+        )
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonExtendsAfterImmovableFrontRemoved() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val qcSource = base.add(1.0, 1.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.OBSIDIAN)
+        instance.setBlock(qcSource, Block.REDSTONE_BLOCK)
+        instance.setBlock(base.add(0.0, 0.0, 1.0), Block.STONE)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+
+        instance.setBlock(front, Block.AIR)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonDoesNotMoveMoreThanTwelveBlocks() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        for (index in 1..13) {
+            instance.setBlock(base.add(index.toDouble(), 0.0, 0.0), Block.STONE)
+        }
+        settle()
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle(5)
+
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+        for (index in 1..13) {
+            Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(index.toDouble(), 0.0, 0.0)).key())
+        }
+    }
+
+    @Test
+    fun pistonPushesRedstoneBlockOnBudUpdateFromBelow() {
+        val front = base.add(0.0, 1.0, 0.0)
+        val pushed = base.add(0.0, 2.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        setBlockSilently(instance, front, Block.REDSTONE_BLOCK)
+
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        settle(4)
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.REDSTONE_BLOCK.key(), instance.getBlock(pushed).key())
+
+        settle(10)
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonQuasiPoweredAfterUpdateFromBelow() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(base.add(1.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonPoweredByLeverThroughBlockBelow() {
+        val below = base.sub(0.0, 1.0, 0.0)
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        instance.setBlock(below, Block.STONE)
+        instance.setBlock(
+            below.add(0.0, 0.0, -1.0),
+            Block.LEVER
+                .withProperty("face", "wall")
+                .withProperty("facing", "north")
+                .withProperty("powered", "true"),
+        )
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun horizontalPistonPoweredFromBelow() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun upwardPistonPoweredByTorchBelow() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        settle()
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.REDSTONE_TORCH.withProperty("lit", "true"))
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun upwardPistonPoweredByStronglyPoweredBlockBelow() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "up"))
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(base.sub(0.0, 2.0, 0.0), Block.REDSTONE_TORCH.withProperty("lit", "true"))
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonCannotPushDropper() {
+        val front = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.DROPPER.withProperty("facing", "up"))
+        settle()
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle(5)
+
+        Assertions.assertNotNull(Block.DROPPER.blockEntityType())
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.DROPPER.key(), instance.getBlock(front).key())
+    }
+
+    @Test
+    fun pistonIgnoresPowerInFront() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonUsesQuasiConnectivityAfterBlockUpdate() {
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+
+        val quasiSource = base.add(0.0, 1.0, 1.0)
+        instance.setBlock(quasiSource, Block.REDSTONE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+
+        instance.setBlock(base.add(0.0, 0.0, 1.0), Block.STONE)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun pistonUsesMovingPistonState() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val destination = base.add(2.0, 0.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.STONE)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        simulator.tick()
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.MOVING_PISTON.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.MOVING_PISTON.key(), instance.getBlock(destination).key())
+        Assertions.assertNotNull(instance.getBlock(front).nbt())
+        Assertions.assertNotNull(Block.MOVING_PISTON.blockEntityType())
+
+        settle(2)
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(destination).key())
+    }
+
+    @Test
+    fun pistonPushesMultipleBlocks() {
+        val source = base.sub(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.STONE)
+        instance.setBlock(base.add(2.0, 0.0, 0.0), Block.DIRT)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(2.0, 0.0, 0.0)).key())
+        Assertions.assertEquals(Block.DIRT.key(), instance.getBlock(base.add(3.0, 0.0, 0.0)).key())
+    }
+
+    @Test
+    fun pistonPushesSlimeWithAttachedBlock() {
+        val slime = base.add(1.0, 0.0, 0.0)
+        val attached = base.add(1.0, 1.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(slime, Block.SLIME_BLOCK)
+        instance.setBlock(attached, Block.STONE)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+
+        Assertions.assertEquals(Block.SLIME_BLOCK.key(), instance.getBlock(base.add(2.0, 0.0, 0.0)).key())
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(2.0, 1.0, 0.0)).key())
+    }
+
+    @Test
+    fun stickyPistonDropsBlockOnShortPulse() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val dropped = base.add(2.0, 0.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.STONE)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        simulator.tick()
+        instance.setBlock(source, Block.AIR)
+        simulator.tick()
+
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(dropped).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
+
+        settle(3)
+        Assertions.assertEquals(Block.STICKY_PISTON.key(), instance.getBlock(base).key())
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(dropped).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
+    }
+
+    @Test
+    fun stickyPistonDropsFirstPushedBlockOnly() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.STONE)
+        instance.setBlock(base.add(2.0, 0.0, 0.0), Block.DIRT)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        simulator.tick()
+        instance.setBlock(source, Block.AIR)
+        simulator.tick()
+        settle(3)
+
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(2.0, 0.0, 0.0)).key())
+        Assertions.assertEquals(Block.DIRT.key(), instance.getBlock(base.add(3.0, 0.0, 0.0)).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun observerPulseDropsStickyPistonBlock() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val dropped = base.add(2.0, 0.0, 0.0)
+        val observer = base.sub(1.0, 0.0, 0.0)
+        val watched = base.sub(2.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.STONE)
+        instance.setBlock(observer, Block.OBSERVER.withProperty("facing", "west"))
+        settle()
+
+        instance.setBlock(watched, Block.STONE)
+        settle(10)
+
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(dropped).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.STICKY_PISTON.key(), instance.getBlock(base).key())
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+    }
+
+    @Test
+    fun breakingExtendedPistonRemovesHead() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.STONE)
+        settle()
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+
+        instance.setBlock(base, Block.AIR)
+        settle()
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(front).key())
+    }
+
+    @Test
+    fun breakingExtendedPistonHeadRemovesBase() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        settle()
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+
+        instance.setBlock(front, Block.AIR)
+        settle()
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base).key())
     }
 
     @Test
@@ -285,10 +874,10 @@ class VanillaRedstoneTest {
         settle()
 
         instance.setBlock(watched, Block.STONE)
-        simulator.tick()
+        settle(3)
         Assertions.assertEquals("true", instance.getBlock(base).getProperty("powered"))
 
-        simulator.tick()
+        settle(2)
         Assertions.assertEquals("false", instance.getBlock(base).getProperty("powered"))
     }
 

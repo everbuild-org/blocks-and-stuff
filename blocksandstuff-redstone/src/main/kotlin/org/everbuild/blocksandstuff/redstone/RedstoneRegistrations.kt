@@ -57,6 +57,15 @@ object RedstoneRegistrations {
     @JvmStatic
     fun simulator(instance: Instance): RedstoneSimulator? = simulators[instance]
 
+    /** Re-evaluates redstone after a silent server-side block write that did not dispatch an event. */
+    @JvmStatic
+    fun notifyBlockChanged(
+        instance: Instance,
+        position: Point,
+    ) {
+        simulator(instance)?.onBlockChanged(position)
+    }
+
     /** Re-evaluates redstone around a block whose inventory contents changed (e.g. comparator input). */
     @JvmStatic
     fun notifyContainerChanged(

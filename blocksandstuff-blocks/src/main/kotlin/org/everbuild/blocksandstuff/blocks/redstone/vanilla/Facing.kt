@@ -6,15 +6,16 @@ import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.redstone.ReadContext
 
 internal object Facing {
-    fun of(block: Block): BlockFace? = when (block.getProperty("facing")) {
-        "north" -> BlockFace.NORTH
-        "south" -> BlockFace.SOUTH
-        "east" -> BlockFace.EAST
-        "west" -> BlockFace.WEST
-        "up" -> BlockFace.TOP
-        "down" -> BlockFace.BOTTOM
-        else -> null
-    }
+    fun of(block: Block): BlockFace? =
+        when (block.getProperty("facing")) {
+            "north" -> BlockFace.NORTH
+            "south" -> BlockFace.SOUTH
+            "east" -> BlockFace.EAST
+            "west" -> BlockFace.WEST
+            "up" -> BlockFace.TOP
+            "down" -> BlockFace.BOTTOM
+            else -> null
+        }
 
     fun sides(facing: BlockFace): List<BlockFace> =
         BlockFace.entries.filter { it.toDirection().horizontal() && it != facing && it != facing.oppositeFace }
@@ -32,6 +33,9 @@ internal fun isPowered(
             ctx.power().directSignal(neighbour, face.oppositeFace),
         ) > 0
     }
+
+/** Dispensers and droppers are also triggered by power at the block above (quasi-connectivity). */
+internal fun isPoweredIncludingAbove(ctx: ReadContext): Boolean = isPowered(ctx) || isPowered(ctx, ctx.position.add(0.0, 1.0, 0.0))
 
 /** Power arriving into `ctx.position` from the neighbour at [neighbourFace]. */
 internal fun inputFrom(

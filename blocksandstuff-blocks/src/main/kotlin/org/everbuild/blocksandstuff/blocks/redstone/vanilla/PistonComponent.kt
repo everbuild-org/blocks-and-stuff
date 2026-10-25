@@ -1,79 +1,199 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
+import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
+import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.UpdateContext
 import java.util.concurrent.ThreadLocalRandom
 
 /**
- * Piston and sticky piston. Follows power transitions (extend on rising edge, retract on falling
- * edge) and pushes up to [MAX_PUSH] blocks. Slime/honey dragging and moving-block animation are not
- * modelled; the piston updates instantly.
+ * Piston and sticky piston, following vanilla movement, push/pull order, quasi-connectivity and
+ * two-game-tick moving-piston animation. Block dropping on a cancelled extension is reproduced by
+ * immediately finalizing the first pushed block and skipping the sticky pull.
  */
 class PistonComponent(
     private val sticky: Boolean,
 ) : RedstoneComponent {
-    private var lastPowered = false
+    private var extending: ExtensionState? = null
+    private var pendingBase: PendingBase? = null
+    private var lastExtendAttempt = Long.MIN_VALUE
+
+    private data class ExtensionState(
+        val firstDestination: Point?,
+        val firstBlock: Block?,
+        val completeAt: Long,
+    )
+
+    private data class PendingBase(
+        val block: Block,
+        val completeAt: Long,
+    )
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
-        val powered = isPowered(ctx)
-        if (powered == lastPowered) return ComponentEvaluation.None
-        lastPowered = powered
-        return ComponentEvaluation.Trigger { context -> if (powered) extend(context) else retract(context) }
+        val facing = Facing.of(ctx.block()) ?: return ComponentEvaluation.None
+        val now = ctx.tick()
+        val state = extending
+        if (state != null && now >= state.completeAt) extending = null
+        val pending = pendingBase
+        if (pending != null && now >= pending.completeAt) {
+            pendingBase = null
+            ctx.setState(pending.block)
+        }
+
+        val powered = isPowered(ctx, facing)
+        val extended = ctx.block().getProperty("extended") == "true"
+
+        // An extended piston without its head was broken/replaced: remove the orphaned base.
+        if (extended && pendingBase == null && !isPistonHead(ctx.block(ctx.position.relative(facing)))) {
+            ctx.instance.setBlock(ctx.position, Block.AIR, false)
+            return ComponentEvaluation.None
+        }
+
+        if (powered && !extended && pendingBase == null && now != lastExtendAttempt) {
+            lastExtendAttempt = now
+            return ComponentEvaluation.Trigger { extend(it) }
+        }
+        if (!powered && extended && pendingBase == null) {
+            return ComponentEvaluation.Trigger { retract(it) }
+        }
+        return ComponentEvaluation.None
     }
 
     private fun extend(ctx: UpdateContext) {
         val block = ctx.block()
+        if (block.getProperty("extended") == "true") return
         val facing = Facing.of(block) ?: return
-        var cursor = ctx.position.relative(facing)
+        val resolver = PistonStructureResolver(ctx.instance, ctx.position, facing, true)
+        if (!resolver.resolve()) return
 
-        val pushed = ArrayList<Pair<Point, Block>>()
-        while (true) {
-            val candidate = ctx.instance.getBlock(cursor)
-            if (candidate.air() || candidate.compare(Block.PISTON_HEAD)) break
-            if (isImmovable(candidate)) return
-            pushed.add(cursor to candidate)
-            if (pushed.size >= MAX_PUSH) return
-            cursor = cursor.relative(facing)
+        val now = ctx.tick()
+        ctx.instance.sendBlockAction(ctx.position, EXTEND_ACTION.toByte(), facing.dataValue().toByte())
+
+        for (position in resolver.toDestroy) {
+            val destroyed = ctx.instance.getBlock(position)
+            DroppedItemFactory.maybeDrop(ctx.instance, position, destroyed)
+            ctx.instance.setBlock(position, Block.AIR, false)
         }
 
-        for (index in pushed.indices.reversed()) {
-            val (origin, moved) = pushed[index]
-            ctx.instance.setBlock(origin.relative(facing), moved)
-            ctx.instance.setBlock(origin, Block.AIR)
+        val pushed = resolver.toPush.toList()
+        val firstOrigin = pushed.firstOrNull()
+        val firstBlock = firstOrigin?.let { ctx.instance.getBlock(it) }
+        val firstDestination = firstOrigin?.relative(facing)
+
+        val origins = ArrayList<Point>(pushed.size)
+        val destinations = HashSet<Point>(pushed.size)
+        for (origin in pushed.asReversed()) {
+            val moved = ctx.instance.getBlock(origin)
+            val destination = origin.relative(facing)
+            destinations.add(destination)
+            placeMovingBlock(ctx, destination, moved, facing, extending = true, source = false)
+            origins.add(origin)
         }
 
-        ctx.instance.setBlock(ctx.position.relative(facing), head(block, facing))
+        val headPosition = ctx.position.relative(facing)
+        for (origin in origins) {
+            if (origin == headPosition || origin in destinations) continue
+            setBlockSilently(ctx.instance, origin, Block.AIR)
+            RedstoneRegistrations.notifyBlockChanged(ctx.instance, origin)
+        }
+
+        placeMovingBlock(ctx, headPosition, head(facing), facing, extending = true, source = true)
         ctx.setState(ctx.position, block.withProperty("extended", "true"))
+        extending = ExtensionState(firstDestination, firstBlock, now + MOVEMENT_TICKS)
+        ctx.scheduleTick(MOVEMENT_TICKS)
+        playSound(ctx, SoundEvent.BLOCK_PISTON_EXTEND)
+    }
+
+    private fun placeMovingBlock(
+        ctx: UpdateContext,
+        position: Point,
+        moved: Block,
+        facing: BlockFace,
+        extending: Boolean,
+        source: Boolean,
+    ) {
+        setBlockSilently(
+            ctx.instance,
+            position,
+            movingPistonBlock(moved, facing, extending = extending, source = source, sticky = sticky),
+        )
+        RedstoneRegistrations.notifyBlockChanged(ctx.instance, position)
     }
 
     private fun retract(ctx: UpdateContext) {
         val block = ctx.block()
         val facing = Facing.of(block) ?: return
-        val headPosition = ctx.position.relative(facing)
-        val head = ctx.instance.getBlock(headPosition)
-        if (head.compare(Block.PISTON_HEAD)) {
-            ctx.instance.setBlock(headPosition, Block.AIR)
-        }
+        val now = ctx.tick()
+        val extension = extending
+        extending = null
 
-        if (sticky) {
-            val pullPosition = headPosition.relative(facing)
-            val pulled = ctx.instance.getBlock(pullPosition)
-            if (!pulled.air() && !isImmovable(pulled) && !pulled.compare(Block.PISTON_HEAD)) {
-                ctx.instance.setBlock(pullPosition, Block.AIR)
-                ctx.instance.setBlock(headPosition, pulled)
+        if (extension != null && now < extension.completeAt) {
+            val firstDestination = extension.firstDestination
+            val firstBlock = extension.firstBlock
+            if (firstDestination != null && firstBlock != null) {
+                // Vanilla block dropping: the first pushed block reaches its final position at once.
+                ctx.instance.sendBlockAction(ctx.position, DROP_ACTION.toByte(), facing.dataValue().toByte())
+                ctx.instance.setBlock(firstDestination, firstBlock, false)
+                ctx.instance.setBlock(ctx.position.relative(facing), Block.AIR, false)
+                scheduleBaseRetraction(ctx, block, now)
+                playSound(ctx, SoundEvent.BLOCK_PISTON_CONTRACT)
+                return
             }
         }
 
-        ctx.setState(ctx.position, block.withProperty("extended", "false"))
+        ctx.instance.sendBlockAction(ctx.position, RETRACT_ACTION.toByte(), facing.dataValue().toByte())
+        val headPosition = ctx.position.relative(facing)
+        ctx.instance.setBlock(headPosition, Block.AIR, false)
+
+        val pulled =
+            if (sticky) {
+                val resolver = PistonStructureResolver(ctx.instance, ctx.position, facing, false)
+                if (resolver.resolve()) resolver.toPush.toList() else emptyList()
+            } else {
+                emptyList()
+            }
+
+        val destinations = HashSet<Point>(pulled.size)
+        for (origin in pulled.asReversed()) {
+            val moved = ctx.instance.getBlock(origin)
+            val destination = origin.relative(facing.oppositeFace)
+            destinations.add(destination)
+            placeMovingBlock(ctx, destination, moved, facing, extending = false, source = false)
+        }
+        for (origin in pulled) {
+            if (origin in destinations) continue
+            setBlockSilently(ctx.instance, origin, Block.AIR)
+            RedstoneRegistrations.notifyBlockChanged(ctx.instance, origin)
+        }
+
+        scheduleBaseRetraction(ctx, block, now)
         playSound(ctx, SoundEvent.BLOCK_PISTON_CONTRACT)
     }
+
+    private fun scheduleBaseRetraction(
+        ctx: UpdateContext,
+        block: Block,
+        now: Long,
+    ) {
+        pendingBase = PendingBase(block.withProperty("extended", "false"), now + MOVEMENT_TICKS)
+        ctx.scheduleTick(MOVEMENT_TICKS)
+    }
+
+    private fun head(facing: BlockFace): Block =
+        Block.PISTON_HEAD
+            .withProperty("facing", facing.propertyValue())
+            .withProperty("type", if (sticky) "sticky" else "normal")
+
+    private fun isPistonHead(block: Block): Boolean =
+        block.compare(Block.PISTON_HEAD) ||
+            (block.compare(Block.MOVING_PISTON) && movedState(block)?.compare(Block.PISTON_HEAD) == true)
 
     private fun playSound(
         ctx: UpdateContext,
@@ -86,40 +206,41 @@ class PistonComponent(
         )
     }
 
-    private fun head(
-        block: Block,
+    private fun isPowered(
+        ctx: ReadContext,
         facing: BlockFace,
-    ): Block =
-        Block.PISTON_HEAD
-            .withProperty("facing", facing.name.lowercase())
-            .withProperty("type", if (sticky) "sticky" else "normal")
+    ): Boolean {
+        for (face in BlockFace.entries) {
+            // Upward-facing pistons can be powered from the head direction by quasi-connectivity.
+            if (face == facing && facing != BlockFace.TOP) continue
+            if (signalInto(ctx, ctx.position.relative(face), face.oppositeFace) > 0) return true
+        }
+
+        val above = ctx.position.add(0.0, 1.0, 0.0)
+        for (face in BlockFace.entries) {
+            if (face == BlockFace.BOTTOM) continue
+            if (signalInto(ctx, above.relative(face), face.oppositeFace) > 0) return true
+        }
+        return false
+    }
+
+    private fun signalInto(
+        ctx: ReadContext,
+        neighbour: Point,
+        into: BlockFace,
+    ): Int {
+        val block = ctx.block(neighbour)
+        return if (WireComponent.isWire(block)) {
+            WireComponent.powerOf(block)
+        } else {
+            maxOf(ctx.power().weakSignal(neighbour, into), ctx.power().directSignal(neighbour, into))
+        }
+    }
 
     private companion object {
-        private const val MAX_PUSH = 12
-
-        private val immovableKeys: Set<Key> =
-            setOf(
-                Key.key("minecraft:bedrock"),
-                Key.key("minecraft:obsidian"),
-                Key.key("minecraft:crying_obsidian"),
-                Key.key("minecraft:ancient_debris"),
-                Key.key("minecraft:reinforced_deepslate"),
-                Key.key("minecraft:enchanting_table"),
-                Key.key("minecraft:beacon"),
-                Key.key("minecraft:end_portal"),
-                Key.key("minecraft:end_portal_frame"),
-                Key.key("minecraft:ender_chest"),
-                Key.key("minecraft:nether_portal"),
-                Key.key("minecraft:respawn_anchor"),
-                Key.key("minecraft:barrier"),
-                Key.key("minecraft:command_block"),
-                Key.key("minecraft:chain_command_block"),
-                Key.key("minecraft:repeating_command_block"),
-                Key.key("minecraft:structure_block"),
-                Key.key("minecraft:jigsaw"),
-                Key.key("minecraft:moving_piston"),
-            )
-
-        private fun isImmovable(block: Block): Boolean = block.key() in immovableKeys
+        private const val MOVEMENT_TICKS = 2
+        private const val EXTEND_ACTION = 0
+        private const val RETRACT_ACTION = 1
+        private const val DROP_ACTION = 2
     }
 }

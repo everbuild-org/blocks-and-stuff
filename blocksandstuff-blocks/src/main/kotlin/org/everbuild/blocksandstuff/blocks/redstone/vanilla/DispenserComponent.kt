@@ -11,7 +11,7 @@ class DispenserComponent : RedstoneComponent {
     private var lastPowered = false
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
-        val powered = isPowered(ctx)
+        val powered = isPoweredIncludingAbove(ctx)
         if (powered == lastPowered) return ComponentEvaluation.None
         lastPowered = powered
 

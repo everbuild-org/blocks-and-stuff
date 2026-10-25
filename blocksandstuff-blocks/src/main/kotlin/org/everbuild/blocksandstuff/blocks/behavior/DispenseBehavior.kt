@@ -81,12 +81,18 @@ object DispenseBehaviors {
     }
 
     /** Registers or overrides the behavior for [material]. The latest registration wins. */
-    fun register(material: Material, behavior: DispenseBehavior) {
+    fun register(
+        material: Material,
+        behavior: DispenseBehavior,
+    ) {
         register({ it.material() == material }, behavior)
     }
 
     /** Registers or overrides a behavior for any matching item. The latest registration wins. */
-    fun register(matches: (ItemStack) -> Boolean, behavior: DispenseBehavior) {
+    fun register(
+        matches: (ItemStack) -> Boolean,
+        behavior: DispenseBehavior,
+    ) {
         entries.add(Entry(matches, behavior))
     }
 
@@ -104,6 +110,11 @@ object DispenseBehaviors {
             context.setSlot(ItemStack.of(Material.BUCKET))
             true
         }
+        register(Material.POWDER_SNOW_BUCKET) { context ->
+            if (!context.placeFluid(Block.POWDER_SNOW)) return@register false
+            context.setSlot(ItemStack.of(Material.BUCKET))
+            true
+        }
         register(Material.BUCKET) { context ->
             when {
                 context.pickUpFluid(Block.WATER) -> {
@@ -116,7 +127,14 @@ object DispenseBehaviors {
                     true
                 }
 
-                else -> false
+                context.pickUpFluid(Block.POWDER_SNOW) -> {
+                    context.setSlot(ItemStack.of(Material.POWDER_SNOW_BUCKET))
+                    true
+                }
+
+                else -> {
+                    false
+                }
             }
         }
     }

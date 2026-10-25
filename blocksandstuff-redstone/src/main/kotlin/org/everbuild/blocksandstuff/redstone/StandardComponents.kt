@@ -15,7 +15,7 @@ internal class SourceComponent(
         val strength = source.strength(ctx.block()).coerceIn(0, REDSTONE_MAX_POWER)
         if (strength <= 0) return Emit.ZERO
         if (source.directional(concrete) && ctx.facing(ctx.block()) != face) return Emit.ZERO
-        return Emit(strength, strength)
+        return if (source.direct(ctx.block())) Emit(strength, strength) else Emit(strength, 0)
     }
 }
 
