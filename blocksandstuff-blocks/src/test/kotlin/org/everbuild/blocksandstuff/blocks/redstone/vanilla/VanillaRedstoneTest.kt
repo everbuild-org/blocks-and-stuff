@@ -2,6 +2,8 @@
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.Entity
+import net.minestom.server.entity.EntityType
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.LightingChunk
@@ -1019,6 +1021,44 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base).key())
+    }
+
+    @Test
+    fun tripwireHookPowersWhenEntityTouchesString() {
+        val hookA = base
+        val wire1 = base.add(1.0, 0.0, 0.0)
+        val wire2 = base.add(2.0, 0.0, 0.0)
+        val hookB = base.add(3.0, 0.0, 0.0)
+        val lamp = base.add(0.0, 0.0, -1.0)
+
+        instance.setBlock(hookA, Block.TRIPWIRE_HOOK.withProperty("facing", "east"))
+        instance.setBlock(wire1, Block.TRIPWIRE)
+        instance.setBlock(wire2, Block.TRIPWIRE)
+        instance.setBlock(hookB, Block.TRIPWIRE_HOOK.withProperty("facing", "west"))
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        settle(5)
+
+        Assertions.assertEquals("true", instance.getBlock(hookA).getProperty("attached"))
+        Assertions.assertEquals("true", instance.getBlock(hookB).getProperty("attached"))
+        Assertions.assertEquals("true", instance.getBlock(wire1).getProperty("attached"))
+        Assertions.assertEquals("true", instance.getBlock(wire2).getProperty("attached"))
+        Assertions.assertEquals("false", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+
+        val entity = Entity(EntityType.ARMOR_STAND)
+        entity.setInstance(instance, Pos(wire1.x() + 0.5, wire1.y(), wire1.z() + 0.5)).join()
+        settle(3)
+
+        Assertions.assertEquals("true", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(hookB).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+
+        entity.remove()
+        settle(6)
+
+        Assertions.assertEquals("false", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(hookB).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
     }
 
     @Test

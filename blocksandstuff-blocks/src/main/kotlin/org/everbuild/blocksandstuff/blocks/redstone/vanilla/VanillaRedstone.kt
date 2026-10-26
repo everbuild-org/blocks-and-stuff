@@ -24,6 +24,7 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.OBSERVER)) { ObserverComponent() }
     register(ComponentSelector.ByBlock(Block.DAYLIGHT_DETECTOR)) { DaylightDetectorComponent() }
     register(ComponentSelector.ByBlock(Block.TARGET)) { TargetComponent() }
+    register(ComponentSelector.ByBlock(Block.TRIPWIRE_HOOK)) { TripwireHookComponent() }
     register(ComponentSelector.ByTag("minecraft:lightning_rods")) { LightningRodComponent() }
     copperBulbs.forEach { bulb -> register(ComponentSelector.ByBlock(bulb)) { CopperBulbComponent() } }
     register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
