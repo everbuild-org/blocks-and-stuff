@@ -11,6 +11,8 @@ import org.everbuild.blocksandstuff.redstone.RedstoneRegistry
  */
 fun RedstoneRegistry.registerVanillaComponents() {
     PistonCleanupRegistration.registerDefault()
+    TargetBlockRegistration.registerDefault()
+    LightningRodBlockRegistration.registerDefault()
     register(ComponentSelector.ByBlock(Block.REDSTONE_WIRE)) { WireComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_TORCH)) { TorchComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_WALL_TORCH)) { TorchComponent() }
@@ -21,6 +23,8 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.MOVING_PISTON)) { MovingPistonComponent() }
     register(ComponentSelector.ByBlock(Block.OBSERVER)) { ObserverComponent() }
     register(ComponentSelector.ByBlock(Block.DAYLIGHT_DETECTOR)) { DaylightDetectorComponent() }
+    register(ComponentSelector.ByBlock(Block.TARGET)) { TargetComponent() }
+    register(ComponentSelector.ByTag("minecraft:lightning_rods")) { LightningRodComponent() }
     register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
     register(ComponentSelector.ByBlock(Block.DROPPER)) { DropperComponent() }
     register(ComponentSelector.ByBlock(Block.TNT)) { TntComponent() }

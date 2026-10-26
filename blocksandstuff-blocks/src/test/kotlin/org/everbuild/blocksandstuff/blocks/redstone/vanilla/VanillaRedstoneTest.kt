@@ -241,6 +241,34 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun targetStoresProjectilePowerAndDecays() {
+        instance.setBlock(base, Block.TARGET)
+        settle()
+
+        TargetBlockRegistration.hit(instance, base, 11, 8)
+        Assertions.assertEquals("11", instance.getBlock(base).getProperty("power"))
+        Assertions.assertEquals(11, simulator.weakSignal(base, BlockFace.TOP))
+
+        settle(8)
+        Assertions.assertEquals("0", instance.getBlock(base).getProperty("power"))
+    }
+
+    @Test
+    fun lightningRodPowersAndDecays() {
+        instance.setBlock(base, Block.LIGHTNING_ROD.withProperty("facing", "up").withProperty("powered", "false"))
+        settle()
+
+        LightningRodBlockRegistration.strike(instance, base)
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("powered"))
+        Assertions.assertEquals(15, simulator.weakSignal(base, BlockFace.TOP))
+        Assertions.assertEquals(15, simulator.directSignal(base, BlockFace.BOTTOM))
+
+        settle(8)
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("powered"))
+    }
+
+    @Test
     fun comparatorDelaysByOneRedstoneTick() {
         val comparator = base.add(1.0, 0.0, 0.0)
         val lamp = base.add(2.0, 0.0, 0.0)
