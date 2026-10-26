@@ -27,11 +27,7 @@ internal fun isPowered(
     position: Point = ctx.position,
 ): Boolean =
     BlockFace.entries.any { face ->
-        val neighbour = position.relative(face)
-        maxOf(
-            ctx.power().weakSignal(neighbour, face.oppositeFace),
-            ctx.power().directSignal(neighbour, face.oppositeFace),
-        ) > 0
+        signalFrom(ctx, position.relative(face), face.oppositeFace) > 0
     }
 
 /** Dispensers and droppers are also triggered by power at the block above (quasi-connectivity). */
@@ -42,15 +38,25 @@ internal fun inputFrom(
     ctx: ReadContext,
     neighbourFace: BlockFace,
     directionFromNeighbour: BlockFace,
+): Int = signalFrom(ctx, ctx.position.relative(neighbourFace), directionFromNeighbour)
+
+/**
+ * Signal that [neighbour] delivers into the current block. A conductive block without its own
+ * component is treated as a powered block, so both strongly and weakly powered blocks can feed
+ * repeaters, comparators and mechanisms.
+ */
+private fun signalFrom(
+    ctx: ReadContext,
+    neighbour: Point,
+    directionFromNeighbour: BlockFace,
 ): Int {
-    val neighbour = ctx.position.relative(neighbourFace)
     val block = ctx.block(neighbour)
-    return if (WireComponent.isWire(block)) {
-        WireComponent.powerOf(block)
-    } else {
-        maxOf(
-            ctx.power().weakSignal(neighbour, directionFromNeighbour),
-            ctx.power().directSignal(neighbour, directionFromNeighbour),
-        )
+    if (WireComponent.isWire(block)) return WireComponent.powerOf(block)
+    if (ctx.componentAt(neighbour) == null && block.redstoneConductor()) {
+        return ctx.power().signalInto(neighbour)
     }
+    return maxOf(
+        ctx.power().weakSignal(neighbour, directionFromNeighbour),
+        ctx.power().directSignal(neighbour, directionFromNeighbour),
+    )
 }

@@ -134,6 +134,31 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun redstoneTorchBurnsOutWhenToggledTooQuickly() {
+        val support = base
+        val torch = base.add(0.0, 1.0, 0.0)
+        val source = base.add(1.0, 0.0, 0.0)
+
+        instance.setBlock(support, Block.STONE)
+        instance.setBlock(torch, Block.REDSTONE_TORCH.withProperty("lit", "true"))
+        settle()
+
+        repeat(8) {
+            instance.setBlock(source, Block.REDSTONE_BLOCK)
+            settle(3)
+            instance.setBlock(source, Block.AIR)
+            settle(3)
+        }
+
+        Assertions.assertEquals("false", instance.getBlock(torch).getProperty("lit"))
+        settle(5)
+        Assertions.assertEquals("false", instance.getBlock(torch).getProperty("lit"))
+
+        settle(170)
+        Assertions.assertEquals("true", instance.getBlock(torch).getProperty("lit"))
+    }
+
+    @Test
     fun torchesOnSameBlockDoNotTurnEachOtherOff() {
         val support = base
         val topTorch = base.add(0.0, 1.0, 0.0)
@@ -219,6 +244,24 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun repeaterIsPoweredByWeaklyPoweredBlock() {
+        val repeater = base
+        val stone = base.sub(1.0, 0.0, 0.0)
+        val dust = stone.add(0.0, 1.0, 0.0)
+        val source = dust.sub(1.0, 0.0, 0.0)
+        val lamp = base.add(1.0, 0.0, 0.0)
+
+        instance.setBlock(repeater, Block.REPEATER.withProperty("facing", "west"))
+        instance.setBlock(stone, Block.STONE)
+        instance.setBlock(dust, Block.REDSTONE_WIRE)
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        settle(5)
+
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
     fun parallelRepeatersDoNotLockEachOther() {
         val second = base.add(0.0, 0.0, 1.0)
         instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.LEVER.withProperty("powered", "true"))
@@ -257,34 +300,6 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
-    }
-
-    @Test
-    fun poweredSideRepeaterLocksComparator() {
-        val comparator = base
-        val rear = base.sub(1.0, 0.0, 0.0)
-        val sideRepeater = base.add(0.0, 0.0, -1.0)
-        val sideInput = base.add(0.0, 0.0, -2.0)
-
-        instance.setBlock(rear, Block.LEVER.withProperty("powered", "true"))
-        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "false"))
-        instance.setBlock(sideRepeater, Block.REPEATER.withProperty("facing", "north"))
-        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
-        settle(5)
-        Assertions.assertEquals("true", instance.getBlock(comparator).getProperty("powered"))
-
-        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "true"))
-        settle(5)
-
-        instance.setBlock(rear, Block.LEVER.withProperty("powered", "false"))
-        settle(5)
-        Assertions.assertEquals("true", instance.getBlock(comparator).getProperty("powered"))
-        Assertions.assertEquals(15, simulator.weakSignal(comparator, BlockFace.EAST))
-
-        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "false"))
-        settle(6)
-        Assertions.assertEquals("false", instance.getBlock(comparator).getProperty("powered"))
-        Assertions.assertEquals(0, simulator.weakSignal(comparator, BlockFace.EAST))
     }
 
     @Test
@@ -1043,6 +1058,26 @@ class VanillaRedstoneTest {
 
         Assertions.assertEquals("up", instance.getBlock(base).getProperty("east"))
         Assertions.assertEquals("side", instance.getBlock(upper).getProperty("west"))
+    }
+
+    @Test
+    fun conductiveBlockCutsVerticalWirePower() {
+        val between = base.add(0.0, 1.0, 0.0)
+        val upper = base.add(1.0, 1.0, 0.0)
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(upper.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(between, Block.STONE)
+        instance.setBlock(base, Block.REDSTONE_WIRE)
+        instance.setBlock(upper, Block.REDSTONE_WIRE)
+        instance.setBlock(upper.add(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle()
+
+        Assertions.assertEquals("0", instance.getBlock(base).getProperty("power"))
+
+        instance.setBlock(between, Block.GLASS)
+        settle()
+
+        Assertions.assertEquals("14", instance.getBlock(base).getProperty("power"))
     }
 
     @Test

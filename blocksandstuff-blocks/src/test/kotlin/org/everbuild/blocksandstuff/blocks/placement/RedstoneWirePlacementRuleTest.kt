@@ -83,4 +83,52 @@ class RedstoneWirePlacementRuleTest {
         Assertions.assertEquals("side", result.getProperty("west"))
         Assertions.assertEquals("none", result.getProperty("north"))
     }
+
+    @Test
+    fun doesNotConnectToDiodeSides() {
+        instance.setBlock(pos.sub(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.sub(0.0, 0.0, 1.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.add(1.0, 0.0, 0.0), Block.REPEATER.withProperty("facing", "north"))
+
+        val result = rule.blockUpdate(BlockPlacementRule.UpdateState(instance, pos, Block.REDSTONE_WIRE, BlockFace.TOP))
+
+        Assertions.assertEquals("side", result.getProperty("west"))
+        Assertions.assertEquals("side", result.getProperty("north"))
+        Assertions.assertEquals("none", result.getProperty("east"))
+    }
+
+    @Test
+    fun connectsToComparatorSide() {
+        instance.setBlock(pos.sub(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.sub(0.0, 0.0, 1.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.add(1.0, 0.0, 0.0), Block.COMPARATOR.withProperty("facing", "north"))
+
+        val result = rule.blockUpdate(BlockPlacementRule.UpdateState(instance, pos, Block.REDSTONE_WIRE, BlockFace.TOP))
+
+        Assertions.assertEquals("side", result.getProperty("east"))
+    }
+
+    @Test
+    fun conductiveBlockCutsVerticalConnection() {
+        instance.setBlock(pos.add(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(pos.sub(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.sub(0.0, 0.0, 1.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.add(1.0, 1.0, 0.0), Block.REDSTONE_WIRE)
+
+        val result = rule.blockUpdate(BlockPlacementRule.UpdateState(instance, pos, Block.REDSTONE_WIRE, BlockFace.TOP))
+
+        Assertions.assertEquals("none", result.getProperty("east"))
+    }
+
+    @Test
+    fun nonConductiveBlockAllowsVerticalConnection() {
+        instance.setBlock(pos.add(0.0, 1.0, 0.0), Block.GLASS)
+        instance.setBlock(pos.sub(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.sub(0.0, 0.0, 1.0), Block.REDSTONE_LAMP)
+        instance.setBlock(pos.add(1.0, 1.0, 0.0), Block.REDSTONE_WIRE)
+
+        val result = rule.blockUpdate(BlockPlacementRule.UpdateState(instance, pos, Block.REDSTONE_WIRE, BlockFace.TOP))
+
+        Assertions.assertEquals("up", result.getProperty("east"))
+    }
 }

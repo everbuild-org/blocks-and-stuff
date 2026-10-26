@@ -72,7 +72,7 @@ class RedstoneSimulator(
     }
 
     private fun conductedSignal(position: Point): Int {
-        if (!instance.getBlock(position).solid()) return 0
+        if (!instance.getBlock(position).redstoneConductor()) return 0
         var best = 0
         for (face in BlockFace.entries) {
             val neighbour = position.relative(face)

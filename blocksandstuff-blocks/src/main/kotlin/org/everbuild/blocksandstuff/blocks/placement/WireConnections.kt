@@ -66,9 +66,9 @@ object WireConnections {
         val supported = bottomBlock?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
         if (!supported) return null
 
-        val sideConnections = getSideConnections(instance, position, true)
-        val bottomSideConnections = getSideConnections(instance, position.sub(0.0, 1.0, 0.0), false)
-        val topSideConnections = getSideConnections(instance, position.add(0.0, 1.0, 0.0), false)
+        val sideConnections = getSideConnections(instance, position)
+        val bottomSideConnections = getVerticalSideConnections(instance, position, up = false)
+        val topSideConnections = getVerticalSideConnections(instance, position, up = true)
 
         val connections =
             horizontalFaces.associate { face ->
@@ -113,9 +113,9 @@ object WireConnections {
         instance: Block.Getter,
         position: Point,
     ): Set<Point> {
-        val sideConnections = getSideConnections(instance, position, true)
-        val bottomSideConnections = getSideConnections(instance, position.sub(0.0, 1.0, 0.0), false)
-        val topSideConnections = getSideConnections(instance, position.add(0.0, 1.0, 0.0), false)
+        val sideConnections = getSideConnections(instance, position)
+        val bottomSideConnections = getVerticalSideConnections(instance, position, up = false)
+        val topSideConnections = getVerticalSideConnections(instance, position, up = true)
 
         return horizontalFaces
             .mapNotNull { face ->
@@ -136,10 +136,57 @@ object WireConnections {
     private fun getSideConnections(
         instance: Block.Getter,
         position: Point,
-        direct: Boolean,
     ): List<BlockFace> =
         horizontalFaces.filter { face ->
             val block = instance.getBlock(position.relative(face))
-            (direct && block.key() in simpleConnectionKeys) || block.compare(Block.REDSTONE_WIRE)
+            connectsTo(block, face) || block.compare(Block.REDSTONE_WIRE)
+        }
+
+    /**
+     * Vanilla cuts a vertical wire connection when the block between the two wire levels conducts
+     * redstone (e.g. stone), while air and non-conductive blocks (e.g. glass) allow it. The block
+     * between an upper and lower wire depends on the horizontal direction, so this is checked per
+     * face.
+     */
+    private fun getVerticalSideConnections(
+        instance: Block.Getter,
+        position: Point,
+        up: Boolean,
+    ): List<BlockFace> =
+        horizontalFaces.filter { face ->
+            val horizontal = position.relative(face)
+            val wirePosition = if (up) horizontal.add(0.0, 1.0, 0.0) else horizontal.sub(0.0, 1.0, 0.0)
+            if (!instance.getBlock(wirePosition).compare(Block.REDSTONE_WIRE)) return@filter false
+
+            val between = if (up) position.add(0.0, 1.0, 0.0) else horizontal
+            !instance.getBlock(between).redstoneConductor()
+        }
+
+    /**
+     * Vanilla connection rule: wire attaches to a repeater only along its input/output axis and to
+     * an observer only on its output side. Comparators accept side inputs, so wire connects to them
+     * from any side. `face` points from the wire to [neighbour].
+     */
+    private fun connectsTo(
+        neighbour: Block,
+        face: BlockFace,
+    ): Boolean {
+        if (neighbour.compare(Block.REPEATER)) {
+            val facing = facingOf(neighbour) ?: return false
+            return face == facing || face == facing.oppositeFace
+        }
+        if (neighbour.compare(Block.OBSERVER)) {
+            return face == facingOf(neighbour)
+        }
+        return neighbour.key() in simpleConnectionKeys
+    }
+
+    private fun facingOf(block: Block): BlockFace? =
+        when (block.getProperty("facing")) {
+            "north" -> BlockFace.NORTH
+            "south" -> BlockFace.SOUTH
+            "east" -> BlockFace.EAST
+            "west" -> BlockFace.WEST
+            else -> null
         }
 }

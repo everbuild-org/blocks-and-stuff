@@ -11,7 +11,8 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
 
 /**
  * Redstone repeater. Input from the back, output 15 through the front, delayed by `delay` redstone
- * ticks (2 game ticks each). Locked repeaters/comparators on the sides freeze the state.
+ * ticks (2 game ticks each). A powered repeater or comparator pointing into its side freezes the
+ * state.
  */
 class RepeaterComponent : RedstoneComponent {
     private var tickScheduled = false
