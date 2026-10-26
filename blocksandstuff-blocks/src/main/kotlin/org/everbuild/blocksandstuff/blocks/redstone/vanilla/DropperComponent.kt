@@ -6,21 +6,44 @@ import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
 
-/** Dropper: ejects one item on a rising redstone edge and mirrors power in `triggered`. */
+/** Dropper: ejects one item four game ticks after a rising redstone edge. */
 class DropperComponent : RedstoneComponent {
     private var lastPowered = false
+    private var triggerAt = -1L
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         val powered = isPoweredIncludingAbove(ctx)
-        if (powered == lastPowered) return ComponentEvaluation.None
-        lastPowered = powered
+        val now = ctx.tick()
+        val block = ctx.block()
 
-        return ComponentEvaluation.Trigger { context ->
-            if (powered) {
+        if (triggerAt >= 0) {
+            if (powered != lastPowered) {
+                lastPowered = powered
+                if (!powered) return ComponentEvaluation.SetState(block.withProperty("triggered", "false"))
+                triggerAt = now + DELAY_TICKS
+                ctx.scheduleTick(DELAY_TICKS)
+                return ComponentEvaluation.None
+            }
+            if (now < triggerAt) return ComponentEvaluation.None
+            triggerAt = -1L
+            if (!powered) return ComponentEvaluation.SetState(block.withProperty("triggered", "false"))
+            return ComponentEvaluation.Trigger { context ->
                 (context.instance.getBlock(context.position).handlerOrRegistered() as? DropperHandler)
                     ?.eject(context.instance, context.position)
+                context.setState(context.block().withProperty("triggered", "true"))
             }
-            context.setState(context.block().withProperty("triggered", powered.toString()))
         }
+
+        if (powered == lastPowered) return ComponentEvaluation.None
+        lastPowered = powered
+        if (!powered) return ComponentEvaluation.SetState(block.withProperty("triggered", "false"))
+
+        triggerAt = now + DELAY_TICKS
+        ctx.scheduleTick(DELAY_TICKS)
+        return ComponentEvaluation.SetState(block.withProperty("triggered", "true"))
+    }
+
+    private companion object {
+        private const val DELAY_TICKS = 4
     }
 }

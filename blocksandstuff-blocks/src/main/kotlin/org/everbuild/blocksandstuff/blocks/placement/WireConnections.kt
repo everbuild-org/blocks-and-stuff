@@ -61,6 +61,7 @@ object WireConnections {
         instance: Block.Getter,
         position: Point,
         current: Block,
+        preserveDot: Boolean = true,
     ): Block? {
         val bottomBlock = instance.getBlock(position.sub(0.0, 1.0, 0.0))
         val supported = bottomBlock?.collisionShape()?.isFaceFull(BlockFace.TOP) ?: false
@@ -99,7 +100,11 @@ object WireConnections {
 
         val actual = connections.filter { it.value != ConnectionType.NONE }
         if (actual.isEmpty()) {
-            return current.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" })
+            return if (preserveDot && isDot(current)) {
+                current
+            } else {
+                current.withProperties(horizontalFaces.associate { it.name.lowercase() to "side" })
+            }
         }
         if (actual.size == 1) {
             val (face, _) = actual.entries.first()
@@ -107,6 +112,15 @@ object WireConnections {
         }
         return preliminary
     }
+
+    /** Whether the wire is isolated and therefore can be toggled between cross and dot. */
+    fun isIsolated(
+        instance: Block.Getter,
+        position: Point,
+    ): Boolean =
+        getSideConnections(instance, position).isEmpty() &&
+            getVerticalSideConnections(instance, position, up = true).isEmpty() &&
+            getVerticalSideConnections(instance, position, up = false).isEmpty()
 
     /** Positions of connected wire blocks that can feed power into [position], including staircases. */
     fun connectedWirePositions(
@@ -132,6 +146,9 @@ object WireConnections {
         instance: Block.Getter,
         position: Point,
     ): Boolean = instance.getBlock(position).compare(Block.REDSTONE_WIRE)
+
+    private fun isDot(block: Block): Boolean =
+        horizontalFaces.all { (block.getProperty(it.name.lowercase()) ?: "none") == "none" }
 
     private fun getSideConnections(
         instance: Block.Getter,

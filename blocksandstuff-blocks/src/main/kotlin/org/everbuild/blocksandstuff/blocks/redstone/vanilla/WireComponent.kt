@@ -29,7 +29,25 @@ class WireComponent : RedstoneComponent {
     override fun emit(
         ctx: ReadContext,
         face: BlockFace,
-    ): Emit = Emit(powerOf(ctx.block()))
+    ): Emit {
+        val block = ctx.block()
+        val power = powerOf(block)
+        if (power <= 0) return Emit.ZERO
+
+        val hasConnection = HORIZONTAL_PROPERTIES.any { (block.getProperty(it) ?: "none") != "none" }
+        val supported =
+            ctx.block(ctx.position.sub(0.0, 1.0, 0.0)).collisionShape().isFaceFull(BlockFace.TOP)
+        if (!hasConnection && !supported) return Emit(power)
+
+        return when (face) {
+            BlockFace.BOTTOM -> Emit(power)
+            BlockFace.TOP -> Emit.ZERO
+            else -> {
+                val connection = block.getProperty(face.name.lowercase())
+                if (connection == null || connection == "none") Emit.ZERO else Emit(power)
+            }
+        }
+    }
 
     private fun computePower(ctx: ReadContext): Int {
         var best = 0
@@ -49,6 +67,8 @@ class WireComponent : RedstoneComponent {
     }
 
     companion object {
+        private val HORIZONTAL_PROPERTIES = listOf("north", "east", "south", "west")
+
         fun isWire(block: Block): Boolean = block.compare(Block.REDSTONE_WIRE)
 
         fun powerOf(block: Block): Int = block.getProperty("power")?.toIntOrNull()?.coerceIn(0, REDSTONE_MAX_POWER) ?: 0

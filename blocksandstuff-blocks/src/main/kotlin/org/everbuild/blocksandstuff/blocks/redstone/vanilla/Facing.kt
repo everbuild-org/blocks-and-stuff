@@ -51,7 +51,6 @@ private fun signalFrom(
     directionFromNeighbour: BlockFace,
 ): Int {
     val block = ctx.block(neighbour)
-    if (WireComponent.isWire(block)) return WireComponent.powerOf(block)
     if (ctx.componentAt(neighbour) == null && block.redstoneConductor()) {
         return ctx.power().signalInto(neighbour)
     }

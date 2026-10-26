@@ -5,6 +5,7 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.component.DataComponents
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.coordinate.Vec
+import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.instance.Instance
@@ -210,8 +211,55 @@ class DispenserHandlerTest {
         simulator.onBlockChanged(source)
         simulator.tick()
 
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base.relative(BlockFace.NORTH)).key())
+
+        repeat(4) { simulator.tick() }
+
         Assertions.assertEquals(Block.WATER.key(), instance.getBlock(base.relative(BlockFace.NORTH)).key())
         Assertions.assertEquals(Material.BUCKET, inventoryAt(base).getItemStack(0).material())
+    }
+
+    @Test
+    fun flintAndSteelIgnitesTntInFront() {
+        val handler =
+            requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
+        instance.setBlock(base, Block.DISPENSER.withProperty("facing", "north").withHandler(handler))
+        val target = base.relative(BlockFace.NORTH)
+        instance.setBlock(target, Block.TNT)
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.FLINT_AND_STEEL)) }
+
+        handler.dispense(instance, base)
+
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(target).key())
+        Assertions.assertTrue(instance.entities.any { it.entityType == EntityType.TNT })
+    }
+
+    @Test
+    fun boneMealGrowsCrop() {
+        val handler =
+            requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
+        instance.setBlock(base, Block.DISPENSER.withProperty("facing", "north").withHandler(handler))
+        val target = base.relative(BlockFace.NORTH)
+        instance.setBlock(target, Block.WHEAT.withProperty("age", "0"))
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.BONE_MEAL)) }
+
+        handler.dispense(instance, base)
+
+        Assertions.assertNotEquals("0", instance.getBlock(target).getProperty("age"))
+        Assertions.assertTrue(inventoryAt(base).getItemStack(0).isAir)
+    }
+
+    @Test
+    fun spawnEggSpawnsEntity() {
+        val handler =
+            requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:dispenser")) as DispenserHandler
+        instance.setBlock(base, Block.DISPENSER.withProperty("facing", "north").withHandler(handler))
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.ZOMBIE_SPAWN_EGG)) }
+
+        handler.dispense(instance, base)
+
+        Assertions.assertTrue(instance.entities.any { it.entityType == EntityType.ZOMBIE })
+        Assertions.assertTrue(inventoryAt(base).getItemStack(0).isAir)
     }
 
     @Test

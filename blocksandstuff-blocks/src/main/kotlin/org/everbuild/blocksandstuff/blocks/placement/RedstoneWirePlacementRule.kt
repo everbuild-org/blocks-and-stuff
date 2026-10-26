@@ -7,7 +7,7 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 class RedstoneWirePlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val position = placementState.placePosition ?: return placementState.block
-        return WireConnections.updatedWire(placementState.instance, position, placementState.block)
+        return WireConnections.updatedWire(placementState.instance, position, placementState.block, preserveDot = false)
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {

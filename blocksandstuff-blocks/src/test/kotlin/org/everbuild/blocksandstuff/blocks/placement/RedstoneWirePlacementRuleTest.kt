@@ -30,6 +30,36 @@ class RedstoneWirePlacementRuleTest {
     }
 
     @Test
+    fun placingIsolatedWireCreatesCross() {
+        val result =
+            rule.blockPlace(
+                BlockPlacementRule.PlacementState(instance, Block.REDSTONE_WIRE, BlockFace.TOP, pos, null, null, null, false),
+            )
+
+        Assertions.assertNotNull(result)
+        Assertions.assertEquals("side", result!!.getProperty("north"))
+        Assertions.assertEquals("side", result.getProperty("east"))
+        Assertions.assertEquals("side", result.getProperty("south"))
+        Assertions.assertEquals("side", result.getProperty("west"))
+    }
+
+    @Test
+    fun updateKeepsExistingDot() {
+        val dot =
+            Block.REDSTONE_WIRE.withProperties(
+                mapOf("north" to "none", "east" to "none", "south" to "none", "west" to "none"),
+            )
+        instance.setBlock(pos, dot)
+
+        val result = rule.blockUpdate(BlockPlacementRule.UpdateState(instance, pos, dot, BlockFace.TOP))
+
+        Assertions.assertEquals("none", result.getProperty("north"))
+        Assertions.assertEquals("none", result.getProperty("east"))
+        Assertions.assertEquals("none", result.getProperty("south"))
+        Assertions.assertEquals("none", result.getProperty("west"))
+    }
+
+    @Test
     fun connectsToRedstoneLamp() {
         instance.setBlock(pos.add(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
         instance.setBlock(pos.sub(1.0, 0.0, 0.0), Block.GLASS)

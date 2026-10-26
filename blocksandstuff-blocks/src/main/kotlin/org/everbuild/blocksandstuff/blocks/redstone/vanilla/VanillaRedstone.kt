@@ -13,6 +13,7 @@ fun RedstoneRegistry.registerVanillaComponents() {
     PistonCleanupRegistration.registerDefault()
     TargetBlockRegistration.registerDefault()
     LightningRodBlockRegistration.registerDefault()
+    TripwireRegistration.registerDefault()
     register(ComponentSelector.ByBlock(Block.REDSTONE_WIRE)) { WireComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_TORCH)) { TorchComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_WALL_TORCH)) { TorchComponent() }
@@ -25,6 +26,9 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.DAYLIGHT_DETECTOR)) { DaylightDetectorComponent() }
     register(ComponentSelector.ByBlock(Block.TARGET)) { TargetComponent() }
     register(ComponentSelector.ByBlock(Block.TRIPWIRE_HOOK)) { TripwireHookComponent() }
+    register(ComponentSelector.ByBlock(Block.POWERED_RAIL)) { PoweredRailComponent() }
+    register(ComponentSelector.ByBlock(Block.DETECTOR_RAIL)) { DetectorRailComponent() }
+    register(ComponentSelector.ByBlock(Block.ACTIVATOR_RAIL)) { ActivatorRailComponent() }
     register(ComponentSelector.ByTag("minecraft:lightning_rods")) { LightningRodComponent() }
     copperBulbs.forEach { bulb -> register(ComponentSelector.ByBlock(bulb)) { CopperBulbComponent() } }
     register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
@@ -45,13 +49,9 @@ fun RedstoneRegistry.registerVanillaComponents() {
 
     register(Block.REDSTONE_LAMP) { LampComponent() }
 
-    consumer(ComponentSelector.ByTag("minecraft:trapdoors")) { ctx, powered, _ ->
-        ctx.block().withProperty("open", powered.toString())
-    }
+    register(ComponentSelector.ByTag("minecraft:trapdoors")) { TrapdoorComponent() }
 
-    consumer(ComponentSelector.ByTag("minecraft:fence_gates")) { ctx, powered, _ ->
-        ctx.block().withProperty("open", powered.toString())
-    }
+    register(ComponentSelector.ByTag("minecraft:fence_gates")) { FenceGateComponent() }
 
     register(ComponentSelector.ByTag("minecraft:doors")) { DoorComponent() }
 }

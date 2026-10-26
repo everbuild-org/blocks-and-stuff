@@ -1,11 +1,15 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.kyori.adventure.sound.Sound
+import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.EntityType
+import net.minestom.server.event.instance.InstanceUnregisterEvent
+import net.minestom.server.event.player.PlayerBlockBreakEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.item.Material
 import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
@@ -13,6 +17,7 @@ import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
 import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Tripwire hook. Scans up to 40 tripwire blocks in its facing direction for a second hook, keeps the
@@ -20,15 +25,29 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
  */
 class TripwireHookComponent : RedstoneComponent {
     private var nextCheckAt = -1L
+    private var pulseUntil = 0L
+    private var lastSegments: List<Point> = emptyList()
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         val block = ctx.block()
         val facing = Facing.of(block) ?: return ComponentEvaluation.None
         val now = ctx.tick()
+
+        if (pulseUntil > 0) {
+            if (now < pulseUntil) {
+                val delay = (pulseUntil - now).toInt().coerceAtLeast(1)
+                nextCheckAt = pulseUntil
+                ctx.scheduleTick(delay)
+                return ComponentEvaluation.None
+            }
+            pulseUntil = 0
+        }
+
         val wasAttached = block.getProperty("attached") == "true"
         val line = scanLine(ctx, facing)
 
         if (line != null) {
+            lastSegments = line.segments.map { it.position }
             var triggered = false
             for (segment in line.segments) {
                 val segmentBlock = ctx.block(segment.position)
@@ -69,6 +88,28 @@ class TripwireHookComponent : RedstoneComponent {
                     .withProperty("powered", triggered.toString()),
             )
             scheduleNextCheck(ctx, now, attached = true)
+            return ComponentEvaluation.None
+        }
+
+        var broken = false
+        for (position in lastSegments) {
+            if (ctx.block(position).compare(Block.TRIPWIRE)) continue
+            if (TripwireBreaks.isSheared(ctx.instance, position)) continue
+            broken = true
+        }
+        lastSegments = emptyList()
+
+        if (wasAttached && broken) {
+            pulseUntil = now + PULSE_TICKS
+            nextCheckAt = pulseUntil
+            ctx.scheduleTick(PULSE_TICKS)
+            update(
+                ctx,
+                ctx.position,
+                block
+                    .withProperty("attached", "false")
+                    .withProperty("powered", "true"),
+            )
             return ComponentEvaluation.None
         }
 
@@ -203,5 +244,58 @@ class TripwireHookComponent : RedstoneComponent {
         private const val MAX_LINE_LENGTH = 40
         private const val ATTACHED_CHECK_INTERVAL = 1
         private const val DETACHED_CHECK_INTERVAL = 4
+        private const val PULSE_TICKS = 10
+    }
+}
+
+/** Tracks tripwire destroyed with shears, the only destruction that does not pulse the hooks. */
+internal object TripwireBreaks {
+    private val sheared = ConcurrentHashMap<Instance, ConcurrentHashMap<Point, Long>>()
+
+    fun markShearedBreak(
+        instance: Instance,
+        position: Point,
+    ) {
+        val now = System.nanoTime()
+        val positions = sheared.computeIfAbsent(instance) { ConcurrentHashMap() }
+        for ((key, time) in positions) {
+            if (now - time > SHEARED_BREAK_TTL_NANOS) positions.remove(key, time)
+        }
+        positions[position.asBlockVec()] = now
+    }
+
+    fun isSheared(
+        instance: Instance,
+        position: Point,
+    ): Boolean {
+        val positions = sheared[instance] ?: return false
+        val time = positions[position.asBlockVec()] ?: return false
+        return System.nanoTime() - time < SHEARED_BREAK_TTL_NANOS
+    }
+
+    fun clear(instance: Instance) {
+        sheared.remove(instance)
+    }
+
+    private const val SHEARED_BREAK_TTL_NANOS = 2_000_000_000L
+}
+
+object TripwireRegistration {
+    private var registeredHandler: Any? = null
+
+    @JvmStatic
+    fun registerDefault() {
+        val handler = MinecraftServer.getGlobalEventHandler()
+        if (registeredHandler === handler) return
+        registeredHandler = handler
+
+        handler.addListener(PlayerBlockBreakEvent::class.java) { event ->
+            if (!event.block.compare(Block.TRIPWIRE)) return@addListener
+            if (event.player.itemInMainHand.material() != Material.SHEARS) return@addListener
+            TripwireBreaks.markShearedBreak(event.instance, event.blockPosition)
+        }
+        handler.addListener(InstanceUnregisterEvent::class.java) { event ->
+            TripwireBreaks.clear(event.instance)
+        }
     }
 }

@@ -1,7 +1,10 @@
 ﻿package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
+import net.minestom.server.coordinate.Point
+import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.entity.metadata.other.ItemFrameMeta
 import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
@@ -56,17 +59,56 @@ class ComparatorComponent : RedstoneComponent {
         block: Block,
         facing: BlockFace,
     ): Int {
-        val rear =
+        val rearPosition = ctx.position.relative(facing)
+        var rear =
             maxOf(
                 inputFrom(ctx, facing, facing.oppositeFace),
-                containerSignal(ctx.instance, ctx.position.relative(facing)),
+                containerSignal(ctx.instance, rearPosition),
+                analogSignal(ctx.block(rearPosition)),
+                itemFrameSignal(ctx.instance, rearPosition),
             )
+
+        if (rear < 15 && ctx.block(rearPosition).redstoneConductor()) {
+            val through = rearPosition.relative(facing)
+            rear =
+                maxOf(
+                    rear,
+                    containerSignal(ctx.instance, through),
+                    analogSignal(ctx.block(through)),
+                    itemFrameSignal(ctx.instance, through),
+                )
+        }
+
         val side = Facing.sides(facing).maxOf { s -> inputFrom(ctx, s, s.oppositeFace) }
         return if (block.getProperty("mode") == "subtract") {
             (rear - side).coerceAtLeast(0)
         } else {
             if (rear >= side) rear else 0
         }
+    }
+
+    private fun analogSignal(block: Block): Int =
+        when {
+            block.compare(Block.COMPOSTER) -> block.getProperty("level")?.toIntOrNull()?.coerceIn(0, 8) ?: 0
+            block.compare(Block.BEE_NEST) || block.compare(Block.BEEHIVE) ->
+                block.getProperty("honey_level")?.toIntOrNull()?.coerceIn(0, 5) ?: 0
+            else -> 0
+        }
+
+    private fun itemFrameSignal(
+        instance: Instance,
+        position: Point,
+    ): Int {
+        val frames =
+            instance.entities.filter { entity ->
+                entity.entityType.key().value().endsWith("item_frame") &&
+                    entity.position.asBlockVec() == position.asBlockVec()
+            }
+        if (frames.size != 1) return 0
+
+        val meta = frames.first().entityMeta as? ItemFrameMeta ?: return 0
+        if (meta.item.isAir) return 0
+        return (meta.rotation.ordinal + 1).coerceIn(1, 8)
     }
 
     private companion object {

@@ -25,6 +25,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addCandles()
             addRepeaters()
             addComparators()
+            addRedstoneWire()
             addDaylightDetectors()
             addSigns()
             addCakes()

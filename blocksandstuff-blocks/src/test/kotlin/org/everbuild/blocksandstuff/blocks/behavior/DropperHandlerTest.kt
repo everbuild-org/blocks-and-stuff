@@ -119,6 +119,7 @@ class DropperHandlerTest {
 
         simulator.onBlockChanged(source)
         simulator.tick()
+        repeat(4) { simulator.tick() }
         Assertions.assertEquals(1, inventoryAt(base).getItemStack(0).amount())
 
         simulator.tick()
@@ -130,6 +131,7 @@ class DropperHandlerTest {
         instance.setBlock(source, Block.REDSTONE_BLOCK)
         simulator.onBlockChanged(source)
         simulator.tick()
+        repeat(4) { simulator.tick() }
 
         Assertions.assertEquals(0, inventoryAt(base).getItemStack(0).amount())
     }
@@ -165,6 +167,7 @@ class DropperHandlerTest {
 
         simulator.onBlockChanged(source)
         simulator.tick()
+        repeat(4) { simulator.tick() }
 
         Assertions.assertTrue(inventoryAt(base).getItemStack(0).isAir)
     }

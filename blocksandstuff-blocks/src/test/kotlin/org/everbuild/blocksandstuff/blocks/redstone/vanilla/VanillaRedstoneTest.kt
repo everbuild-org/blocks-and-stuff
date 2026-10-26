@@ -4,12 +4,16 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType
+import net.minestom.server.entity.metadata.other.ItemFrameMeta
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.LightingChunk
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import net.minestom.server.item.ItemStack
+import net.minestom.server.item.Material
+import net.minestom.server.utils.Rotation
 import org.everbuild.blocksandstuff.blocks.placement.RedstoneWirePlacementRule
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.engine.RedstoneSimulator
@@ -103,6 +107,7 @@ class VanillaRedstoneTest {
 
         instance.setBlock(support, Block.STONE)
         instance.setBlock(torch, Block.REDSTONE_TORCH.withProperty("lit", "true"))
+        instance.setBlock(wire.sub(0.0, 1.0, 0.0), Block.STONE)
         instance.setBlock(wire, Block.REDSTONE_WIRE)
         settle()
         Assertions.assertEquals("true", instance.getBlock(torch).getProperty("lit"))
@@ -112,7 +117,7 @@ class VanillaRedstoneTest {
         Assertions.assertEquals("false", instance.getBlock(torch).getProperty("lit"))
 
         instance.setBlock(source, Block.AIR)
-        settle()
+        settle(5)
         Assertions.assertEquals("true", instance.getBlock(torch).getProperty("lit"))
     }
 
@@ -205,6 +210,19 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("false", instance.getBlock(base).getProperty("open"))
+        Assertions.assertEquals("false", instance.getBlock(base.add(0.0, 1.0, 0.0)).getProperty("open"))
+    }
+
+    @Test
+    fun doorUsesSavedPoweredStateAfterReload() {
+        val lower = Block.IRON_DOOR.withProperty("half", "lower").withProperty("powered", "true").withProperty("open", "true")
+        val upper = Block.IRON_DOOR.withProperty("half", "upper").withProperty("powered", "true").withProperty("open", "true")
+        instance.setBlock(base, lower)
+        instance.setBlock(base.add(0.0, 1.0, 0.0), upper)
+        settle(3)
+
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("open"))
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("powered"))
         Assertions.assertEquals("false", instance.getBlock(base.add(0.0, 1.0, 0.0)).getProperty("open"))
     }
 
@@ -302,6 +320,84 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
+    fun comparatorReadsComposterLevel() {
+        val comparator = base
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.COMPOSTER.withProperty("level", "8"))
+        settle(5)
+
+        Assertions.assertEquals(8, simulator.weakSignal(comparator, BlockFace.EAST))
+    }
+
+    @Test
+    fun comparatorReadsBeeNestHoneyLevel() {
+        val comparator = base
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.BEE_NEST.withProperty("honey_level", "5"))
+        settle(5)
+
+        Assertions.assertEquals(5, simulator.weakSignal(comparator, BlockFace.EAST))
+    }
+
+    @Test
+    fun comparatorReadsAnalogValueThroughConductor() {
+        val comparator = base
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.STONE)
+        instance.setBlock(base.sub(2.0, 0.0, 0.0), Block.COMPOSTER.withProperty("level", "7"))
+        settle(5)
+
+        Assertions.assertEquals(7, simulator.weakSignal(comparator, BlockFace.EAST))
+    }
+
+    @Test
+    fun comparatorReadsItemFrameThroughConductor() {
+        val comparator = base
+        val conductor = base.sub(1.0, 0.0, 0.0)
+        val framePosition = base.sub(2.0, 0.0, 0.0)
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        instance.setBlock(conductor, Block.STONE)
+
+        val frame = Entity(requireNotNull(EntityType.fromKey("minecraft:item_frame")))
+        frame.editEntityMeta(ItemFrameMeta::class.java) {
+            it.item = ItemStack.of(Material.STONE)
+            it.rotation = Rotation.CLOCKWISE_45
+        }
+        frame.setInstance(instance, Pos(framePosition.x() + 0.5, framePosition.y() + 0.5, framePosition.z() + 0.5)).join()
+        settle(5)
+
+        Assertions.assertEquals(2, simulator.weakSignal(comparator, BlockFace.EAST))
+    }
+
+    @Test
+    fun wireDoesNotPowerBlockAbove() {
+        val wire = base
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(wire, Block.REDSTONE_WIRE)
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        instance.setBlock(base.add(0.0, 1.0, 0.0), Block.REDSTONE_LAMP)
+        settle(5)
+
+        Assertions.assertEquals("15", instance.getBlock(wire).getProperty("power"))
+        Assertions.assertEquals("false", instance.getBlock(base.add(0.0, 1.0, 0.0)).getProperty("lit"))
+    }
+
+    @Test
+    fun wireDoesNotPowerUnconnectedSide() {
+        val wire = base
+        instance.setBlock(base.sub(0.0, 1.0, 0.0), Block.STONE)
+        instance.setBlock(wire, Block.REDSTONE_WIRE)
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        instance.setBlock(base.add(0.0, 0.0, -1.0), Block.STONE)
+        instance.setBlock(base.add(0.0, 0.0, -2.0), Block.REDSTONE_LAMP)
+        settle(5)
+
+        Assertions.assertEquals("15", instance.getBlock(wire).getProperty("power"))
+        Assertions.assertEquals("none", instance.getBlock(wire).getProperty("north"))
+        Assertions.assertEquals("false", instance.getBlock(base.add(0.0, 0.0, -2.0)).getProperty("lit"))
     }
 
     @Test
@@ -1062,6 +1158,103 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun tripwireBreakPulsesHooks() {
+        val hookA = base
+        val wire1 = base.add(1.0, 0.0, 0.0)
+        val wire2 = base.add(2.0, 0.0, 0.0)
+        val hookB = base.add(3.0, 0.0, 0.0)
+
+        instance.setBlock(hookA, Block.TRIPWIRE_HOOK.withProperty("facing", "east"))
+        instance.setBlock(wire1, Block.TRIPWIRE)
+        instance.setBlock(wire2, Block.TRIPWIRE)
+        instance.setBlock(hookB, Block.TRIPWIRE_HOOK.withProperty("facing", "west"))
+        settle(5)
+        Assertions.assertEquals("true", instance.getBlock(hookA).getProperty("attached"))
+
+        instance.setBlock(wire1, Block.AIR)
+        settle(2)
+
+        Assertions.assertEquals("true", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(hookB).getProperty("powered"))
+
+        settle(12)
+
+        Assertions.assertEquals("false", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(hookB).getProperty("powered"))
+    }
+
+    @Test
+    fun tripwireShearsBreakDoesNotPulseHooks() {
+        val hookA = base
+        val wire1 = base.add(1.0, 0.0, 0.0)
+        val wire2 = base.add(2.0, 0.0, 0.0)
+        val hookB = base.add(3.0, 0.0, 0.0)
+
+        instance.setBlock(hookA, Block.TRIPWIRE_HOOK.withProperty("facing", "east"))
+        instance.setBlock(wire1, Block.TRIPWIRE)
+        instance.setBlock(wire2, Block.TRIPWIRE)
+        instance.setBlock(hookB, Block.TRIPWIRE_HOOK.withProperty("facing", "west"))
+        settle(5)
+        Assertions.assertEquals("true", instance.getBlock(hookA).getProperty("attached"))
+
+        TripwireBreaks.markShearedBreak(instance, wire1)
+        instance.setBlock(wire1, Block.AIR)
+        settle(2)
+
+        Assertions.assertEquals("false", instance.getBlock(hookA).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(hookB).getProperty("powered"))
+    }
+
+    @Test
+    fun poweredRailPropagatesToConnectedRails() {
+        val rail1 = base
+        val rail2 = base.add(1.0, 0.0, 0.0)
+        val rail3 = base.add(2.0, 0.0, 0.0)
+        instance.setBlock(rail1, Block.POWERED_RAIL.withProperty("powered", "false"))
+        instance.setBlock(rail2, Block.POWERED_RAIL.withProperty("powered", "false"))
+        instance.setBlock(rail3, Block.POWERED_RAIL.withProperty("powered", "false"))
+        instance.setBlock(base.add(0.0, 0.0, -1.0), Block.REDSTONE_BLOCK)
+        settle(5)
+
+        Assertions.assertEquals("true", instance.getBlock(rail1).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(rail2).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(rail3).getProperty("powered"))
+    }
+
+    @Test
+    fun activatorRailFollowsRedstonePower() {
+        val rail = base
+        instance.setBlock(rail, Block.ACTIVATOR_RAIL.withProperty("powered", "false"))
+        instance.setBlock(base.add(0.0, 0.0, -1.0), Block.LEVER.withProperty("powered", "true"))
+        settle(3)
+
+        Assertions.assertEquals("true", instance.getBlock(rail).getProperty("powered"))
+    }
+
+    @Test
+    fun detectorRailPowersWhileMinecartOnIt() {
+        val rail = base
+        val lamp = base.add(0.0, 0.0, -1.0)
+        instance.setBlock(rail, Block.DETECTOR_RAIL.withProperty("powered", "false"))
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        settle(3)
+        Assertions.assertEquals("false", instance.getBlock(rail).getProperty("powered"))
+
+        val minecart = Entity(requireNotNull(EntityType.fromKey("minecraft:minecart")))
+        minecart.setInstance(instance, Pos(rail.x() + 0.5, rail.y(), rail.z() + 0.5)).join()
+        settle(3)
+
+        Assertions.assertEquals("true", instance.getBlock(rail).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+
+        minecart.remove()
+        settle(6)
+
+        Assertions.assertEquals("false", instance.getBlock(rail).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
     fun adjacentWiresConnectAndSurviveEngineTick() {
         val rule = RedstoneWirePlacementRule(Block.REDSTONE_WIRE)
         val second = base.add(1.0, 0.0, 0.0)
@@ -1186,6 +1379,44 @@ class VanillaRedstoneTest {
 
         Assertions.assertEquals("15", instance.getBlock(upper).getProperty("power"))
         Assertions.assertEquals("14", instance.getBlock(lower).getProperty("power"))
+    }
+
+    @Test
+    fun fenceGateOpensAndClosesWithRedstone() {
+        val gate = base.add(1.0, 0.0, 0.0)
+        val lever = base
+        instance.setBlock(gate, Block.OAK_FENCE_GATE)
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "false"))
+        settle(3)
+        Assertions.assertEquals("false", instance.getBlock(gate).getProperty("open"))
+
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "true"))
+        settle(3)
+        Assertions.assertEquals("true", instance.getBlock(gate).getProperty("open"))
+        Assertions.assertEquals("true", instance.getBlock(gate).getProperty("powered"))
+
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "false"))
+        settle(3)
+        Assertions.assertEquals("false", instance.getBlock(gate).getProperty("open"))
+    }
+
+    @Test
+    fun ironTrapdoorOpensAndClosesWithRedstone() {
+        val trapdoor = base.add(1.0, 0.0, 0.0)
+        val lever = base
+        instance.setBlock(trapdoor, Block.IRON_TRAPDOOR)
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "false"))
+        settle(3)
+        Assertions.assertEquals("false", instance.getBlock(trapdoor).getProperty("open"))
+
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "true"))
+        settle(3)
+        Assertions.assertEquals("true", instance.getBlock(trapdoor).getProperty("open"))
+        Assertions.assertEquals("true", instance.getBlock(trapdoor).getProperty("powered"))
+
+        instance.setBlock(lever, Block.LEVER.withProperty("powered", "false"))
+        settle(3)
+        Assertions.assertEquals("false", instance.getBlock(trapdoor).getProperty("open"))
     }
 
     @Test
