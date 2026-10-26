@@ -241,6 +241,35 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun copperBulbTogglesLitOnRisingEdge() {
+        val bulb = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(bulb, Block.COPPER_BULB)
+        settle()
+
+        Assertions.assertEquals("false", instance.getBlock(bulb).getProperty("lit"))
+        Assertions.assertEquals("false", instance.getBlock(bulb).getProperty("powered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(bulb).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(bulb).getProperty("lit"))
+
+        settle(5)
+        Assertions.assertEquals("true", instance.getBlock(bulb).getProperty("lit"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(bulb).getProperty("powered"))
+        Assertions.assertEquals("true", instance.getBlock(bulb).getProperty("lit"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(bulb).getProperty("powered"))
+        Assertions.assertEquals("false", instance.getBlock(bulb).getProperty("lit"))
+    }
+
+    @Test
     fun targetStoresProjectilePowerAndDecays() {
         instance.setBlock(base, Block.TARGET)
         settle()

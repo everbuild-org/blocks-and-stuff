@@ -219,8 +219,6 @@ class RedstoneSimulator(
             val neighbour = position.relative(face)
             enqueue(neighbour)
 
-            // Power flows into solid, non-component blocks (e.g. a block under a torch); components
-            // attached to such a block must be re-evaluated too, which is one step further out.
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
                 for (secondFace in BlockFace.entries) enqueue(neighbour.relative(secondFace))
