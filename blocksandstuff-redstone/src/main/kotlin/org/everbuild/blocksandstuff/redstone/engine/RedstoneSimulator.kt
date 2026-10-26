@@ -1,7 +1,11 @@
+@file:Suppress("UnstableApiUsage", "UnusedExpression")
+
 package org.everbuild.blocksandstuff.redstone.engine
 
 import net.kyori.adventure.key.Key
 import net.minestom.server.coordinate.Point
+import net.minestom.server.coordinate.Vec
+import net.minestom.server.instance.Chunk
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
@@ -15,6 +19,7 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
 import org.slf4j.LoggerFactory
 import java.util.ArrayDeque
 import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentLinkedQueue
 
 /**
  * Per-instance event-driven redstone simulator.
@@ -44,6 +49,8 @@ class RedstoneSimulator(
     private val components = HashMap<Point, Cached>()
     private val delta = ArrayDeque<Point>()
     private val deltaSet = HashSet<Point>()
+    private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
+    private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
     private var currentTick = 0L
     private var sequence = 0L
     private var processing = false
@@ -103,9 +110,85 @@ class RedstoneSimulator(
         }
     }
 
+    /**
+     * Queues every redstone component in [chunk] for re-evaluation on the next [tick].
+     *
+     * Chunk events may fire off the main thread, so the scan itself is deferred to the simulator
+     * tick where all state is owned by the ticking thread.
+     */
+    fun onChunkLoaded(chunk: Chunk) {
+        loadedChunks.add(chunk)
+    }
+
+    /** Queues cached components and pending updates of [chunk] for removal on the next [tick]. */
+    fun onChunkUnloaded(chunk: Chunk) {
+        unloadedChunks.add(chunk)
+    }
+
+    private fun scanChunk(chunk: Chunk) {
+        val startX = chunk.chunkX * Chunk.CHUNK_SIZE_X
+        val startZ = chunk.chunkZ * Chunk.CHUNK_SIZE_Z
+        val minY = instance.cachedDimensionType.minY()
+
+        chunk.sections.forEachIndexed { index, section ->
+            val palette = section.blockPalette()
+            val sectionY = minY + index * Chunk.CHUNK_SECTION_SIZE
+            for (x in 0 until Chunk.CHUNK_SIZE_X) {
+                for (z in 0 until Chunk.CHUNK_SIZE_Z) {
+                    for (sectionRelativeY in 0 until Chunk.CHUNK_SECTION_SIZE) {
+                        val stateId = palette.get(x, sectionRelativeY, z)
+                        if (stateId == 0) continue
+                        if (registry.factoryFor(Block.fromStateId(stateId) ?: continue) == null) continue
+                        schedule(
+                            Vec(
+                                (startX + x).toDouble(),
+                                (sectionY + sectionRelativeY).toDouble(),
+                                (startZ + z).toDouble(),
+                            ),
+                            1,
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private fun dropChunk(chunk: Chunk) {
+        val minX = chunk.chunkX * Chunk.CHUNK_SIZE_X
+        val maxX = minX + Chunk.CHUNK_SIZE_X - 1
+        val minZ = chunk.chunkZ * Chunk.CHUNK_SIZE_Z
+        val maxZ = minZ + Chunk.CHUNK_SIZE_Z - 1
+        val inChunk = { position: Point ->
+            position.blockX() in minX..maxX && position.blockZ() in minZ..maxZ
+        }
+
+        components.keys.removeIf(inChunk)
+        tickQueue.removeIf { inChunk(it.position) }
+        delta.removeIf(inChunk)
+        deltaSet.removeIf(inChunk)
+    }
+
+    private fun processChunkChanges() {
+        while (true) {
+            val chunk = loadedChunks.poll() ?: break
+            scanChunk(chunk)
+        }
+        while (true) {
+            val chunk = unloadedChunks.poll() ?: break
+            dropChunk(chunk)
+        }
+    }
+
+    /** Number of positions waiting for a future tick. Diagnostic hook for tests. */
+    internal val pendingTickCount: Int get() = tickQueue.size
+
+    /** Number of cached component instances. Diagnostic hook for tests. */
+    internal val cachedComponentCount: Int get() = components.size
+
     /** Processes all updates due for the current server tick. */
     fun tick() {
         currentTick++
+        processChunkChanges()
 
         delta.clear()
         deltaSet.clear()

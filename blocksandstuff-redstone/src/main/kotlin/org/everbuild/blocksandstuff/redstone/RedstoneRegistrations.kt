@@ -1,15 +1,17 @@
-package org.everbuild.blocksandstuff.redstone
+﻿package org.everbuild.blocksandstuff.redstone
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceBlockUpdateEvent
+import net.minestom.server.event.instance.InstanceChunkLoadEvent
+import net.minestom.server.event.instance.InstanceChunkUnloadEvent
 import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.event.instance.InstanceUnregisterEvent
 import net.minestom.server.instance.Instance
 import org.everbuild.blocksandstuff.common.InstanceOptionsProvider
 import org.everbuild.blocksandstuff.redstone.engine.RedstoneSimulator
-import java.util.IdentityHashMap
+import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Entry point for the redstone engine.
@@ -20,7 +22,7 @@ import java.util.IdentityHashMap
 object RedstoneRegistrations {
     val registry: RedstoneRegistry = RedstoneRegistry()
 
-    private val simulators = IdentityHashMap<Instance, RedstoneSimulator>()
+    private val simulators = ConcurrentHashMap<Instance, RedstoneSimulator>()
     private var registeredHandler: Any? = null
     private var instanceFilter: (Instance) -> Boolean = { InstanceOptionsProvider.getForInstance(it).redstoneEnabled }
 
@@ -39,6 +41,12 @@ object RedstoneRegistrations {
         node.addListener(InstanceBlockUpdateEvent::class.java) { event ->
             simulatorOrNull(event.instance)?.onBlockChanged(event.blockPosition)
         }
+        node.addListener(InstanceChunkLoadEvent::class.java) { event ->
+            simulatorOrNull(event.instance)?.onChunkLoaded(event.chunk)
+        }
+        node.addListener(InstanceChunkUnloadEvent::class.java) { event ->
+            simulator(event.instance)?.onChunkUnloaded(event.chunk)
+        }
         node.addListener(InstanceUnregisterEvent::class.java) { event ->
             simulators.remove(event.instance)
             InstanceOptionsProvider.remove(event.instance)
@@ -47,7 +55,8 @@ object RedstoneRegistrations {
     }
 
     @JvmStatic
-    fun install(instance: Instance): RedstoneSimulator = simulators.getOrPut(instance) { RedstoneSimulator(instance, registry) }
+    fun install(instance: Instance): RedstoneSimulator =
+        simulators.computeIfAbsent(instance) { RedstoneSimulator(instance, registry) }
 
     @JvmStatic
     fun uninstall(instance: Instance) {
@@ -76,8 +85,8 @@ object RedstoneRegistrations {
     }
 
     private fun simulatorOrNull(instance: Instance): RedstoneSimulator? {
-        simulator(instance)?.let { return it }
         if (!instanceFilter(instance)) return null
+        simulator(instance)?.let { return it }
         return install(instance)
     }
 }

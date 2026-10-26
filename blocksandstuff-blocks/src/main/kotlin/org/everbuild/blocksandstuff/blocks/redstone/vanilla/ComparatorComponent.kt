@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.blocks.redstone.vanilla
+﻿package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
@@ -25,9 +25,11 @@ class ComparatorComponent : RedstoneComponent {
         val facing = Facing.of(block) ?: return ComponentEvaluation.None
         val now = ctx.tick()
         val currentPowered = block.getProperty("powered") == "true"
+        val locked = isLocked(ctx, facing)
 
         if (tickScheduled && now >= scheduledAt) {
             tickScheduled = false
+            if (locked) return ComponentEvaluation.None
             val value = calculateOutput(ctx, block, facing)
             val powered = value > 0
             val changed = value != output || powered != currentPowered
@@ -40,6 +42,7 @@ class ComparatorComponent : RedstoneComponent {
             }
         }
 
+        if (locked) return ComponentEvaluation.None
         if (!tickScheduled) {
             val value = calculateOutput(ctx, block, facing)
             if (value != output || (value > 0) != currentPowered) {
@@ -49,6 +52,23 @@ class ComparatorComponent : RedstoneComponent {
             }
         }
         return ComponentEvaluation.None
+    }
+
+    /**
+     * A comparator is locked while a repeater or comparator on one of its sides points into it and
+     * emits a signal. Locked comparators keep their current output until the lock is released.
+     */
+    private fun isLocked(
+        ctx: ReadContext,
+        facing: BlockFace,
+    ): Boolean {
+        for (side in Facing.sides(facing)) {
+            val neighbourPosition = ctx.position.relative(side)
+            val neighbour = ctx.block(neighbourPosition)
+            if (!neighbour.compare(Block.REPEATER) && !neighbour.compare(Block.COMPARATOR)) continue
+            if (ctx.power().directSignal(neighbourPosition, side.oppositeFace) > 0) return true
+        }
+        return false
     }
 
     private fun calculateOutput(

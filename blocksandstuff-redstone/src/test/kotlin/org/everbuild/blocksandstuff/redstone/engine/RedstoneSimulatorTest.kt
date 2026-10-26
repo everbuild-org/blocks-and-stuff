@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.redstone.engine
+﻿package org.everbuild.blocksandstuff.redstone.engine
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
@@ -87,5 +87,36 @@ class RedstoneSimulatorTest {
         instance.setBlock(base, Block.REDSTONE_BLOCK)
 
         Assertions.assertEquals(15, simulator.weakSignal(base, net.minestom.server.instance.block.BlockFace.EAST))
+    }
+
+    @Test
+    fun chunkLoadReschedulesExistingComponents() {
+        val lamp = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        RedstoneRegistrations.uninstall(instance)
+
+        val reloaded = RedstoneRegistrations.install(instance)
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+
+        reloaded.onChunkLoaded(requireNotNull(instance.getChunk(0, 0)))
+        reloaded.tick()
+        reloaded.tick()
+
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
+    fun chunkUnloadDropsCachedStateAndPendingTicks() {
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        Assertions.assertTrue(simulator.pendingTickCount > 0)
+        Assertions.assertTrue(simulator.cachedComponentCount > 0)
+
+        instance.unloadChunk(0, 0)
+        simulator.tick()
+
+        Assertions.assertEquals(0, simulator.pendingTickCount)
+        Assertions.assertEquals(0, simulator.cachedComponentCount)
     }
 }

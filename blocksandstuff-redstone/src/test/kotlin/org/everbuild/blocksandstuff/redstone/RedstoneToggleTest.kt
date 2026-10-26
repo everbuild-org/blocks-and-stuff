@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.redstone
+﻿package org.everbuild.blocksandstuff.redstone
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
@@ -29,7 +29,6 @@ class RedstoneToggleTest {
         }
 
         instance = MinecraftServer.getInstanceManager().createInstanceContainer()
-        instance.loadChunk(0, 0).join()
     }
 
     @AfterEach
@@ -40,6 +39,7 @@ class RedstoneToggleTest {
     @Test
     fun disabledInstanceIsNotSimulated() {
         InstanceOptionsProvider.getForInstance(instance).redstoneEnabled = false
+        instance.loadChunk(0, 0).join()
         val lamp = base.add(1.0, 0.0, 0.0)
         instance.setBlock(lamp, Block.REDSTONE_LAMP)
         instance.setBlock(base, Block.REDSTONE_BLOCK)
@@ -50,6 +50,7 @@ class RedstoneToggleTest {
 
     @Test
     fun enabledInstanceIsSimulated() {
+        instance.loadChunk(0, 0).join()
         val lamp = base.add(1.0, 0.0, 0.0)
         instance.setBlock(lamp, Block.REDSTONE_LAMP)
         instance.setBlock(base, Block.REDSTONE_BLOCK)

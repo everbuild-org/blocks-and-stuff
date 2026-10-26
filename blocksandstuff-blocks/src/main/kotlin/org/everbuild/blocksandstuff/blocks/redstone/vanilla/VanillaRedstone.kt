@@ -42,9 +42,7 @@ fun RedstoneRegistry.registerVanillaComponents() {
         },
     )
 
-    consumer(Block.REDSTONE_LAMP) { ctx, powered, _ ->
-        ctx.block().withProperty("lit", powered.toString())
-    }
+    register(Block.REDSTONE_LAMP) { LampComponent() }
 
     consumer(ComponentSelector.ByTag("minecraft:trapdoors")) { ctx, powered, _ ->
         ctx.block().withProperty("open", powered.toString())

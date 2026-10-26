@@ -1,4 +1,4 @@
-package org.everbuild.blocksandstuff.blocks.redstone.vanilla
+﻿package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
@@ -69,7 +69,26 @@ class VanillaRedstoneTest {
         Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
 
         instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        settle(5)
+        Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
+    fun redstoneLampTurnsOffAfterFourTicks() {
+        val lamp = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(lamp, Block.REDSTONE_LAMP)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
         settle()
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        simulator.tick()
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+
+        repeat(3) { simulator.tick() }
+        Assertions.assertEquals("true", instance.getBlock(lamp).getProperty("lit"))
+
+        simulator.tick()
         Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
     }
 
@@ -238,6 +257,34 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
+    }
+
+    @Test
+    fun poweredSideRepeaterLocksComparator() {
+        val comparator = base
+        val rear = base.sub(1.0, 0.0, 0.0)
+        val sideRepeater = base.add(0.0, 0.0, -1.0)
+        val sideInput = base.add(0.0, 0.0, -2.0)
+
+        instance.setBlock(rear, Block.LEVER.withProperty("powered", "true"))
+        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(sideRepeater, Block.REPEATER.withProperty("facing", "north"))
+        instance.setBlock(comparator, Block.COMPARATOR.withProperty("facing", "west").withProperty("mode", "compare"))
+        settle(5)
+        Assertions.assertEquals("true", instance.getBlock(comparator).getProperty("powered"))
+
+        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "true"))
+        settle(5)
+
+        instance.setBlock(rear, Block.LEVER.withProperty("powered", "false"))
+        settle(5)
+        Assertions.assertEquals("true", instance.getBlock(comparator).getProperty("powered"))
+        Assertions.assertEquals(15, simulator.weakSignal(comparator, BlockFace.EAST))
+
+        instance.setBlock(sideInput, Block.LEVER.withProperty("powered", "false"))
+        settle(6)
+        Assertions.assertEquals("false", instance.getBlock(comparator).getProperty("powered"))
+        Assertions.assertEquals(0, simulator.weakSignal(comparator, BlockFace.EAST))
     }
 
     @Test
