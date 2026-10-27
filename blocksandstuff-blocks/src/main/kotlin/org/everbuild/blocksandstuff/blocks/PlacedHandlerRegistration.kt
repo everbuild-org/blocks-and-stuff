@@ -18,11 +18,9 @@ object PlacedHandlerRegistration {
             it.block = it.block.withHandler(handler)
         }
 
-        // Commands and world generation do not fire PlayerBlockPlaceEvent. Attach registered
-        // handlers to block entities lazily so their inventories also work in those cases.
         eventHandler.addListener(InstanceBlockUpdateEvent::class.java) {
             val block = it.block
-            if (block.handler() != null || block.blockEntityType() == null) return@addListener
+            if (block.handler() != null) return@addListener
 
             val handler = MinecraftServer.getBlockManager().getHandler(block.key().asString()) ?: return@addListener
             it.instance.setBlock(it.blockPosition, block.withHandler(handler), false)

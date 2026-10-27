@@ -215,8 +215,16 @@ class VanillaRedstoneTest {
 
     @Test
     fun doorUsesSavedPoweredStateAfterReload() {
-        val lower = Block.IRON_DOOR.withProperty("half", "lower").withProperty("powered", "true").withProperty("open", "true")
-        val upper = Block.IRON_DOOR.withProperty("half", "upper").withProperty("powered", "true").withProperty("open", "true")
+        val lower =
+            Block.IRON_DOOR
+                .withProperty("half", "lower")
+                .withProperty("powered", "true")
+                .withProperty("open", "true")
+        val upper =
+            Block.IRON_DOOR
+                .withProperty("half", "upper")
+                .withProperty("powered", "true")
+                .withProperty("open", "true")
         instance.setBlock(base, lower)
         instance.setBlock(base.add(0.0, 1.0, 0.0), upper)
         settle(3)
@@ -1430,5 +1438,39 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("true", instance.getBlock(trapdoor).getProperty("open"))
+    }
+
+    @Test
+    fun noteBlockMirrorsRedstonePower() {
+        val note = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(note, Block.NOTE_BLOCK)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(note).getProperty("powered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(note).getProperty("powered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(note).getProperty("powered"))
+    }
+
+    @Test
+    fun bellMirrorsRedstonePower() {
+        val bell = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(bell, Block.BELL)
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(bell).getProperty("powered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(bell).getProperty("powered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(bell).getProperty("powered"))
     }
 }

@@ -25,6 +25,8 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.OBSERVER)) { ObserverComponent() }
     register(ComponentSelector.ByBlock(Block.DAYLIGHT_DETECTOR)) { DaylightDetectorComponent() }
     register(ComponentSelector.ByBlock(Block.TARGET)) { TargetComponent() }
+    register(ComponentSelector.ByBlock(Block.NOTE_BLOCK)) { NoteBlockComponent() }
+    register(ComponentSelector.ByBlock(Block.BELL)) { BellComponent() }
     register(ComponentSelector.ByBlock(Block.TRIPWIRE_HOOK)) { TripwireHookComponent() }
     register(ComponentSelector.ByBlock(Block.POWERED_RAIL)) { PoweredRailComponent() }
     register(ComponentSelector.ByBlock(Block.DETECTOR_RAIL)) { DetectorRailComponent() }

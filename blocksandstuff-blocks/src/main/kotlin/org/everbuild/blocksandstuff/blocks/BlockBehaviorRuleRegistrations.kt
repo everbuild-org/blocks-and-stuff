@@ -12,6 +12,7 @@ import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
 import org.everbuild.blocksandstuff.common.InstanceOptionsProvider
 import org.everbuild.twaddle.random_ticking.getRandomTickingEventNode
 import org.everbuild.twaddle.random_ticking.randomTickSpeed
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
 
 object BlockBehaviorRuleRegistrations {
     private val logger = ComponentLogger.logger(BlockBehaviorRuleRegistrations::class.java)
@@ -40,6 +41,13 @@ object BlockBehaviorRuleRegistrations {
     @JvmStatic
     fun registerDefault(exclude: List<Block>) {
         register(exclude, *VanillaBlockBehaviour.ALL.toTypedArray<BehaviourGroup>())
+        BlockRuleset.applyRulesAsDefault(
+            if (exclude.isEmpty()) {
+                VanillaBlockBehaviour.RULESET
+            } else {
+                VanillaBlockBehaviour.RULESET.modify { removeBlocks(*exclude.toTypedArray()) }
+            },
+        )
         registerRandomTickingGlobally()
         NaturalBlockInteract.enable()
         SignEditListener.enable()
