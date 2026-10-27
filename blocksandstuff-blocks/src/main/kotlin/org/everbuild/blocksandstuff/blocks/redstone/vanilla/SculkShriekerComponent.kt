@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.kyori.adventure.sound.Sound
+import net.kyori.adventure.text.Component
 import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType
@@ -20,7 +21,6 @@ import org.everbuild.blocksandstuff.redstone.VibrationBus
 class SculkShriekerComponent : RedstoneComponent {
     private var active = false
     private var shriekingUntil = -1L
-    private var cooldownUntil = -1L
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         VibrationBus.registerSensor(ctx.instance, ctx.position, DETECTION_RADIUS)
@@ -32,20 +32,11 @@ class SculkShriekerComponent : RedstoneComponent {
             if (now < shriekingUntil) return ComponentEvaluation.None
             active = false
             applyDarkness(ctx)
-            cooldownUntil = now + COOLDOWN_TICKS
-            ctx.scheduleTick(COOLDOWN_TICKS)
             return setShrieking(block, false)
         }
 
-        if (cooldownUntil >= 0) {
-            if (now < cooldownUntil) {
-                VibrationBus.consume(ctx.instance, ctx.position)
-                return ComponentEvaluation.None
-            }
-            cooldownUntil = -1
-        }
-
         if (VibrationBus.consume(ctx.instance, ctx.position) == null) return ComponentEvaluation.None
+        if (!hasEligiblePlayer(ctx, now)) return ComponentEvaluation.None
 
         active = true
         shriekingUntil = now + SHRIEK_TICKS
@@ -66,13 +57,26 @@ class SculkShriekerComponent : RedstoneComponent {
         return if (updated.stateId() == block.stateId()) ComponentEvaluation.None else ComponentEvaluation.SetState(updated)
     }
 
+    private fun hasEligiblePlayer(
+        ctx: UpdateContext,
+        now: Long,
+    ): Boolean {
+        var sawPlayer = false
+        for (player in ctx.instance.players) {
+            if (player.position.distance(ctx.position.add(0.5, 0.5, 0.5)) > BLAME_RADIUS) continue
+            sawPlayer = true
+            if (!WardenSpawnTracker.isOnCooldown(player.uuid, now)) return true
+        }
+        return !sawPlayer
+    }
+
     private fun blameNearbyPlayers(
         ctx: UpdateContext,
         now: Long,
     ) {
         for (player in ctx.instance.players) {
             if (player.position.distance(ctx.position.add(0.5, 0.5, 0.5)) > BLAME_RADIUS) continue
-            val level = WardenSpawnTracker.blame(player.uuid, now)
+            if (WardenSpawnTracker.isOnCooldown(player.uuid, now)) continue
         }
     }
 
@@ -111,7 +115,6 @@ class SculkShriekerComponent : RedstoneComponent {
         private const val BLAME_RADIUS = 16.0
         private const val DETECTION_RADIUS = 8
         private const val SHRIEK_TICKS = 90
-        private const val COOLDOWN_TICKS = 200
         private const val DARKNESS_RADIUS = 40.0
         private const val DARKNESS_TICKS = 240
     }

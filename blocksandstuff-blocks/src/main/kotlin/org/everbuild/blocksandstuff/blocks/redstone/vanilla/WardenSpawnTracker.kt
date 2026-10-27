@@ -1,5 +1,7 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
+import net.minestom.server.MinecraftServer
+import net.minestom.server.event.player.PlayerDeathEvent
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
@@ -15,6 +17,16 @@ internal object WardenSpawnTracker {
     )
 
     private val states = ConcurrentHashMap<UUID, State>()
+    private var registeredHandler: Any? = null
+
+    fun registerDefault() {
+        val handler = MinecraftServer.getGlobalEventHandler()
+        if (registeredHandler === handler) return
+        registeredHandler = handler
+        handler.addListener(PlayerDeathEvent::class.java) { event ->
+            reset(event.player.uuid)
+        }
+    }
 
     fun blame(
         player: UUID,
@@ -27,6 +39,14 @@ internal object WardenSpawnTracker {
         state.lastWarningTick = tick
         state.cooldownUntil = tick + COOLDOWN_TICKS
         return state.level
+    }
+
+    fun isOnCooldown(
+        player: UUID,
+        tick: Long,
+    ): Boolean {
+        val state = states[player] ?: return false
+        return tick < state.cooldownUntil
     }
 
     fun warningLevel(

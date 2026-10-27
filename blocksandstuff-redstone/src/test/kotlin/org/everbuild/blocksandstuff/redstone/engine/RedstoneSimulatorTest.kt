@@ -148,12 +148,38 @@ class RedstoneSimulatorTest {
         Assertions.assertEquals(0, simulator.pendingTickCount)
         Assertions.assertEquals(0, simulator.cachedComponentCount)
     }
+
+    @Test
+    fun consumesFiltersNeighbourHooks() {
+        val sponge = base.add(0.0, 1.0, 0.0)
+        val west = sponge.add(-1.0, 0.0, 0.0)
+        val east = sponge.add(1.0, 0.0, 0.0)
+        val component = HookComponent()
+        component.acceptedFaces = setOf(BlockFace.EAST)
+        RedstoneRegistrations.registry.register(Block.SPONGE) { component }
+
+        instance.setBlock(sponge, Block.SPONGE)
+        simulator.tick()
+
+        instance.setBlock(west, Block.STONE)
+        simulator.tick()
+        simulator.tick()
+        Assertions.assertFalse(component.neighbourChanges.any { it.first == west.asBlockVec() })
+
+        instance.setBlock(east, Block.STONE)
+        simulator.tick()
+        simulator.tick()
+        Assertions.assertTrue(component.neighbourChanges.any { it.first == east.asBlockVec() })
+    }
 }
 
 private class HookComponent : RedstoneComponent {
     var scheduledTicks = 0
+    var acceptedFaces: Set<BlockFace> = BlockFace.entries.toSet()
     val neighbourChanges = ArrayList<Pair<Point, BlockFace>>()
     private var scheduled = false
+
+    override fun consumes(ctx: org.everbuild.blocksandstuff.redstone.ReadContext): Set<BlockFace> = acceptedFaces
 
     override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
         if (!scheduled) {

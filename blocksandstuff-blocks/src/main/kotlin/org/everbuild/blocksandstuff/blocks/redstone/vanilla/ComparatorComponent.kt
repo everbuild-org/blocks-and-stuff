@@ -1,9 +1,10 @@
-﻿package org.everbuild.blocksandstuff.blocks.redstone.vanilla
+package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.tag.Tag
 import net.minestom.server.entity.metadata.other.ItemFrameMeta
 import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
@@ -16,7 +17,7 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
 /**
  * Redstone comparator. Rear and side inputs are analog (0..15). In `compare` mode the rear signal is
  * passed through when `rear >= side`, otherwise the output is 0; in `subtract` mode the output is
- * `rear - side`. The analog value is derived and kept in memory, not persisted.
+ * `rear - side`. The analog value is cached in the component and mirrored to block NBT so it\n * survives a server restart.
  */
 class ComparatorComponent : RedstoneComponent {
     private var output = 0

@@ -64,12 +64,26 @@ class RedstoneSimulator(
     private val neighbourChanges = HashMap<Point, MutableList<NeighbourChange>>()
     private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
+    private val suspendedTicks = HashMap<ChunkKey, MutableList<ScheduledTick>>()
     private var currentTick = 0L
     private var sequence = 0L
     private var processing = false
 
+    private data class ChunkKey(
+        val x: Int,
+        val z: Int,
+    )
+
     /** Delta-cycle steps processed by the most recent [tick]. Diagnostic hook for tests/metrics. */
     var lastDeltaSteps: Int = 0
+        private set
+
+    /** Number of component hooks invoked by the most recent [tick]. */
+    var lastHookCalls: Int = 0
+        private set
+
+    /** Whether the most recent [tick] hit the delta-cycle guard. */
+    var lastNonConvergent: Boolean = false
         private set
 
     override fun weakSignal(
@@ -170,6 +184,18 @@ class RedstoneSimulator(
                 }
             }
         }
+
+        val key = ChunkKey(chunk.chunkX, chunk.chunkZ)
+        suspendedTicks.remove(key)?.forEach { tick ->
+            tickQueue.add(
+                ScheduledTick(
+                    tick.tick.coerceAtLeast(currentTick + 1),
+                    sequence++,
+                    tick.position,
+                    tick.reason,
+                ),
+            )
+        }
     }
 
     private fun dropChunk(chunk: Chunk) {
@@ -182,7 +208,18 @@ class RedstoneSimulator(
         }
 
         components.keys.removeIf(inChunk)
-        tickQueue.removeIf { inChunk(it.position) }
+        val suspended = ArrayList<ScheduledTick>()
+        tickQueue.removeIf { tick ->
+            if (inChunk(tick.position)) {
+                suspended.add(tick)
+                true
+            } else {
+                false
+            }
+        }
+        if (suspended.isNotEmpty()) {
+            suspendedTicks.getOrPut(ChunkKey(chunk.chunkX, chunk.chunkZ)) { ArrayList() }.addAll(suspended)
+        }
         delta.removeIf(inChunk)
         deltaSet.removeIf(inChunk)
         deltaReasons.keys.removeIf(inChunk)
@@ -257,8 +294,11 @@ class RedstoneSimulator(
             component.onScheduledTick(ctx)
         }
         if (TickReason.CHANGE in reasons) {
+            val consumedFaces = component.consumes(ctx)
             neighbourChanges.remove(position)?.forEach { change ->
-                component.onNeighbourChanged(ctx, change.changed, change.face)
+                if (change.face in consumedFaces) {
+                    component.onNeighbourChanged(ctx, change.changed, change.face)
+                }
             }
         }
     }

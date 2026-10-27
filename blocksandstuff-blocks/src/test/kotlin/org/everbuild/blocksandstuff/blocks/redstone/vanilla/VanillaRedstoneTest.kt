@@ -1619,4 +1619,49 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("true", instance.getBlock(crafter).getProperty("triggered"))
+    }    @Test
+    fun pistonDoesNotPushObsidian() {
+        val front = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.OBSIDIAN)
+        settle()
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle(4)
+
+        Assertions.assertEquals("false", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertEquals(Block.OBSIDIAN.key(), instance.getBlock(front).key())
+    }
+
+    @Test
+    fun pistonDestroysTorchInFront() {
+        val front = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.TORCH)
+        settle()
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle(4)
+
+        Assertions.assertEquals("true", instance.getBlock(base).getProperty("extended"))
+        Assertions.assertNotEquals(Block.TORCH.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.PISTON_HEAD.key(), instance.getBlock(front).key())
+    }
+
+    @Test
+    fun stickyPistonDoesNotPullObsidian() {
+        val front = base.add(1.0, 0.0, 0.0)
+        val pulled = base.add(2.0, 0.0, 0.0)
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "east"))
+        instance.setBlock(front, Block.OBSIDIAN)
+        instance.setBlock(pulled, Block.OBSIDIAN)
+        settle()
+
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.REDSTONE_BLOCK)
+        settle(3)
+        instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.AIR)
+        settle(6)
+
+        Assertions.assertEquals(Block.OBSIDIAN.key(), instance.getBlock(front).key())
+        Assertions.assertEquals(Block.OBSIDIAN.key(), instance.getBlock(pulled).key())
     }}
