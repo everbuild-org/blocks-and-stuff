@@ -309,9 +309,7 @@ class RedstoneSimulator(
         val ctx = UpdateContextImpl(position)
 
         when (val evaluation = component.evaluate(ctx)) {
-            is ComponentEvaluation.None -> {
-                Unit
-            }
+            is ComponentEvaluation.None -> {}
 
             is ComponentEvaluation.SetState -> {
                 if (!sameState(evaluation.block, block)) {

@@ -25,6 +25,7 @@ dependencies {
     testImplementation(libs.mockito.core)
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.minestom)
+    testImplementation(project(":blocksandstuff-recipes"))
     testImplementation(libs.kotlinx.coroutines.test)
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation(kotlin("test"))

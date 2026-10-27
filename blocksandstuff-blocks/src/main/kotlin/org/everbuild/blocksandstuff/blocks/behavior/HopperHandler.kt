@@ -93,7 +93,7 @@ class HopperHandler(
         if (destroy.newBlock.key() == destroy.block.key()) return
 
         val destroyed = backendOf(destroy.instance, destroy.blockPosition).also { it.load(destroy.block) }
-        BlockInventoryHandler.closeAndDrop(
+        closeAndDrop(
             listOf(destroyed.getViewableInventory()),
             destroy.instance,
             destroy.blockPosition,
@@ -142,7 +142,7 @@ class HopperHandler(
         var moved = false
 
         for (entity in instance.getNearbyEntities(center, PICKUP_RANGE).filterIsInstance<ItemEntity>()) {
-            if (!entity.isPickable()) continue
+            if (!entity.isPickable) continue
             if (!isInPickupArea(entity.position, position)) continue
 
             val stack = entity.itemStack
