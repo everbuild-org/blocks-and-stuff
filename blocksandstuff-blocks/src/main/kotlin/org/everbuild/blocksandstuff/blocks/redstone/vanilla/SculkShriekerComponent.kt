@@ -87,7 +87,6 @@ class SculkShriekerComponent : RedstoneComponent {
             )
         }
     }
-    // </<@AI_UNREVIEWED>
 
     @Suppress("unused")
     private fun summonWarden(ctx: UpdateContext) {
