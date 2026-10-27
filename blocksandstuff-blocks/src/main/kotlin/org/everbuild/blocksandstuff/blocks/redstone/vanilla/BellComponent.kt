@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
-import net.kyori.adventure.sound.Sound
-import net.minestom.server.sound.SoundEvent
+import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
@@ -16,13 +15,7 @@ class BellComponent : RedstoneComponent {
         val wasPowered = block.getProperty("powered") == "true"
         if (powered == wasPowered) return ComponentEvaluation.None
 
-        if (powered) {
-            ctx.instance.playSoundExcept(
-                null,
-                Sound.sound(SoundEvent.BLOCK_BELL_USE, Sound.Source.BLOCK, 2.0f, 1.0f),
-                ctx.position,
-            )
-        }
+        if (powered) ringBell(ctx.instance, ctx.position, Facing.of(block) ?: BlockFace.NORTH)
         return ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
     }
 }

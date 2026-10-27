@@ -6,6 +6,7 @@ import net.minestom.server.event.EventFilter
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.instance.block.Block
+import org.everbuild.blocksandstuff.blocks.behavior.BellInteraction
 import org.everbuild.blocksandstuff.blocks.behavior.SignEditListener
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
@@ -48,6 +49,8 @@ object BlockBehaviorRuleRegistrations {
                 VanillaBlockBehaviour.RULESET.modify { removeBlocks(*exclude.toTypedArray()) }
             },
         )
+        PlacedHandlerRegistration.registerDefault()
+        BellInteraction.enable()
         registerRandomTickingGlobally()
         NaturalBlockInteract.enable()
         SignEditListener.enable()
