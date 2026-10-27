@@ -13,8 +13,13 @@ import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
+import net.minestom.server.recipe.Recipe
 import net.minestom.server.utils.Rotation
+import org.everbuild.blocksandstuff.blocks.ContainerRegistrations
 import org.everbuild.blocksandstuff.blocks.placement.RedstoneWirePlacementRule
+import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
+import org.everbuild.blocksandstuff.recipes.grid.CraftingGridRecipe
+import org.everbuild.blocksandstuff.recipes.grid.GridPattern
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.engine.RedstoneSimulator
 import org.junit.jupiter.api.AfterEach
@@ -31,6 +36,7 @@ class VanillaRedstoneTest {
     fun setup() {
         MinecraftServer.init()
         RedstoneRegistrations.enable()
+        ContainerRegistrations.registerDefault()
         RedstoneRegistrations.registry.registerVanillaComponents()
         instance = MinecraftServer.getInstanceManager().createInstanceContainer()
         (instance as InstanceContainer).setChunkSupplier(::LightingChunk)
@@ -1553,4 +1559,64 @@ class VanillaRedstoneTest {
         settle()
         Assertions.assertEquals("false", instance.getBlock(bell).getProperty("powered"))
     }
-}
+    @Test
+    fun crafterMirrorsRedstonePower() {
+        val crafter = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(crafter, Block.CRAFTER.withProperty("orientation", "east_up"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(crafter).getProperty("triggered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "true"))
+        settle()
+        Assertions.assertEquals("true", instance.getBlock(crafter).getProperty("triggered"))
+
+        instance.setBlock(base, Block.LEVER.withProperty("powered", "false"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(crafter).getProperty("triggered"))
+    }
+
+    @Test
+    fun crafterHandlerIsRegistered() {
+        Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:crafter"))
+    }
+    @Test
+    fun crafterCraftsAndEjectsResult() {
+        val crafter = base.add(1.0, 0.0, 0.0)
+        val source = base
+        val recipe =
+            object : Recipe, CraftingGridRecipe {
+                override fun getResult(source: GridPattern<ItemStack>) = ItemStack.of(Material.DIRT)
+
+                override fun matches(pattern: GridPattern<ItemStack>) =
+                    pattern.width == 1 && pattern.height == 1 && pattern.grid[0][0]?.material() == Material.STONE
+
+                override fun takeOne(pattern: GridPattern<ItemStack>) =
+                    GridPattern(listOf(listOf(ItemStack.AIR)), nullValue = ItemStack.AIR)
+            }
+        MinecraftServer.getRecipeManager().addRecipe(recipe)
+
+        instance.setBlock(source, Block.LEVER.withProperty("powered", "false"))
+        instance.setBlock(crafter, Block.CRAFTER.withProperty("orientation", "east_up"))
+        val handler = MinecraftServer.getBlockManager().getHandler("minecraft:crafter") as BlockInventoryHolder
+        handler.getInventory(instance, crafter).transact { set -> set(0, ItemStack.of(Material.STONE)) }
+        val fresh = MinecraftServer.getBlockManager().getHandler("minecraft:crafter") as BlockInventoryHolder
+        Assertions.assertEquals(Material.STONE, fresh.getInventory(instance, crafter).getItemStack(0).material())
+
+        instance.setBlock(source, Block.LEVER.withProperty("powered", "true"))
+        settle(8)
+
+        val afterHandler = MinecraftServer.getBlockManager().getHandler("minecraft:crafter") as BlockInventoryHolder
+        val after = afterHandler.getInventory(instance, crafter).getItemStack(0)
+        Assertions.assertTrue(after.isAir, "crafter should consume the input")
+        Assertions.assertTrue(instance.entities.any { it.entityType.key().value() == "item" }, "crafter should eject a result")
+    }    @Test
+    fun crafterIsPoweredByRedstoneWire() {
+        val crafter = base.add(2.0, 0.0, 0.0)
+        instance.setBlock(base, Block.REDSTONE_BLOCK)
+        instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_WIRE)
+        instance.setBlock(crafter, Block.CRAFTER.withProperty("orientation", "east_up"))
+        settle()
+
+        Assertions.assertEquals("true", instance.getBlock(crafter).getProperty("triggered"))
+    }}

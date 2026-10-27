@@ -6,6 +6,8 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.blocks.behavior.BlockContainerHandler
+import org.everbuild.blocksandstuff.blocks.behavior.CrafterHandler
+import org.everbuild.blocksandstuff.blocks.behavior.CrafterSessions
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerAnimation
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerArchetype
 import org.everbuild.blocksandstuff.blocks.behavior.DispenserHandler
@@ -54,6 +56,8 @@ object ContainerRegistrations {
         registerHopper()
         registerDropper()
         registerDispenser()
+        MinecraftServer.getBlockManager().registerHandler("minecraft:crafter") { CrafterHandler() }
+        CrafterSessions.registerDefault()
         MinecraftServer.getBlockManager().registerHandler("minecraft:ender_chest") { EnderChestHandler() }
     }
 

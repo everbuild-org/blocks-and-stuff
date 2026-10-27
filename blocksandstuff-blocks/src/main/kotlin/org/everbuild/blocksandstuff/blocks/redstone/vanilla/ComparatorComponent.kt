@@ -89,6 +89,8 @@ class ComparatorComponent : RedstoneComponent {
 
     private fun analogSignal(block: Block): Int =
         when {
+            block.compare(Block.SCULK_SENSOR) || block.compare(Block.CALIBRATED_SCULK_SENSOR) ->
+                block.getTag(SculkSensorComponent.LAST_FREQUENCY_TAG)?.coerceIn(0, 15) ?: 0
             block.compare(Block.COMPOSTER) -> block.getProperty("level")?.toIntOrNull()?.coerceIn(0, 8) ?: 0
             block.compare(Block.BEE_NEST) || block.compare(Block.BEEHIVE) ->
                 block.getProperty("honey_level")?.toIntOrNull()?.coerceIn(0, 5) ?: 0

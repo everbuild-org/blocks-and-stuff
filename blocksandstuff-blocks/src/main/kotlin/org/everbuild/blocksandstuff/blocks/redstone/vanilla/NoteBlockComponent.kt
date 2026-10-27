@@ -12,6 +12,7 @@ import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import kotlin.math.pow
 
 /**
@@ -37,6 +38,8 @@ class NoteBlockComponent : RedstoneComponent {
 }
 
 internal object NoteBlockSound {
+    private const val NOTE_BLOCK_FREQUENCY = 10
+
     fun play(
         instance: Instance,
         position: Point,
@@ -56,6 +59,7 @@ internal object NoteBlockSound {
             Sound.sound(sound(instrument), Sound.Source.RECORD, 3.0f, pitch),
             position,
         )
+        VibrationBus.emit(instance, position, NOTE_BLOCK_FREQUENCY)
         if (headInstrument == null) {
             instance.sendGroupedPacket(
                 ParticlePacket(Particle.NOTE, position.add(0.5, 1.2, 0.5), Vec.ZERO, 1.0f, 1),

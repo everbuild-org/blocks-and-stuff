@@ -14,6 +14,7 @@ fun RedstoneRegistry.registerVanillaComponents() {
     TargetBlockRegistration.registerDefault()
     LightningRodBlockRegistration.registerDefault()
     TripwireRegistration.registerDefault()
+    SculkSensorRegistration.registerDefault()
     register(ComponentSelector.ByBlock(Block.REDSTONE_WIRE)) { WireComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_TORCH)) { TorchComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_WALL_TORCH)) { TorchComponent() }
@@ -32,8 +33,11 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.DETECTOR_RAIL)) { DetectorRailComponent() }
     register(ComponentSelector.ByBlock(Block.ACTIVATOR_RAIL)) { ActivatorRailComponent() }
     register(ComponentSelector.ByTag("minecraft:lightning_rods")) { LightningRodComponent() }
+    register(ComponentSelector.ByBlock(Block.SCULK_SENSOR)) { SculkSensorComponent(calibrated = false) }
+    register(ComponentSelector.ByBlock(Block.CALIBRATED_SCULK_SENSOR)) { SculkSensorComponent(calibrated = true) }
     copperBulbs.forEach { bulb -> register(ComponentSelector.ByBlock(bulb)) { CopperBulbComponent() } }
     register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
+    register(ComponentSelector.ByBlock(Block.CRAFTER)) { CrafterComponent() }
     register(ComponentSelector.ByBlock(Block.DROPPER)) { DropperComponent() }
     register(ComponentSelector.ByBlock(Block.TNT)) { TntComponent() }
     register(ComponentSelector.ByBlock(Block.LEVER)) { SwitchComponent() }

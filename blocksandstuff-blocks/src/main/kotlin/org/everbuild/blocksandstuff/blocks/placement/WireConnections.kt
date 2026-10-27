@@ -33,6 +33,7 @@ object WireConnections {
                 Block.OBSERVER,
                 Block.DISPENSER,
                 Block.DROPPER,
+                Block.CRAFTER,
                 Block.HOPPER,
                 Block.NOTE_BLOCK,
                 Block.PISTON,

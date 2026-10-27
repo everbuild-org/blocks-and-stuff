@@ -6,6 +6,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.timer.TaskSchedule
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 
 /** Plays the bell sound and triggers the vanilla bell shake block event. */
 internal fun ringBell(
@@ -19,6 +20,7 @@ internal fun ringBell(
         position,
     )
     instance.sendBlockAction(position, BELL_RING_ACTION.toByte(), face.dataValue().toByte())
+    VibrationBus.emit(instance, position, BELL_FREQUENCY)
     instance.scheduler().scheduleTask(
         {
             instance.playSoundExcept(
@@ -34,3 +36,4 @@ internal fun ringBell(
 
 private const val BELL_RING_ACTION = 1
 private const val RESONATE_TICKS = 50
+private const val BELL_FREQUENCY = 11

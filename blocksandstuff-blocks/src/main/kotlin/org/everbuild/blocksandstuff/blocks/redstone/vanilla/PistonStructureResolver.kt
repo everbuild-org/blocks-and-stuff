@@ -188,7 +188,9 @@ class PistonStructureResolver(
     }
 
     private fun doesNotStick(block: Block): Boolean =
-        block.key() == Key.key("minecraft:heavy_core") ||
+        block.key() == Key.key("minecraft:sculk_sensor") ||
+            block.key() == Key.key("minecraft:calibrated_sculk_sensor") ||
+            block.key() == Key.key("minecraft:heavy_core") ||
             block.key().value().endsWith("_glazed_terracotta")
 
     private fun relative(
@@ -235,6 +237,8 @@ class PistonStructureResolver(
                 Key.key("minecraft:jigsaw"),
                 Key.key("minecraft:piston_head"),
                 Key.key("minecraft:moving_piston"),
+                Key.key("minecraft:sculk_sensor"),
+                Key.key("minecraft:calibrated_sculk_sensor"),
             )
 
         private val destroyOnPush: Set<Key> =

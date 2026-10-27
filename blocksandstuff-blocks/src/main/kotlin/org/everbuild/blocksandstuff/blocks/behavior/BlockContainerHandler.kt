@@ -17,6 +17,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 
 enum class ContainerAnimation {
     /** Client lid animation driven by a block action (chest, shulker box). */
@@ -102,6 +103,7 @@ class BlockContainerHandler(
         position: Point,
     ) {
         openCount++
+        VibrationBus.emit(instance, position, 10)
         playSound(instance, position, openSound)
         if (animation == ContainerAnimation.OPEN_PROPERTY) {
             setOpenProperty(instance, position, true)
@@ -117,6 +119,7 @@ class BlockContainerHandler(
         openCount = (openCount - 1).coerceAtLeast(0)
         if (destroying) return
 
+        VibrationBus.emit(instance, position, 9)
         playSound(instance, position, closeSound)
         if (animation == ContainerAnimation.OPEN_PROPERTY) {
             if (openCount == 0) setOpenProperty(instance, position, false)

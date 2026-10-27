@@ -6,6 +6,7 @@ import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.utils.Direction
 import org.everbuild.blocksandstuff.common.tag.BlockTags
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -31,6 +32,7 @@ val FENCE_GATE_RULE: Rule<InteractionActivityContext> =
         }
 
         ctx.replaceBlock(updated)
+        VibrationBus.emit(ctx.instance, ctx.blockPosition, if (newOpen) 10 else 9)
 
         ctx.instance.playSoundExcept(
             ctx.player,

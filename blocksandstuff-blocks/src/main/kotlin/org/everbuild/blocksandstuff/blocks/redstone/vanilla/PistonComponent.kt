@@ -11,6 +11,7 @@ import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.UpdateContext
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import java.util.concurrent.ThreadLocalRandom
 
 /**
@@ -74,6 +75,7 @@ class PistonComponent(
         if (!resolver.resolve()) return
 
         val now = ctx.tick()
+        VibrationBus.emit(ctx.instance, ctx.position, 10)
         ctx.instance.sendBlockAction(ctx.position, EXTEND_ACTION.toByte(), facing.dataValue().toByte())
 
         for (position in resolver.toDestroy) {
@@ -141,6 +143,7 @@ class PistonComponent(
             }
         }
 
+        VibrationBus.emit(ctx.instance, ctx.position, 9)
         ctx.instance.sendBlockAction(ctx.position, RETRACT_ACTION.toByte(), facing.dataValue().toByte())
         val headPosition = ctx.position.relative(facing)
         ctx.instance.setBlock(headPosition, Block.AIR, false)
@@ -153,7 +156,6 @@ class PistonComponent(
                 emptyList()
             }
 
-        // <@AI_UNREVIEWED>
         // Capture all pulled blocks before clearing any origin: origins and destinations can overlap.
         val moves = pulled.map { origin -> origin to ctx.instance.getBlock(origin) }
         for ((origin, _) in moves) {
@@ -163,7 +165,6 @@ class PistonComponent(
         for ((origin, moved) in moves.asReversed()) {
             placeMovingBlock(ctx, origin.relative(facing.oppositeFace), moved, facing, extending = false, source = false)
         }
-        // </<@AI_UNREVIEWED>
 
         scheduleBaseRetraction(ctx, block, now)
         playSound(ctx, SoundEvent.BLOCK_PISTON_CONTRACT)

@@ -71,8 +71,9 @@ object RedstoneRegistrations {
     fun notifyBlockChanged(
         instance: Instance,
         position: Point,
+        delayTicks: Int = 1,
     ) {
-        simulator(instance)?.onBlockChanged(position)
+        simulator(instance)?.onBlockChanged(position, delayTicks)
     }
 
     /** Re-evaluates redstone around a block whose inventory contents changed (e.g. comparator input). */

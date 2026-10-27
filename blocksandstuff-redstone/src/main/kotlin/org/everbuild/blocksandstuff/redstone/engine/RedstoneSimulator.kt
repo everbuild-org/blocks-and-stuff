@@ -33,10 +33,21 @@ class RedstoneSimulator(
     private val instance: Instance,
     private val registry: RedstoneRegistry,
 ) : PowerQuery {
+    private enum class TickReason {
+        CHANGE,
+        SCHEDULED,
+    }
+
     private data class ScheduledTick(
         val tick: Long,
         val sequence: Long,
         val position: Point,
+        val reason: TickReason,
+    )
+
+    private data class NeighbourChange(
+        val changed: Point,
+        val face: BlockFace,
     )
 
     private data class Cached(
@@ -49,6 +60,8 @@ class RedstoneSimulator(
     private val components = HashMap<Point, Cached>()
     private val delta = ArrayDeque<Point>()
     private val deltaSet = HashSet<Point>()
+    private val deltaReasons = HashMap<Point, MutableSet<TickReason>>()
+    private val neighbourChanges = HashMap<Point, MutableList<NeighbourChange>>()
     private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
     private var currentTick = 0L
@@ -95,17 +108,23 @@ class RedstoneSimulator(
     }
 
     /** Called when a block in the instance changed; schedules re-evaluation for the next tick. */
-    fun onBlockChanged(position: Point) {
+    fun onBlockChanged(
+        position: Point,
+        delayTicks: Int = 1,
+    ) {
         val pos = canonical(position)
+        val delay = delayTicks.coerceAtLeast(1)
         invalidate(pos)
-        schedule(pos, 1)
+        schedule(pos, delay, TickReason.CHANGE)
         for (face in BlockFace.entries) {
-            val neighbour = pos.relative(face)
-            schedule(neighbour, 1)
+            val neighbour = canonical(pos.relative(face))
+            neighbourChanges.getOrPut(neighbour) { ArrayList() }
+                .add(NeighbourChange(pos, face.oppositeFace))
+            schedule(neighbour, delay, TickReason.CHANGE)
 
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
-                for (secondFace in BlockFace.entries) schedule(neighbour.relative(secondFace), 1)
+                for (secondFace in BlockFace.entries) schedule(neighbour.relative(secondFace), delay, TickReason.CHANGE)
             }
         }
     }
@@ -166,6 +185,8 @@ class RedstoneSimulator(
         tickQueue.removeIf { inChunk(it.position) }
         delta.removeIf(inChunk)
         deltaSet.removeIf(inChunk)
+        deltaReasons.keys.removeIf(inChunk)
+        neighbourChanges.keys.removeIf(inChunk)
     }
 
     private fun processChunkChanges() {
@@ -192,8 +213,10 @@ class RedstoneSimulator(
 
         delta.clear()
         deltaSet.clear()
+        deltaReasons.clear()
         while (tickQueue.isNotEmpty() && tickQueue.peek().tick <= currentTick) {
             val next = tickQueue.poll()
+            deltaReasons.getOrPut(next.position) { HashSet() }.add(next.reason)
             if (deltaSet.add(next.position)) delta.add(next.position)
         }
         if (delta.isEmpty()) {
@@ -213,11 +236,30 @@ class RedstoneSimulator(
                 steps++
                 val position = delta.removeFirst()
                 deltaSet.remove(position)
+                runHooks(position, deltaReasons.remove(position) ?: emptySet())
                 evaluate(position)
             }
             lastDeltaSteps = steps
         } finally {
             processing = false
+        }
+    }
+
+    private fun runHooks(
+        position: Point,
+        reasons: Set<TickReason>,
+    ) {
+        if (reasons.isEmpty()) return
+        val component = componentAt(position) ?: return
+        val ctx = UpdateContextImpl(position)
+
+        if (TickReason.SCHEDULED in reasons) {
+            component.onScheduledTick(ctx)
+        }
+        if (TickReason.CHANGE in reasons) {
+            neighbourChanges.remove(position)?.forEach { change ->
+                component.onNeighbourChanged(ctx, change.changed, change.face)
+            }
         }
     }
 
@@ -238,7 +280,7 @@ class RedstoneSimulator(
                 }
                 enqueueNeighbours(position)
                 if (evaluation.scheduleTick) {
-                    schedule(position, component.delayTicks(ctx))
+                    schedule(position, component.delayTicks(ctx), TickReason.SCHEDULED)
                 }
             }
 
@@ -283,9 +325,10 @@ class RedstoneSimulator(
     private fun schedule(
         position: Point,
         delayTicks: Int,
+        reason: TickReason = TickReason.CHANGE,
     ) {
         val pos = canonical(position)
-        tickQueue.add(ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos))
+        tickQueue.add(ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos, reason))
     }
 
     private fun enqueue(position: Point) {
@@ -355,7 +398,7 @@ class RedstoneSimulator(
             pos: Point,
             delayTicks: Int,
         ) {
-            schedule(pos, delayTicks)
+            schedule(pos, delayTicks, TickReason.SCHEDULED)
         }
 
         override fun markDirty(pos: Point) {

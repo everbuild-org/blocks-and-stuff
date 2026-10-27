@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.instance.block.Block
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -15,6 +16,7 @@ val LEVER_RULE: Rule<InteractionActivityContext> =
 
         val powered = ctx.block.getProperty("powered") == "true"
         ctx.replaceBlock(ctx.block.withProperty("powered", (!powered).toString()))
+        VibrationBus.emit(ctx.instance, ctx.blockPosition, if (powered) 9 else 10)
 
         ctx.instance.playSoundExcept(
             null,

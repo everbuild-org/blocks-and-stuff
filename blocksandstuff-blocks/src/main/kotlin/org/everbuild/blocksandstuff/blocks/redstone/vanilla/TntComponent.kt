@@ -5,6 +5,7 @@ import org.everbuild.blocksandstuff.blocks.util.PrimedTnt
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 
 /**
  * TNT: ignites on a rising power edge, spawning a primed TNT entity and clearing the block. Overrides
@@ -18,6 +19,7 @@ class TntComponent : RedstoneComponent {
         if (ignited || !isPowered(ctx)) return ComponentEvaluation.None
         ignited = true
         return ComponentEvaluation.Trigger { context ->
+            VibrationBus.emit(context.instance, context.position, 10)
             PrimedTnt.spawn(context.instance, context.position)
             context.setState(context.position, Block.AIR)
         }

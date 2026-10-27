@@ -5,6 +5,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.timer.TaskSchedule
 import org.everbuild.blocksandstuff.common.tag.BlockTags
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -21,6 +22,7 @@ val BUTTON_RULE: Rule<InteractionActivityContext> =
         if (block.getProperty("powered") == "true") return@Rule RuleResult.Consume
 
         ctx.replaceBlock(block.withProperty("powered", "true"))
+        VibrationBus.emit(ctx.instance, ctx.blockPosition, 10)
         ctx.instance.playSoundExcept(
             ctx.player,
             Sound.sound(buttonSound(block, true), Sound.Source.BLOCK, 0.3f, 0.6f),
@@ -33,6 +35,7 @@ val BUTTON_RULE: Rule<InteractionActivityContext> =
                 val current = ctx.instance.getBlock(position)
                 if (current.key() == block.key() && current.getProperty("powered") == "true") {
                     ctx.instance.setBlock(position, current.withProperty("powered", "false"))
+                    VibrationBus.emit(ctx.instance, position, 9)
                     ctx.instance.playSoundExcept(
                         null,
                         Sound.sound(buttonSound(block, false), Sound.Source.BLOCK, 0.3f, 0.5f),

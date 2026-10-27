@@ -4,6 +4,7 @@ import net.kyori.adventure.sound.Sound
 import net.minestom.server.instance.block.Block
 import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.common.tag.BlockTags
+import org.everbuild.blocksandstuff.redstone.VibrationBus
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -33,6 +34,7 @@ val DOOR_RULE: Rule<InteractionActivityContext> =
             otherHalfPos,
             updated.withProperty("half", if (half == "lower") "upper" else "lower"),
         )
+        VibrationBus.emit(ctx.instance, ctx.blockPosition, if (newOpen == "true") 10 else 9)
 
         ctx.instance.playSoundExcept(
             ctx.player,

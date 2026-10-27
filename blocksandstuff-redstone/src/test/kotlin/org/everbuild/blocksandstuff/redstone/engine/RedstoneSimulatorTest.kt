@@ -1,11 +1,16 @@
 ﻿package org.everbuild.blocksandstuff.redstone.engine
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.PowerSource
+import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
+import org.everbuild.blocksandstuff.redstone.UpdateContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -107,6 +112,30 @@ class RedstoneSimulatorTest {
     }
 
     @Test
+    fun scheduledTickAndNeighbourHooksAreCalled() {
+        val sponge = base.add(0.0, 1.0, 0.0)
+        val changed = base.add(1.0, 1.0, 0.0)
+        val component = HookComponent()
+        RedstoneRegistrations.registry.register(Block.SPONGE) { component }
+
+        instance.setBlock(sponge, Block.SPONGE)
+        simulator.tick()
+        simulator.tick()
+        simulator.tick()
+
+        Assertions.assertTrue(component.scheduledTicks >= 1)
+
+        instance.setBlock(changed, Block.STONE)
+        simulator.tick()
+        simulator.tick()
+
+        Assertions.assertTrue(
+            component.neighbourChanges.any { it.first == changed.asBlockVec() && it.second == BlockFace.EAST },
+            "expected neighbour change from east, got ${component.neighbourChanges}",
+        )
+    }
+
+    @Test
     fun chunkUnloadDropsCachedStateAndPendingTicks() {
         instance.setBlock(base.add(1.0, 0.0, 0.0), Block.REDSTONE_LAMP)
         instance.setBlock(base, Block.REDSTONE_BLOCK)
@@ -118,5 +147,31 @@ class RedstoneSimulatorTest {
 
         Assertions.assertEquals(0, simulator.pendingTickCount)
         Assertions.assertEquals(0, simulator.cachedComponentCount)
+    }
+}
+
+private class HookComponent : RedstoneComponent {
+    var scheduledTicks = 0
+    val neighbourChanges = ArrayList<Pair<Point, BlockFace>>()
+    private var scheduled = false
+
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
+        if (!scheduled) {
+            scheduled = true
+            ctx.scheduleTick(2)
+        }
+        return ComponentEvaluation.None
+    }
+
+    override fun onScheduledTick(ctx: UpdateContext) {
+        scheduledTicks++
+    }
+
+    override fun onNeighbourChanged(
+        ctx: UpdateContext,
+        changed: Point,
+        face: BlockFace,
+    ) {
+        neighbourChanges.add(changed to face)
     }
 }
