@@ -72,6 +72,7 @@ class SculkShriekerComponent : RedstoneComponent {
         return !sawPlayer
     }
 
+    // <@AI_UNREVIEWED>
     private fun blameNearbyPlayers(
         ctx: UpdateContext,
         now: Long,
@@ -87,6 +88,7 @@ class SculkShriekerComponent : RedstoneComponent {
             )
         }
     }
+    // </<@AI_UNREVIEWED>
 
     @Suppress("unused")
     private fun summonWarden(ctx: UpdateContext) {

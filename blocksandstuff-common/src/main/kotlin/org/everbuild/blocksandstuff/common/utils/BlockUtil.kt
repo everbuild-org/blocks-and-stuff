@@ -4,6 +4,8 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockHandler
 
+private val blocks = MinecraftServer.getBlockManager()
+
 fun Block.withDefaultHandler(): Block {
     if (this.handler() != null) return this
     return this.withHandler(MinecraftServer.getBlockManager().getHandler(this.key().asString()))

@@ -1112,6 +1112,34 @@ class VanillaRedstoneTest {
         Assertions.assertEquals("false", instance.getBlock(base).getProperty("powered"))
     }
 
+    // <@AI_UNREVIEWED>
+    @Test
+    fun movedObserverPulsesAfterMovementCompletes() {
+        val source = base.sub(1.0, 0.0, 0.0)
+        val observer = base.add(1.0, 0.0, 0.0)
+        val destination = base.add(2.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(observer, Block.OBSERVER.withProperty("facing", "east"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(observer).getProperty("powered"))
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+
+        var pulsed = false
+        for (tick in 0 until 8) {
+            simulator.tick()
+            if (instance.getBlock(destination).getProperty("powered") == "true") {
+                pulsed = true
+                break
+            }
+        }
+
+        Assertions.assertEquals(Block.OBSERVER.key(), instance.getBlock(destination).key())
+        Assertions.assertTrue(pulsed, "moved observer should pulse after movement completes")
+    }
+    // </<@AI_UNREVIEWED>
+
     @Test
     fun movedObserverPulsesAfterMovementCompletes() {
         val source = base.sub(1.0, 0.0, 0.0)
