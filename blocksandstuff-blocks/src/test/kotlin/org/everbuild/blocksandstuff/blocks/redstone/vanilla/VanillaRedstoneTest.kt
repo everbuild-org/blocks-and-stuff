@@ -1112,7 +1112,6 @@ class VanillaRedstoneTest {
         Assertions.assertEquals("false", instance.getBlock(base).getProperty("powered"))
     }
 
-    // <@AI_UNREVIEWED>
     @Test
     fun movedObserverPulsesAfterMovementCompletes() {
         val source = base.sub(1.0, 0.0, 0.0)
@@ -1138,7 +1137,6 @@ class VanillaRedstoneTest {
         Assertions.assertEquals(Block.OBSERVER.key(), instance.getBlock(destination).key())
         Assertions.assertTrue(pulsed, "moved observer should pulse after movement completes")
     }
-    // </<@AI_UNREVIEWED>
 
     @Test
     fun movedObserverPulsesAfterMovementCompletes() {

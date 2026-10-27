@@ -72,7 +72,6 @@ class SculkShriekerComponent : RedstoneComponent {
         return !sawPlayer
     }
 
-    // <@AI_UNREVIEWED>
     private fun blameNearbyPlayers(
         ctx: UpdateContext,
         now: Long,
