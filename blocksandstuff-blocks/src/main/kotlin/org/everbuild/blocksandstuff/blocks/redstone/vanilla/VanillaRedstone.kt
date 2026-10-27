@@ -35,6 +35,7 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByTag("minecraft:lightning_rods")) { LightningRodComponent() }
     register(ComponentSelector.ByBlock(Block.SCULK_SENSOR)) { SculkSensorComponent(calibrated = false) }
     register(ComponentSelector.ByBlock(Block.CALIBRATED_SCULK_SENSOR)) { SculkSensorComponent(calibrated = true) }
+    register(ComponentSelector.ByBlock(Block.SCULK_SHRIEKER)) { SculkShriekerComponent() }
     copperBulbs.forEach { bulb -> register(ComponentSelector.ByBlock(bulb)) { CopperBulbComponent() } }
     register(ComponentSelector.ByBlock(Block.DISPENSER)) { DispenserComponent() }
     register(ComponentSelector.ByBlock(Block.CRAFTER)) { CrafterComponent() }

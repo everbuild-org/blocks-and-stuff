@@ -68,9 +68,12 @@ object SculkSensorRegistration {
         }
         handler.addListener(PlayerMoveEvent::class.java) { event ->
             val player = event.player
-            if (player.isSneaking) return@addListener
             val instance = player.instance ?: return@addListener
             val position = event.newPosition.asBlockVec()
+            if (instance.getBlock(position).compare(Block.SCULK_SHRIEKER)) {
+                VibrationBus.emit(instance, position, FREQUENCY_STEP)
+            }
+            if (player.isSneaking) return@addListener
             if (lastStepPositions.put(player.uuid, position) == position) return@addListener
 
             val frequency =
