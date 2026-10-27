@@ -1,4 +1,4 @@
-﻿package org.everbuild.blocksandstuff.redstone
+package org.everbuild.blocksandstuff.redstone
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
@@ -56,7 +56,11 @@ object RedstoneRegistrations {
 
     @JvmStatic
     fun install(instance: Instance): RedstoneSimulator =
-        simulators.computeIfAbsent(instance) { RedstoneSimulator(instance, registry) }
+        simulators.computeIfAbsent(instance) {
+            RedstoneSimulator(instance, registry).also { simulator ->
+                instance.chunks.forEach(simulator::onChunkLoaded)
+            }
+        }
 
     @JvmStatic
     fun uninstall(instance: Instance) {

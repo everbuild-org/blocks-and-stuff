@@ -1113,6 +1113,32 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun movedObserverPulsesAfterMovementCompletes() {
+        val source = base.sub(1.0, 0.0, 0.0)
+        val observer = base.add(1.0, 0.0, 0.0)
+        val destination = base.add(2.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
+        instance.setBlock(observer, Block.OBSERVER.withProperty("facing", "east"))
+        settle()
+        Assertions.assertEquals("false", instance.getBlock(observer).getProperty("powered"))
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+
+        var pulsed = false
+        for (tick in 0 until 8) {
+            simulator.tick()
+            if (instance.getBlock(destination).getProperty("powered") == "true") {
+                pulsed = true
+                break
+            }
+        }
+
+        Assertions.assertEquals(Block.OBSERVER.key(), instance.getBlock(destination).key())
+        Assertions.assertTrue(pulsed, "moved observer should pulse after movement completes")
+    }
+
+    @Test
     fun dispenserTriggersWhenPowered() {
         instance.setBlock(base, Block.DISPENSER.withProperty("facing", "east"))
         instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.LEVER.withProperty("powered", "false"))
@@ -1559,6 +1585,7 @@ class VanillaRedstoneTest {
         settle()
         Assertions.assertEquals("false", instance.getBlock(bell).getProperty("powered"))
     }
+
     @Test
     fun crafterMirrorsRedstonePower() {
         val crafter = base.add(1.0, 0.0, 0.0)
@@ -1580,6 +1607,7 @@ class VanillaRedstoneTest {
     fun crafterHandlerIsRegistered() {
         Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:crafter"))
     }
+
     @Test
     fun crafterCraftsAndEjectsResult() {
         val crafter = base.add(1.0, 0.0, 0.0)
@@ -1610,7 +1638,9 @@ class VanillaRedstoneTest {
         val after = afterHandler.getInventory(instance, crafter).getItemStack(0)
         Assertions.assertTrue(after.isAir, "crafter should consume the input")
         Assertions.assertTrue(instance.entities.any { it.entityType.key().value() == "item" }, "crafter should eject a result")
-    }    @Test
+    }
+
+    @Test
     fun crafterIsPoweredByRedstoneWire() {
         val crafter = base.add(2.0, 0.0, 0.0)
         instance.setBlock(base, Block.REDSTONE_BLOCK)
@@ -1619,7 +1649,9 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("true", instance.getBlock(crafter).getProperty("triggered"))
-    }    @Test
+    }
+
+    @Test
     fun pistonDoesNotPushObsidian() {
         val front = base.add(1.0, 0.0, 0.0)
         instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
@@ -1664,4 +1696,5 @@ class VanillaRedstoneTest {
 
         Assertions.assertEquals(Block.OBSIDIAN.key(), instance.getBlock(front).key())
         Assertions.assertEquals(Block.OBSIDIAN.key(), instance.getBlock(pulled).key())
-    }}
+    }
+}

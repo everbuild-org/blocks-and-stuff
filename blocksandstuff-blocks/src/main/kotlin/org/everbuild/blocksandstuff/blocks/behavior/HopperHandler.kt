@@ -12,6 +12,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHandler
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
+import org.everbuild.blocksandstuff.common.blockinventory.canInsertStack
 import org.everbuild.blocksandstuff.common.blockinventory.extractOne
 import org.everbuild.blocksandstuff.common.blockinventory.insertStack
 import org.everbuild.blocksandstuff.common.utils.handlerOrRegistered
@@ -124,12 +125,13 @@ class HopperHandler(
         source: PhysicalInventory,
         target: PhysicalInventory,
     ): Boolean {
-        val extracted = source.extractOne() ?: return false
-        val leftover = target.insertStack(extracted)
-        if (!leftover.isAir) {
-            source.insertStack(leftover)
-            return false
-        }
+        val slot = source.extractableSlots.firstOrNull { !source.getItemStack(it).isAir } ?: return false
+        val candidate = source.getItemStack(slot).withAmount(1)
+        // Check acceptance first so a full target never mutates a source slot we cannot write back to.
+        if (!target.canInsertStack(candidate)) return false
+
+        val extracted = source.extractOne(listOf(slot)) ?: return false
+        target.insertStack(extracted)
         return true
     }
 

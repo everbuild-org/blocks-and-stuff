@@ -26,6 +26,7 @@ object PistonCleanupRegistration {
 
             for (face in BlockFace.entries) {
                 val headPosition = event.blockPosition.relative(face)
+                if (!event.instance.isChunkLoaded(headPosition)) continue
                 val head = event.instance.getBlock(headPosition)
                 val isHead =
                     head.compare(Block.PISTON_HEAD) ||

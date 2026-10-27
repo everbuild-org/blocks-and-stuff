@@ -1,4 +1,4 @@
-﻿package org.everbuild.blocksandstuff.redstone.engine
+package org.everbuild.blocksandstuff.redstone.engine
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
@@ -95,7 +95,7 @@ class RedstoneSimulatorTest {
     }
 
     @Test
-    fun chunkLoadReschedulesExistingComponents() {
+    fun installReschedulesAlreadyLoadedChunks() {
         val lamp = base.add(1.0, 0.0, 0.0)
         instance.setBlock(lamp, Block.REDSTONE_LAMP)
         instance.setBlock(base, Block.REDSTONE_BLOCK)
@@ -104,7 +104,6 @@ class RedstoneSimulatorTest {
         val reloaded = RedstoneRegistrations.install(instance)
         Assertions.assertEquals("false", instance.getBlock(lamp).getProperty("lit"))
 
-        reloaded.onChunkLoaded(requireNotNull(instance.getChunk(0, 0)))
         reloaded.tick()
         reloaded.tick()
 
@@ -150,6 +149,35 @@ class RedstoneSimulatorTest {
     }
 
     @Test
+    fun blockChangesAtChunkBorderDoNotReadUnloadedChunks() {
+        val border = Pos(15.0, 64.0, 8.0)
+        instance.setBlock(border, Block.REDSTONE_BLOCK)
+        Assertions.assertFalse(instance.isChunkLoaded(1, 0))
+
+        Assertions.assertDoesNotThrow {
+            simulator.onBlockChanged(border)
+            simulator.tick()
+        }
+
+        Assertions.assertFalse(instance.isChunkLoaded(1, 0))
+    }
+
+    @Test
+    fun nonConvergentDeltaIsCarriedIntoFollowingTick() {
+        val position = base.add(0.0, 1.0, 0.0)
+        RedstoneRegistrations.registry.register(Block.SPONGE) { OscillatingComponent() }
+        instance.setBlock(position, Block.SPONGE)
+
+        simulator.tick()
+        Assertions.assertTrue(simulator.lastNonConvergent)
+        Assertions.assertTrue(simulator.lastDeltaSteps > 0)
+
+        simulator.tick()
+        Assertions.assertTrue(simulator.lastNonConvergent)
+        Assertions.assertTrue(simulator.lastDeltaSteps > 0)
+    }
+
+    @Test
     fun consumesFiltersNeighbourHooks() {
         val sponge = base.add(0.0, 1.0, 0.0)
         val west = sponge.add(-1.0, 0.0, 0.0)
@@ -170,6 +198,13 @@ class RedstoneSimulatorTest {
         simulator.tick()
         simulator.tick()
         Assertions.assertTrue(component.neighbourChanges.any { it.first == east.asBlockVec() })
+    }
+}
+
+private class OscillatingComponent : RedstoneComponent {
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
+        ctx.markDirty(ctx.position)
+        return ComponentEvaluation.None
     }
 }
 

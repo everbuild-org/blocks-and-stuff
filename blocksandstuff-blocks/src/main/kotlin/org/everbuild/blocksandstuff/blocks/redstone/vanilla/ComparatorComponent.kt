@@ -1,11 +1,10 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.coordinate.Point
+import net.minestom.server.entity.metadata.other.ItemFrameMeta
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
-import net.minestom.server.tag.Tag
-import net.minestom.server.entity.metadata.other.ItemFrameMeta
 import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
@@ -38,7 +37,7 @@ class ComparatorComponent : RedstoneComponent {
             output = value
             if (!changed && block.getProperty("mode") != "compare") return ComponentEvaluation.None
             return if (powered == currentPowered) {
-                ComponentEvaluation.SetState(block)
+                ComponentEvaluation.UpdateNeighbours
             } else {
                 ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
             }
@@ -90,12 +89,21 @@ class ComparatorComponent : RedstoneComponent {
 
     private fun analogSignal(block: Block): Int =
         when {
-            block.compare(Block.SCULK_SENSOR) || block.compare(Block.CALIBRATED_SCULK_SENSOR) ->
+            block.compare(Block.SCULK_SENSOR) || block.compare(Block.CALIBRATED_SCULK_SENSOR) -> {
                 block.getTag(SculkSensorComponent.LAST_FREQUENCY_TAG)?.coerceIn(0, 15) ?: 0
-            block.compare(Block.COMPOSTER) -> block.getProperty("level")?.toIntOrNull()?.coerceIn(0, 8) ?: 0
-            block.compare(Block.BEE_NEST) || block.compare(Block.BEEHIVE) ->
+            }
+
+            block.compare(Block.COMPOSTER) -> {
+                block.getProperty("level")?.toIntOrNull()?.coerceIn(0, 8) ?: 0
+            }
+
+            block.compare(Block.BEE_NEST) || block.compare(Block.BEEHIVE) -> {
                 block.getProperty("honey_level")?.toIntOrNull()?.coerceIn(0, 5) ?: 0
-            else -> 0
+            }
+
+            else -> {
+                0
+            }
         }
 
     private fun itemFrameSignal(
@@ -104,7 +112,10 @@ class ComparatorComponent : RedstoneComponent {
     ): Int {
         val frames =
             instance.entities.filter { entity ->
-                entity.entityType.key().value().endsWith("item_frame") &&
+                entity.entityType
+                    .key()
+                    .value()
+                    .endsWith("item_frame") &&
                     entity.position.asBlockVec() == position.asBlockVec()
             }
         if (frames.size != 1) return 0

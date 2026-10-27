@@ -33,6 +33,7 @@ class MovingPistonComponent : RedstoneComponent {
 
         val moved = movedState(ctx.block()) ?: Block.AIR
         ctx.setState(moved)
+        ctx.movementCompleted(ctx.position)
         if (ctx.block().stateId() != moved.stateId() || ctx.block().nbt() != moved.nbt()) {
             setBlockSilently(ctx.instance, ctx.position, moved)
             RedstoneRegistrations.notifyBlockChanged(ctx.instance, ctx.position)
