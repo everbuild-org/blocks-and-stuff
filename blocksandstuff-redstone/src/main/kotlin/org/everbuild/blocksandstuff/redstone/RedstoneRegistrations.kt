@@ -56,7 +56,13 @@ object RedstoneRegistrations {
 
     @JvmStatic
     fun install(instance: Instance): RedstoneSimulator =
-        simulators.computeIfAbsent(instance) { RedstoneSimulator(instance, registry) }
+        simulators.computeIfAbsent(instance) {
+            // <@AI_UNREVIEWED>
+            RedstoneSimulator(instance, registry).also { simulator ->
+                instance.chunks.forEach(simulator::onChunkLoaded)
+            }
+            // </<@AI_UNREVIEWED>
+        }
 
     @JvmStatic
     fun uninstall(instance: Instance) {

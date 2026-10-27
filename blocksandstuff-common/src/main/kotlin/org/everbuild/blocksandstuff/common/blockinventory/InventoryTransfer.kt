@@ -41,6 +41,30 @@ fun PhysicalInventory.insertStack(
     return remaining
 }
 
+/** Whether [stack] fits into [slots] without mutating this inventory. */
+fun PhysicalInventory.canInsertStack(
+    stack: ItemStack,
+    slots: Collection<Int> = insertableSlots,
+): Boolean {
+    if (stack.isAir) return true
+
+    var remaining = stack.amount()
+    for (slot in slots) {
+        val existing = getItemStack(slot)
+        val freeSpace =
+            when {
+                existing.isAir -> stack.maxStackSize()
+                existing.isSimilar(stack) -> existing.maxStackSize() - existing.amount()
+                else -> 0
+            }
+        if (freeSpace <= 0) continue
+
+        remaining -= minOf(freeSpace, remaining)
+        if (remaining <= 0) return true
+    }
+    return false
+}
+
 /** Removes a single item from the first non-empty slot in [slots]. */
 fun PhysicalInventory.extractOne(slots: Collection<Int> = extractableSlots): ItemStack? {
     var extracted: ItemStack? = null

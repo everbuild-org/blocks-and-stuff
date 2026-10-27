@@ -50,6 +50,13 @@ class ObserverComponent : RedstoneComponent {
         return ComponentEvaluation.None
     }
 
+    // <@AI_UNREVIEWED>
+    override fun onMovementCompleted(ctx: UpdateContext) {
+        if (tickScheduled || ctx.block().getProperty("powered") == "true") return
+        scheduleTick(ctx, ctx.tick())
+    }
+    // </<@AI_UNREVIEWED>
+
     private fun scheduleTick(
         ctx: UpdateContext,
         now: Long,

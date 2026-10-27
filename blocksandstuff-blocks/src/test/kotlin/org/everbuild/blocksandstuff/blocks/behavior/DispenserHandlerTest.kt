@@ -211,10 +211,6 @@ class DispenserHandlerTest {
         simulator.onBlockChanged(source)
         simulator.tick()
 
-        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base.relative(BlockFace.NORTH)).key())
-
-        repeat(4) { simulator.tick() }
-
         Assertions.assertEquals(Block.WATER.key(), instance.getBlock(base.relative(BlockFace.NORTH)).key())
         Assertions.assertEquals(Material.BUCKET, inventoryAt(base).getItemStack(0).material())
     }

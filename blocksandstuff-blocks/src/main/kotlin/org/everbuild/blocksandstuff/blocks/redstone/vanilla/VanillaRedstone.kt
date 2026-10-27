@@ -15,6 +15,9 @@ fun RedstoneRegistry.registerVanillaComponents() {
     LightningRodBlockRegistration.registerDefault()
     TripwireRegistration.registerDefault()
     SculkSensorRegistration.registerDefault()
+    // <@AI_UNREVIEWED>
+    WardenSpawnTracker.registerDefault()
+    // </<@AI_UNREVIEWED>
     register(ComponentSelector.ByBlock(Block.REDSTONE_WIRE)) { WireComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_TORCH)) { TorchComponent() }
     register(ComponentSelector.ByBlock(Block.REDSTONE_WALL_TORCH)) { TorchComponent() }

@@ -37,11 +37,13 @@ class ComparatorComponent : RedstoneComponent {
             val changed = value != output || powered != currentPowered
             output = value
             if (!changed && block.getProperty("mode") != "compare") return ComponentEvaluation.None
+            // <@AI_UNREVIEWED>
             return if (powered == currentPowered) {
-                ComponentEvaluation.SetState(block)
+                ComponentEvaluation.UpdateNeighbours
             } else {
                 ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
             }
+            // </<@AI_UNREVIEWED>
         }
 
         if (!tickScheduled) {

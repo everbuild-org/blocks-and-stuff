@@ -6,12 +6,14 @@ import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.GameMode
+import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
 import net.minestom.server.network.packet.server.play.ParticlePacket
 import net.minestom.server.particle.Particle
 import net.minestom.server.potion.Potion
 import net.minestom.server.potion.PotionEffect
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.blocks.event.WardenBlameEvent
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
@@ -70,15 +72,23 @@ class SculkShriekerComponent : RedstoneComponent {
         return !sawPlayer
     }
 
+    // <@AI_UNREVIEWED>
     private fun blameNearbyPlayers(
         ctx: UpdateContext,
         now: Long,
     ) {
+        val block = ctx.block()
         for (player in ctx.instance.players) {
             if (player.position.distance(ctx.position.add(0.5, 0.5, 0.5)) > BLAME_RADIUS) continue
             if (WardenSpawnTracker.isOnCooldown(player.uuid, now)) continue
+
+            val warningLevel = WardenSpawnTracker.blame(player.uuid, now)
+            EventDispatcher.call(
+                WardenBlameEvent(player, block, ctx.position.asBlockVec(), ctx.instance, warningLevel),
+            )
         }
     }
+    // </<@AI_UNREVIEWED>
 
     @Suppress("unused")
     private fun summonWarden(ctx: UpdateContext) {

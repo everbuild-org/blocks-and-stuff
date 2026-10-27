@@ -32,6 +32,11 @@ sealed interface ComponentEvaluation {
     ) : ComponentEvaluation
 
     data class Trigger(val effect: SideEffect) : ComponentEvaluation
+
+    // <@AI_UNREVIEWED>
+    /** Notifies neighbours without changing this block's own state. */
+    data object UpdateNeighbours : ComponentEvaluation
+    // </<@AI_UNREVIEWED>
 }
 
 /**
@@ -66,6 +71,14 @@ interface RedstoneComponent {
     fun onScheduledTick(ctx: UpdateContext) {
         ctx.markDirty(ctx.position)
     }
+
+    // <@AI_UNREVIEWED>
+    /**
+     * Hook for a component that has just been placed by a finished piston movement. This is distinct
+     * from component creation during chunk loading and may react to the movement itself.
+     */
+    fun onMovementCompleted(ctx: UpdateContext) = Unit
+    // </<@AI_UNREVIEWED>
 }
 
 /** Read-only context passed to [RedstoneComponent.emit] and related queries. */
@@ -104,4 +117,9 @@ interface UpdateContext : ReadContext {
     )
 
     fun markDirty(pos: Point = position)
+
+    // <@AI_UNREVIEWED>
+    /** Marks [pos] as restored by a piston movement so [RedstoneComponent.onMovementCompleted] runs. */
+    fun movementCompleted(pos: Point = position)
+    // </<@AI_UNREVIEWED>
 }

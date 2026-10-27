@@ -63,6 +63,7 @@ class PistonStructureResolver(
         var lineLength = 1
         if (lineLength + toPush.size > MAX_PUSH_DEPTH) return false
 
+        // <@AI_UNREVIEWED>
         // Include the sticky blocks behind this one that are dragged along.
         while (isSticky(block)) {
             val behind = position.relative(pushDirection.oppositeFace)
@@ -83,13 +84,19 @@ class PistonStructureResolver(
 
         var added = 0
         for (step in lineLength - 1 downTo 0) {
-            toPush.add(relative(position, pushDirection.oppositeFace, step))
+            val dragged = relative(position, pushDirection.oppositeFace, step)
+            val draggedBlock = instance.getBlock(dragged)
+            // Never drag air or an immovable block that is only attached outside the structure.
+            if (draggedBlock.air()) continue
+            if (!isPushable(draggedBlock, dragged, pushDirection, false, pushDirection.oppositeFace)) continue
+            toPush.add(dragged)
             added++
         }
 
         var forwardSteps = 1
         while (true) {
             val forward = relative(position, pushDirection, forwardSteps)
+            // </<@AI_UNREVIEWED>
             val collisionIndex = toPush.indexOf(forward)
             if (collisionIndex > -1) {
                 reorderListAtCollision(added, collisionIndex)

@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.key.Key
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
@@ -29,6 +30,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 
 class HopperHandlerTest {
@@ -152,6 +154,36 @@ class HopperHandlerTest {
 
         Assertions.assertEquals(1, inventoryAt(base).getItemStack(0).amount())
         Assertions.assertEquals(1, inventoryAt(base.add(0.0, 1.0, 0.0)).getItemStack(0).amount())
+    }
+
+    @Test
+    fun checksAcceptanceBeforeExtractingFromUnwritableSource() {
+        placeHopper()
+        inventoryAt(base).transact { set ->
+            for (slot in 0 until 5) set(slot, ItemStack.of(Material.STONE, 64))
+        }
+
+        val source =
+            mock<PhysicalInventory> {
+                on { extractableSlots } doReturn listOf(0)
+                on { getItemStack(0) } doReturn ItemStack.of(Material.IRON_INGOT)
+            }
+        val sourcePosition = base.add(0.0, 1.0, 0.0)
+        val sourceHandler =
+            object : BlockHandler, BlockInventoryHolder {
+                override fun getKey(): Key = Key.key("test:unwritable_container")
+
+                override fun getInventory(
+                    instance: Instance,
+                    blockPos: Point,
+                ): PhysicalInventory = source
+            }
+        instance.setBlock(sourcePosition, Block.CHEST.withHandler(sourceHandler))
+
+        tickHopper()
+
+        verify(source, never()).transact(any())
+        Assertions.assertEquals(64, inventoryAt(base).getItemStack(0).amount())
     }
 
     @Test

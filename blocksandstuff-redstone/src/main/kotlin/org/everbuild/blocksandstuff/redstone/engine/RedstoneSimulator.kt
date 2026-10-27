@@ -36,6 +36,9 @@ class RedstoneSimulator(
     private enum class TickReason {
         CHANGE,
         SCHEDULED,
+        // <@AI_UNREVIEWED>
+        MOVED,
+        // </<@AI_UNREVIEWED>
     }
 
     private data class ScheduledTick(
@@ -91,14 +94,13 @@ class RedstoneSimulator(
         face: BlockFace,
     ): Int {
         val position = canonical(from)
-        val component =
-            componentAt(position)
-                ?: // Strongly powered solid blocks conduct their strength as weak power to their neighbours.
-                return conductedSignal(position).coerceIn(0, REDSTONE_MAX_POWER)
-        return component.emit(ReadContextImpl(position), face).weak.coerceIn(0, REDSTONE_MAX_POWER)
+        val componentSignal = componentAt(position)?.emit(ReadContextImpl(position), face)?.weak ?: 0
+        val conducted = conductedSignal(position)
+        return maxOf(componentSignal, conducted).coerceIn(0, REDSTONE_MAX_POWER)
     }
 
     private fun conductedSignal(position: Point): Int {
+        if (!instance.isChunkLoaded(position)) return 0
         if (!instance.getBlock(position).redstoneConductor()) return 0
         var best = 0
         for (face in BlockFace.entries) {
@@ -132,9 +134,12 @@ class RedstoneSimulator(
         schedule(pos, delay, TickReason.CHANGE)
         for (face in BlockFace.entries) {
             val neighbour = canonical(pos.relative(face))
-            neighbourChanges.getOrPut(neighbour) { ArrayList() }
-                .add(NeighbourChange(pos, face.oppositeFace))
             schedule(neighbour, delay, TickReason.CHANGE)
+            if (!instance.isChunkLoaded(neighbour)) continue
+
+            neighbourChanges
+                .getOrPut(neighbour) { ArrayList() }
+                .add(NeighbourChange(pos, face.oppositeFace))
 
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
@@ -248,9 +253,7 @@ class RedstoneSimulator(
         currentTick++
         processChunkChanges()
 
-        delta.clear()
-        deltaSet.clear()
-        deltaReasons.clear()
+        lastNonConvergent = false
         while (tickQueue.isNotEmpty() && tickQueue.peek().tick <= currentTick) {
             val next = tickQueue.poll()
             deltaReasons.getOrPut(next.position) { HashSet() }.add(next.reason)
@@ -267,7 +270,13 @@ class RedstoneSimulator(
             var steps = 0
             while (delta.isNotEmpty()) {
                 if (guard++ >= DELTA_LIMIT) {
-                    logger.warn("Redstone delta cycle did not settle after {} steps in {}", DELTA_LIMIT, instance.uuid)
+                    lastNonConvergent = true
+                    logger.warn(
+                        "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions into the next tick",
+                        DELTA_LIMIT,
+                        instance.uuid,
+                        delta.size,
+                    )
                     break
                 }
                 steps++
@@ -290,6 +299,11 @@ class RedstoneSimulator(
         val component = componentAt(position) ?: return
         val ctx = UpdateContextImpl(position)
 
+        // <@AI_UNREVIEWED>
+        if (TickReason.MOVED in reasons) {
+            component.onMovementCompleted(ctx)
+        }
+        // </<@AI_UNREVIEWED>
         if (TickReason.SCHEDULED in reasons) {
             component.onScheduledTick(ctx)
         }
@@ -304,6 +318,7 @@ class RedstoneSimulator(
     }
 
     private fun evaluate(position: Point) {
+        if (!instance.isChunkLoaded(position)) return
         val block = instance.getBlock(position)
         val component = componentAt(position) ?: return
         val ctx = UpdateContextImpl(position)
@@ -326,11 +341,16 @@ class RedstoneSimulator(
                 evaluation.effect.apply(ctx)
                 enqueueNeighbours(position)
             }
+
+            // <@AI_UNREVIEWED>
+            is ComponentEvaluation.UpdateNeighbours -> enqueueNeighbours(position)
+            // </<@AI_UNREVIEWED>
         }
     }
 
     private fun componentAt(position: Point): RedstoneComponent? {
         val pos = canonical(position)
+        if (!instance.isChunkLoaded(pos)) return null
         val block = instance.getBlock(pos)
         val cached = components[pos]
         if (cached != null && cached.blockKey == block.key()) return cached.component
@@ -354,7 +374,7 @@ class RedstoneSimulator(
     private fun invalidate(position: Point) {
         val pos = canonical(position)
         val cached = components[pos] ?: return
-        if (cached.blockKey != instance.getBlock(pos).key()) components.remove(pos)
+        if (!instance.isChunkLoaded(pos) || cached.blockKey != instance.getBlock(pos).key()) components.remove(pos)
     }
 
     /** Canonical block coordinates so `Pos` and `Vec` keys for the same block are treated equally. */
@@ -366,23 +386,46 @@ class RedstoneSimulator(
         reason: TickReason = TickReason.CHANGE,
     ) {
         val pos = canonical(position)
-        tickQueue.add(ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos, reason))
+        val scheduled = ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos, reason)
+        if (instance.isChunkLoaded(pos)) {
+            tickQueue.add(scheduled)
+            return
+        }
+        val key =
+            ChunkKey(
+                Math.floorDiv(pos.blockX(), Chunk.CHUNK_SIZE_X),
+                Math.floorDiv(pos.blockZ(), Chunk.CHUNK_SIZE_Z),
+            )
+        suspendedTicks.getOrPut(key) { ArrayList() }.add(scheduled)
     }
 
     private fun enqueue(position: Point) {
         val pos = canonical(position)
-        if (!processing) {
+        if (!processing || !instance.isChunkLoaded(pos)) {
             schedule(pos, 1)
             return
         }
         if (deltaSet.add(pos)) delta.add(pos)
     }
 
+    // <@AI_UNREVIEWED>
+    private fun enqueueMovementCompleted(position: Point) {
+        val pos = canonical(position)
+        if (!processing || !instance.isChunkLoaded(pos)) {
+            schedule(pos, 1, TickReason.MOVED)
+            return
+        }
+        deltaReasons.getOrPut(pos) { HashSet() }.add(TickReason.MOVED)
+        if (deltaSet.add(pos)) delta.add(pos)
+    }
+    // </<@AI_UNREVIEWED>
+
     private fun enqueueNeighbours(position: Point) {
         for (face in BlockFace.entries) {
             val neighbour = position.relative(face)
             enqueue(neighbour)
 
+            if (!instance.isChunkLoaded(neighbour)) continue
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
                 for (secondFace in BlockFace.entries) enqueue(neighbour.relative(secondFace))
@@ -397,7 +440,7 @@ class RedstoneSimulator(
 
         override fun tick(): Long = this@RedstoneSimulator.currentTick
 
-        override fun block(pos: Point): Block = instance.getBlock(pos)
+        override fun block(pos: Point): Block = if (instance.isChunkLoaded(pos)) instance.getBlock(pos) else Block.AIR
 
         override fun facing(block: Block): BlockFace? =
             when (block.getProperty("facing")) {
@@ -442,6 +485,12 @@ class RedstoneSimulator(
         override fun markDirty(pos: Point) {
             enqueue(pos)
         }
+
+        // <@AI_UNREVIEWED>
+        override fun movementCompleted(pos: Point) {
+            enqueueMovementCompleted(pos)
+        }
+        // </<@AI_UNREVIEWED>
     }
 
     private companion object {
