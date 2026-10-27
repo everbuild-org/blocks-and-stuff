@@ -1,4 +1,4 @@
-﻿package org.everbuild.blocksandstuff.blocks.redstone.vanilla
+package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Pos
@@ -1438,6 +1438,86 @@ class VanillaRedstoneTest {
         settle()
 
         Assertions.assertEquals("true", instance.getBlock(trapdoor).getProperty("open"))
+    }
+
+    @Test
+    fun pistonPushesHoneyColumnWithoutDuplicating() {
+        val piston = base
+        val source = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(piston, Block.PISTON.withProperty("facing", "up"))
+        instance.setBlock(base.add(0.0, 1.0, 0.0), Block.HONEY_BLOCK)
+        instance.setBlock(base.add(-1.0, 1.0, 0.0), Block.GRASS_BLOCK)
+        instance.setBlock(base.add(1.0, 1.0, 0.0), Block.GRASS_BLOCK)
+        instance.setBlock(base.add(0.0, 2.0, 0.0), Block.DIRT)
+        instance.setBlock(base.add(0.0, 3.0, 0.0), Block.GRASS_BLOCK)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(4)
+
+        Assertions.assertEquals(Block.HONEY_BLOCK.key(), instance.getBlock(base.add(0.0, 2.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(-1.0, 2.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(1.0, 2.0, 0.0)).key())
+        Assertions.assertEquals(Block.DIRT.key(), instance.getBlock(base.add(0.0, 3.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(0.0, 4.0, 0.0)).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base.add(0.0, 5.0, 0.0)).key())
+    }
+
+    @Test
+    fun stickyPistonPushesAndPullsHoneyColumnWithoutDuplicating() {
+        val piston = base
+        val source = base.add(1.0, 0.0, 0.0)
+        instance.setBlock(piston, Block.STICKY_PISTON.withProperty("facing", "up"))
+        instance.setBlock(base.add(0.0, 1.0, 0.0), Block.HONEY_BLOCK)
+        instance.setBlock(base.add(-1.0, 1.0, 0.0), Block.GRASS_BLOCK)
+        instance.setBlock(base.add(1.0, 1.0, 0.0), Block.GRASS_BLOCK)
+        instance.setBlock(base.add(0.0, 2.0, 0.0), Block.DIRT)
+        instance.setBlock(base.add(0.0, 3.0, 0.0), Block.GRASS_BLOCK)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(6)
+        instance.setBlock(source, Block.AIR)
+        settle(8)
+
+        Assertions.assertEquals(Block.HONEY_BLOCK.key(), instance.getBlock(base.add(0.0, 1.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(-1.0, 1.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(1.0, 1.0, 0.0)).key())
+        Assertions.assertEquals(Block.DIRT.key(), instance.getBlock(base.add(0.0, 2.0, 0.0)).key())
+        Assertions.assertEquals(Block.GRASS_BLOCK.key(), instance.getBlock(base.add(0.0, 3.0, 0.0)).key())
+        Assertions.assertEquals(Block.AIR.key(), instance.getBlock(base.add(0.0, 4.0, 0.0)).key())
+    }
+
+    @Test
+    fun standaloneMovingPistonFinalizes() {
+        instance.setBlock(
+            base.add(1.0, 1.0, 0.0),
+            movingPistonBlock(Block.STONE, BlockFace.EAST, extending = false, source = false, sticky = true),
+        )
+        settle(4)
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(1.0, 1.0, 0.0)).key())
+    }
+
+    @Test
+    fun stickyPistonPullsSlimeWithAttachedBlock() {
+        val slime = base.add(1.0, 0.0, 0.0)
+        val attached = base.add(1.0, 1.0, 0.0)
+        val source = base.sub(1.0, 0.0, 0.0)
+
+        instance.setBlock(base, Block.STICKY_PISTON.withProperty("facing", "east"))
+        instance.setBlock(slime, Block.SLIME_BLOCK)
+        instance.setBlock(attached, Block.STONE)
+        settle()
+
+        instance.setBlock(source, Block.REDSTONE_BLOCK)
+        settle(3)
+        Assertions.assertEquals(Block.SLIME_BLOCK.key(), instance.getBlock(base.add(2.0, 0.0, 0.0)).key())
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(base.add(2.0, 1.0, 0.0)).key())
+
+        instance.setBlock(source, Block.AIR)
+        settle(6)
+        Assertions.assertEquals(Block.SLIME_BLOCK.key(), instance.getBlock(slime).key())
+        Assertions.assertEquals(Block.STONE.key(), instance.getBlock(attached).key())
     }
 
     @Test

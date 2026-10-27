@@ -10,6 +10,7 @@ import org.everbuild.blocksandstuff.redstone.Emit
 import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
 import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
+import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.UpdateContext
 
 /**
@@ -30,9 +31,12 @@ class MovingPistonComponent : RedstoneComponent {
         }
         if (now < scheduledAt) return ComponentEvaluation.None
 
-        // The moving block was placed during the previous engine tick, so one delay here yields the
-        // vanilla two-game-tick movement from the piston trigger.
-        ctx.setState(movedState(ctx.block()) ?: Block.AIR)
+        val moved = movedState(ctx.block()) ?: Block.AIR
+        ctx.setState(moved)
+        if (ctx.block().stateId() != moved.stateId() || ctx.block().nbt() != moved.nbt()) {
+            setBlockSilently(ctx.instance, ctx.position, moved)
+            RedstoneRegistrations.notifyBlockChanged(ctx.instance, ctx.position)
+        }
         return ComponentEvaluation.None
     }
 

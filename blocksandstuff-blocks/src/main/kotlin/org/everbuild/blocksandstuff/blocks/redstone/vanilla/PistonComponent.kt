@@ -87,23 +87,16 @@ class PistonComponent(
         val firstBlock = firstOrigin?.let { ctx.instance.getBlock(it) }
         val firstDestination = firstOrigin?.relative(facing)
 
-        val origins = ArrayList<Point>(pushed.size)
-        val destinations = HashSet<Point>(pushed.size)
-        for (origin in pushed.asReversed()) {
-            val moved = ctx.instance.getBlock(origin)
-            val destination = origin.relative(facing)
-            destinations.add(destination)
-            placeMovingBlock(ctx, destination, moved, facing, extending = true, source = false)
-            origins.add(origin)
-        }
-
-        val headPosition = ctx.position.relative(facing)
-        for (origin in origins) {
-            if (origin == headPosition || origin in destinations) continue
+        val moves = pushed.map { origin -> origin to ctx.instance.getBlock(origin) }
+        for ((origin, _) in moves) {
             setBlockSilently(ctx.instance, origin, Block.AIR)
             RedstoneRegistrations.notifyBlockChanged(ctx.instance, origin)
         }
+        for ((origin, moved) in moves.asReversed()) {
+            placeMovingBlock(ctx, origin.relative(facing), moved, facing, extending = true, source = false)
+        }
 
+        val headPosition = ctx.position.relative(facing)
         placeMovingBlock(ctx, headPosition, head(facing), facing, extending = true, source = true)
         ctx.setState(ctx.position, block.withProperty("extended", "true"))
         extending = ExtensionState(firstDestination, firstBlock, now + MOVEMENT_TICKS)
@@ -160,18 +153,17 @@ class PistonComponent(
                 emptyList()
             }
 
-        val destinations = HashSet<Point>(pulled.size)
-        for (origin in pulled.asReversed()) {
-            val moved = ctx.instance.getBlock(origin)
-            val destination = origin.relative(facing.oppositeFace)
-            destinations.add(destination)
-            placeMovingBlock(ctx, destination, moved, facing, extending = false, source = false)
-        }
-        for (origin in pulled) {
-            if (origin in destinations) continue
+        // <@AI_UNREVIEWED>
+        // Capture all pulled blocks before clearing any origin: origins and destinations can overlap.
+        val moves = pulled.map { origin -> origin to ctx.instance.getBlock(origin) }
+        for ((origin, _) in moves) {
             setBlockSilently(ctx.instance, origin, Block.AIR)
             RedstoneRegistrations.notifyBlockChanged(ctx.instance, origin)
         }
+        for ((origin, moved) in moves.asReversed()) {
+            placeMovingBlock(ctx, origin.relative(facing.oppositeFace), moved, facing, extending = false, source = false)
+        }
+        // </<@AI_UNREVIEWED>
 
         scheduleBaseRetraction(ctx, block, now)
         playSound(ctx, SoundEvent.BLOCK_PISTON_CONTRACT)
