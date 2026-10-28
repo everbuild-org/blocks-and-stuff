@@ -31,7 +31,10 @@ sealed interface ComponentEvaluation {
         val scheduleTick: Boolean = false,
     ) : ComponentEvaluation
 
-    data class Trigger(val effect: SideEffect) : ComponentEvaluation
+    data class Trigger(
+        val movementFace: BlockFace? = null,
+        val effect: SideEffect,
+    ) : ComponentEvaluation
 
     /** Notifies neighbours without changing this block's own state. */
     data object UpdateNeighbours : ComponentEvaluation
@@ -77,6 +80,11 @@ interface RedstoneComponent {
     fun onMovementCompleted(ctx: UpdateContext) = Unit
 }
 
+/** Component that defines the direction a machine should move when it pulses. */
+interface MovementDirectionSource {
+    fun movementFace(ctx: ReadContext): BlockFace?
+}
+
 /** Read-only context passed to [RedstoneComponent.emit] and related queries. */
 interface ReadContext {
     val instance: Instance
@@ -94,6 +102,9 @@ interface ReadContext {
     fun registry(): RedstoneRegistry
 
     fun componentAt(pos: Point): RedstoneComponent?
+
+    /** Direction the current machine should move, derived from the last pulse source. */
+    fun preferredMovementFace(): BlockFace? = null
 }
 
 /** Mutable context passed to [RedstoneComponent.evaluate]. */

@@ -59,7 +59,7 @@ class PistonComponent(
 
         if (powered && !extended && pendingBase == null && now != lastExtendAttempt) {
             lastExtendAttempt = now
-            return ComponentEvaluation.Trigger { extend(it) }
+            return ComponentEvaluation.Trigger(facing) { extend(it) }
         }
         if (!powered && extended && pendingBase == null) {
             return ComponentEvaluation.Trigger { retract(it) }
@@ -223,11 +223,11 @@ class PistonComponent(
         into: BlockFace,
     ): Int {
         val block = ctx.block(neighbour)
-        return if (WireComponent.isWire(block)) {
-            WireComponent.powerOf(block)
-        } else {
-            maxOf(ctx.power().weakSignal(neighbour, into), ctx.power().directSignal(neighbour, into))
+        if (WireComponent.isWire(block)) return WireComponent.powerOf(block)
+        if (ctx.componentAt(neighbour) == null && block.redstoneConductor()) {
+            return ctx.power().signalInto(neighbour)
         }
+        return maxOf(ctx.power().weakSignal(neighbour, into), ctx.power().directSignal(neighbour, into))
     }
 
     private companion object {

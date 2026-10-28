@@ -10,6 +10,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
+import org.everbuild.blocksandstuff.redstone.MovementDirectionSource
 import org.everbuild.blocksandstuff.redstone.PowerQuery
 import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
 import org.everbuild.blocksandstuff.redstone.ReadContext
@@ -63,9 +64,11 @@ class RedstoneSimulator(
     private val deltaSet = HashSet<Point>()
     private val deltaReasons = HashMap<Point, MutableSet<TickReason>>()
     private val neighbourChanges = HashMap<Point, MutableList<NeighbourChange>>()
+    private val pendingPistonEffects = ArrayList<Triple<BlockFace, Long, () -> Unit>>()
     private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val suspendedTicks = HashMap<ChunkKey, MutableList<ScheduledTick>>()
+    private var preferredMovementFace: BlockFace? = null
     private var currentTick = 0L
     private var sequence = 0L
     private var processing = false
@@ -141,8 +144,32 @@ class RedstoneSimulator(
 
             val block = instance.getBlock(neighbour)
             if (!block.air() && componentAt(neighbour) == null) {
-                for (secondFace in BlockFace.entries) schedule(neighbour.relative(secondFace), delay, TickReason.CHANGE)
+                val visited = HashSet<Point>()
+                for (secondFace in BlockFace.entries) {
+                    scheduleWithConductors(neighbour.relative(secondFace), delay, visited)
+                }
             }
+        }
+    }
+
+    private fun scheduleWithConductors(
+        position: Point,
+        delay: Int,
+        visited: MutableSet<Point>,
+    ) {
+        schedule(position, delay, TickReason.CHANGE)
+        if (!visited.add(position)) return
+        if (!instance.isChunkLoaded(position)) return
+
+        val block = instance.getBlock(position)
+        if (block.air() || componentAt(position) != null) return
+
+        if (block.key() == Block.SLIME_BLOCK.key() || block.key() == Block.HONEY_BLOCK.key()) {
+            for (face in BlockFace.entries) {
+                scheduleWithConductors(position.relative(face), delay, visited)
+            }
+        } else {
+            for (face in BlockFace.entries) schedule(position.relative(face), delay, TickReason.CHANGE)
         }
     }
 
@@ -266,22 +293,44 @@ class RedstoneSimulator(
         try {
             var guard = 0
             var steps = 0
-            while (delta.isNotEmpty()) {
-                if (guard++ >= DELTA_LIMIT) {
-                    lastNonConvergent = true
-                    logger.warn(
-                        "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions into the next tick",
-                        DELTA_LIMIT,
-                        instance.uuid,
-                        delta.size,
-                    )
-                    break
+            while (delta.isNotEmpty() || pendingPistonEffects.isNotEmpty()) {
+                while (delta.isNotEmpty()) {
+                    if (guard++ >= DELTA_LIMIT) {
+                        lastNonConvergent = true
+                        logger.warn(
+                            "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions into the next tick",
+                            DELTA_LIMIT,
+                            instance.uuid,
+                            delta.size,
+                        )
+                        break
+                    }
+                    steps++
+                    val position = delta.removeFirst()
+                    deltaSet.remove(position)
+                    runHooks(position, deltaReasons.remove(position) ?: emptySet())
+                    evaluate(position)
                 }
-                steps++
-                val position = delta.removeFirst()
-                deltaSet.remove(position)
-                runHooks(position, deltaReasons.remove(position) ?: emptySet())
-                evaluate(position)
+                if (guard >= DELTA_LIMIT) break
+
+                if (pendingPistonEffects.isNotEmpty()) {
+                    val preferred = preferredMovementFace
+                    val selected =
+                        if (preferred != null && pendingPistonEffects.any { it.first == preferred }) {
+                            pendingPistonEffects.filter { it.first == preferred }
+                        } else {
+                            pendingPistonEffects.toList()
+                        }
+                    pendingPistonEffects.clear()
+                    for ((_, _, effect) in selected.sortedBy { it.second }) {
+                        if (guard++ >= DELTA_LIMIT) {
+                            lastNonConvergent = true
+                            break
+                        }
+                        steps++
+                        effect()
+                    }
+                }
             }
             lastDeltaSteps = steps
         } finally {
@@ -327,6 +376,9 @@ class RedstoneSimulator(
                     instance.setBlock(position, evaluation.block, false)
                     invalidate(position)
                 }
+                if (component is MovementDirectionSource) {
+                    component.movementFace(ctx)?.let { preferredMovementFace = it }
+                }
                 enqueueNeighbours(position)
                 if (evaluation.scheduleTick) {
                     schedule(position, component.delayTicks(ctx), TickReason.SCHEDULED)
@@ -334,8 +386,15 @@ class RedstoneSimulator(
             }
 
             is ComponentEvaluation.Trigger -> {
-                evaluation.effect.apply(ctx)
-                enqueueNeighbours(position)
+                val effect = {
+                    evaluation.effect.apply(ctx)
+                    enqueueNeighbours(position)
+                }
+                if (evaluation.movementFace != null) {
+                    pendingPistonEffects.add(Triple(evaluation.movementFace, sequence++, effect))
+                } else {
+                    effect()
+                }
             }
 
             is ComponentEvaluation.UpdateNeighbours -> enqueueNeighbours(position)
@@ -413,15 +472,33 @@ class RedstoneSimulator(
     }
 
     private fun enqueueNeighbours(position: Point) {
+        val visited = HashSet<Point>()
         for (face in BlockFace.entries) {
-            val neighbour = position.relative(face)
-            enqueue(neighbour)
+            enqueueWithConductors(position.relative(face), visited)
+        }
+    }
 
-            if (!instance.isChunkLoaded(neighbour)) continue
-            val block = instance.getBlock(neighbour)
-            if (!block.air() && componentAt(neighbour) == null) {
-                for (secondFace in BlockFace.entries) enqueue(neighbour.relative(secondFace))
+    /**
+     * Enqueues [position] and, for power-transmitting sticky blocks, the rest of their connected
+     * structure so mechanisms behind a slime/honey bridge still receive the update.
+     */
+    private fun enqueueWithConductors(
+        position: Point,
+        visited: MutableSet<Point>,
+    ) {
+        enqueue(position)
+        if (!visited.add(position)) return
+        if (!instance.isChunkLoaded(position)) return
+
+        val block = instance.getBlock(position)
+        if (block.air() || componentAt(position) != null) return
+
+        if (block.key() == Block.SLIME_BLOCK.key() || block.key() == Block.HONEY_BLOCK.key()) {
+            for (face in BlockFace.entries) {
+                enqueueWithConductors(position.relative(face), visited)
             }
+        } else {
+            for (face in BlockFace.entries) enqueue(position.relative(face))
         }
     }
 
@@ -450,6 +527,8 @@ class RedstoneSimulator(
         override fun registry(): RedstoneRegistry = this@RedstoneSimulator.registry
 
         override fun componentAt(pos: Point): RedstoneComponent? = this@RedstoneSimulator.componentAt(pos)
+
+        override fun preferredMovementFace(): BlockFace? = this@RedstoneSimulator.preferredMovementFace
     }
 
     private inner class UpdateContextImpl(

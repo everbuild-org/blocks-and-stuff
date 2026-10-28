@@ -1139,32 +1139,94 @@ class VanillaRedstoneTest {
     }
 
     @Test
-    fun movedObserverPulsesAfterMovementCompletes() {
-        val source = base.sub(1.0, 0.0, 0.0)
-        val observer = base.add(1.0, 0.0, 0.0)
-        val destination = base.add(2.0, 0.0, 0.0)
+    fun verticalTwoWayFlyingMachineMovesContinuously() {
+        val x = 8.0
+        val left = 8.0
+        val right = 9.0
+        instance.setBlock(Pos(x, 67.0, left), Block.OBSERVER.withProperty("facing", "north"))
+        instance.setBlock(Pos(x, 67.0, right), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 66.0, left), Block.STICKY_PISTON.withProperty("facing", "south"))
+        instance.setBlock(Pos(x, 66.0, right), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 65.0, left), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 65.0, right), Block.STICKY_PISTON.withProperty("facing", "north"))
+        instance.setBlock(Pos(x, 64.0, left), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 64.0, right), Block.OBSERVER.withProperty("facing", "south"))
+        settle(4)
 
-        instance.setBlock(base, Block.PISTON.withProperty("facing", "east"))
-        instance.setBlock(observer, Block.OBSERVER.withProperty("facing", "east"))
-        settle()
-        Assertions.assertEquals("false", instance.getBlock(observer).getProperty("powered"))
+        val trigger = Pos(x, 64.0, right + 1.0)
+        instance.setBlock(trigger, Block.STONE)
+        simulator.tick()
+        instance.setBlock(trigger, Block.AIR)
+        instance.loadChunk(0, 1).join()
 
-        instance.setBlock(source, Block.REDSTONE_BLOCK)
-
-        var pulsed = false
-        for (tick in 0 until 8) {
+        val machineBlocks =
+            setOf(
+                Block.SLIME_BLOCK.key(),
+                Block.OBSERVER.key(),
+                Block.STICKY_PISTON.key(),
+                Block.MOVING_PISTON.key(),
+                Block.PISTON_HEAD.key(),
+            )
+        var furthest = right
+        for (tick in 0 until 60) {
             simulator.tick()
-            if (instance.getBlock(destination).getProperty("powered") == "true") {
-                pulsed = true
-                break
+            for (z in 7..20) {
+                for (y in 64..67) {
+                    val block = instance.getBlock(Pos(x, y.toDouble(), z.toDouble()))
+                    if (block.key() in machineBlocks && z > furthest) furthest = z.toDouble()
+                }
             }
         }
 
-        Assertions.assertEquals(Block.OBSERVER.key(), instance.getBlock(destination).key())
-        Assertions.assertTrue(pulsed, "moved observer should pulse after movement completes")
+        Assertions.assertTrue(furthest >= right + 3, "the flying machine should keep moving, furthest=$furthest")
     }
 
     @Test
+    fun flyingMachineStartsFromEitherObserver() {
+        val x = 8.0
+        val left = 8.0
+        val right = 9.0
+        instance.setBlock(Pos(x, 67.0, left), Block.OBSERVER.withProperty("facing", "north"))
+        instance.setBlock(Pos(x, 67.0, right), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 66.0, left), Block.STICKY_PISTON.withProperty("facing", "south"))
+        instance.setBlock(Pos(x, 66.0, right), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 65.0, left), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 65.0, right), Block.STICKY_PISTON.withProperty("facing", "north"))
+        instance.setBlock(Pos(x, 64.0, left), Block.SLIME_BLOCK)
+        instance.setBlock(Pos(x, 64.0, right), Block.OBSERVER.withProperty("facing", "south"))
+        settle(4)
+
+        instance.setBlock(Pos(x, 67.0, left - 1.0), Block.STONE)
+        simulator.tick()
+        instance.setBlock(Pos(x, 67.0, left - 1.0), Block.AIR)
+        instance.loadChunk(0, 1).join()
+
+        val machineBlocks =
+            setOf(
+                Block.SLIME_BLOCK.key(),
+                Block.OBSERVER.key(),
+                Block.STICKY_PISTON.key(),
+                Block.MOVING_PISTON.key(),
+                Block.PISTON_HEAD.key(),
+            )
+        var minZ = left
+        var maxZ = right
+        for (tick in 0 until 60) {
+            simulator.tick()
+            for (z in 0..24) {
+                for (y in 64..67) {
+                    val block = instance.getBlock(Pos(x, y.toDouble(), z.toDouble()))
+                    if (block.key() in machineBlocks) {
+                        if (z < minZ) minZ = z.toDouble()
+                        if (z > maxZ) maxZ = z.toDouble()
+                    }
+                }
+            }
+        }
+
+        Assertions.assertTrue(maxZ - minZ >= 3, "the machine should keep moving when started from the other observer, span=${maxZ - minZ}")
+    }
+
     fun dispenserTriggersWhenPowered() {
         instance.setBlock(base, Block.DISPENSER.withProperty("facing", "east"))
         instance.setBlock(base.sub(1.0, 0.0, 0.0), Block.LEVER.withProperty("powered", "false"))

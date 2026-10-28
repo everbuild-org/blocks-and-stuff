@@ -4,6 +4,7 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
+import org.everbuild.blocksandstuff.redstone.MovementDirectionSource
 import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
 import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
@@ -13,7 +14,8 @@ import org.everbuild.blocksandstuff.redstone.UpdateContext
  * Observer. Emits a one-tick pulse through its back when the watched block (the one it faces)
  * changes state.
  */
-class ObserverComponent : RedstoneComponent {
+class ObserverComponent : RedstoneComponent,
+    MovementDirectionSource {
     private var lastWatched: Block? = null
     private var tickScheduled = false
     private var scheduledAt = 0L
@@ -48,6 +50,12 @@ class ObserverComponent : RedstoneComponent {
         lastWatched = watched
         if (previous != null && changed(previous, watched)) scheduleTick(ctx, now)
         return ComponentEvaluation.None
+    }
+
+    override fun movementFace(ctx: ReadContext): BlockFace? {
+        if (ctx.block().getProperty("powered") != "true") return null
+        val facing = Facing.of(ctx.block()) ?: return null
+        return if (facing == BlockFace.TOP || facing == BlockFace.BOTTOM) facing.oppositeFace else facing
     }
 
     override fun onMovementCompleted(ctx: UpdateContext) {
