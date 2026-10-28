@@ -401,38 +401,38 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Druckplatten
 - [x] Kerze (minecraft:candles)
 - [x] Kupfer-Bulb
-- [ ] Redstone-Lampe
+- [x] Redstone-Lampe
 - [ ] Lagerfeuer
-- [ ] Glocke
+- [x] Glocke
 - [x] Notenblock
 
 ### Türen / Trapdoors / Gates
-- [ ] Eisentür (nur Redstone)
+- [x] Eisentür (nur Redstone)
 - [x] Kupfertüren
 - [x] Eisen-/Kupfer-Trapdoors
 - [x] Fence Gates per Redstone
 
 ### Redstone-Komponenten
 - [x] Redstone-Wire
-- [ ] Redstone-Torch
+- [x] Redstone-Torch
 - [x] Repeater
 - [x] Comparator
-- [ ] Observer
+- [x] Observer
 - [x] Tageslichtsensor
-- [ ] Zielblock (Target)
+- [x] Zielblock (Target)
 - [x] Blitzableiter
-- [ ] Sculk-Sensor
-- [ ] Tripwire + Haken
-- [ ] Schienen
+- [x] Sculk-Sensor
+- [x] Tripwire + Haken
+- [x] Schienen
 
 ### Container & BlockEntity
-- [ ] Chest / Trapped Chest / Ender Chest
-- [ ] Barrel
-- [ ] Shulker Box
-- [ ] Ofen / Blast Furnace / Smoker
-- [ ] Dispenser / Dropper
-- [ ] Hopper
-- [ ] Crafter
+- [x] Chest / Trapped Chest / Ender Chest
+- [x] Barrel
+- [x] Shulker Box
+- [x] Ofen / Blast Furnace / Smoker
+- [x] Dispenser / Dropper
+- [x] Hopper
+- [x] Crafter
 - [ ] Lectern
 - [ ] Jukebox
 - [ ] Flower Pot
@@ -458,8 +458,8 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [ ] Amethyst
 
 ### Physik & Sonstiges
-- [ ] Falling Blocks
-- [ ] TNT zünden
+- [x] Falling Blocks
+- [x] TNT zünden
 - [ ] Sponge / Wet Sponge
 - [ ] Dragon Egg Teleport
 - [ ] Scaffolding
