@@ -114,6 +114,7 @@ minecraft:dark_oak_trapdoor
 minecraft:dark_oak_wall_hanging_sign
 minecraft:dark_oak_wall_sign
 minecraft:dark_oak_wood
+minecraft:daylight_detector
 minecraft:dirt
 minecraft:dirt_path
 minecraft:enchanting_table
@@ -191,6 +192,7 @@ minecraft:mangrove_wall_sign
 minecraft:mangrove_wood
 minecraft:melon_stem
 minecraft:nether_wart
+minecraft:note_block
 minecraft:oak_button
 minecraft:oak_door
 minecraft:oak_fence_gate
@@ -255,6 +257,7 @@ minecraft:purple_concrete_powder
 minecraft:red_candle
 minecraft:red_candle_cake
 minecraft:red_concrete_powder
+minecraft:redstone_wire
 minecraft:repeater
 minecraft:rooted_dirt
 minecraft:smithing_table

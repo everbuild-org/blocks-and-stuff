@@ -222,7 +222,6 @@
 - [ ] minecraft:dark_prismarine
 - [ ] minecraft:dark_prismarine_slab
 - [ ] minecraft:dark_prismarine_stairs
-- [ ] minecraft:daylight_detector
 - [ ] minecraft:dead_brain_coral
 - [ ] minecraft:dead_brain_coral_block
 - [ ] minecraft:dead_brain_coral_fan
@@ -490,7 +489,6 @@
 - [ ] minecraft:nether_wart_block
 - [ ] minecraft:netherite_block
 - [ ] minecraft:netherrack
-- [ ] minecraft:note_block
 - [ ] minecraft:oak_fence
 - [ ] minecraft:oak_leaves
 - [ ] minecraft:oak_planks
@@ -716,7 +714,6 @@
 - [ ] minecraft:redstone_ore
 - [ ] minecraft:redstone_torch
 - [ ] minecraft:redstone_wall_torch
-- [ ] minecraft:redstone_wire
 - [ ] minecraft:reinforced_deepslate
 - [ ] minecraft:repeating_command_block
 - [ ] minecraft:resin_block
@@ -1085,6 +1082,7 @@
 - [x] minecraft:dark_oak_wall_hanging_sign
 - [x] minecraft:dark_oak_wall_sign
 - [x] minecraft:dark_oak_wood
+- [x] minecraft:daylight_detector
 - [x] minecraft:dirt
 - [x] minecraft:dirt_path
 - [x] minecraft:enchanting_table
@@ -1162,6 +1160,7 @@
 - [x] minecraft:mangrove_wood
 - [x] minecraft:melon_stem
 - [x] minecraft:nether_wart
+- [x] minecraft:note_block
 - [x] minecraft:oak_button
 - [x] minecraft:oak_door
 - [x] minecraft:oak_fence_gate
@@ -1226,6 +1225,7 @@
 - [x] minecraft:red_candle
 - [x] minecraft:red_candle_cake
 - [x] minecraft:red_concrete_powder
+- [x] minecraft:redstone_wire
 - [x] minecraft:repeater
 - [x] minecraft:rooted_dirt
 - [x] minecraft:smithing_table

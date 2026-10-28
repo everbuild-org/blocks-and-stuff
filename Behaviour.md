@@ -404,7 +404,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [ ] Redstone-Lampe
 - [ ] Lagerfeuer
 - [ ] Glocke
-- [ ] Notenblock
+- [x] Notenblock
 
 ### Türen / Trapdoors / Gates
 - [ ] Eisentür (nur Redstone)
@@ -413,7 +413,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Fence Gates per Redstone
 
 ### Redstone-Komponenten
-- [ ] Redstone-Wire
+- [x] Redstone-Wire
 - [ ] Redstone-Torch
 - [x] Repeater
 - [x] Comparator
