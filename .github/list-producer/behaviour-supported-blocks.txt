@@ -278,6 +278,7 @@ minecraft:stone_pressure_plate
 minecraft:stonecutter
 minecraft:sugar_cane
 minecraft:sweet_berry_bush
+minecraft:tnt
 minecraft:torchflower_crop
 minecraft:tube_coral
 minecraft:tube_coral_block

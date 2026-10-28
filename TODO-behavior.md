@@ -836,7 +836,6 @@
 - [ ] minecraft:test_block
 - [ ] minecraft:test_instance_block
 - [ ] minecraft:tinted_glass
-- [ ] minecraft:tnt
 - [ ] minecraft:torch
 - [ ] minecraft:torchflower
 - [ ] minecraft:trapped_chest
@@ -1246,6 +1245,7 @@
 - [x] minecraft:stonecutter
 - [x] minecraft:sugar_cane
 - [x] minecraft:sweet_berry_bush
+- [x] minecraft:tnt
 - [x] minecraft:torchflower_crop
 - [x] minecraft:tube_coral
 - [x] minecraft:tube_coral_block
