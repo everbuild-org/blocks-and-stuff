@@ -6,11 +6,17 @@ import net.minestom.server.MinecraftServer
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.blocks.behavior.BlockContainerHandler
+import org.everbuild.blocksandstuff.blocks.behavior.CrafterHandler
+import org.everbuild.blocksandstuff.blocks.behavior.CrafterSessions
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerAnimation
 import org.everbuild.blocksandstuff.blocks.behavior.ContainerArchetype
+import org.everbuild.blocksandstuff.blocks.behavior.DispenserHandler
+import org.everbuild.blocksandstuff.blocks.behavior.DropperHandler
 import org.everbuild.blocksandstuff.blocks.behavior.EnderChestHandler
+import org.everbuild.blocksandstuff.blocks.behavior.HopperHandler
 
 object ContainerRegistrations {
+    private const val EJECTOR_SIZE = 9
     private val colors =
         listOf(
             "white",
@@ -47,9 +53,52 @@ object ContainerRegistrations {
         for (color in colors) {
             registerShulker("minecraft:${color}_shulker_box")
         }
+        registerHopper()
+        registerDropper()
+        registerDispenser()
+        MinecraftServer.getBlockManager().registerHandler("minecraft:crafter") { CrafterHandler() }
+        CrafterSessions.registerDefault()
         MinecraftServer.getBlockManager().registerHandler("minecraft:ender_chest") { EnderChestHandler() }
     }
 
+    private fun registerHopper() {
+        val key = Key.key("minecraft:hopper")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.hopper"),
+                InventoryType.HOPPER,
+                InventoryType.HOPPER.size,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:hopper") {
+            HopperHandler(key, archetype)
+        }
+    }
+
+    private fun registerDropper() {
+        val key = Key.key("minecraft:dropper")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.dropper"),
+                InventoryType.WINDOW_3X3,
+                EJECTOR_SIZE,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:dropper") {
+            DropperHandler(key, archetype)
+        }
+    }
+
+    private fun registerDispenser() {
+        val key = Key.key("minecraft:dispenser")
+        val archetype =
+            ContainerArchetype(
+                Component.translatable("container.dispenser"),
+                InventoryType.WINDOW_3X3,
+                EJECTOR_SIZE,
+            )
+        MinecraftServer.getBlockManager().registerHandler("minecraft:dispenser") {
+            DispenserHandler(key, archetype)
+        }
+    }
     private fun registerChest(blockKey: String) {
         register(
             blockKey,

@@ -18,6 +18,7 @@ Describe what changed and why.
 - [ ] `blocksandstuff-blocks`
 - [ ] `blocksandstuff-fluids`
 - [ ] `blocksandstuff-recipes`
+- [ ] `blocksandstuff-redstone`
 - [ ] `testserver`
 - [ ] Build, publishing, or CI
 - [ ] Documentation

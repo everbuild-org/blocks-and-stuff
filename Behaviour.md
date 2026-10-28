@@ -415,10 +415,10 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 ### Redstone-Komponenten
 - [ ] Redstone-Wire
 - [ ] Redstone-Torch
-- [ ] Repeater
-- [ ] Comparator
+- [x] Repeater
+- [x] Comparator
 - [ ] Observer
-- [ ] Tageslichtsensor
+- [x] Tageslichtsensor
 - [ ] Zielblock (Target)
 - [x] Blitzableiter
 - [ ] Sculk-Sensor

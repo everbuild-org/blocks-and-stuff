@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation(project(":blocksandstuff-blocks"))
     implementation(project(":blocksandstuff-fluids"))
+    implementation(project(":blocksandstuff-redstone"))
     implementation(project(":blocksandstuff-recipes"))
     implementation(libs.twaddle.stacked.behaviour.block)
 

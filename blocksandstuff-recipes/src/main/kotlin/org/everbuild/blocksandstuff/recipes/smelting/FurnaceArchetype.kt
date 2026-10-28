@@ -42,7 +42,10 @@ abstract class FurnaceArchetype(
     inner class Backend(
         blockPos: Point,
         instance: Instance,
-    ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance)
+    ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance) {
+        override val extractableSlots: Collection<Int> get() = listOf(SLOT_OUTPUT)
+        override val insertableSlots: Collection<Int> get() = listOf(SLOT_INPUT, SLOT_FUEL)
+    }
 
     inner class InventoryImpl(
         backend: PhysicalInventory,
@@ -117,7 +120,11 @@ abstract class FurnaceArchetype(
             update(event.player)
         }
 
-        override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
+        override fun shiftClick(
+            player: Player,
+            slot: Int,
+            button: Int,
+        ): Boolean {
             val playerInventory = player.inventory
 
             if (slot < size) {
