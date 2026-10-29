@@ -75,6 +75,7 @@ minecraft:cherry_wood
 minecraft:chiseled_copper
 minecraft:coarse_dirt
 minecraft:comparator
+minecraft:composter
 minecraft:copper_bars
 minecraft:copper_block
 minecraft:copper_bulb

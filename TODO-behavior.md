@@ -167,7 +167,6 @@
 - [ ] minecraft:cobweb
 - [ ] minecraft:cocoa
 - [ ] minecraft:command_block
-- [ ] minecraft:composter
 - [ ] minecraft:conduit
 - [ ] minecraft:copper_chest
 - [ ] minecraft:copper_ore
@@ -1003,6 +1002,7 @@
 - [x] minecraft:chiseled_copper
 - [x] minecraft:coarse_dirt
 - [x] minecraft:comparator
+- [x] minecraft:composter
 - [x] minecraft:copper_bars
 - [x] minecraft:copper_block
 - [x] minecraft:copper_bulb
