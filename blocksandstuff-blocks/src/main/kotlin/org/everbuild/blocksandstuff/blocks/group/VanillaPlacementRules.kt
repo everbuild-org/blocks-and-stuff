@@ -2,6 +2,7 @@ package org.everbuild.blocksandstuff.blocks.group
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.blocks.behavior.CustomPlants
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
@@ -141,7 +142,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         group(
             all(
                 byTag("minecraft:beds"),
-                byBlock(Block.STRAW_BED)
+                byBlock(Block.STRAW_BED),
             ),
             ::BedPlacementRule,
         )
@@ -182,6 +183,12 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.CAKE),
             ),
             ::SupportedBelowPlacementRule,
+        )
+
+    val FLOWER_POTS =
+        group(
+            byList(CustomPlants.allPottedBlocks() + Block.FLOWER_POT),
+            ::FlowerPotPlacementRule,
         )
 
     val PIN_BOTTOM_SUPPORTED =
@@ -743,7 +750,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val SHELF_MUSHROOM =
         group(
             byBlock(Block.SHELF_MUSHROOM),
-            ::ShelfMushroomPlacementRule
+            ::ShelfMushroomPlacementRule,
         )
 
     val FALLING =

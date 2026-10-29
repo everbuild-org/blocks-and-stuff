@@ -45,6 +45,14 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addBoneMeal()
         }
 
+    val FLOWER_POTS: BehaviourGroup =
+        BehaviourGroup(byList(CustomPlants.allPottedBlocks() + Block.FLOWER_POT)) { FlowerPotHandler(it.key()) }
+            .also { ALL.add(it) }
+
+    val LECTERN: BehaviourGroup =
+        BehaviourGroup(byBlock(Block.LECTERN)) { LecternHandler() }
+            .also { ALL.add(it) }
+
     override fun createGroup(
         blockGroup: BlockGroup,
         valueFunction: (Block) -> BlockHandler,
