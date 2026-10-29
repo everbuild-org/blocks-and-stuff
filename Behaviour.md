@@ -433,9 +433,9 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Dispenser / Dropper
 - [x] Hopper
 - [x] Crafter
-- [ ] Lectern
+- [x] Lectern
 - [ ] Jukebox
-- [ ] Flower Pot
+- [x] Flower Pot
 - [ ] Composter
 - [ ] Bee Nest / Beehive
 - [ ] Respawn Anker

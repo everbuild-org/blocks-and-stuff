@@ -293,7 +293,6 @@
 - [ ] minecraft:fire
 - [ ] minecraft:firefly_bush
 - [ ] minecraft:fletching_table
-- [ ] minecraft:flower_pot
 - [ ] minecraft:flowering_azalea_leaves
 - [ ] minecraft:frogspawn
 - [ ] minecraft:frosted_ice
@@ -381,7 +380,6 @@
 - [ ] minecraft:lava
 - [ ] minecraft:lava_cauldron
 - [ ] minecraft:leaf_litter
-- [ ] minecraft:lectern
 - [ ] minecraft:light
 - [ ] minecraft:light_blue_banner
 - [ ] minecraft:light_blue_bed
@@ -602,45 +600,8 @@
 - [ ] minecraft:poplar_wood
 - [ ] minecraft:poppy
 - [ ] minecraft:potent_sulfur
-- [ ] minecraft:potted_acacia_sapling
-- [ ] minecraft:potted_allium
 - [ ] minecraft:potted_azalea_bush
-- [ ] minecraft:potted_azure_bluet
-- [ ] minecraft:potted_bamboo
-- [ ] minecraft:potted_birch_sapling
-- [ ] minecraft:potted_blue_orchid
-- [ ] minecraft:potted_brown_mushroom
-- [ ] minecraft:potted_cactus
-- [ ] minecraft:potted_cherry_sapling
-- [ ] minecraft:potted_closed_eyeblossom
-- [ ] minecraft:potted_cornflower
-- [ ] minecraft:potted_crimson_fungus
-- [ ] minecraft:potted_crimson_roots
-- [ ] minecraft:potted_dandelion
-- [ ] minecraft:potted_dark_oak_sapling
-- [ ] minecraft:potted_dead_bush
-- [ ] minecraft:potted_fern
 - [ ] minecraft:potted_flowering_azalea_bush
-- [ ] minecraft:potted_golden_dandelion
-- [ ] minecraft:potted_jungle_sapling
-- [ ] minecraft:potted_lily_of_the_valley
-- [ ] minecraft:potted_mangrove_propagule
-- [ ] minecraft:potted_oak_sapling
-- [ ] minecraft:potted_open_eyeblossom
-- [ ] minecraft:potted_orange_tulip
-- [ ] minecraft:potted_oxeye_daisy
-- [ ] minecraft:potted_pale_oak_sapling
-- [ ] minecraft:potted_pink_tulip
-- [ ] minecraft:potted_poplar_sapling
-- [ ] minecraft:potted_poppy
-- [ ] minecraft:potted_red_mushroom
-- [ ] minecraft:potted_red_tulip
-- [ ] minecraft:potted_spruce_sapling
-- [ ] minecraft:potted_torchflower
-- [ ] minecraft:potted_warped_fungus
-- [ ] minecraft:potted_warped_roots
-- [ ] minecraft:potted_white_tulip
-- [ ] minecraft:potted_wither_rose
 - [ ] minecraft:powder_snow
 - [ ] minecraft:powder_snow_cauldron
 - [ ] minecraft:powered_rail
@@ -1104,6 +1065,7 @@
 - [x] minecraft:fire_coral_block
 - [x] minecraft:fire_coral_fan
 - [x] minecraft:fire_coral_wall_fan
+- [x] minecraft:flower_pot
 - [x] minecraft:flowering_azalea
 - [x] minecraft:grass_block
 - [x] minecraft:gray_candle
@@ -1130,6 +1092,7 @@
 - [x] minecraft:jungle_wall_hanging_sign
 - [x] minecraft:jungle_wall_sign
 - [x] minecraft:jungle_wood
+- [x] minecraft:lectern
 - [x] minecraft:lever
 - [x] minecraft:light_blue_candle
 - [x] minecraft:light_blue_candle_cake
@@ -1217,6 +1180,43 @@
 - [x] minecraft:poplar_wall_hanging_sign
 - [x] minecraft:poplar_wall_sign
 - [x] minecraft:potatoes
+- [x] minecraft:potted_acacia_sapling
+- [x] minecraft:potted_allium
+- [x] minecraft:potted_azure_bluet
+- [x] minecraft:potted_bamboo
+- [x] minecraft:potted_birch_sapling
+- [x] minecraft:potted_blue_orchid
+- [x] minecraft:potted_brown_mushroom
+- [x] minecraft:potted_cactus
+- [x] minecraft:potted_cherry_sapling
+- [x] minecraft:potted_closed_eyeblossom
+- [x] minecraft:potted_cornflower
+- [x] minecraft:potted_crimson_fungus
+- [x] minecraft:potted_crimson_roots
+- [x] minecraft:potted_dandelion
+- [x] minecraft:potted_dark_oak_sapling
+- [x] minecraft:potted_dead_bush
+- [x] minecraft:potted_fern
+- [x] minecraft:potted_golden_dandelion
+- [x] minecraft:potted_jungle_sapling
+- [x] minecraft:potted_lily_of_the_valley
+- [x] minecraft:potted_mangrove_propagule
+- [x] minecraft:potted_oak_sapling
+- [x] minecraft:potted_open_eyeblossom
+- [x] minecraft:potted_orange_tulip
+- [x] minecraft:potted_oxeye_daisy
+- [x] minecraft:potted_pale_oak_sapling
+- [x] minecraft:potted_pink_tulip
+- [x] minecraft:potted_poplar_sapling
+- [x] minecraft:potted_poppy
+- [x] minecraft:potted_red_mushroom
+- [x] minecraft:potted_red_tulip
+- [x] minecraft:potted_spruce_sapling
+- [x] minecraft:potted_torchflower
+- [x] minecraft:potted_warped_fungus
+- [x] minecraft:potted_warped_roots
+- [x] minecraft:potted_white_tulip
+- [x] minecraft:potted_wither_rose
 - [x] minecraft:pumpkin_stem
 - [x] minecraft:purple_candle
 - [x] minecraft:purple_candle_cake
