@@ -32,6 +32,7 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addCakes()
             addCandleCakes()
             addComposters()
+            addCampfires()
             addTntIgnition()
             addConcretePowders()
             addSkulls()
