@@ -59,9 +59,15 @@ ${supported.sorted().joinToString("\n") { "- [x] $it" }}
 
 File("TODO-placement.md").writeText(generatePlacementMarkdown())
 
+val behaviourSupported =
+    File(".github/list-producer/behaviour-supported-blocks.txt")
+        .let { if (it.exists()) it.readLines().filter(String::isNotBlank) else emptyList() }
+
 fun generateBehaviourMarkdown(): String {
-    val supported = listOf<String>()
-    val unsupported = Block.values().filter { !supported.contains(it.key().asString()) }.map { it.key().asString() }
+    val unsupported =
+        Block.values()
+            .map { it.key().asString() }
+            .filter { !behaviourSupported.contains(it) }
     return """
 # Block Behavior Implementation Status
 
@@ -71,11 +77,149 @@ fun generateBehaviourMarkdown(): String {
 ${unsupported.sorted().joinToString("\n") { "- [ ] $it" }}
 
 ## Supported Blocks
-${supported.sorted().joinToString("\n") { "- [x] $it" }}
+${behaviourSupported.sorted().joinToString("\n") { "- [x] $it" }}
     """.trimIndent()
 }
 
 File("TODO-behavior.md").writeText(generateBehaviourMarkdown())
+
+data class BehaviourCheck(
+    val category: String,
+    val label: String,
+    val detect: (Set<String>) -> Boolean,
+)
+
+fun keyEndsWith(suffix: String): (Set<String>) -> Boolean = { set -> set.any { it.endsWith(suffix) } }
+
+fun keyContains(part: String): (Set<String>) -> Boolean = { set -> set.any { it.contains(part) } }
+
+fun keyEquals(vararg keys: String): (Set<String>) -> Boolean = { set -> keys.any { it in set } }
+
+fun sourceContains(
+    path: String,
+    vararg needles: String,
+): (Set<String>) -> Boolean = { _ ->
+    val file = File(path)
+    file.exists() && needles.all { file.readText().contains(it) }
+}
+
+val vanillaRedstoneSource =
+    "blocksandstuff-blocks/src/main/kotlin/org/everbuild/blocksandstuff/blocks/redstone/vanilla/VanillaRedstone.kt"
+val containerRegistrationsSource =
+    "blocksandstuff-blocks/src/main/kotlin/org/everbuild/blocksandstuff/blocks/ContainerRegistrations.kt"
+val recipeRegistrationsSource =
+    "blocksandstuff-recipes/src/main/kotlin/org/everbuild/blocksandstuff/recipes/RecipeRegistrations.kt"
+val fallingBlockPlacementRuleSource =
+    "blocksandstuff-blocks/src/main/kotlin/org/everbuild/blocksandstuff/blocks/placement/FallingBlockPlacementRule.kt"
+
+val behaviourChecks =
+    listOf(
+        BehaviourCheck("Phase 0/1 – Grundgerüst", "Twaddle-Dependencies in blocksandstuff-blocks/build.gradle.kts") {
+            File("blocksandstuff-blocks/build.gradle.kts").readText().contains("twaddle")
+        },
+        BehaviourCheck("Phase 0/1 – Grundgerüst", "Eine Regel end-to-end verifizieren (Trapdoor)") {
+            it.isNotEmpty()
+        },
+        BehaviourCheck("Bestand migrieren / korrigieren", "StrippingRule.kt", keyEndsWith("_log")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "WaxingRule.kt", keyContains("copper")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "Türen (Holz) → gemeinsames Toggle-Behaviour", keyEndsWith("_door")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "Trapdoors → gemeinsames Toggle-Behaviour", keyEndsWith("_trapdoor")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "Fence Gates → gemeinsames Toggle-Behaviour", keyEndsWith("_fence_gate")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "SignEditRule Rückweg (Text speichern)", keyEndsWith("_sign")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "SweetBerryBushRule → null bei unverändert", keyEquals("minecraft:sweet_berry_bush")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "Copper-Oxidation Blockliste erweitern", keyContains("copper")),
+        BehaviourCheck("Bestand migrieren / korrigieren", "Random-Tick auf twaddle-random-ticking", keyEquals("minecraft:farmland")),
+        BehaviourCheck(
+            "Interaktions-/Click-Toggles",
+            "Button (minecraft:buttons)",
+            keyEndsWith("_button"),
+        ),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Lever (minecraft:levers)", keyEquals("minecraft:lever")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Druckplatten", keyEndsWith("_pressure_plate")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Kerze (minecraft:candles)", keyEndsWith("_candle")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Kupfer-Bulb", keyEndsWith("_copper_bulb")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Redstone-Lampe", sourceContains(vanillaRedstoneSource, "Block.REDSTONE_LAMP")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Lagerfeuer", keyEquals("minecraft:campfire", "minecraft:soul_campfire")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Glocke", sourceContains(vanillaRedstoneSource, "Block.BELL")),
+        BehaviourCheck("Interaktions-/Click-Toggles", "Notenblock", keyEquals("minecraft:note_block")),
+        BehaviourCheck("Türen / Trapdoors / Gates", "Eisentür (nur Redstone)", sourceContains(vanillaRedstoneSource, "ByTag(\"minecraft:doors\")")),
+        BehaviourCheck("Türen / Trapdoors / Gates", "Kupfertüren", keyEndsWith("_copper_door")),
+        BehaviourCheck("Türen / Trapdoors / Gates", "Eisen-/Kupfer-Trapdoors", keyContains("copper_trapdoor")),
+        BehaviourCheck("Türen / Trapdoors / Gates", "Fence Gates per Redstone", keyEndsWith("_fence_gate")),
+        BehaviourCheck("Redstone-Komponenten", "Redstone-Wire", keyEquals("minecraft:redstone_wire")),
+        BehaviourCheck("Redstone-Komponenten", "Redstone-Torch", sourceContains(vanillaRedstoneSource, "Block.REDSTONE_TORCH")),
+        BehaviourCheck("Redstone-Komponenten", "Repeater", keyEquals("minecraft:repeater")),
+        BehaviourCheck("Redstone-Komponenten", "Comparator", keyEquals("minecraft:comparator")),
+        BehaviourCheck("Redstone-Komponenten", "Observer", sourceContains(vanillaRedstoneSource, "Block.OBSERVER")),
+        BehaviourCheck("Redstone-Komponenten", "Tageslichtsensor", keyEquals("minecraft:daylight_detector")),
+        BehaviourCheck("Redstone-Komponenten", "Zielblock (Target)", sourceContains(vanillaRedstoneSource, "Block.TARGET")),
+        BehaviourCheck("Redstone-Komponenten", "Blitzableiter", keyContains("lightning_rod")),
+        BehaviourCheck("Redstone-Komponenten", "Sculk-Sensor", sourceContains(vanillaRedstoneSource, "Block.SCULK_SENSOR")),
+        BehaviourCheck("Redstone-Komponenten", "Tripwire + Haken", sourceContains(vanillaRedstoneSource, "Block.TRIPWIRE_HOOK")),
+        BehaviourCheck("Redstone-Komponenten", "Schienen", sourceContains(vanillaRedstoneSource, "Block.POWERED_RAIL", "Block.DETECTOR_RAIL", "Block.ACTIVATOR_RAIL")),
+        BehaviourCheck("Container & BlockEntity", "Chest / Trapped Chest / Ender Chest", sourceContains(containerRegistrationsSource, "minecraft:chest", "minecraft:trapped_chest", "minecraft:ender_chest")),
+        BehaviourCheck("Container & BlockEntity", "Barrel", sourceContains(containerRegistrationsSource, "minecraft:barrel")),
+        BehaviourCheck("Container & BlockEntity", "Shulker Box", sourceContains(containerRegistrationsSource, "minecraft:shulker_box")),
+        BehaviourCheck("Container & BlockEntity", "Ofen / Blast Furnace / Smoker", sourceContains(recipeRegistrationsSource, "minecraft:furnace", "minecraft:blast_furnace", "minecraft:smoker")),
+        BehaviourCheck("Container & BlockEntity", "Dispenser / Dropper", sourceContains(containerRegistrationsSource, "minecraft:dispenser", "minecraft:dropper")),
+        BehaviourCheck("Container & BlockEntity", "Hopper", sourceContains(containerRegistrationsSource, "minecraft:hopper")),
+        BehaviourCheck("Container & BlockEntity", "Crafter", sourceContains(containerRegistrationsSource, "minecraft:crafter")),
+        BehaviourCheck("Container & BlockEntity", "Lectern", keyEquals("minecraft:lectern")),
+        BehaviourCheck("Container & BlockEntity", "Jukebox", keyEquals("minecraft:jukebox")),
+        BehaviourCheck("Container & BlockEntity", "Flower Pot", keyEquals("minecraft:flower_pot")),
+        BehaviourCheck("Container & BlockEntity", "Composter", keyEquals("minecraft:composter")),
+        BehaviourCheck("Container & BlockEntity", "Bee Nest / Beehive", keyEquals("minecraft:bee_nest", "minecraft:beehive")),
+        BehaviourCheck("Container & BlockEntity", "Respawn Anker", keyEquals("minecraft:respawn_anchor")),
+        BehaviourCheck("Container & BlockEntity", "Beacon / Conduit", keyEquals("minecraft:beacon", "minecraft:conduit")),
+        BehaviourCheck("Container & BlockEntity", "Decorated Pot", keyEquals("minecraft:decorated_pot")),
+        BehaviourCheck("Container & BlockEntity", "Lodestone", keyEquals("minecraft:lodestone")),
+        BehaviourCheck("Betten", "Beds (schlafen/Spawn)", keyEndsWith("_bed")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Crops", keyEquals("minecraft:wheat", "minecraft:carrots", "minecraft:potatoes", "minecraft:beetroots", "minecraft:nether_wart")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Saplings", keyEndsWith("_sapling")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Sugar Cane / Cactus / Bamboo", keyEquals("minecraft:sugar_cane", "minecraft:cactus", "minecraft:bamboo")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Kelp / Seagrass", keyEquals("minecraft:kelp", "minecraft:kelp_plant", "minecraft:seagrass")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Chorus Flower", keyEquals("minecraft:chorus_flower")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Gras-Ausbreitung", keyEquals("minecraft:grass_block", "minecraft:mycelium", "minecraft:podzol")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Leaves – Zerfall", keyEndsWith("_leaves")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Pointed Dripstone", keyEquals("minecraft:pointed_dripstone")),
+        BehaviourCheck("Random-Tick: Wachstum & Ausbreitung", "Amethyst", keyContains("amethyst")),
+        BehaviourCheck("Physik & Sonstiges", "Falling Blocks", sourceContains(fallingBlockPlacementRuleSource, "override fun blockUpdate")),
+        BehaviourCheck("Physik & Sonstiges", "TNT zünden", sourceContains(vanillaRedstoneSource, "Block.TNT")),
+        BehaviourCheck("Physik & Sonstiges", "Sponge / Wet Sponge", keyEquals("minecraft:sponge", "minecraft:wet_sponge")),
+        BehaviourCheck("Physik & Sonstiges", "Dragon Egg Teleport", keyEquals("minecraft:dragon_egg")),
+        BehaviourCheck("Physik & Sonstiges", "Scaffolding", keyEquals("minecraft:scaffolding")),
+        BehaviourCheck("Physik & Sonstiges", "Snow Layer", keyEquals("minecraft:snow")),
+    )
+
+fun generateBehaviourChecklist(): String {
+    val set = behaviourSupported.toSet()
+    return behaviourChecks
+        .groupBy { it.category }
+        .entries
+        .joinToString("\n\n") { (category, items) ->
+            "### $category\n" +
+                items.joinToString("\n") { item ->
+                    "- [${if (item.detect(set)) "x" else " "}] ${item.label}"
+                }
+        }
+}
+
+fun updateBehaviourChecklist() {
+    val file = File("Behaviour.md")
+    if (!file.exists()) return
+    val start = "<!-- BEHAVIOUR_CHECKLIST_START -->"
+    val end = "<!-- BEHAVIOUR_CHECKLIST_END -->"
+    val pattern = Regex("""${Regex.escape(start)}[\s\S]*?${Regex.escape(end)}""")
+    val content = file.readText()
+    if (!pattern.containsMatchIn(content)) return
+    file.writeText(content.replace(pattern) { "$start\n${generateBehaviourChecklist()}\n$end" })
+}
+
+updateBehaviourChecklist()
+
+val behaviourUnsupportedWithState =
+    allWithState.filter { !behaviourSupported.contains(it) }
+println("WARN: ${behaviourUnsupportedWithState.size} blocks with state without behaviour (siehe TODO-behavior.md)")
 
 fun getVersion(): String {
     val buildGradleContent = File("build.gradle.kts").readText()

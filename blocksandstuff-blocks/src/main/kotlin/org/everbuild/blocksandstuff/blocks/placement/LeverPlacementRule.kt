@@ -6,9 +6,11 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.canAttach
 import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
-import java.util.*
+import java.util.Locale
 
-class LeverPlacementRule(block: Block) : BlockPlacementRule(block) {
+class LeverPlacementRule(
+    block: Block,
+) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val clickedFace = placementState.blockFace ?: return null
         if (!placementState.canAttach()) {
@@ -41,12 +43,17 @@ class LeverPlacementRule(block: Block) : BlockPlacementRule(block) {
         val currentBlock = updateState.currentBlock
         val face = currentBlock.getProperty("face") ?: return Block.AIR
         val facing = currentBlock.getProperty("facing") ?: return Block.AIR
-        val supportDirection = when (face) {
-            "floor" -> BlockFace.BOTTOM
-            "ceiling" -> BlockFace.TOP
-            "wall" -> BlockFace.valueOf(facing.uppercase(Locale.ROOT)).oppositeFace // Support is behind the lever.
-            else -> null
-        }
+        val supportDirection =
+            when (face) {
+                "floor" -> BlockFace.BOTTOM
+
+                "ceiling" -> BlockFace.TOP
+
+                "wall" -> BlockFace.valueOf(facing.uppercase(Locale.ROOT)).oppositeFace
+
+                // Support is behind the lever.
+                else -> null
+            }
 
         if (supportDirection == null) {
             return Block.AIR

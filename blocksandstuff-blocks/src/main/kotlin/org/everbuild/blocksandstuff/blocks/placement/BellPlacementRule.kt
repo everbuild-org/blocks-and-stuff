@@ -6,25 +6,33 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 
-class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
+class BellPlacementRule(
+    block: Block,
+) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        val blockFace = placementState.blockFace ?: return block
+        val blockFace = placementState.blockFace ?: return placementState.block
 
         return when (blockFace) {
-            BlockFace.BOTTOM -> placementState.block
-                .withProperty("attachment", "ceiling")
+            BlockFace.BOTTOM -> {
+                placementState.block
+                    .withProperty("attachment", "ceiling")
+            }
 
-            BlockFace.TOP -> placementState.block
-                .withProperty("attachment", "floor")
-                .withProperty("facing", placementState.getNearestHorizontalLookingDirection().name.lowercase())
+            BlockFace.TOP -> {
+                placementState.block
+                    .withProperty("attachment", "floor")
+                    .withProperty("facing", placementState.getNearestHorizontalLookingDirection().name.lowercase())
+            }
 
             else -> {
                 val direction = blockFace.oppositeFace.name.lowercase()
-                val doubleWall = placementState.instance.getBlock(
-                    placementState.placePosition.add(
-                        blockFace.toDirection().vec()
-                    )
-                ).solid()
+                val doubleWall =
+                    placementState.instance
+                        .getBlock(
+                            placementState.placePosition.add(
+                                blockFace.toDirection().vec(),
+                            ),
+                        ).solid()
 
                 placementState.block
                     .withProperty("facing", direction)
@@ -35,28 +43,35 @@ class BellPlacementRule(block: Block) : BlockPlacementRule(block) {
 
     override fun blockUpdate(updateState: UpdateState): Block {
         val attachment = updateState.currentBlock.getProperty("attachment")
-        if (attachment == "ceiling" && !updateState.instance.getBlock(
-                updateState.blockPosition.add(
-                    0.0,
-                    1.0,
-                    0.0
-                )
-            ).solid()
+        if (attachment == "ceiling" &&
+            !updateState.instance
+                .getBlock(
+                    updateState.blockPosition.add(
+                        0.0,
+                        1.0,
+                        0.0,
+                    ),
+                ).solid()
         ) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
+        if (attachment == "ceiling") return updateState.currentBlock
 
-        if (attachment == "floor" && !updateState.instance.getBlock(
-                updateState.blockPosition.add(
-                    0.0,
-                    -11.0,
-                    0.0
-                )
-            ).solid()
-        ) {
-            DroppedItemFactory.maybeDrop(updateState)
-            return Block.AIR
+        if (attachment == "floor") {
+            if (!updateState.instance
+                    .getBlock(
+                        updateState.blockPosition.add(
+                            0.0,
+                            -1.0,
+                            0.0,
+                        ),
+                    ).solid()
+            ) {
+                DroppedItemFactory.maybeDrop(updateState)
+                return Block.AIR
+            }
+            return updateState.currentBlock
         }
 
         val attachmentDirection = BlockFace.valueOf(updateState.currentBlock.getProperty("facing")!!.uppercase())

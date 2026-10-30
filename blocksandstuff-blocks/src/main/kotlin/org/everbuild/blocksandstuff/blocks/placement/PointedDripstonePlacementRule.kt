@@ -1,9 +1,11 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
 import net.minestom.server.coordinate.Point
+import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.blocks.util.FallingDripstone
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
 class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
@@ -27,14 +29,27 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
         val bottomSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, -1.0, 0.0))
         val topSupported = updateState.instance().getBlock(updateState.blockPosition().add(0.0, 1.0, 0.0))
         if (direction && !bottomSupported.collisionShape().isFaceFull(BlockFace.TOP) && !bottomSupported.compare(block, Block.Comparator.ID)) {
-            DroppedItemFactory.maybeDrop(updateState)
+            breakOrFall(updateState)
             return Block.AIR
         }
         if (!direction && !topSupported.collisionShape().isFaceFull(BlockFace.BOTTOM) && !topSupported.compare(block, Block.Comparator.ID)) {
-            DroppedItemFactory.maybeDrop(updateState)
+            breakOrFall(updateState)
             return Block.AIR
         }
         return updateState.currentBlock().withProperty("thickness", newThickness)
+    }
+
+    private fun breakOrFall(updateState: UpdateState) {
+        val instance = updateState.instance() as? Instance
+        if (instance == null) {
+            DroppedItemFactory.maybeDrop(updateState)
+            return
+        }
+        FallingDripstone.spawn(
+            updateState.currentBlock(),
+            instance,
+            updateState.blockPosition().asBlockVec(),
+        )
     }
 
     private fun getThickness(instance: Block.Getter, blockPosition: Point, direction: Boolean): String {

@@ -8,6 +8,7 @@ import org.everbuild.blocksandstuff.recipes.grid.ShapelessCraftingRecipe
 import org.everbuild.blocksandstuff.recipes.grid.TransmuteCraftingRecipe
 import org.everbuild.blocksandstuff.recipes.loader.RecipeModel
 import org.everbuild.blocksandstuff.recipes.smelting.blast_furnace.BlastFurnaceRecipe
+import org.everbuild.blocksandstuff.recipes.smelting.campfire.CampfireCookingRecipe
 import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceRecipe
 import org.everbuild.blocksandstuff.recipes.smelting.smoker.SmokerRecipe
 import org.everbuild.blocksandstuff.recipes.smithing.TransformSmithingRecipe
@@ -29,6 +30,7 @@ object RecipeFactory {
             is RecipeModel.TrimSmithingRecipe -> TrimSmithingRecipe(model)
             is RecipeModel.BlastingRecipe -> BlastFurnaceRecipe(model)
             is RecipeModel.SmeltingRecipe -> FurnaceRecipe(model)
+            is RecipeModel.CampfireCookingRecipe -> CampfireCookingRecipe(model)
             is RecipeModel.SmokingRecipe -> SmokerRecipe(model)
             is RecipeModel.StonecuttingRecipe -> StonecutterRecipe(model)
         }
