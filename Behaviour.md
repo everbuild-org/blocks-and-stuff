@@ -402,7 +402,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Kerze (minecraft:candles)
 - [x] Kupfer-Bulb
 - [x] Redstone-Lampe
-- [ ] Lagerfeuer
+- [x] Lagerfeuer
 - [x] Glocke
 - [x] Notenblock
 

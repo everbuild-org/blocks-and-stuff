@@ -56,6 +56,7 @@ minecraft:bubble_coral_fan
 minecraft:bubble_coral_wall_fan
 minecraft:cactus
 minecraft:cake
+minecraft:campfire
 minecraft:candle
 minecraft:candle_cake
 minecraft:carrots
@@ -301,6 +302,7 @@ minecraft:redstone_wire
 minecraft:repeater
 minecraft:rooted_dirt
 minecraft:smithing_table
+minecraft:soul_campfire
 minecraft:spruce_button
 minecraft:spruce_door
 minecraft:spruce_fence_gate

@@ -114,7 +114,6 @@
 - [ ] minecraft:cactus_flower
 - [ ] minecraft:calcite
 - [ ] minecraft:calibrated_sculk_sensor
-- [ ] minecraft:campfire
 - [ ] minecraft:carved_pumpkin
 - [ ] minecraft:cauldron
 - [ ] minecraft:cave_air
@@ -724,7 +723,6 @@
 - [ ] minecraft:sniffer_egg
 - [ ] minecraft:snow
 - [ ] minecraft:snow_block
-- [ ] minecraft:soul_campfire
 - [ ] minecraft:soul_fire
 - [ ] minecraft:soul_lantern
 - [ ] minecraft:soul_sand
@@ -983,6 +981,7 @@
 - [x] minecraft:bubble_coral_wall_fan
 - [x] minecraft:cactus
 - [x] minecraft:cake
+- [x] minecraft:campfire
 - [x] minecraft:candle
 - [x] minecraft:candle_cake
 - [x] minecraft:carrots
@@ -1228,6 +1227,7 @@
 - [x] minecraft:repeater
 - [x] minecraft:rooted_dirt
 - [x] minecraft:smithing_table
+- [x] minecraft:soul_campfire
 - [x] minecraft:spruce_button
 - [x] minecraft:spruce_door
 - [x] minecraft:spruce_fence_gate
