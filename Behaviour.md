@@ -454,7 +454,7 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [ ] Chorus Flower
 - [x] Gras-Ausbreitung
 - [ ] Leaves – Zerfall
-- [ ] Pointed Dripstone
+- [x] Pointed Dripstone
 - [ ] Amethyst
 
 ### Physik & Sonstiges

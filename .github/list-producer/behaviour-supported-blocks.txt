@@ -61,6 +61,7 @@ minecraft:candle
 minecraft:candle_cake
 minecraft:carrots
 minecraft:cartography_table
+minecraft:cauldron
 minecraft:cherry_button
 minecraft:cherry_door
 minecraft:cherry_fence_gate
@@ -166,6 +167,7 @@ minecraft:jungle_trapdoor
 minecraft:jungle_wall_hanging_sign
 minecraft:jungle_wall_sign
 minecraft:jungle_wood
+minecraft:lava_cauldron
 minecraft:lectern
 minecraft:lever
 minecraft:light_blue_candle
@@ -241,6 +243,7 @@ minecraft:pink_candle_cake
 minecraft:pink_concrete_powder
 minecraft:pitcher_crop
 minecraft:player_head
+minecraft:pointed_dripstone
 minecraft:polished_blackstone_button
 minecraft:polished_blackstone_pressure_plate
 minecraft:poplar_button
@@ -291,6 +294,7 @@ minecraft:potted_warped_fungus
 minecraft:potted_warped_roots
 minecraft:potted_white_tulip
 minecraft:potted_wither_rose
+minecraft:powder_snow_cauldron
 minecraft:pumpkin_stem
 minecraft:purple_candle
 minecraft:purple_candle_cake
@@ -337,6 +341,7 @@ minecraft:warped_stem
 minecraft:warped_trapdoor
 minecraft:warped_wall_hanging_sign
 minecraft:warped_wall_sign
+minecraft:water_cauldron
 minecraft:waxed_copper_door
 minecraft:waxed_copper_trapdoor
 minecraft:waxed_exposed_copper_door

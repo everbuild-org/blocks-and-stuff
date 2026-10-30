@@ -115,7 +115,6 @@
 - [ ] minecraft:calcite
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:carved_pumpkin
-- [ ] minecraft:cauldron
 - [ ] minecraft:cave_air
 - [ ] minecraft:cave_vines
 - [ ] minecraft:cave_vines_plant
@@ -376,7 +375,6 @@
 - [ ] minecraft:large_amethyst_bud
 - [ ] minecraft:large_fern
 - [ ] minecraft:lava
-- [ ] minecraft:lava_cauldron
 - [ ] minecraft:leaf_litter
 - [ ] minecraft:light
 - [ ] minecraft:light_blue_banner
@@ -554,7 +552,6 @@
 - [ ] minecraft:pitcher_plant
 - [ ] minecraft:player_wall_head
 - [ ] minecraft:podzol
-- [ ] minecraft:pointed_dripstone
 - [ ] minecraft:polished_andesite
 - [ ] minecraft:polished_andesite_slab
 - [ ] minecraft:polished_andesite_stairs
@@ -601,7 +598,6 @@
 - [ ] minecraft:potted_azalea_bush
 - [ ] minecraft:potted_flowering_azalea_bush
 - [ ] minecraft:powder_snow
-- [ ] minecraft:powder_snow_cauldron
 - [ ] minecraft:powered_rail
 - [ ] minecraft:prismarine
 - [ ] minecraft:prismarine_brick_slab
@@ -826,7 +822,6 @@
 - [ ] minecraft:warped_stairs
 - [ ] minecraft:warped_wart_block
 - [ ] minecraft:water
-- [ ] minecraft:water_cauldron
 - [ ] minecraft:waxed_chiseled_copper
 - [ ] minecraft:waxed_copper_bars
 - [ ] minecraft:waxed_copper_block
@@ -986,6 +981,7 @@
 - [x] minecraft:candle_cake
 - [x] minecraft:carrots
 - [x] minecraft:cartography_table
+- [x] minecraft:cauldron
 - [x] minecraft:cherry_button
 - [x] minecraft:cherry_door
 - [x] minecraft:cherry_fence_gate
@@ -1091,6 +1087,7 @@
 - [x] minecraft:jungle_wall_hanging_sign
 - [x] minecraft:jungle_wall_sign
 - [x] minecraft:jungle_wood
+- [x] minecraft:lava_cauldron
 - [x] minecraft:lectern
 - [x] minecraft:lever
 - [x] minecraft:light_blue_candle
@@ -1166,6 +1163,7 @@
 - [x] minecraft:pink_concrete_powder
 - [x] minecraft:pitcher_crop
 - [x] minecraft:player_head
+- [x] minecraft:pointed_dripstone
 - [x] minecraft:polished_blackstone_button
 - [x] minecraft:polished_blackstone_pressure_plate
 - [x] minecraft:poplar_button
@@ -1216,6 +1214,7 @@
 - [x] minecraft:potted_warped_roots
 - [x] minecraft:potted_white_tulip
 - [x] minecraft:potted_wither_rose
+- [x] minecraft:powder_snow_cauldron
 - [x] minecraft:pumpkin_stem
 - [x] minecraft:purple_candle
 - [x] minecraft:purple_candle_cake
@@ -1262,6 +1261,7 @@
 - [x] minecraft:warped_trapdoor
 - [x] minecraft:warped_wall_hanging_sign
 - [x] minecraft:warped_wall_sign
+- [x] minecraft:water_cauldron
 - [x] minecraft:waxed_copper_door
 - [x] minecraft:waxed_copper_trapdoor
 - [x] minecraft:waxed_exposed_copper_door
