@@ -12,6 +12,7 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.tag.Tag
+import org.everbuild.blocksandstuff.blocks.util.leavesDistance
 
 /**
  * Generates a tree at [base]. Attach custom generators per instance via [TREE_GENERATORS]; Blocks &
@@ -116,7 +117,10 @@ private class TreePlacerContext(
         if (!instance.isChunkLoaded(pos)) return false
         if (isLeafAt(pos) && get(pos).getProperty("persistent") == "true") return false
         if (!validTreePos(pos)) return false
-        instance.setBlock(pos, leavesProvider(random))
+        instance.setBlock(
+            pos,
+            leavesProvider(random).withProperty("distance", leavesDistance(instance, pos).toString()),
+        )
         placedLeaves[coordKey(pos)] = pos
         return true
     }

@@ -1,15 +1,22 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.entity.Player
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.item.ItemStack
+import net.minestom.server.item.Material
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.twaddle.stacked_behaviour_block.type.DestroyActivityContext
 import org.everbuild.twaddle.stacked_behaviour_block.type.RandomTickActivityContext
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.mock
 import java.util.Random
 
 class BuddingAmethystBehaviourTest {
@@ -92,5 +99,53 @@ class BuddingAmethystBehaviourTest {
 
         val buds = neighbours().count { (_, block) -> block.key().asString().contains("amethyst") }
         Assertions.assertEquals(0, buds)
+    }
+
+    @Test
+    fun clusterDestroyDropsFourShards() {
+        val dropped = recordDrops(Block.AMETHYST_CLUSTER)
+
+        Assertions.assertEquals(1, dropped.size)
+        Assertions.assertEquals(Material.AMETHYST_SHARD, dropped.single().material())
+        Assertions.assertEquals(4, dropped.single().amount())
+    }
+
+    @Test
+    fun budDestroyDropsItself() {
+        val dropped = recordDrops(Block.LARGE_AMETHYST_BUD)
+
+        Assertions.assertEquals(1, dropped.size)
+        Assertions.assertEquals("minecraft:large_amethyst_bud", dropped.single().material().key().asString())
+    }
+
+    private fun recordDrops(block: Block): List<ItemStack> {
+        val dropped = mutableListOf<ItemStack>()
+        val previous = DroppedItemFactory.current
+        DroppedItemFactory.current =
+            object : DroppedItemFactory {
+                override fun spawn(
+                    instance: Instance,
+                    position: Point,
+                    block: Block,
+                ) {
+                    block.material()?.let { dropped += ItemStack.of(it) }
+                }
+
+                override fun spawn(
+                    instance: Instance,
+                    position: Point,
+                    item: ItemStack,
+                ) {
+                    dropped += item
+                }
+            }
+        try {
+            AMETHYST_DROP_RULE.evaluate(
+                DestroyActivityContext(block, Block.AIR, instance, position.asBlockVec(), player = mock<Player>()),
+            )
+        } finally {
+            DroppedItemFactory.current = previous
+        }
+        return dropped
     }
 }

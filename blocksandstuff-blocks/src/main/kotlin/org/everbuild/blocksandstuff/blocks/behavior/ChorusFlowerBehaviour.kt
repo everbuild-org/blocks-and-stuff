@@ -1,9 +1,11 @@
 ﻿package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
@@ -64,10 +66,12 @@ class ChorusFlowerBehaviour(
 
             if (growUpwards && allNeighborsEmpty(ctx.instance, above, null) && ctx.instance.getBlock(above.relative(BlockFace.TOP)).air()) {
                 ctx.instance.setBlock(above, Block.CHORUS_FLOWER.withProperty("age", age.toString()))
+                playSound(ctx.instance, above, SoundEvent.BLOCK_CHORUS_FLOWER_GROW)
                 ctx.replaceBlock(chorusPlantWithConnections(ctx.instance, ctx.blockPosition))
             } else if (age < CHORUS_MAX_AGE - 1) {
                 growBranches(ctx, age, pillarOnSupportBlock)
             } else {
+                playSound(ctx.instance, ctx.blockPosition, SoundEvent.BLOCK_CHORUS_FLOWER_DEATH)
                 ctx.replaceBlock(Block.CHORUS_FLOWER.withProperty("age", CHORUS_MAX_AGE.toString()))
             }
             RuleResult.Next
@@ -91,12 +95,14 @@ class ChorusFlowerBehaviour(
             if (!allNeighborsEmpty(ctx.instance, target, direction.oppositeFace)) return@repeat
 
             ctx.instance.setBlock(target, Block.CHORUS_FLOWER.withProperty("age", (age + 1).toString()))
+            playSound(ctx.instance, target, SoundEvent.BLOCK_CHORUS_FLOWER_GROW)
             createdBranch = true
         }
 
         if (createdBranch) {
             ctx.replaceBlock(chorusPlantWithConnections(ctx.instance, ctx.blockPosition))
         } else {
+            playSound(ctx.instance, ctx.blockPosition, SoundEvent.BLOCK_CHORUS_FLOWER_DEATH)
             ctx.replaceBlock(Block.CHORUS_FLOWER.withProperty("age", CHORUS_MAX_AGE.toString()))
         }
     }
@@ -134,6 +140,14 @@ private fun chorusPlantWithConnections(
         .withProperty("east", connects(BlockFace.EAST, supportCounts = false).toString())
         .withProperty("south", connects(BlockFace.SOUTH, supportCounts = false).toString())
         .withProperty("west", connects(BlockFace.WEST, supportCounts = false).toString())
+}
+
+private fun playSound(
+    instance: Instance,
+    position: Point,
+    event: SoundEvent,
+) {
+    instance.playSoundExcept(null, Sound.sound(event, Sound.Source.BLOCK, 1.0f, 1.0f), position)
 }
 
 fun BlockRulesetEditor.addChorusFlowers() {

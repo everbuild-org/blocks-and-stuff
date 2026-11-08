@@ -1,11 +1,18 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.sound.Sound
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.item.ItemStack
+import net.minestom.server.item.Material
+import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.DestroyActivityContext
 import org.everbuild.twaddle.stacked_behaviour_block.type.RandomTickActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.destroy
 import org.everbuild.twaddle.stacked_behaviour_block.type.randomTick
 import java.util.Random
 
@@ -41,9 +48,28 @@ class BuddingAmethystBehaviour(
                     .withProperty("facing", facingValue(face))
                     .withProperty("waterlogged", waterlogged.toString()),
             )
+
+            val pitch = 0.5f + random.nextFloat()
+            ctx.instance.playSoundExcept(
+                null,
+                Sound.sound(SoundEvent.BLOCK_AMETHYST_BLOCK_CHIME, Sound.Source.BLOCK, pitch, pitch),
+                ctx.blockPosition,
+            )
             RuleResult.Next
         }
 }
+
+internal val AMETHYST_DROP_RULE: Rule<DestroyActivityContext> =
+    Rule("blocksandstuff:amethyst_drop") { ctx ->
+        if (ctx.player == null) return@Rule RuleResult.Next
+
+        if (ctx.block.compare(Block.AMETHYST_CLUSTER)) {
+            DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, ItemStack.of(Material.AMETHYST_SHARD, 4))
+        } else {
+            DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, ctx.block)
+        }
+        RuleResult.Next
+    }
 
 private fun facingValue(face: BlockFace): String =
     when (face) {
@@ -60,4 +86,16 @@ private fun isWaterSource(block: Block): Boolean =
 fun BlockRulesetEditor.addBuddingAmethyst() {
     val rule = BuddingAmethystBehaviour().rule("blocksandstuff:budding_amethyst")
     blocks(Block.BUDDING_AMETHYST) { randomTick.append { install(rule) } }
+
+    amethystBlocks().forEach { block ->
+        blocks(block) { destroy.append { install(AMETHYST_DROP_RULE) } }
+    }
 }
+
+private fun amethystBlocks(): List<Block> =
+    listOf(
+        Block.AMETHYST_CLUSTER,
+        Block.SMALL_AMETHYST_BUD,
+        Block.MEDIUM_AMETHYST_BUD,
+        Block.LARGE_AMETHYST_BUD,
+    )

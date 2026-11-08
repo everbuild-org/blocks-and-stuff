@@ -59,4 +59,13 @@ internal class LeavesPlacementRuleTest {
 
         Assertions.assertEquals("true", instance.getBlock(pos).getProperty("persistent"))
     }
+
+    @Test
+    fun placedLeavesTrackDistanceToLog() {
+        val pos = Pos(4.0, 64.0, 4.0)
+        instance.setBlock(pos.add(1.0, 0.0, 0.0), Block.OAK_LOG)
+        place(pos)
+
+        Assertions.assertEquals("1", instance.getBlock(pos).getProperty("distance"))
+    }
 }
