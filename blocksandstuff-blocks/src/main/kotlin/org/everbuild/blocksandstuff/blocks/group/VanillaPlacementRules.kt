@@ -155,6 +155,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             ::CropPlacementRule,
         )
 
+    val LEAVES =
+        group(
+            all(
+                byTag("minecraft:leaves"),
+            ),
+            ::LeavesPlacementRule,
+        )
+
     val BELL =
         group(
             byBlock(Block.BELL),
