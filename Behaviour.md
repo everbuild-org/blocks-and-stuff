@@ -450,12 +450,12 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Crops
 - [x] Saplings
 - [x] Sugar Cane / Cactus / Bamboo
-- [ ] Kelp / Seagrass
-- [ ] Chorus Flower
+- [x] Kelp / Seagrass
+- [x] Chorus Flower
 - [x] Gras-Ausbreitung
-- [ ] Leaves – Zerfall
+- [x] Leaves – Zerfall
 - [x] Pointed Dripstone
-- [ ] Amethyst
+- [x] Amethyst
 
 ### Physik & Sonstiges
 - [x] Falling Blocks

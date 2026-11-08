@@ -2,6 +2,7 @@ minecraft:acacia_button
 minecraft:acacia_door
 minecraft:acacia_fence_gate
 minecraft:acacia_hanging_sign
+minecraft:acacia_leaves
 minecraft:acacia_log
 minecraft:acacia_pressure_plate
 minecraft:acacia_sapling
@@ -12,6 +13,7 @@ minecraft:acacia_wall_sign
 minecraft:acacia_wood
 minecraft:anvil
 minecraft:azalea
+minecraft:azalea_leaves
 minecraft:bamboo
 minecraft:bamboo_block
 minecraft:bamboo_button
@@ -28,6 +30,7 @@ minecraft:birch_button
 minecraft:birch_door
 minecraft:birch_fence_gate
 minecraft:birch_hanging_sign
+minecraft:birch_leaves
 minecraft:birch_log
 minecraft:birch_pressure_plate
 minecraft:birch_sapling
@@ -54,6 +57,7 @@ minecraft:bubble_coral
 minecraft:bubble_coral_block
 minecraft:bubble_coral_fan
 minecraft:bubble_coral_wall_fan
+minecraft:budding_amethyst
 minecraft:cactus
 minecraft:cake
 minecraft:campfire
@@ -66,6 +70,7 @@ minecraft:cherry_button
 minecraft:cherry_door
 minecraft:cherry_fence_gate
 minecraft:cherry_hanging_sign
+minecraft:cherry_leaves
 minecraft:cherry_log
 minecraft:cherry_pressure_plate
 minecraft:cherry_sapling
@@ -75,6 +80,7 @@ minecraft:cherry_wall_hanging_sign
 minecraft:cherry_wall_sign
 minecraft:cherry_wood
 minecraft:chiseled_copper
+minecraft:chorus_flower
 minecraft:coarse_dirt
 minecraft:comparator
 minecraft:composter
@@ -109,6 +115,7 @@ minecraft:dark_oak_button
 minecraft:dark_oak_door
 minecraft:dark_oak_fence_gate
 minecraft:dark_oak_hanging_sign
+minecraft:dark_oak_leaves
 minecraft:dark_oak_log
 minecraft:dark_oak_pressure_plate
 minecraft:dark_oak_sapling
@@ -142,6 +149,7 @@ minecraft:fire_coral_fan
 minecraft:fire_coral_wall_fan
 minecraft:flower_pot
 minecraft:flowering_azalea
+minecraft:flowering_azalea_leaves
 minecraft:grass_block
 minecraft:gray_candle
 minecraft:gray_candle_cake
@@ -159,6 +167,7 @@ minecraft:jungle_button
 minecraft:jungle_door
 minecraft:jungle_fence_gate
 minecraft:jungle_hanging_sign
+minecraft:jungle_leaves
 minecraft:jungle_log
 minecraft:jungle_pressure_plate
 minecraft:jungle_sapling
@@ -167,6 +176,7 @@ minecraft:jungle_trapdoor
 minecraft:jungle_wall_hanging_sign
 minecraft:jungle_wall_sign
 minecraft:jungle_wood
+minecraft:kelp
 minecraft:lava_cauldron
 minecraft:lectern
 minecraft:lever
@@ -189,6 +199,7 @@ minecraft:mangrove_button
 minecraft:mangrove_door
 minecraft:mangrove_fence_gate
 minecraft:mangrove_hanging_sign
+minecraft:mangrove_leaves
 minecraft:mangrove_log
 minecraft:mangrove_pressure_plate
 minecraft:mangrove_sign
@@ -203,6 +214,7 @@ minecraft:oak_button
 minecraft:oak_door
 minecraft:oak_fence_gate
 minecraft:oak_hanging_sign
+minecraft:oak_leaves
 minecraft:oak_log
 minecraft:oak_pressure_plate
 minecraft:oak_sapling
@@ -214,6 +226,7 @@ minecraft:oak_wood
 minecraft:orange_candle
 minecraft:orange_candle_cake
 minecraft:orange_concrete_powder
+minecraft:orange_poplar_leaves
 minecraft:oxidized_chiseled_copper
 minecraft:oxidized_copper
 minecraft:oxidized_copper_bars
@@ -232,6 +245,7 @@ minecraft:pale_oak_button
 minecraft:pale_oak_door
 minecraft:pale_oak_fence_gate
 minecraft:pale_oak_hanging_sign
+minecraft:pale_oak_leaves
 minecraft:pale_oak_pressure_plate
 minecraft:pale_oak_sapling
 minecraft:pale_oak_sign
@@ -302,15 +316,18 @@ minecraft:purple_concrete_powder
 minecraft:red_candle
 minecraft:red_candle_cake
 minecraft:red_concrete_powder
+minecraft:red_poplar_leaves
 minecraft:redstone_wire
 minecraft:repeater
 minecraft:rooted_dirt
+minecraft:seagrass
 minecraft:smithing_table
 minecraft:soul_campfire
 minecraft:spruce_button
 minecraft:spruce_door
 minecraft:spruce_fence_gate
 minecraft:spruce_hanging_sign
+minecraft:spruce_leaves
 minecraft:spruce_log
 minecraft:spruce_pressure_plate
 minecraft:spruce_sapling
@@ -324,6 +341,7 @@ minecraft:stone_pressure_plate
 minecraft:stonecutter
 minecraft:sugar_cane
 minecraft:sweet_berry_bush
+minecraft:tall_seagrass
 minecraft:tnt
 minecraft:torchflower_crop
 minecraft:tube_coral
@@ -371,3 +389,4 @@ minecraft:white_concrete_powder
 minecraft:yellow_candle
 minecraft:yellow_candle_cake
 minecraft:yellow_concrete_powder
+minecraft:yellow_poplar_leaves

@@ -17,6 +17,7 @@
 - [x] minecraft:acacia_fence
 - [x] minecraft:acacia_fence_gate
 - [x] minecraft:acacia_hanging_sign
+- [x] minecraft:acacia_leaves
 - [x] minecraft:acacia_log
 - [x] minecraft:acacia_pressure_plate
 - [x] minecraft:acacia_sapling
@@ -38,6 +39,7 @@
 - [x] minecraft:attached_melon_stem
 - [x] minecraft:attached_pumpkin_stem
 - [x] minecraft:azalea
+- [x] minecraft:azalea_leaves
 - [x] minecraft:azure_bluet
 - [x] minecraft:bamboo
 - [x] minecraft:bamboo_block
@@ -71,6 +73,7 @@
 - [x] minecraft:birch_fence
 - [x] minecraft:birch_fence_gate
 - [x] minecraft:birch_hanging_sign
+- [x] minecraft:birch_leaves
 - [x] minecraft:birch_log
 - [x] minecraft:birch_pressure_plate
 - [x] minecraft:birch_sapling
@@ -149,6 +152,7 @@
 - [x] minecraft:cherry_fence
 - [x] minecraft:cherry_fence_gate
 - [x] minecraft:cherry_hanging_sign
+- [x] minecraft:cherry_leaves
 - [x] minecraft:cherry_log
 - [x] minecraft:cherry_pressure_plate
 - [x] minecraft:cherry_sapling
@@ -234,6 +238,7 @@
 - [x] minecraft:dark_oak_fence
 - [x] minecraft:dark_oak_fence_gate
 - [x] minecraft:dark_oak_hanging_sign
+- [x] minecraft:dark_oak_leaves
 - [x] minecraft:dark_oak_log
 - [x] minecraft:dark_oak_pressure_plate
 - [x] minecraft:dark_oak_sapling
@@ -300,6 +305,7 @@
 - [x] minecraft:fire_coral_wall_fan
 - [x] minecraft:flower_pot
 - [x] minecraft:flowering_azalea
+- [x] minecraft:flowering_azalea_leaves
 - [x] minecraft:furnace
 - [x] minecraft:glass_pane
 - [x] minecraft:glow_lichen
@@ -354,6 +360,7 @@
 - [x] minecraft:jungle_fence
 - [x] minecraft:jungle_fence_gate
 - [x] minecraft:jungle_hanging_sign
+- [x] minecraft:jungle_leaves
 - [x] minecraft:jungle_log
 - [x] minecraft:jungle_pressure_plate
 - [x] minecraft:jungle_sapling
@@ -433,6 +440,7 @@
 - [x] minecraft:mangrove_fence
 - [x] minecraft:mangrove_fence_gate
 - [x] minecraft:mangrove_hanging_sign
+- [x] minecraft:mangrove_leaves
 - [x] minecraft:mangrove_log
 - [x] minecraft:mangrove_pressure_plate
 - [x] minecraft:mangrove_propagule
@@ -469,6 +477,7 @@
 - [x] minecraft:oak_fence
 - [x] minecraft:oak_fence_gate
 - [x] minecraft:oak_hanging_sign
+- [x] minecraft:oak_leaves
 - [x] minecraft:oak_log
 - [x] minecraft:oak_pressure_plate
 - [x] minecraft:oak_sapling
@@ -490,6 +499,7 @@
 - [x] minecraft:orange_concrete_slab
 - [x] minecraft:orange_concrete_stairs
 - [x] minecraft:orange_glazed_terracotta
+- [x] minecraft:orange_poplar_leaves
 - [x] minecraft:orange_shulker_box
 - [x] minecraft:orange_stained_glass_pane
 - [x] minecraft:orange_tulip
@@ -515,6 +525,7 @@
 - [x] minecraft:pale_oak_fence
 - [x] minecraft:pale_oak_fence_gate
 - [x] minecraft:pale_oak_hanging_sign
+- [x] minecraft:pale_oak_leaves
 - [x] minecraft:pale_oak_log
 - [x] minecraft:pale_oak_pressure_plate
 - [x] minecraft:pale_oak_sapling
@@ -669,6 +680,7 @@
 - [x] minecraft:red_nether_brick_slab
 - [x] minecraft:red_nether_brick_stairs
 - [x] minecraft:red_nether_brick_wall
+- [x] minecraft:red_poplar_leaves
 - [x] minecraft:red_sand
 - [x] minecraft:red_sandstone_slab
 - [x] minecraft:red_sandstone_stairs
@@ -720,6 +732,7 @@
 - [x] minecraft:spruce_fence
 - [x] minecraft:spruce_fence_gate
 - [x] minecraft:spruce_hanging_sign
+- [x] minecraft:spruce_leaves
 - [x] minecraft:spruce_log
 - [x] minecraft:spruce_pressure_plate
 - [x] minecraft:spruce_sapling
@@ -897,6 +910,7 @@
 - [x] minecraft:yellow_concrete_slab
 - [x] minecraft:yellow_concrete_stairs
 - [x] minecraft:yellow_glazed_terracotta
+- [x] minecraft:yellow_poplar_leaves
 - [x] minecraft:yellow_shulker_box
 - [x] minecraft:yellow_stained_glass_pane
 - [x] minecraft:yellow_wall_banner
