@@ -11,6 +11,7 @@ minecraft:acacia_trapdoor
 minecraft:acacia_wall_hanging_sign
 minecraft:acacia_wall_sign
 minecraft:acacia_wood
+minecraft:amethyst_cluster
 minecraft:anvil
 minecraft:azalea
 minecraft:azalea_leaves
@@ -177,6 +178,7 @@ minecraft:jungle_wall_hanging_sign
 minecraft:jungle_wall_sign
 minecraft:jungle_wood
 minecraft:kelp
+minecraft:large_amethyst_bud
 minecraft:lava_cauldron
 minecraft:lectern
 minecraft:lever
@@ -207,6 +209,7 @@ minecraft:mangrove_trapdoor
 minecraft:mangrove_wall_hanging_sign
 minecraft:mangrove_wall_sign
 minecraft:mangrove_wood
+minecraft:medium_amethyst_bud
 minecraft:melon_stem
 minecraft:nether_wart
 minecraft:note_block
@@ -321,6 +324,7 @@ minecraft:redstone_wire
 minecraft:repeater
 minecraft:rooted_dirt
 minecraft:seagrass
+minecraft:small_amethyst_bud
 minecraft:smithing_table
 minecraft:soul_campfire
 minecraft:spruce_button

@@ -12,7 +12,6 @@
 - [ ] minecraft:air
 - [ ] minecraft:allium
 - [ ] minecraft:amethyst_block
-- [ ] minecraft:amethyst_cluster
 - [ ] minecraft:ancient_debris
 - [ ] minecraft:andesite
 - [ ] minecraft:andesite_slab
@@ -362,7 +361,6 @@
 - [ ] minecraft:lantern
 - [ ] minecraft:lapis_block
 - [ ] minecraft:lapis_ore
-- [ ] minecraft:large_amethyst_bud
 - [ ] minecraft:large_fern
 - [ ] minecraft:lava
 - [ ] minecraft:leaf_litter
@@ -439,7 +437,6 @@
 - [ ] minecraft:mangrove_shelf
 - [ ] minecraft:mangrove_slab
 - [ ] minecraft:mangrove_stairs
-- [ ] minecraft:medium_amethyst_bud
 - [ ] minecraft:melon
 - [ ] minecraft:moss_block
 - [ ] minecraft:moss_carpet
@@ -685,7 +682,6 @@
 - [ ] minecraft:skeleton_skull
 - [ ] minecraft:skeleton_wall_skull
 - [ ] minecraft:slime_block
-- [ ] minecraft:small_amethyst_bud
 - [ ] minecraft:small_dripleaf
 - [ ] minecraft:smoker
 - [ ] minecraft:smooth_basalt
@@ -912,6 +908,7 @@
 - [x] minecraft:acacia_wall_hanging_sign
 - [x] minecraft:acacia_wall_sign
 - [x] minecraft:acacia_wood
+- [x] minecraft:amethyst_cluster
 - [x] minecraft:anvil
 - [x] minecraft:azalea
 - [x] minecraft:azalea_leaves
@@ -1078,6 +1075,7 @@
 - [x] minecraft:jungle_wall_sign
 - [x] minecraft:jungle_wood
 - [x] minecraft:kelp
+- [x] minecraft:large_amethyst_bud
 - [x] minecraft:lava_cauldron
 - [x] minecraft:lectern
 - [x] minecraft:lever
@@ -1108,6 +1106,7 @@
 - [x] minecraft:mangrove_wall_hanging_sign
 - [x] minecraft:mangrove_wall_sign
 - [x] minecraft:mangrove_wood
+- [x] minecraft:medium_amethyst_bud
 - [x] minecraft:melon_stem
 - [x] minecraft:nether_wart
 - [x] minecraft:note_block
@@ -1222,6 +1221,7 @@
 - [x] minecraft:repeater
 - [x] minecraft:rooted_dirt
 - [x] minecraft:seagrass
+- [x] minecraft:small_amethyst_bud
 - [x] minecraft:smithing_table
 - [x] minecraft:soul_campfire
 - [x] minecraft:spruce_button
