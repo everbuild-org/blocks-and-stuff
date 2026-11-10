@@ -54,6 +54,20 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
             addCauldrons()
             addSponges()
             addScaffolding()
+            addShears()
+            addShovels()
+            addFireStarters()
+            addCaveVines()
+            addSpreading()
+            addSnowAndIce()
+            addFire()
+            addDragonEgg()
+            addRespawnAnchor()
+            addBeds()
+            addJukebox()
+            addDecoratedPots()
+            addLodestone()
+            addBeaconAndConduit()
         }
 
     val FLOWER_POTS: BehaviourGroup =

@@ -434,17 +434,17 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Hopper
 - [x] Crafter
 - [x] Lectern
-- [ ] Jukebox
+- [x] Jukebox
 - [x] Flower Pot
 - [x] Composter
-- [ ] Bee Nest / Beehive
-- [ ] Respawn Anker
-- [ ] Beacon / Conduit
-- [ ] Decorated Pot
-- [ ] Lodestone
+- [x] Bee Nest / Beehive
+- [x] Respawn Anker
+- [x] Beacon / Conduit
+- [x] Decorated Pot
+- [x] Lodestone
 
 ### Betten
-- [ ] Beds (schlafen/Spawn)
+- [x] Beds (schlafen/Spawn)
 
 ### Random-Tick: Wachstum & Ausbreitung
 - [x] Crops
@@ -461,9 +461,9 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 - [x] Falling Blocks
 - [x] TNT zünden
 - [x] Sponge / Wet Sponge
-- [ ] Dragon Egg Teleport
+- [x] Dragon Egg Teleport
 - [x] Scaffolding
-- [ ] Snow Layer
+- [x] Snow Layer
 <!-- BEHAVIOUR_CHECKLIST_END -->
 
 

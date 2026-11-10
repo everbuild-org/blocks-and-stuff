@@ -12,6 +12,7 @@ import net.minestom.server.instance.block.rule.BlockPlacementRule.UpdateState
 import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.item.ItemStack
 import net.minestom.server.utils.time.TimeUnit
+import org.everbuild.blocksandstuff.common.InstanceOptionsProvider
 
 interface DroppedItemFactory {
     fun spawn(instance: Instance, position: Point, block: Block)
@@ -82,27 +83,32 @@ interface DroppedItemFactory {
         }
 
         fun maybeDropFromPlayer(player: Player, item: ItemStack) {
-            if (doDropItems) {
+            val instance = player.instance ?: return
+            if (shouldDrop(instance)) {
                 current.spawnFromPlayer(player, item)
             }
         }
 
         fun maybeDrop(instance: Instance, position: Point, block: Block) {
-            if (doDropItems) {
+            if (shouldDrop(instance)) {
                 current.spawn(instance, position, block)
             }
         }
 
         fun maybeDrop(state: UpdateState) {
-            if (doDropItems) {
-                current.spawn(state.instance as Instance, state.blockPosition, state.currentBlock)
+            val instance = state.instance as Instance
+            if (shouldDrop(instance)) {
+                current.spawn(instance, state.blockPosition, state.currentBlock)
             }
         }
 
         fun maybeDrop(instance: Instance, position: Point, item: ItemStack) {
-            if (doDropItems) {
+            if (shouldDrop(instance)) {
                 current.spawn(instance, position, item)
             }
         }
+
+        private fun shouldDrop(instance: Instance): Boolean =
+            doDropItems && InstanceOptionsProvider.getForInstance(instance).tileDrops
     }
 }

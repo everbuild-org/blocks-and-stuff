@@ -24,7 +24,7 @@ class StemGrowthBehaviour(
     fun rule(id: String): Rule<RandomTickActivityContext> =
         Rule(id) { ctx ->
             val age = ctx.block.getProperty("age")?.toIntOrNull() ?: return@Rule RuleResult.Next
-            if (!GrowthLight.hasEnoughLight(ctx.instance, ctx.blockPosition, minLight)) return@Rule RuleResult.Next
+            if (!hasEnoughLight(ctx, minLight)) return@Rule RuleResult.Next
             if (random.nextInt(growthChance) != 0) return@Rule RuleResult.Next
 
             if (age < MAX_AGE) {
@@ -66,6 +66,18 @@ class StemGrowthBehaviour(
                 Block.MOSS_BLOCK,
             )
     }
+}
+
+private fun hasEnoughLight(
+    ctx: RandomTickActivityContext,
+    minLight: Int,
+): Boolean {
+    if (minLight <= 0) return true
+    val position = ctx.blockPosition
+    return maxOf(
+        ctx.instance.getSkyLight(position.blockX(), position.blockY(), position.blockZ()),
+        ctx.instance.getBlockLight(position.blockX(), position.blockY(), position.blockZ()),
+    ) >= minLight
 }
 
 fun BlockRulesetEditor.addStemGrowth() {

@@ -6,6 +6,11 @@ import java.util.concurrent.ConcurrentHashMap
 data class InstanceOptions(
     var randomTickSpeed: Int = 3,
     var redstoneEnabled: Boolean = true,
+    var fireTick: Boolean = true,
+    var tileDrops: Boolean = true,
+    var daylightCycle: Boolean = true,
+    var vinesSpread: Boolean = true,
+    var playersSleepingPercentage: Int = 100,
 )
 
 object InstanceOptionsProvider {

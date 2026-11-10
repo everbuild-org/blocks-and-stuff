@@ -1264,6 +1264,13 @@ private val DEFAULT_TREES: Map<Key, TreeGenerator> =
                 ),
             ),
         Block.POPLAR_SAPLING.key() to PoplarTree(),
+        Block.MANGROVE_PROPAGULE.key() to
+            VanillaTree(
+                Block.MANGROVE_LOG,
+                Block.MANGROVE_LEAVES,
+                StraightTrunkPlacer(4, 3, 0),
+                BlobFoliagePlacer(ConstantInt(2), ConstantInt(0), 3),
+            ),
         Block.AZALEA.key() to AzaleaTree(),
         Block.FLOWERING_AZALEA.key() to AzaleaTree(),
     )

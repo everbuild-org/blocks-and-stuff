@@ -11,10 +11,16 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val blockFace = placementState.blockFace()
-        val direction = when (blockFace) {
-            BlockFace.TOP -> "up"
-            BlockFace.BOTTOM -> "down"
-            else -> return null
+        val direction =
+            when {
+                blockFace == BlockFace.TOP -> "up"
+                blockFace == BlockFace.BOTTOM -> "down"
+                else -> return null
+            }
+
+        val support = placementState.instance.getBlock(placementState.placePosition.relative(blockFace.oppositeFace))
+        if (!support.collisionShape().isFaceFull(blockFace) && !support.compare(block, Block.Comparator.ID)) {
+            return null
         }
         val thickness = getThickness(placementState.instance(), placementState.placePosition(), direction == "up")
         return placementState.block.withProperties(mapOf(

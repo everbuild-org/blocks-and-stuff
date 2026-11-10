@@ -4,12 +4,11 @@
 
 ## Statistics
  - Total blocks with state: 793
- - Supported blocks: 792
- - Unsupported blocks: 1
- - Implementation progress: 99% (7 blocks = 1%)
+ - Supported blocks: 793
+ - Unsupported blocks: 0
+ - Implementation progress: 100% (7 blocks = 1%)
 
 ## Unsupported Blocks
-- [ ] minecraft:sweet_berry_bush
 
 ## Supported Blocks
 - [x] minecraft:acacia_button
@@ -300,6 +299,7 @@
 - [x] minecraft:exposed_cut_copper_stairs
 - [x] minecraft:exposed_lightning_rod
 - [x] minecraft:farmland
+- [x] minecraft:fire
 - [x] minecraft:fire_coral
 - [x] minecraft:fire_coral_fan
 - [x] minecraft:fire_coral_wall_fan
@@ -428,7 +428,6 @@
 - [x] minecraft:magenta_carpet
 - [x] minecraft:magenta_concrete_slab
 - [x] minecraft:magenta_concrete_stairs
-- [x] minecraft:magenta_glazed_terracotta
 - [x] minecraft:magenta_glazed_terracotta
 - [x] minecraft:magenta_shulker_box
 - [x] minecraft:magenta_stained_glass_pane
@@ -724,6 +723,7 @@
 - [x] minecraft:smooth_stone_slab
 - [x] minecraft:snow
 - [x] minecraft:soul_campfire
+- [x] minecraft:soul_fire
 - [x] minecraft:soul_lantern
 - [x] minecraft:soul_torch
 - [x] minecraft:soul_wall_torch
@@ -790,6 +790,7 @@
 - [x] minecraft:sunflower
 - [x] minecraft:suspicious_gravel
 - [x] minecraft:suspicious_sand
+- [x] minecraft:sweet_berry_bush
 - [x] minecraft:tall_grass
 - [x] minecraft:tall_seagrass
 - [x] minecraft:torch
