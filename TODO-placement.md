@@ -10,6 +10,7 @@
 
 ## Unsupported Blocks
 
+
 ## Supported Blocks
 - [x] minecraft:acacia_button
 - [x] minecraft:acacia_door
@@ -428,6 +429,7 @@
 - [x] minecraft:magenta_carpet
 - [x] minecraft:magenta_concrete_slab
 - [x] minecraft:magenta_concrete_stairs
+- [x] minecraft:magenta_glazed_terracotta
 - [x] minecraft:magenta_glazed_terracotta
 - [x] minecraft:magenta_shulker_box
 - [x] minecraft:magenta_stained_glass_pane
