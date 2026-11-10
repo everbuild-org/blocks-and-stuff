@@ -323,10 +323,12 @@ minecraft:red_poplar_leaves
 minecraft:redstone_wire
 minecraft:repeater
 minecraft:rooted_dirt
+minecraft:scaffolding
 minecraft:seagrass
 minecraft:small_amethyst_bud
 minecraft:smithing_table
 minecraft:soul_campfire
+minecraft:sponge
 minecraft:spruce_button
 minecraft:spruce_door
 minecraft:spruce_fence_gate

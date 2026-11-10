@@ -666,7 +666,6 @@
 - [ ] minecraft:sandstone_slab
 - [ ] minecraft:sandstone_stairs
 - [ ] minecraft:sandstone_wall
-- [ ] minecraft:scaffolding
 - [ ] minecraft:sculk
 - [ ] minecraft:sculk_catalyst
 - [ ] minecraft:sculk_sensor
@@ -706,7 +705,6 @@
 - [ ] minecraft:soul_torch
 - [ ] minecraft:soul_wall_torch
 - [ ] minecraft:spawner
-- [ ] minecraft:sponge
 - [ ] minecraft:spore_blossom
 - [ ] minecraft:spruce_fence
 - [ ] minecraft:spruce_planks
@@ -1220,10 +1218,12 @@
 - [x] minecraft:redstone_wire
 - [x] minecraft:repeater
 - [x] minecraft:rooted_dirt
+- [x] minecraft:scaffolding
 - [x] minecraft:seagrass
 - [x] minecraft:small_amethyst_bud
 - [x] minecraft:smithing_table
 - [x] minecraft:soul_campfire
+- [x] minecraft:sponge
 - [x] minecraft:spruce_button
 - [x] minecraft:spruce_door
 - [x] minecraft:spruce_fence_gate

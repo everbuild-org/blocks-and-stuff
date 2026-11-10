@@ -460,9 +460,9 @@ val Falling = Rule<InteractionActivityContext>("blocksandstuff:falling") { ctx -
 ### Physik & Sonstiges
 - [x] Falling Blocks
 - [x] TNT zünden
-- [ ] Sponge / Wet Sponge
+- [x] Sponge / Wet Sponge
 - [ ] Dragon Egg Teleport
-- [ ] Scaffolding
+- [x] Scaffolding
 - [ ] Snow Layer
 <!-- BEHAVIOUR_CHECKLIST_END -->
 
