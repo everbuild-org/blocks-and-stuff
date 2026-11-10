@@ -1,9 +1,11 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.BlockVec
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.common.utils.isWater
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
@@ -64,6 +66,11 @@ internal fun absorbWater(
 
     if (absorbed == 0) return false
     instance.setBlock(spongePosition, Block.WET_SPONGE)
+    instance.playSoundExcept(
+        null,
+        Sound.sound(SoundEvent.BLOCK_SPONGE_ABSORB, Sound.Source.BLOCK, 1.0f, 1.0f),
+        spongePosition,
+    )
     return true
 }
 

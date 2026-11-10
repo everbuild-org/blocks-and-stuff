@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.util
 
-import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Vec
@@ -47,18 +46,7 @@ class PrimedTnt(
         val center = position.asBlockVec()
 
         playExplosionEffects(instance)
-
-        for (dx in -RADIUS..RADIUS) {
-            for (dy in -RADIUS..RADIUS) {
-                for (dz in -RADIUS..RADIUS) {
-                    if (dx * dx + dy * dy + dz * dz > RADIUS * RADIUS) continue
-                    val target = center.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
-                    val block = instance.getBlock(target)
-                    if (block.air() || block.key() in unbreakableKeys) continue
-                    instance.setBlock(target, Block.AIR)
-                }
-            }
-        }
+        explodeBlocks(instance, center, RADIUS)
     }
 
     private fun playExplosionEffects(instance: Instance) {
@@ -77,22 +65,17 @@ class PrimedTnt(
         private const val DEFAULT_FUSE = 80
         private const val RADIUS = 4
 
-        private val unbreakableKeys: Set<Key> =
-            setOf(
-                Key.key("minecraft:bedrock"),
-                Key.key("minecraft:barrier"),
-                Key.key("minecraft:obsidian"),
-                Key.key("minecraft:crying_obsidian"),
-                Key.key("minecraft:end_portal"),
-                Key.key("minecraft:end_portal_frame"),
-                Key.key("minecraft:reinforced_deepslate"),
-            )
+        fun spawn(
+            instance: Instance,
+            position: Point,
+        ): PrimedTnt = spawn(instance, position, DEFAULT_FUSE)
 
         fun spawn(
             instance: Instance,
             position: Point,
+            fuseTicks: Int,
         ): PrimedTnt =
-            PrimedTnt().also {
+            PrimedTnt(fuseTicks).also {
                 it.setInstance(instance, position.add(0.5, 0.5, 0.5))
                 instance.playSoundExcept(
                     null,

@@ -32,10 +32,7 @@
 - [ ] minecraft:barrel
 - [ ] minecraft:barrier
 - [ ] minecraft:basalt
-- [ ] minecraft:beacon
 - [ ] minecraft:bedrock
-- [ ] minecraft:bee_nest
-- [ ] minecraft:beehive
 - [ ] minecraft:bell
 - [ ] minecraft:big_dripleaf
 - [ ] minecraft:big_dripleaf_stem
@@ -45,7 +42,6 @@
 - [ ] minecraft:birch_slab
 - [ ] minecraft:birch_stairs
 - [ ] minecraft:black_banner
-- [ ] minecraft:black_bed
 - [ ] minecraft:black_carpet
 - [ ] minecraft:black_concrete
 - [ ] minecraft:black_concrete_slab
@@ -65,13 +61,11 @@
 - [ ] minecraft:blackstone_wall
 - [ ] minecraft:blast_furnace
 - [ ] minecraft:blue_banner
-- [ ] minecraft:blue_bed
 - [ ] minecraft:blue_carpet
 - [ ] minecraft:blue_concrete
 - [ ] minecraft:blue_concrete_slab
 - [ ] minecraft:blue_concrete_stairs
 - [ ] minecraft:blue_glazed_terracotta
-- [ ] minecraft:blue_ice
 - [ ] minecraft:blue_orchid
 - [ ] minecraft:blue_shulker_box
 - [ ] minecraft:blue_stained_glass
@@ -88,7 +82,6 @@
 - [ ] minecraft:brick_wall
 - [ ] minecraft:bricks
 - [ ] minecraft:brown_banner
-- [ ] minecraft:brown_bed
 - [ ] minecraft:brown_carpet
 - [ ] minecraft:brown_concrete
 - [ ] minecraft:brown_concrete_slab
@@ -111,8 +104,6 @@
 - [ ] minecraft:calibrated_sculk_sensor
 - [ ] minecraft:carved_pumpkin
 - [ ] minecraft:cave_air
-- [ ] minecraft:cave_vines
-- [ ] minecraft:cave_vines_plant
 - [ ] minecraft:chain_command_block
 - [ ] minecraft:cherry_fence
 - [ ] minecraft:cherry_planks
@@ -158,7 +149,6 @@
 - [ ] minecraft:cobweb
 - [ ] minecraft:cocoa
 - [ ] minecraft:command_block
-- [ ] minecraft:conduit
 - [ ] minecraft:copper_chest
 - [ ] minecraft:copper_ore
 - [ ] minecraft:copper_torch
@@ -175,7 +165,6 @@
 - [ ] minecraft:creeper_wall_head
 - [ ] minecraft:crimson_fence
 - [ ] minecraft:crimson_fungus
-- [ ] minecraft:crimson_nylium
 - [ ] minecraft:crimson_planks
 - [ ] minecraft:crimson_roots
 - [ ] minecraft:crimson_shelf
@@ -187,7 +176,6 @@
 - [ ] minecraft:cut_sandstone
 - [ ] minecraft:cut_sandstone_slab
 - [ ] minecraft:cyan_banner
-- [ ] minecraft:cyan_bed
 - [ ] minecraft:cyan_carpet
 - [ ] minecraft:cyan_concrete
 - [ ] minecraft:cyan_concrete_slab
@@ -232,7 +220,6 @@
 - [ ] minecraft:dead_tube_coral_block
 - [ ] minecraft:dead_tube_coral_fan
 - [ ] minecraft:dead_tube_coral_wall_fan
-- [ ] minecraft:decorated_pot
 - [ ] minecraft:deepslate
 - [ ] minecraft:deepslate_brick_slab
 - [ ] minecraft:deepslate_brick_stairs
@@ -258,7 +245,6 @@
 - [ ] minecraft:diorite_stairs
 - [ ] minecraft:diorite_wall
 - [ ] minecraft:dispenser
-- [ ] minecraft:dragon_egg
 - [ ] minecraft:dragon_head
 - [ ] minecraft:dragon_wall_head
 - [ ] minecraft:dried_ghast
@@ -279,16 +265,13 @@
 - [ ] minecraft:ender_chest
 - [ ] minecraft:exposed_copper_chest
 - [ ] minecraft:fern
-- [ ] minecraft:fire
 - [ ] minecraft:firefly_bush
 - [ ] minecraft:fletching_table
 - [ ] minecraft:frogspawn
-- [ ] minecraft:frosted_ice
 - [ ] minecraft:furnace
 - [ ] minecraft:gilded_blackstone
 - [ ] minecraft:glass
 - [ ] minecraft:glass_pane
-- [ ] minecraft:glow_lichen
 - [ ] minecraft:glowstone
 - [ ] minecraft:gold_block
 - [ ] minecraft:gold_ore
@@ -299,7 +282,6 @@
 - [ ] minecraft:granite_wall
 - [ ] minecraft:gravel
 - [ ] minecraft:gray_banner
-- [ ] minecraft:gray_bed
 - [ ] minecraft:gray_carpet
 - [ ] minecraft:gray_concrete
 - [ ] minecraft:gray_concrete_slab
@@ -314,7 +296,6 @@
 - [ ] minecraft:gray_wool_slab
 - [ ] minecraft:gray_wool_stairs
 - [ ] minecraft:green_banner
-- [ ] minecraft:green_bed
 - [ ] minecraft:green_carpet
 - [ ] minecraft:green_concrete
 - [ ] minecraft:green_concrete_slab
@@ -328,13 +309,11 @@
 - [ ] minecraft:green_wool
 - [ ] minecraft:green_wool_slab
 - [ ] minecraft:green_wool_stairs
-- [ ] minecraft:hanging_roots
 - [ ] minecraft:hay_block
 - [ ] minecraft:heavy_core
 - [ ] minecraft:honey_block
 - [ ] minecraft:honeycomb_block
 - [ ] minecraft:hopper
-- [ ] minecraft:ice
 - [ ] minecraft:infested_chiseled_stone_bricks
 - [ ] minecraft:infested_cobblestone
 - [ ] minecraft:infested_cracked_stone_bricks
@@ -350,7 +329,6 @@
 - [ ] minecraft:iron_trapdoor
 - [ ] minecraft:jack_o_lantern
 - [ ] minecraft:jigsaw
-- [ ] minecraft:jukebox
 - [ ] minecraft:jungle_fence
 - [ ] minecraft:jungle_planks
 - [ ] minecraft:jungle_shelf
@@ -366,7 +344,6 @@
 - [ ] minecraft:leaf_litter
 - [ ] minecraft:light
 - [ ] minecraft:light_blue_banner
-- [ ] minecraft:light_blue_bed
 - [ ] minecraft:light_blue_carpet
 - [ ] minecraft:light_blue_concrete
 - [ ] minecraft:light_blue_concrete_slab
@@ -381,7 +358,6 @@
 - [ ] minecraft:light_blue_wool_slab
 - [ ] minecraft:light_blue_wool_stairs
 - [ ] minecraft:light_gray_banner
-- [ ] minecraft:light_gray_bed
 - [ ] minecraft:light_gray_carpet
 - [ ] minecraft:light_gray_concrete
 - [ ] minecraft:light_gray_concrete_slab
@@ -399,7 +375,6 @@
 - [ ] minecraft:lily_of_the_valley
 - [ ] minecraft:lily_pad
 - [ ] minecraft:lime_banner
-- [ ] minecraft:lime_bed
 - [ ] minecraft:lime_carpet
 - [ ] minecraft:lime_concrete
 - [ ] minecraft:lime_concrete_slab
@@ -413,9 +388,7 @@
 - [ ] minecraft:lime_wool
 - [ ] minecraft:lime_wool_slab
 - [ ] minecraft:lime_wool_stairs
-- [ ] minecraft:lodestone
 - [ ] minecraft:magenta_banner
-- [ ] minecraft:magenta_bed
 - [ ] minecraft:magenta_carpet
 - [ ] minecraft:magenta_concrete
 - [ ] minecraft:magenta_concrete_slab
@@ -432,7 +405,6 @@
 - [ ] minecraft:magma_block
 - [ ] minecraft:mangrove_fence
 - [ ] minecraft:mangrove_planks
-- [ ] minecraft:mangrove_propagule
 - [ ] minecraft:mangrove_roots
 - [ ] minecraft:mangrove_shelf
 - [ ] minecraft:mangrove_slab
@@ -456,7 +428,6 @@
 - [ ] minecraft:mud_bricks
 - [ ] minecraft:muddy_mangrove_roots
 - [ ] minecraft:mushroom_stem
-- [ ] minecraft:mycelium
 - [ ] minecraft:nether_brick_fence
 - [ ] minecraft:nether_brick_slab
 - [ ] minecraft:nether_brick_stairs
@@ -479,7 +450,6 @@
 - [ ] minecraft:ochre_froglight
 - [ ] minecraft:open_eyeblossom
 - [ ] minecraft:orange_banner
-- [ ] minecraft:orange_bed
 - [ ] minecraft:orange_carpet
 - [ ] minecraft:orange_concrete
 - [ ] minecraft:orange_concrete_slab
@@ -496,7 +466,6 @@
 - [ ] minecraft:orange_wool_stairs
 - [ ] minecraft:oxeye_daisy
 - [ ] minecraft:oxidized_copper_chest
-- [ ] minecraft:packed_ice
 - [ ] minecraft:packed_mud
 - [ ] minecraft:pale_hanging_moss
 - [ ] minecraft:pale_moss_block
@@ -514,7 +483,6 @@
 - [ ] minecraft:piglin_head
 - [ ] minecraft:piglin_wall_head
 - [ ] minecraft:pink_banner
-- [ ] minecraft:pink_bed
 - [ ] minecraft:pink_carpet
 - [ ] minecraft:pink_concrete
 - [ ] minecraft:pink_concrete_slab
@@ -534,7 +502,6 @@
 - [ ] minecraft:piston_head
 - [ ] minecraft:pitcher_plant
 - [ ] minecraft:player_wall_head
-- [ ] minecraft:podzol
 - [ ] minecraft:polished_andesite
 - [ ] minecraft:polished_andesite_slab
 - [ ] minecraft:polished_andesite_stairs
@@ -589,9 +556,7 @@
 - [ ] minecraft:prismarine_slab
 - [ ] minecraft:prismarine_stairs
 - [ ] minecraft:prismarine_wall
-- [ ] minecraft:pumpkin
 - [ ] minecraft:purple_banner
-- [ ] minecraft:purple_bed
 - [ ] minecraft:purple_carpet
 - [ ] minecraft:purple_concrete
 - [ ] minecraft:purple_concrete_slab
@@ -619,7 +584,6 @@
 - [ ] minecraft:raw_gold_block
 - [ ] minecraft:raw_iron_block
 - [ ] minecraft:red_banner
-- [ ] minecraft:red_bed
 - [ ] minecraft:red_carpet
 - [ ] minecraft:red_concrete
 - [ ] minecraft:red_concrete_slab
@@ -659,7 +623,6 @@
 - [ ] minecraft:resin_brick_wall
 - [ ] minecraft:resin_bricks
 - [ ] minecraft:resin_clump
-- [ ] minecraft:respawn_anchor
 - [ ] minecraft:rose_bush
 - [ ] minecraft:sand
 - [ ] minecraft:sandstone
@@ -696,9 +659,7 @@
 - [ ] minecraft:smooth_stone
 - [ ] minecraft:smooth_stone_slab
 - [ ] minecraft:sniffer_egg
-- [ ] minecraft:snow
 - [ ] minecraft:snow_block
-- [ ] minecraft:soul_fire
 - [ ] minecraft:soul_lantern
 - [ ] minecraft:soul_sand
 - [ ] minecraft:soul_soil
@@ -719,7 +680,6 @@
 - [ ] minecraft:stone_bricks
 - [ ] minecraft:stone_slab
 - [ ] minecraft:stone_stairs
-- [ ] minecraft:straw_bed
 - [ ] minecraft:stripped_acacia_log
 - [ ] minecraft:stripped_acacia_wood
 - [ ] minecraft:stripped_bamboo_block
@@ -781,16 +741,12 @@
 - [ ] minecraft:tuff_stairs
 - [ ] minecraft:tuff_wall
 - [ ] minecraft:turtle_egg
-- [ ] minecraft:twisting_vines
-- [ ] minecraft:twisting_vines_plant
 - [ ] minecraft:vault
 - [ ] minecraft:verdant_froglight
-- [ ] minecraft:vine
 - [ ] minecraft:void_air
 - [ ] minecraft:wall_torch
 - [ ] minecraft:warped_fence
 - [ ] minecraft:warped_fungus
-- [ ] minecraft:warped_nylium
 - [ ] minecraft:warped_planks
 - [ ] minecraft:warped_roots
 - [ ] minecraft:warped_shelf
@@ -851,11 +807,8 @@
 - [ ] minecraft:waxed_weathered_cut_copper_stairs
 - [ ] minecraft:waxed_weathered_lightning_rod
 - [ ] minecraft:weathered_copper_chest
-- [ ] minecraft:weeping_vines
-- [ ] minecraft:weeping_vines_plant
 - [ ] minecraft:wet_sponge
 - [ ] minecraft:white_banner
-- [ ] minecraft:white_bed
 - [ ] minecraft:white_carpet
 - [ ] minecraft:white_concrete
 - [ ] minecraft:white_concrete_slab
@@ -875,7 +828,6 @@
 - [ ] minecraft:wither_skeleton_skull
 - [ ] minecraft:wither_skeleton_wall_skull
 - [ ] minecraft:yellow_banner
-- [ ] minecraft:yellow_bed
 - [ ] minecraft:yellow_carpet
 - [ ] minecraft:yellow_concrete
 - [ ] minecraft:yellow_concrete_slab
@@ -921,6 +873,9 @@
 - [x] minecraft:bamboo_trapdoor
 - [x] minecraft:bamboo_wall_hanging_sign
 - [x] minecraft:bamboo_wall_sign
+- [x] minecraft:beacon
+- [x] minecraft:bee_nest
+- [x] minecraft:beehive
 - [x] minecraft:beetroots
 - [x] minecraft:birch_button
 - [x] minecraft:birch_door
@@ -935,17 +890,21 @@
 - [x] minecraft:birch_wall_hanging_sign
 - [x] minecraft:birch_wall_sign
 - [x] minecraft:birch_wood
+- [x] minecraft:black_bed
 - [x] minecraft:black_candle
 - [x] minecraft:black_candle_cake
 - [x] minecraft:black_concrete_powder
+- [x] minecraft:blue_bed
 - [x] minecraft:blue_candle
 - [x] minecraft:blue_candle_cake
 - [x] minecraft:blue_concrete_powder
+- [x] minecraft:blue_ice
 - [x] minecraft:brain_coral
 - [x] minecraft:brain_coral_block
 - [x] minecraft:brain_coral_fan
 - [x] minecraft:brain_coral_wall_fan
 - [x] minecraft:brewing_stand
+- [x] minecraft:brown_bed
 - [x] minecraft:brown_candle
 - [x] minecraft:brown_candle_cake
 - [x] minecraft:brown_concrete_powder
@@ -962,6 +921,8 @@
 - [x] minecraft:carrots
 - [x] minecraft:cartography_table
 - [x] minecraft:cauldron
+- [x] minecraft:cave_vines
+- [x] minecraft:cave_vines_plant
 - [x] minecraft:cherry_button
 - [x] minecraft:cherry_door
 - [x] minecraft:cherry_fence_gate
@@ -980,6 +941,7 @@
 - [x] minecraft:coarse_dirt
 - [x] minecraft:comparator
 - [x] minecraft:composter
+- [x] minecraft:conduit
 - [x] minecraft:copper_bars
 - [x] minecraft:copper_block
 - [x] minecraft:copper_bulb
@@ -995,6 +957,7 @@
 - [x] minecraft:crimson_fence_gate
 - [x] minecraft:crimson_hanging_sign
 - [x] minecraft:crimson_hyphae
+- [x] minecraft:crimson_nylium
 - [x] minecraft:crimson_pressure_plate
 - [x] minecraft:crimson_sign
 - [x] minecraft:crimson_stem
@@ -1004,6 +967,7 @@
 - [x] minecraft:cut_copper
 - [x] minecraft:cut_copper_slab
 - [x] minecraft:cut_copper_stairs
+- [x] minecraft:cyan_bed
 - [x] minecraft:cyan_candle
 - [x] minecraft:cyan_candle_cake
 - [x] minecraft:cyan_concrete_powder
@@ -1021,8 +985,10 @@
 - [x] minecraft:dark_oak_wall_sign
 - [x] minecraft:dark_oak_wood
 - [x] minecraft:daylight_detector
+- [x] minecraft:decorated_pot
 - [x] minecraft:dirt
 - [x] minecraft:dirt_path
+- [x] minecraft:dragon_egg
 - [x] minecraft:enchanting_table
 - [x] minecraft:exposed_chiseled_copper
 - [x] minecraft:exposed_copper
@@ -1039,6 +1005,7 @@
 - [x] minecraft:exposed_cut_copper_stairs
 - [x] minecraft:exposed_lightning_rod
 - [x] minecraft:farmland
+- [x] minecraft:fire
 - [x] minecraft:fire_coral
 - [x] minecraft:fire_coral_block
 - [x] minecraft:fire_coral_fan
@@ -1046,19 +1013,26 @@
 - [x] minecraft:flower_pot
 - [x] minecraft:flowering_azalea
 - [x] minecraft:flowering_azalea_leaves
+- [x] minecraft:frosted_ice
+- [x] minecraft:glow_lichen
 - [x] minecraft:grass_block
+- [x] minecraft:gray_bed
 - [x] minecraft:gray_candle
 - [x] minecraft:gray_candle_cake
 - [x] minecraft:gray_concrete_powder
+- [x] minecraft:green_bed
 - [x] minecraft:green_candle
 - [x] minecraft:green_candle_cake
 - [x] minecraft:green_concrete_powder
 - [x] minecraft:grindstone
+- [x] minecraft:hanging_roots
 - [x] minecraft:heavy_weighted_pressure_plate
 - [x] minecraft:horn_coral
 - [x] minecraft:horn_coral_block
 - [x] minecraft:horn_coral_fan
 - [x] minecraft:horn_coral_wall_fan
+- [x] minecraft:ice
+- [x] minecraft:jukebox
 - [x] minecraft:jungle_button
 - [x] minecraft:jungle_door
 - [x] minecraft:jungle_fence_gate
@@ -1077,18 +1051,23 @@
 - [x] minecraft:lava_cauldron
 - [x] minecraft:lectern
 - [x] minecraft:lever
+- [x] minecraft:light_blue_bed
 - [x] minecraft:light_blue_candle
 - [x] minecraft:light_blue_candle_cake
 - [x] minecraft:light_blue_concrete_powder
+- [x] minecraft:light_gray_bed
 - [x] minecraft:light_gray_candle
 - [x] minecraft:light_gray_candle_cake
 - [x] minecraft:light_gray_concrete_powder
 - [x] minecraft:light_weighted_pressure_plate
 - [x] minecraft:lightning_rod
+- [x] minecraft:lime_bed
 - [x] minecraft:lime_candle
 - [x] minecraft:lime_candle_cake
 - [x] minecraft:lime_concrete_powder
+- [x] minecraft:lodestone
 - [x] minecraft:loom
+- [x] minecraft:magenta_bed
 - [x] minecraft:magenta_candle
 - [x] minecraft:magenta_candle_cake
 - [x] minecraft:magenta_concrete_powder
@@ -1099,6 +1078,7 @@
 - [x] minecraft:mangrove_leaves
 - [x] minecraft:mangrove_log
 - [x] minecraft:mangrove_pressure_plate
+- [x] minecraft:mangrove_propagule
 - [x] minecraft:mangrove_sign
 - [x] minecraft:mangrove_trapdoor
 - [x] minecraft:mangrove_wall_hanging_sign
@@ -1106,6 +1086,7 @@
 - [x] minecraft:mangrove_wood
 - [x] minecraft:medium_amethyst_bud
 - [x] minecraft:melon_stem
+- [x] minecraft:mycelium
 - [x] minecraft:nether_wart
 - [x] minecraft:note_block
 - [x] minecraft:oak_button
@@ -1121,6 +1102,7 @@
 - [x] minecraft:oak_wall_hanging_sign
 - [x] minecraft:oak_wall_sign
 - [x] minecraft:oak_wood
+- [x] minecraft:orange_bed
 - [x] minecraft:orange_candle
 - [x] minecraft:orange_candle_cake
 - [x] minecraft:orange_concrete_powder
@@ -1139,6 +1121,7 @@
 - [x] minecraft:oxidized_cut_copper_slab
 - [x] minecraft:oxidized_cut_copper_stairs
 - [x] minecraft:oxidized_lightning_rod
+- [x] minecraft:packed_ice
 - [x] minecraft:pale_oak_button
 - [x] minecraft:pale_oak_door
 - [x] minecraft:pale_oak_fence_gate
@@ -1150,11 +1133,13 @@
 - [x] minecraft:pale_oak_trapdoor
 - [x] minecraft:pale_oak_wall_hanging_sign
 - [x] minecraft:pale_oak_wall_sign
+- [x] minecraft:pink_bed
 - [x] minecraft:pink_candle
 - [x] minecraft:pink_candle_cake
 - [x] minecraft:pink_concrete_powder
 - [x] minecraft:pitcher_crop
 - [x] minecraft:player_head
+- [x] minecraft:podzol
 - [x] minecraft:pointed_dripstone
 - [x] minecraft:polished_blackstone_button
 - [x] minecraft:polished_blackstone_pressure_plate
@@ -1207,22 +1192,28 @@
 - [x] minecraft:potted_white_tulip
 - [x] minecraft:potted_wither_rose
 - [x] minecraft:powder_snow_cauldron
+- [x] minecraft:pumpkin
 - [x] minecraft:pumpkin_stem
+- [x] minecraft:purple_bed
 - [x] minecraft:purple_candle
 - [x] minecraft:purple_candle_cake
 - [x] minecraft:purple_concrete_powder
+- [x] minecraft:red_bed
 - [x] minecraft:red_candle
 - [x] minecraft:red_candle_cake
 - [x] minecraft:red_concrete_powder
 - [x] minecraft:red_poplar_leaves
 - [x] minecraft:redstone_wire
 - [x] minecraft:repeater
+- [x] minecraft:respawn_anchor
 - [x] minecraft:rooted_dirt
 - [x] minecraft:scaffolding
 - [x] minecraft:seagrass
 - [x] minecraft:small_amethyst_bud
 - [x] minecraft:smithing_table
+- [x] minecraft:snow
 - [x] minecraft:soul_campfire
+- [x] minecraft:soul_fire
 - [x] minecraft:sponge
 - [x] minecraft:spruce_button
 - [x] minecraft:spruce_door
@@ -1240,6 +1231,7 @@
 - [x] minecraft:stone_button
 - [x] minecraft:stone_pressure_plate
 - [x] minecraft:stonecutter
+- [x] minecraft:straw_bed
 - [x] minecraft:sugar_cane
 - [x] minecraft:sweet_berry_bush
 - [x] minecraft:tall_seagrass
@@ -1249,11 +1241,15 @@
 - [x] minecraft:tube_coral_block
 - [x] minecraft:tube_coral_fan
 - [x] minecraft:tube_coral_wall_fan
+- [x] minecraft:twisting_vines
+- [x] minecraft:twisting_vines_plant
+- [x] minecraft:vine
 - [x] minecraft:warped_button
 - [x] minecraft:warped_door
 - [x] minecraft:warped_fence_gate
 - [x] minecraft:warped_hanging_sign
 - [x] minecraft:warped_hyphae
+- [x] minecraft:warped_nylium
 - [x] minecraft:warped_pressure_plate
 - [x] minecraft:warped_sign
 - [x] minecraft:warped_stem
@@ -1283,10 +1279,14 @@
 - [x] minecraft:weathered_cut_copper_slab
 - [x] minecraft:weathered_cut_copper_stairs
 - [x] minecraft:weathered_lightning_rod
+- [x] minecraft:weeping_vines
+- [x] minecraft:weeping_vines_plant
 - [x] minecraft:wheat
+- [x] minecraft:white_bed
 - [x] minecraft:white_candle
 - [x] minecraft:white_candle_cake
 - [x] minecraft:white_concrete_powder
+- [x] minecraft:yellow_bed
 - [x] minecraft:yellow_candle
 - [x] minecraft:yellow_candle_cake
 - [x] minecraft:yellow_concrete_powder

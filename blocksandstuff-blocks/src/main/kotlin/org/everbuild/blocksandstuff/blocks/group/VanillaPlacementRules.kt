@@ -498,6 +498,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             all(
                 byTag("minecraft:small_flowers"),
                 byTag("minecraft:saplings"),
+                byBlock(Block.SWEET_BERRY_BUSH),
             ),
             ::GroundedPlantBlockPlacementRule,
         )
@@ -771,6 +772,15 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.SUSPICIOUS_GRAVEL),
             ),
             ::FallingBlockPlacementRule,
+        )
+
+    val FIRE =
+        group(
+            all(
+                byBlock(Block.FIRE),
+                byBlock(Block.SOUL_FIRE),
+            ),
+            ::FirePlacementRule,
         )
 
     override fun createGroup(

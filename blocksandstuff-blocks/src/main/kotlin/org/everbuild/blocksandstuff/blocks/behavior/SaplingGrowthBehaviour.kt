@@ -25,13 +25,25 @@ class SaplingGrowthBehaviour(
 ) {
     fun rule(id: String): Rule<RandomTickActivityContext> =
         Rule(id) { ctx ->
-            if (!GrowthLight.hasEnoughLight(ctx.instance, ctx.blockPosition, minLight)) return@Rule RuleResult.Next
+            if (!hasEnoughLight(ctx, minLight)) return@Rule RuleResult.Next
             if (!ctx.instance.getBlock(ctx.blockPosition.add(0.0, 1.0, 0.0)).air()) return@Rule RuleResult.Next
             if (random.nextInt(growthChance) != 0) return@Rule RuleResult.Next
 
             growSapling(ctx.instance, ctx.blockPosition, ctx.block, random)
             RuleResult.Next
         }
+}
+
+private fun hasEnoughLight(
+    ctx: RandomTickActivityContext,
+    minLight: Int,
+): Boolean {
+    if (minLight <= 0) return true
+    val position = ctx.blockPosition
+    return maxOf(
+        ctx.instance.getSkyLight(position.blockX(), position.blockY(), position.blockZ()),
+        ctx.instance.getBlockLight(position.blockX(), position.blockY(), position.blockZ()),
+    ) >= minLight
 }
 
 internal fun growSapling(
@@ -96,6 +108,7 @@ internal val SAPLING_BLOCKS: List<Block> =
         Block.CHERRY_SAPLING,
         Block.PALE_OAK_SAPLING,
         Block.POPLAR_SAPLING,
+        Block.MANGROVE_PROPAGULE,
     )
 
 fun BlockRulesetEditor.addSaplingGrowth() {

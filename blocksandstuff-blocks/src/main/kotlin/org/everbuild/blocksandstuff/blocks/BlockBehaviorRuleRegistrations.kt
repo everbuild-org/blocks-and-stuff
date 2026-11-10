@@ -7,7 +7,11 @@ import net.minestom.server.event.EventNode
 import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.blocks.behavior.BellInteraction
+import org.everbuild.blocksandstuff.blocks.behavior.BeaconMenus
+import org.everbuild.blocksandstuff.blocks.behavior.BedSleepTracker
 import org.everbuild.blocksandstuff.blocks.behavior.BookUseListener
+import org.everbuild.blocksandstuff.blocks.behavior.IceBreakListener
+import org.everbuild.blocksandstuff.blocks.behavior.FireStarterListener
 import org.everbuild.blocksandstuff.blocks.behavior.SignEditListener
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
@@ -52,6 +56,10 @@ object BlockBehaviorRuleRegistrations {
         )
         PlacedHandlerRegistration.registerDefault()
         BellInteraction.enable()
+        BeaconMenus.enable()
+        BedSleepTracker.enable()
+        IceBreakListener.enable()
+        FireStarterListener.enable()
         registerRandomTickingGlobally()
         NaturalBlockInteract.enable()
         SignEditListener.enable()

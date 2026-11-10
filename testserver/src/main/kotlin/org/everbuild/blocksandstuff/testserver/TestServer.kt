@@ -136,6 +136,8 @@ class TestServer(
 
         MinecraftServer.getCommandManager().register(DebugCommand())
         MinecraftServer.getCommandManager().register(RandomTickSpeedCommand())
+        MinecraftServer.getCommandManager().register(GameruleCommand())
+        MinecraftServer.getCommandManager().register(TimeCommand())
     }
 
     fun bind() {
