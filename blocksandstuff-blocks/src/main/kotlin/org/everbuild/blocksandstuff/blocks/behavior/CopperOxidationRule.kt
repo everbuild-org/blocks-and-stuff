@@ -16,25 +16,45 @@ import java.util.concurrent.ThreadLocalRandom
 
 val COPPER_OXIDATION_RULE: Rule<RandomTickActivityContext> =
     Rule("blocksandstuff:copper_oxidation") { ctx ->
+        val block = ctx.block
+        if (isCopperDoor(block) && block.getProperty("half") == "upper") return@Rule RuleResult.Next
+
         val exposedToAir = countExposedSides(ctx.instance, ctx.blockPosition) > 0
         if (!exposedToAir) return@Rule RuleResult.Next
         if (ThreadLocalRandom.current().nextInt(100) >= 5) return@Rule RuleResult.Next
 
-        val block = ctx.block
-        var nextStage = oxidationStages[block.defaultState()] ?: return@Rule RuleResult.Next
-        nextStage = nextStage.copyPropertiesFrom(block)
-        val handler = MinecraftServer.getBlockManager().getHandler(nextStage.key().asString())
-        if (handler != null) {
-            nextStage = nextStage.withHandler(handler)
-        }
+        val nextStage = nextOxidationStage(block) ?: return@Rule RuleResult.Next
 
         val event = CopperOxidationEvent(block, nextStage, ctx.blockPosition, ctx.instance)
         EventDispatcher.call(event)
         if (event.isCancelled) return@Rule RuleResult.Next
 
         ctx.replaceBlock(nextStage)
+        if (isCopperDoor(block) && block.getProperty("half") == "lower") {
+            oxidizeOtherDoorHalf(ctx.instance, ctx.blockPosition, block)
+        }
         RuleResult.Next
     }
+
+private fun nextOxidationStage(block: Block): Block? {
+    val next = oxidationStages[block.defaultState()] ?: return null
+    val withProperties = next.copyPropertiesFrom(block)
+    val handler = MinecraftServer.getBlockManager().getHandler(withProperties.key().asString())
+    return if (handler != null) withProperties.withHandler(handler) else withProperties
+}
+
+private fun isCopperDoor(block: Block): Boolean = block.key().value().contains("copper_door")
+
+private fun oxidizeOtherDoorHalf(
+    instance: Instance,
+    position: Point,
+    lower: Block,
+) {
+    val otherPosition = position.add(0.0, 1.0, 0.0)
+    val other = instance.getBlock(otherPosition)
+    if (other.key() != lower.key()) return
+    nextOxidationStage(other)?.let { instance.setBlock(otherPosition, it) }
+}
 
 private fun countExposedSides(
     instance: Instance,
@@ -53,7 +73,7 @@ private fun Block.copyPropertiesFrom(source: Block): Block {
     return if (carried.isEmpty()) this else withProperties(carried)
 }
 
-private val oxidationStages =
+internal val oxidationStages =
     mapOf(
         Block.COPPER_BLOCK to Block.EXPOSED_COPPER,
         Block.EXPOSED_COPPER to Block.WEATHERED_COPPER,

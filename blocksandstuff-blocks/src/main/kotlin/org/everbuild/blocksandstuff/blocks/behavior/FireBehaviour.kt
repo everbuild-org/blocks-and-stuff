@@ -1,4 +1,4 @@
-﻿package org.everbuild.blocksandstuff.blocks.behavior
+package org.everbuild.blocksandstuff.blocks.behavior
 
 import java.util.Random
 import net.minestom.server.coordinate.Point
@@ -6,6 +6,7 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.common.InstanceOptionsProvider
+import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
 import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
@@ -30,7 +31,7 @@ val FIRE_TICK_RULE: Rule<TickActivityContext> =
         }
 
         val age = ctx.block.getProperty("age")?.toIntOrNull() ?: 0
-        val hasFuel = hasFlammableNeighbor(ctx.instance, ctx.blockPosition)
+        val hasFuel = hasEternalFuel(ctx.instance, ctx.blockPosition) || hasFlammableNeighbor(ctx.instance, ctx.blockPosition)
         if (age >= FIRE_MAX_AGE && !hasFuel) {
             ctx.replaceBlock(Block.AIR)
             return@Rule RuleResult.Next
@@ -91,6 +92,21 @@ private fun fireFor(
 }
 
 private val HORIZONTAL_FACES = listOf(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST)
+
+private val INFINIBURN_TAGS =
+    listOf(
+        "minecraft:infiniburn_overworld",
+        "minecraft:infiniburn_nether",
+        "minecraft:infiniburn_end",
+    )
+
+private fun hasEternalFuel(
+    instance: Instance,
+    position: Point,
+): Boolean {
+    val below = instance.getBlock(position.add(0.0, -1.0, 0.0))
+    return INFINIBURN_TAGS.any { BlockTags.hasTag(below, it) }
+}
 
 private fun hasFlammableNeighbor(
     instance: Instance,

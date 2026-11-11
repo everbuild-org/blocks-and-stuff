@@ -46,11 +46,10 @@ internal fun Block.isShulkerBox(): Boolean = blockEntityType()?.key()?.asString(
  * `container` component and additionally get a lore preview.
  */
 internal fun Block.toContainerItem(): ItemStack? {
-    val material = material() ?: return null
-    if (!isShulkerBox()) return toItemWithBlockEntityData()
+    val item = toItemWithBlockEntityData() ?: return null
+    if (!isShulkerBox()) return item
 
     val contents = decodeContainerItems(nbt())
-    val item = ItemStack.of(material)
     if (contents.isEmpty()) return item
     return item
         .with(DataComponents.CONTAINER, contents)
@@ -62,11 +61,17 @@ private fun decodeContainerItems(nbt: CompoundBinaryTag?): List<ItemStack> {
     return listed
         .asSequence()
         .filterIsInstance<CompoundBinaryTag>()
+        .filterNot { it.isAirItem() }
         .map { tag -> tag.getByte("Slot").toInt() to ItemStack.CODEC.decode(Transcoder.NBT, tag).orElseThrow() }
         .filter { (_, stack) -> !stack.isAir }
         .sortedBy { (slot, _) -> slot }
         .map { (_, stack) -> stack }
         .toList()
+}
+
+internal fun CompoundBinaryTag.isAirItem(): Boolean {
+    if (getString("id") == "minecraft:air") return true
+    return contains("count") && getInt("count") <= 0
 }
 
 private fun encodeItem(

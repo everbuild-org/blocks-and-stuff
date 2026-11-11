@@ -38,7 +38,8 @@ fun toolRule(
 
         val result =
             if (match.preserveProperties) {
-                ctx.block.getProperty("axis")?.let { match.to.withProperty("axis", it) } ?: match.to
+                val carried = ctx.block.properties().filterKeys { match.to.getProperty(it) != null }
+                if (carried.isEmpty()) match.to else match.to.withProperties(carried)
             } else {
                 match.to
             }

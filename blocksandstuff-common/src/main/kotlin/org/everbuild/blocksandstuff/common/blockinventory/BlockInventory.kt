@@ -15,9 +15,17 @@ open class BlockInventory(
         eventNode().addListener(InventoryItemChangeEvent::class.java, this::updateItemInBackend)
     }
 
+    private var syncingFromBackend = false
+
     private fun updateItemInBackend(event: InventoryItemChangeEvent) {
-        backend.transact {
-            it(event.slot, event.newItem)
+        if (syncingFromBackend) return
+        syncingFromBackend = true
+        try {
+            backend.transact {
+                it(event.slot, event.newItem)
+            }
+        } finally {
+            syncingFromBackend = false
         }
     }
 

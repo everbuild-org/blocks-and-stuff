@@ -48,8 +48,8 @@ object BlockPlacementRuleRegistrations {
         return object : BlockPlacementRule(block) {
             override fun blockPlace(placementState: PlacementState): Block? =
                 rule.blockPlace(placementState)
-                    ?.applyItemBlockEntityData(placementState.usedItemStack)
                     ?.applyItemContainerContents(placementState.usedItemStack)
+                    ?.applyItemBlockEntityData(placementState.usedItemStack)
 
             override fun blockUpdate(updateState: UpdateState): Block = rule.blockUpdate(updateState)
 

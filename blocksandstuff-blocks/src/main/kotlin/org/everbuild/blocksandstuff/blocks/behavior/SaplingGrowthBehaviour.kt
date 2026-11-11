@@ -55,28 +55,36 @@ internal fun growSapling(
     val override = instance.getTag(TREE_GENERATORS)?.get(block.key())
     if (override != null) {
         instance.setBlock(position, Block.AIR)
-        override.generate(instance, position, random)
-        return true
+        if (override.generate(instance, position, random)) return true
+        instance.setBlock(position, block)
+        return false
     }
 
     val anchor = findSaplingAnchor(instance, position, block)
     if (anchor != null) {
         val large = defaultLargeTreeGenerator(block.key())
         if (large != null) {
-            for (dx in 0..1) {
-                for (dz in 0..1) {
-                    instance.setBlock(BlockVec(anchor.blockX() + dx, anchor.blockY(), anchor.blockZ() + dz), Block.AIR)
+            val saplings =
+                buildList {
+                    for (dx in 0..1) {
+                        for (dz in 0..1) {
+                            add(BlockVec(anchor.blockX() + dx, anchor.blockY(), anchor.blockZ() + dz))
+                        }
+                    }
                 }
-            }
-            large.generate(instance, anchor, random)
-            return true
+            val originals = saplings.map { it to instance.getBlock(it) }
+            saplings.forEach { instance.setBlock(it, Block.AIR) }
+            if (large.generate(instance, anchor, random)) return true
+            originals.forEach { (pos, original) -> instance.setBlock(pos, original) }
+            return false
         }
     }
 
     val single = defaultTreeGenerator(block.key()) ?: return false
     instance.setBlock(position, Block.AIR)
-    single.generate(instance, position, random)
-    return true
+    if (single.generate(instance, position, random)) return true
+    instance.setBlock(position, block)
+    return false
 }
 
 private fun findSaplingAnchor(

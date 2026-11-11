@@ -71,10 +71,22 @@ private val waxableCopper: List<Block> =
         Block.OXIDIZED_LIGHTNING_ROD,
     )
 
+private val axes =
+    listOf(
+        Material.WOODEN_AXE,
+        Material.STONE_AXE,
+        Material.IRON_AXE,
+        Material.GOLDEN_AXE,
+        Material.DIAMOND_AXE,
+        Material.COPPER_AXE,
+        Material.NETHERITE_AXE,
+    )
+
+private fun waxedKey(block: Block): String = block.key().asString().replaceFirst(":", ":waxed_")
+
 private val waxingTransforms: List<ToolTransform> =
     waxableCopper.mapNotNull { block ->
-        val waxedKey = block.key().asString().replaceFirst(":", ":waxed_")
-        Block.fromKey(waxedKey)?.let {
+        Block.fromKey(waxedKey(block))?.let {
             ToolTransform(
                 block,
                 Material.HONEYCOMB,
@@ -85,12 +97,61 @@ private val waxingTransforms: List<ToolTransform> =
         }
     }
 
+private val waxOffTransforms: List<ToolTransform> =
+    buildList {
+        waxableCopper.forEach { block ->
+            val waxed = Block.fromKey(waxedKey(block)) ?: return@forEach
+            axes.forEach { axe ->
+                add(
+                    ToolTransform(
+                        waxed,
+                        axe,
+                        block,
+                        preserveProperties = true,
+                        damagesTool = true,
+                        extra = { ctx, _ -> playSoundFor(ctx, SoundEvent.ITEM_AXE_WAX_OFF) },
+                    ),
+                )
+            }
+        }
+    }
+
+private val scrapeTransforms: List<ToolTransform> =
+    buildList {
+        oxidationStages.entries.associate { (from, to) -> Pair(to, from) }.forEach { (oxidized, previous) ->
+            axes.forEach { axe ->
+                add(
+                    ToolTransform(
+                        oxidized,
+                        axe,
+                        previous,
+                        preserveProperties = true,
+                        damagesTool = true,
+                        extra = { ctx, _ -> playSoundFor(ctx, SoundEvent.ITEM_AXE_SCRAPE) },
+                    ),
+                )
+            }
+        }
+    }
+
 val WAXING_RULE: Rule<InteractionActivityContext> = toolRule("blocksandstuff:waxing", waxingTransforms)
+
+val COPPER_SCRAPING_RULE: Rule<InteractionActivityContext> =
+    toolRule("blocksandstuff:copper_scraping", waxOffTransforms + scrapeTransforms)
 
 internal fun isWaxableCopper(block: Block): Boolean = block in waxableCopper
 
 fun BlockRulesetEditor.addWaxing() {
     waxableCopper.forEach { block ->
-        blocks(block) { interact.append { install(WAXING_RULE) } }
+        blocks(block) {
+            interact.append { install(WAXING_RULE) }
+            interact.append { install(COPPER_SCRAPING_RULE) }
+        }
     }
+    waxOffTransforms
+        .map { it.from }
+        .distinctBy { it.key() }
+        .forEach { block ->
+            blocks(block) { interact.append { install(COPPER_SCRAPING_RULE) } }
+        }
 }

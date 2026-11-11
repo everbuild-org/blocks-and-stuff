@@ -86,6 +86,50 @@ class ShulkerPersistenceTest {
     }
 
     @Test
+    fun spacedContentsSurviveItemEncoding() {
+        val handler = requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:shulker_box"))
+        instance.setBlock(source, Block.SHULKER_BOX.withHandler(handler))
+        val inventory = archetype.Backend(source, instance).getViewableInventory()
+        inventory.setItemStack(0, ItemStack.of(Material.DIAMOND, 3))
+        inventory.setItemStack(5, ItemStack.of(Material.STONE, 12))
+
+        val item = requireNotNull(instance.getBlock(source).toContainerItem())
+        val contents = requireNotNull(item.get(DataComponents.CONTAINER))
+        Assertions.assertEquals(2, contents.size)
+        Assertions.assertTrue(contents.none { it.isAir }, "container must not contain empty stacks")
+
+        val nbt = ItemStack.CODEC.encode(net.minestom.server.codec.Transcoder.NBT, item).orElseThrow()
+        val decoded = ItemStack.CODEC.decode(net.minestom.server.codec.Transcoder.NBT, nbt).orElseThrow()
+        Assertions.assertEquals(2, decoded.get(DataComponents.CONTAINER)?.size)
+
+        val player =
+            mock<Player> {
+                on { position } doReturn target
+                on { isSneaking } doReturn false
+                on { getItemInHand(PlayerHand.MAIN) } doReturn decoded
+            }
+        instance.placeBlock(
+            PlayerPlacement(
+                Block.SHULKER_BOX,
+                Block.AIR,
+                instance,
+                target,
+                player,
+                PlayerHand.MAIN,
+                BlockFace.TOP,
+                0f,
+                0f,
+                0f,
+            ),
+        )
+
+        val loaded = archetype.Backend(target, instance)
+        Assertions.assertEquals(Material.DIAMOND, loaded.getItemStack(0).material())
+        Assertions.assertTrue(loaded.getItemStack(1).isAir, "slot spacing must be preserved")
+        Assertions.assertEquals(Material.STONE, loaded.getItemStack(5).material())
+    }
+
+    @Test
     fun itemLoreListsContents() {
         val handler = requireNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:shulker_box"))
         instance.setBlock(source, Block.SHULKER_BOX.withHandler(handler))

@@ -69,10 +69,6 @@ val ICE_DESTROY_RULE: Rule<DestroyActivityContext> =
                     }
                 }
             }
-
-            ctx.block.compare(Block.PACKED_ICE) || ctx.block.compare(Block.BLUE_ICE) -> {
-                DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, ctx.block)
-            }
         }
         RuleResult.Next
     }
@@ -115,7 +111,4 @@ fun BlockRulesetEditor.addSnowAndIce() {
     }
     blocks(Block.FROSTED_ICE) { randomTick.append { install(FROSTED_ICE_MELT_RULE) } }
     blocks(Block.SNOW) { randomTick.append { install(SNOW_MELT_RULE) } }
-    listOf(Block.PACKED_ICE, Block.BLUE_ICE).forEach { block ->
-        blocks(block) { destroy.append { install(ICE_DESTROY_RULE) } }
-    }
 }

@@ -17,13 +17,16 @@ import org.everbuild.blocksandstuff.blocks.util.leavesDistance
 /**
  * Generates a tree at [base]. Attach custom generators per instance via [TREE_GENERATORS]; Blocks &
  * Stuff falls back to its built-in port of the vanilla tree features when none is provided.
+ *
+ * [generate] must validate the required clearance before writing any block and return `false`
+ * without mutating the world when the tree does not fit.
  */
 fun interface TreeGenerator {
     fun generate(
         instance: Instance,
         base: Point,
         random: Random,
-    )
+    ): Boolean
 }
 
 /**
@@ -148,6 +151,25 @@ private class TreePlacerContext(
     }
 
     private fun isFree(pos: BlockVec): Boolean = validTreePos(pos) || isLogAt(pos)
+
+    /**
+     * Vanilla-style clearance scan: every block in the [radius] footprint from [base] up to
+     * [height] (inclusive of the crown attachment layer) must be free to grow through.
+     */
+    fun hasClearance(
+        base: BlockVec,
+        height: Int,
+        radius: Int,
+    ): Boolean {
+        for (dy in 0..height + 1) {
+            for (dx in -radius..radius) {
+                for (dz in -radius..radius) {
+                    if (!isFree(base.offset(dx, dy, dz))) return false
+                }
+            }
+        }
+        return true
+    }
 
     private fun isLogAt(pos: BlockVec): Boolean = get(pos).key().value().let { LOG_SUFFIXES.any(it::endsWith) }
 
@@ -1137,22 +1159,25 @@ private class VanillaTree(
     private val trunk: TrunkPlacer,
     private val foliage: FoliagePlacer,
     private val decorators: List<TreeDecorator> = emptyList(),
+    private val featureRadius: Int = 0,
 ) : TreeGenerator {
     override fun generate(
         instance: Instance,
         base: Point,
         random: Random,
-    ) {
+    ): Boolean {
         val ctx = TreePlacerContext(instance, log) { leaves }
         val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
         val height = trunk.treeHeight(random)
         val foliageHeight = foliage.foliageHeight(random, height)
         val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
         val offset = foliage.offset(random)
+        if (!ctx.hasClearance(origin, height, featureRadius)) return false
         trunk.placeTrunk(ctx, random, height, origin).forEach {
             foliage.createFoliage(ctx, random, it, foliageHeight, foliageRadius, offset)
         }
         decorators.forEach { it.place(ctx, random) }
+        return true
     }
 }
 
@@ -1166,7 +1191,7 @@ private class PoplarTree : TreeGenerator {
         instance: Instance,
         base: Point,
         random: Random,
-    ) {
+    ): Boolean {
         val leaves = POPLAR_LEAVES[random.nextInt(POPLAR_LEAVES.size)]
         val ctx = TreePlacerContext(instance, Block.POPLAR_LOG) { leaves }
         val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
@@ -1177,9 +1202,11 @@ private class PoplarTree : TreeGenerator {
         val foliageHeight = foliage.foliageHeight(random, height)
         val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
         val offset = foliage.offset(random)
+        if (!ctx.hasClearance(origin, height, 0)) return false
         trunk.placeTrunk(ctx, random, height, origin).forEach {
             foliage.createFoliage(ctx, random, it, foliageHeight, foliageRadius, offset)
         }
+        return true
     }
 }
 
@@ -1192,22 +1219,23 @@ private class AzaleaTree : TreeGenerator {
         instance: Instance,
         base: Point,
         random: Random,
-    ) {
+    ): Boolean {
         val ctx = TreePlacerContext(instance, Block.OAK_LOG) { r ->
             if (r.nextInt(4) == 0) Block.FLOWERING_AZALEA_LEAVES else Block.AZALEA_LEAVES
         }
         val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
-        // Vanilla AZALEA_TREE: dirt(ROOTED_DIRT).forceDirt()
-        instance.setBlock(origin.offset(0, -1, 0), Block.ROOTED_DIRT)
         val trunk = BendingTrunkPlacer(4, 2, 0, minHeightForLeaves = 3, bendLength = UniformInt(1, 2))
         val foliage = RandomSpreadFoliagePlacer(ConstantInt(3), ConstantInt(0), ConstantInt(2), 50)
         val height = trunk.treeHeight(random)
         val foliageHeight = foliage.foliageHeight(random, height)
         val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
         val offset = foliage.offset(random)
+        if (!ctx.hasClearance(origin, height, 0)) return false
+        instance.setBlock(origin.offset(0, -1, 0), Block.ROOTED_DIRT)
         trunk.placeTrunk(ctx, random, height, origin).forEach {
             foliage.createFoliage(ctx, random, it, foliageHeight, foliageRadius, offset)
         }
+        return true
     }
 }
 
@@ -1284,6 +1312,7 @@ private val LARGE_TREES: Map<Key, TreeGenerator> =
                 GiantTrunkPlacer(13, 2, 14),
                 MegaPineFoliagePlacer(ConstantInt(0), ConstantInt(0), UniformInt(13, 17)),
                 listOf(AlterGroundDecorator(Block.PODZOL)),
+                featureRadius = 1,
             ),
         Block.JUNGLE_SAPLING.key() to
             VanillaTree(
@@ -1292,6 +1321,7 @@ private val LARGE_TREES: Map<Key, TreeGenerator> =
                 MegaJungleTrunkPlacer(10, 2, 19),
                 MegaJungleFoliagePlacer(ConstantInt(2), ConstantInt(0), 2),
                 JUNGLE_DECORATORS,
+                featureRadius = 1,
             ),
         Block.DARK_OAK_SAPLING.key() to
             VanillaTree(
@@ -1299,6 +1329,7 @@ private val LARGE_TREES: Map<Key, TreeGenerator> =
                 Block.DARK_OAK_LEAVES,
                 DarkOakTrunkPlacer(6, 2, 1),
                 DarkOakFoliagePlacer(ConstantInt(0), ConstantInt(0)),
+                featureRadius = 1,
             ),
         Block.PALE_OAK_SAPLING.key() to
             VanillaTree(
@@ -1306,5 +1337,6 @@ private val LARGE_TREES: Map<Key, TreeGenerator> =
                 Block.PALE_OAK_LEAVES,
                 DarkOakTrunkPlacer(6, 2, 1),
                 DarkOakFoliagePlacer(ConstantInt(0), ConstantInt(0)),
+                featureRadius = 1,
             ),
     )

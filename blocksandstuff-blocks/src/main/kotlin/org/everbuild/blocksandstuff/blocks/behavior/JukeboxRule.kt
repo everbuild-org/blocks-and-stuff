@@ -4,6 +4,7 @@ import net.kyori.adventure.sound.Sound
 import net.kyori.adventure.sound.SoundStop
 import net.minestom.server.MinecraftServer
 import net.minestom.server.component.DataComponents
+import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.GameMode
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
@@ -36,14 +37,14 @@ val JUKEBOX_RULE: Rule<InteractionActivityContext> =
 
             heldSong != null -> {
                 if (!playRecord(ctx, held, heldSong)) return@Rule RuleResult.Next
-                stopJukeboxSound(ctx.instance, stored)
+                stopJukeboxSound(ctx.instance, ctx.blockPosition, stored)
                 DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, stored)
                 consumeHeldRecord(ctx, held)
                 RuleResult.Consume
             }
 
             held.isAir -> {
-                stopJukeboxSound(ctx.instance, stored)
+                stopJukeboxSound(ctx.instance, ctx.blockPosition, stored)
                 DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, stored)
                 ctx.instance.setBlock(
                     ctx.blockPosition,
@@ -88,18 +89,27 @@ val JUKEBOX_DESTROY_RULE: Rule<DestroyActivityContext> =
         if (ctx.newBlock.key() == ctx.block.key()) return@Rule RuleResult.Next
 
         val stored = ctx.block.getTag(JUKEBOX_RECORD_TAG) ?: return@Rule RuleResult.Next
-        stopJukeboxSound(ctx.instance, stored)
+        stopJukeboxSound(ctx.instance, ctx.blockPosition, stored)
         DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, stored)
         RuleResult.Next
     }
 
+private const val JUKEBOX_SOUND_RANGE = 16.0
+
 private fun stopJukeboxSound(
     instance: Instance,
+    position: Point,
     record: ItemStack,
 ) {
     val songKey = record.get(DataComponents.JUKEBOX_PLAYABLE) ?: return
     val soundEvent = MinecraftServer.getJukeboxSongRegistry().get(songKey)?.soundEvent() ?: return
-    instance.stopSound(SoundStop.namedOnSource(soundEvent.key(), Sound.Source.RECORD))
+    val stop = SoundStop.namedOnSource(soundEvent.key(), Sound.Source.RECORD)
+    val rangeSquared = JUKEBOX_SOUND_RANGE * JUKEBOX_SOUND_RANGE
+    instance.getPlayers().forEach { player ->
+        if (player.position.distanceSquared(position) <= rangeSquared) {
+            player.stopSound(stop)
+        }
+    }
 }
 
 fun BlockRulesetEditor.addJukebox() {

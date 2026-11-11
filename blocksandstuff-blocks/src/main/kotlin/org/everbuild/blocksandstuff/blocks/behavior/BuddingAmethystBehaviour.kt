@@ -41,12 +41,12 @@ class BuddingAmethystBehaviour(
                     else -> return@Rule RuleResult.Next
                 }
 
-            val waterlogged = isWaterSource(target)
+            val waterlogged = target.getProperty("waterlogged") ?: isWaterSource(target).toString()
             ctx.instance.setBlock(
                 targetPosition,
                 next
                     .withProperty("facing", facingValue(face))
-                    .withProperty("waterlogged", waterlogged.toString()),
+                    .withProperty("waterlogged", waterlogged),
             )
 
             val pitch = 0.5f + random.nextFloat()

@@ -48,7 +48,7 @@ open class SingleBlockInventoryBackend protected constructor(
         val itemsNBT =
             this.itemStacks
                 .mapIndexed { index, itemStack -> index to itemStack }
-                .filter { (_, stack) -> stack != ItemStack.AIR }
+                .filter { (_, stack) -> !stack.isAir }
                 .map { (i, stack) -> i.toByte() to ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() }
                 .map { (slot, itemNBT) -> (itemNBT as CompoundBinaryTag).putByte("Slot", slot) }
                 .toList()
@@ -60,7 +60,11 @@ open class SingleBlockInventoryBackend protected constructor(
             (block ?: instance.getBlock(blockPos)).getTag(itemsTag)
                 ?: return
 
-        val slots = data.associateBy { (it as CompoundBinaryTag).getByte("Slot").toInt() }
+        val slots =
+            data
+                .filterIsInstance<CompoundBinaryTag>()
+                .filterNot { it.isAirItem() }
+                .associateBy { it.getByte("Slot").toInt() }
         for (i in itemStacks.indices) {
             val itemNBT = slots[i]
             if (itemNBT == null) {
@@ -87,4 +91,9 @@ open class SingleBlockInventoryBackend protected constructor(
     companion object {
         private val itemsTag = Tag.NBT("Items").list()
     }
+}
+
+private fun CompoundBinaryTag.isAirItem(): Boolean {
+    if (getString("id") == "minecraft:air") return true
+    return contains("count") && getInt("count") <= 0
 }

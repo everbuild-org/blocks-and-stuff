@@ -88,6 +88,26 @@ class BuddingAmethystBehaviourTest {
     }
 
     @Test
+    fun growingWaterloggedBudKeepsWaterlogged() {
+        val rule = BuddingAmethystBehaviour(firstFaceRandom()).rule("test:amethyst")
+        instance.setBlock(position, Block.BUDDING_AMETHYST)
+        val face = BlockFace.entries.first()
+        instance.setBlock(
+            position.relative(face),
+            Block.SMALL_AMETHYST_BUD.withProperty("waterlogged", "true"),
+        )
+
+        rule.evaluate(context())
+
+        val grown =
+            neighbours()
+                .map { it.second }
+                .firstOrNull { it.compare(Block.MEDIUM_AMETHYST_BUD) }
+        Assertions.assertNotNull(grown)
+        Assertions.assertEquals("true", grown?.getProperty("waterlogged"))
+    }
+
+    @Test
     fun doesNothingWhenAllNeighboursAreFull() {
         val rule = BuddingAmethystBehaviour(firstFaceRandom()).rule("test:amethyst")
         instance.setBlock(position, Block.BUDDING_AMETHYST)

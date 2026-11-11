@@ -192,6 +192,23 @@ class GrowthBehaviourTest {
     }
 
     @Test
+    fun saplingDoesNotGrowThroughSolidBlock() {
+        val rule = SaplingGrowthBehaviour(Block.OAK_SAPLING.key(), growthChance = 1, minLight = 0).rule("test:sapling")
+        instance.setBlock(position, Block.OAK_SAPLING)
+        instance.setBlock(position.add(0.0, 2.0, 0.0), Block.STONE)
+
+        rule.evaluate(context(Block.OAK_SAPLING))
+
+        Assertions.assertEquals(Block.OAK_SAPLING.key(), instance.getBlock(position).key())
+        for (dy in 3..7) {
+            Assertions.assertTrue(
+                instance.getBlock(position.add(0.0, dy.toDouble(), 0.0)).air(),
+                "expected no tree blocks above the obstruction at dy=$dy",
+            )
+        }
+    }
+
+    @Test
     fun poplarSaplingGrowsIntoTree() {
         val rule = SaplingGrowthBehaviour(Block.POPLAR_SAPLING.key(), growthChance = 1, minLight = 0).rule("test:poplar")
         instance.setBlock(position, Block.POPLAR_SAPLING)
@@ -206,7 +223,10 @@ class GrowthBehaviourTest {
             TREE_GENERATORS,
             mapOf(
                 Block.OAK_SAPLING.key() to
-                    TreeGenerator { inst, base, _ -> inst.setBlock(base, Block.DIAMOND_BLOCK) },
+                    TreeGenerator { inst, base, _ ->
+                        inst.setBlock(base, Block.DIAMOND_BLOCK)
+                        true
+                    },
             ),
         )
         val rule =

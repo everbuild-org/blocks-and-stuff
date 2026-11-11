@@ -1,4 +1,4 @@
-﻿package org.everbuild.blocksandstuff.blocks.behavior
+package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
@@ -338,7 +338,7 @@ class MiscBlockBehaviourTest {
     }
 
     @Test
-    fun packedIceDropsBlockWhenBroken() {
+    fun packedIceDoesNotDropWhenBroken() {
         val packedIce = Block.PACKED_ICE
         instance.setBlock(position, packedIce)
         val dropped = recordDrops()
@@ -352,7 +352,54 @@ class MiscBlockBehaviourTest {
             ),
         )
 
-        Assertions.assertTrue(dropped.any { it.material() == Material.PACKED_ICE })
+        Assertions.assertTrue(dropped.isEmpty(), "packed ice must not drop itself without silk touch")
+    }
+
+    @Test
+    fun goldenAxeRemovesWaxFromCopperGrate() {
+        val waxed = Block.WAXED_COPPER_GRATE
+        instance.setBlock(position, waxed)
+        val player = mock<Player>()
+        whenever(player.itemInMainHand).thenReturn(ItemStack.of(Material.GOLDEN_AXE))
+
+        COPPER_SCRAPING_RULE.evaluate(interaction(waxed, player))
+
+        Assertions.assertEquals(Block.COPPER_GRATE.key(), instance.getBlock(position).key())
+    }
+
+    @Test
+    fun axeScrapesOxidizedCopperGrate() {
+        val oxidized = Block.OXIDIZED_COPPER_GRATE
+        instance.setBlock(position, oxidized)
+        val player = mock<Player>()
+        whenever(player.itemInMainHand).thenReturn(ItemStack.of(Material.GOLDEN_AXE))
+
+        COPPER_SCRAPING_RULE.evaluate(interaction(oxidized, player))
+
+        Assertions.assertEquals(Block.WEATHERED_COPPER_GRATE.key(), instance.getBlock(position).key())
+    }
+
+    @Test
+    fun copperDoorHalvesOxidizeTogether() {
+        val lower = Block.COPPER_DOOR.withProperty("half", "lower")
+        val upper = Block.COPPER_DOOR.withProperty("half", "upper")
+        instance.setBlock(position, lower)
+        instance.setBlock(position.add(0.0, 1.0, 0.0), upper)
+
+        for (attempt in 0 until 5000) {
+            val context = RandomTickActivityContext(instance.getBlock(position), instance, position.asBlockVec())
+            COPPER_OXIDATION_RULE.evaluate(context)
+            val next = context.newBlock ?: continue
+            instance.setBlock(position, next)
+            if (next.key() == Block.EXPOSED_COPPER_DOOR.key()) break
+        }
+
+        Assertions.assertEquals(Block.EXPOSED_COPPER_DOOR.key(), instance.getBlock(position).key())
+        Assertions.assertEquals(
+            Block.EXPOSED_COPPER_DOOR.key(),
+            instance.getBlock(position.add(0.0, 1.0, 0.0)).key(),
+            "the upper door half must oxidize together with the lower half",
+        )
     }
 
     @Test
