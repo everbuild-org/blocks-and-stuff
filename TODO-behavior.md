@@ -66,6 +66,7 @@
 - [ ] minecraft:blue_concrete_slab
 - [ ] minecraft:blue_concrete_stairs
 - [ ] minecraft:blue_glazed_terracotta
+- [ ] minecraft:blue_ice
 - [ ] minecraft:blue_orchid
 - [ ] minecraft:blue_shulker_box
 - [ ] minecraft:blue_stained_glass
@@ -466,6 +467,7 @@
 - [ ] minecraft:orange_wool_stairs
 - [ ] minecraft:oxeye_daisy
 - [ ] minecraft:oxidized_copper_chest
+- [ ] minecraft:packed_ice
 - [ ] minecraft:packed_mud
 - [ ] minecraft:pale_hanging_moss
 - [ ] minecraft:pale_moss_block
@@ -754,58 +756,10 @@
 - [ ] minecraft:warped_stairs
 - [ ] minecraft:warped_wart_block
 - [ ] minecraft:water
-- [ ] minecraft:waxed_chiseled_copper
-- [ ] minecraft:waxed_copper_bars
-- [ ] minecraft:waxed_copper_block
-- [ ] minecraft:waxed_copper_bulb
-- [ ] minecraft:waxed_copper_chain
 - [ ] minecraft:waxed_copper_chest
-- [ ] minecraft:waxed_copper_golem_statue
-- [ ] minecraft:waxed_copper_grate
-- [ ] minecraft:waxed_copper_lantern
-- [ ] minecraft:waxed_cut_copper
-- [ ] minecraft:waxed_cut_copper_slab
-- [ ] minecraft:waxed_cut_copper_stairs
-- [ ] minecraft:waxed_exposed_chiseled_copper
-- [ ] minecraft:waxed_exposed_copper
-- [ ] minecraft:waxed_exposed_copper_bars
-- [ ] minecraft:waxed_exposed_copper_bulb
-- [ ] minecraft:waxed_exposed_copper_chain
 - [ ] minecraft:waxed_exposed_copper_chest
-- [ ] minecraft:waxed_exposed_copper_golem_statue
-- [ ] minecraft:waxed_exposed_copper_grate
-- [ ] minecraft:waxed_exposed_copper_lantern
-- [ ] minecraft:waxed_exposed_cut_copper
-- [ ] minecraft:waxed_exposed_cut_copper_slab
-- [ ] minecraft:waxed_exposed_cut_copper_stairs
-- [ ] minecraft:waxed_exposed_lightning_rod
-- [ ] minecraft:waxed_lightning_rod
-- [ ] minecraft:waxed_oxidized_chiseled_copper
-- [ ] minecraft:waxed_oxidized_copper
-- [ ] minecraft:waxed_oxidized_copper_bars
-- [ ] minecraft:waxed_oxidized_copper_bulb
-- [ ] minecraft:waxed_oxidized_copper_chain
 - [ ] minecraft:waxed_oxidized_copper_chest
-- [ ] minecraft:waxed_oxidized_copper_golem_statue
-- [ ] minecraft:waxed_oxidized_copper_grate
-- [ ] minecraft:waxed_oxidized_copper_lantern
-- [ ] minecraft:waxed_oxidized_cut_copper
-- [ ] minecraft:waxed_oxidized_cut_copper_slab
-- [ ] minecraft:waxed_oxidized_cut_copper_stairs
-- [ ] minecraft:waxed_oxidized_lightning_rod
-- [ ] minecraft:waxed_weathered_chiseled_copper
-- [ ] minecraft:waxed_weathered_copper
-- [ ] minecraft:waxed_weathered_copper_bars
-- [ ] minecraft:waxed_weathered_copper_bulb
-- [ ] minecraft:waxed_weathered_copper_chain
 - [ ] minecraft:waxed_weathered_copper_chest
-- [ ] minecraft:waxed_weathered_copper_golem_statue
-- [ ] minecraft:waxed_weathered_copper_grate
-- [ ] minecraft:waxed_weathered_copper_lantern
-- [ ] minecraft:waxed_weathered_cut_copper
-- [ ] minecraft:waxed_weathered_cut_copper_slab
-- [ ] minecraft:waxed_weathered_cut_copper_stairs
-- [ ] minecraft:waxed_weathered_lightning_rod
 - [ ] minecraft:weathered_copper_chest
 - [ ] minecraft:wet_sponge
 - [ ] minecraft:white_banner
@@ -898,7 +852,6 @@
 - [x] minecraft:blue_candle
 - [x] minecraft:blue_candle_cake
 - [x] minecraft:blue_concrete_powder
-- [x] minecraft:blue_ice
 - [x] minecraft:brain_coral
 - [x] minecraft:brain_coral_block
 - [x] minecraft:brain_coral_fan
@@ -1121,7 +1074,6 @@
 - [x] minecraft:oxidized_cut_copper_slab
 - [x] minecraft:oxidized_cut_copper_stairs
 - [x] minecraft:oxidized_lightning_rod
-- [x] minecraft:packed_ice
 - [x] minecraft:pale_oak_button
 - [x] minecraft:pale_oak_door
 - [x] minecraft:pale_oak_fence_gate
@@ -1257,14 +1209,62 @@
 - [x] minecraft:warped_wall_hanging_sign
 - [x] minecraft:warped_wall_sign
 - [x] minecraft:water_cauldron
+- [x] minecraft:waxed_chiseled_copper
+- [x] minecraft:waxed_copper_bars
+- [x] minecraft:waxed_copper_block
+- [x] minecraft:waxed_copper_bulb
+- [x] minecraft:waxed_copper_chain
 - [x] minecraft:waxed_copper_door
+- [x] minecraft:waxed_copper_golem_statue
+- [x] minecraft:waxed_copper_grate
+- [x] minecraft:waxed_copper_lantern
 - [x] minecraft:waxed_copper_trapdoor
+- [x] minecraft:waxed_cut_copper
+- [x] minecraft:waxed_cut_copper_slab
+- [x] minecraft:waxed_cut_copper_stairs
+- [x] minecraft:waxed_exposed_chiseled_copper
+- [x] minecraft:waxed_exposed_copper
+- [x] minecraft:waxed_exposed_copper_bars
+- [x] minecraft:waxed_exposed_copper_bulb
+- [x] minecraft:waxed_exposed_copper_chain
 - [x] minecraft:waxed_exposed_copper_door
+- [x] minecraft:waxed_exposed_copper_golem_statue
+- [x] minecraft:waxed_exposed_copper_grate
+- [x] minecraft:waxed_exposed_copper_lantern
 - [x] minecraft:waxed_exposed_copper_trapdoor
+- [x] minecraft:waxed_exposed_cut_copper
+- [x] minecraft:waxed_exposed_cut_copper_slab
+- [x] minecraft:waxed_exposed_cut_copper_stairs
+- [x] minecraft:waxed_exposed_lightning_rod
+- [x] minecraft:waxed_lightning_rod
+- [x] minecraft:waxed_oxidized_chiseled_copper
+- [x] minecraft:waxed_oxidized_copper
+- [x] minecraft:waxed_oxidized_copper_bars
+- [x] minecraft:waxed_oxidized_copper_bulb
+- [x] minecraft:waxed_oxidized_copper_chain
 - [x] minecraft:waxed_oxidized_copper_door
+- [x] minecraft:waxed_oxidized_copper_golem_statue
+- [x] minecraft:waxed_oxidized_copper_grate
+- [x] minecraft:waxed_oxidized_copper_lantern
 - [x] minecraft:waxed_oxidized_copper_trapdoor
+- [x] minecraft:waxed_oxidized_cut_copper
+- [x] minecraft:waxed_oxidized_cut_copper_slab
+- [x] minecraft:waxed_oxidized_cut_copper_stairs
+- [x] minecraft:waxed_oxidized_lightning_rod
+- [x] minecraft:waxed_weathered_chiseled_copper
+- [x] minecraft:waxed_weathered_copper
+- [x] minecraft:waxed_weathered_copper_bars
+- [x] minecraft:waxed_weathered_copper_bulb
+- [x] minecraft:waxed_weathered_copper_chain
 - [x] minecraft:waxed_weathered_copper_door
+- [x] minecraft:waxed_weathered_copper_golem_statue
+- [x] minecraft:waxed_weathered_copper_grate
+- [x] minecraft:waxed_weathered_copper_lantern
 - [x] minecraft:waxed_weathered_copper_trapdoor
+- [x] minecraft:waxed_weathered_cut_copper
+- [x] minecraft:waxed_weathered_cut_copper_slab
+- [x] minecraft:waxed_weathered_cut_copper_stairs
+- [x] minecraft:waxed_weathered_lightning_rod
 - [x] minecraft:weathered_chiseled_copper
 - [x] minecraft:weathered_copper
 - [x] minecraft:weathered_copper_bars
