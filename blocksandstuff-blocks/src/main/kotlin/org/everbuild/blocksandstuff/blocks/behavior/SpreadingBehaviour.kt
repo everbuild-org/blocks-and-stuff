@@ -17,13 +17,14 @@ private data class SpreadingRule(
     val source: Block,
     val target: Block,
     val minLight: Int = MIN_SPREAD_LIGHT,
+    val spreads: Boolean = true,
 )
 
 private val spreadingRules =
     listOf(
         SpreadingRule(Block.GRASS_BLOCK, Block.DIRT),
         SpreadingRule(Block.MYCELIUM, Block.DIRT),
-        SpreadingRule(Block.PODZOL, Block.DIRT),
+        SpreadingRule(Block.PODZOL, Block.DIRT, spreads = false),
         SpreadingRule(Block.CRIMSON_NYLIUM, Block.NETHERRACK, minLight = 0),
         SpreadingRule(Block.WARPED_NYLIUM, Block.NETHERRACK, minLight = 0),
     )
@@ -40,6 +41,7 @@ val SPREADING_RULE: Rule<RandomTickActivityContext> =
         }
 
         if (random.nextInt(SPREAD_CHANCE) != 0) return@Rule RuleResult.Next
+        if (!spreading.spreads) return@Rule RuleResult.Next
 
         val spread = findSpreadTarget(ctx, spreading) ?: return@Rule RuleResult.Next
         ctx.instance.setBlock(spread, spreading.source)

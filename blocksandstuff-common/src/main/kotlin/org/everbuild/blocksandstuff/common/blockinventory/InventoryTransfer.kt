@@ -17,6 +17,7 @@ fun PhysicalInventory.insertStack(
     transact { set ->
         for (slot in slots) {
             if (remaining.isAir) return@transact
+            if (!canPlaceItem(slot, remaining)) continue
 
             val existing = getItemStack(slot)
             if (existing.isAir || !existing.isSimilar(remaining)) continue
@@ -32,6 +33,7 @@ fun PhysicalInventory.insertStack(
         for (slot in slots) {
             if (remaining.isAir) return@transact
             if (!getItemStack(slot).isAir) continue
+            if (!canPlaceItem(slot, remaining)) continue
 
             val moved = minOf(remaining.maxStackSize(), remaining.amount())
             set(slot, remaining.withAmount(moved))
@@ -50,6 +52,7 @@ fun PhysicalInventory.canInsertStack(
 
     var remaining = stack.amount()
     for (slot in slots) {
+        if (!canPlaceItem(slot, stack)) continue
         val existing = getItemStack(slot)
         val freeSpace =
             when {

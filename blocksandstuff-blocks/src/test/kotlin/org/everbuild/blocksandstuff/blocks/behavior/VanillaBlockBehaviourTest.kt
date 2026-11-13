@@ -34,5 +34,9 @@ class VanillaBlockBehaviourTest {
 
         Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:pumpkin_stem"))
         Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:melon_stem"))
+        Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:oak_shelf"))
+        Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:chiseled_bookshelf"))
+        Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:crimson_fungus"))
+        Assertions.assertNotNull(MinecraftServer.getBlockManager().getHandler("minecraft:warped_fungus"))
     }
 }

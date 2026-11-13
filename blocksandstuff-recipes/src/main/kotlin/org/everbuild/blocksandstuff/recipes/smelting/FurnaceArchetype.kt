@@ -11,6 +11,7 @@ import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.inventory.InventoryOpenEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.instance.Instance
+import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.inventory.InventoryProperty
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
@@ -45,6 +46,13 @@ abstract class FurnaceArchetype(
     ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance) {
         override val extractableSlots: Collection<Int> get() = listOf(SLOT_OUTPUT)
         override val insertableSlots: Collection<Int> get() = listOf(SLOT_INPUT, SLOT_FUEL)
+
+        override fun insertableSlotsFor(face: BlockFace): Collection<Int> =
+            when (face) {
+                BlockFace.TOP -> listOf(SLOT_INPUT)
+                BlockFace.BOTTOM -> emptyList()
+                else -> listOf(SLOT_FUEL)
+            }
     }
 
     inner class InventoryImpl(

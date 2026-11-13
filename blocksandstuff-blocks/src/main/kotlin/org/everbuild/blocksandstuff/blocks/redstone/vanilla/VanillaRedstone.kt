@@ -29,6 +29,10 @@ fun RedstoneRegistry.registerVanillaComponents() {
     register(ComponentSelector.ByBlock(Block.TARGET)) { TargetComponent() }
     register(ComponentSelector.ByBlock(Block.NOTE_BLOCK)) { NoteBlockComponent() }
     register(ComponentSelector.ByBlock(Block.BELL)) { BellComponent() }
+    register(ComponentSelector.ByBlock(Block.DRAGON_HEAD)) { DragonHeadComponent() }
+    register(ComponentSelector.ByBlock(Block.DRAGON_WALL_HEAD)) { DragonHeadComponent() }
+    org.everbuild.blocksandstuff.blocks.behavior.SHELF_BLOCKS
+        .forEach { register(ComponentSelector.ByBlock(it)) { ShelfComponent() } }
     register(ComponentSelector.ByBlock(Block.TRIPWIRE_HOOK)) { TripwireHookComponent() }
     register(ComponentSelector.ByBlock(Block.POWERED_RAIL)) { PoweredRailComponent() }
     register(ComponentSelector.ByBlock(Block.DETECTOR_RAIL)) { DetectorRailComponent() }

@@ -10,8 +10,10 @@ import org.everbuild.blocksandstuff.blocks.behavior.BellInteraction
 import org.everbuild.blocksandstuff.blocks.behavior.BeaconMenus
 import org.everbuild.blocksandstuff.blocks.behavior.BedSleepTracker
 import org.everbuild.blocksandstuff.blocks.behavior.BookUseListener
+import org.everbuild.blocksandstuff.blocks.behavior.CushionBehaviour
 import org.everbuild.blocksandstuff.blocks.behavior.IceBreakListener
 import org.everbuild.blocksandstuff.blocks.behavior.FireStarterListener
+import org.everbuild.blocksandstuff.blocks.behavior.PotentSulfurHandler
 import org.everbuild.blocksandstuff.blocks.behavior.SignEditListener
 import org.everbuild.blocksandstuff.blocks.group.VanillaBlockBehaviour
 import org.everbuild.blocksandstuff.blocks.group.behaviour.BehaviourGroup
@@ -23,6 +25,11 @@ import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRuleset
 object BlockBehaviorRuleRegistrations {
     private val logger = ComponentLogger.logger(BlockBehaviorRuleRegistrations::class.java)
 
+    /**
+     * Installs Twaddle's external random-tick node and keeps [net.minestom.server.instance.Instance.randomTickSpeed]
+     * in sync with [InstanceOptionsProvider]. Call this when registering behaviour groups manually;
+     * [registerDefault] already does it.
+     */
     @JvmStatic
     fun registerRandomTickingGlobally() {
         val globalHandler = MinecraftServer.getGlobalEventHandler()
@@ -55,6 +62,7 @@ object BlockBehaviorRuleRegistrations {
             },
         )
         PlacedHandlerRegistration.registerDefault()
+        MinecraftServer.getBlockManager().registerHandler("minecraft:potent_sulfur") { PotentSulfurHandler() }
         BellInteraction.enable()
         BeaconMenus.enable()
         BedSleepTracker.enable()
@@ -64,6 +72,7 @@ object BlockBehaviorRuleRegistrations {
         NaturalBlockInteract.enable()
         SignEditListener.enable()
         BookUseListener.enable()
+        CushionBehaviour.enable()
     }
 
     @JvmStatic

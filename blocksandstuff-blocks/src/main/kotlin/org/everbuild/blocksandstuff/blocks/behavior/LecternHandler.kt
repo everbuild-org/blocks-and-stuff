@@ -26,6 +26,7 @@ import net.minestom.server.item.MaterialTags
 import net.minestom.server.tag.Tag
 import org.everbuild.blocksandstuff.common.blockinventory.PlayerInventoryStash
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.util.itemNbtTranscoder
 import java.util.concurrent.ConcurrentHashMap
 
 private val LECTERN_BOOK_TAG = Tag.NBT("Book")
@@ -138,11 +139,11 @@ class LecternHandler : BlockHandler {
     private fun readBook(block: Block): ItemStack? =
         block
             .getTag(LECTERN_BOOK_TAG)
-            ?.let { ItemStack.CODEC.decode(Transcoder.NBT, it).orElse(null) }
+            ?.let { ItemStack.CODEC.decode(itemNbtTranscoder(), it).orElse(null) }
             ?.takeUnless { it.isAir }
 
     private fun encodeBook(book: ItemStack): CompoundBinaryTag =
-        ItemStack.CODEC.encode(Transcoder.NBT, book).orElseThrow() as CompoundBinaryTag
+        ItemStack.CODEC.encode(itemNbtTranscoder(), book).orElseThrow() as CompoundBinaryTag
 
     private fun readPage(block: Block): Int = block.getTag(LECTERN_PAGE_TAG) ?: 0
 

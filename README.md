@@ -82,6 +82,11 @@ BlockPickup.enable()
 
 You can exclude blocks by putting a list of them as parameters to the `registerDefault` methods. You can also only register specific handlers using the `register` methods.
 
+Random ticking is provided by Twaddle's `twaddle-random-ticking` module, not by this library.
+`BlockBehaviorRuleRegistrations.registerDefault()` installs the global random-tick node and keeps
+`InstanceOptions.randomTickSpeed` in sync with Minestom. If you register behaviour groups manually via `register(...)`,
+call `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` yourself.
+
 ## Fluids API
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-fluids`
 

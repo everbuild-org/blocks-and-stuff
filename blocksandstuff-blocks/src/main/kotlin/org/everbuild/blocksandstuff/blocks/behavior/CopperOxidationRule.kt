@@ -17,7 +17,19 @@ import java.util.concurrent.ThreadLocalRandom
 val COPPER_OXIDATION_RULE: Rule<RandomTickActivityContext> =
     Rule("blocksandstuff:copper_oxidation") { ctx ->
         val block = ctx.block
-        if (isCopperDoor(block) && block.getProperty("half") == "upper") return@Rule RuleResult.Next
+        if (isCopperDoor(block)) {
+            val half = block.getProperty("half") ?: return@Rule RuleResult.Next
+            val lowerPosition = if (half == "lower") ctx.blockPosition else ctx.blockPosition.sub(0.0, 1.0, 0.0)
+            val lower = ctx.instance.getBlock(lowerPosition)
+            if (lower.key().value().contains("copper_door")) {
+                val upperPosition = lowerPosition.add(0.0, 1.0, 0.0)
+                val upper = ctx.instance.getBlock(upperPosition)
+                if (upper.key() != lower.key()) {
+                    ctx.instance.setBlock(upperPosition, lower.withProperty("half", "upper"))
+                }
+            }
+            if (half == "upper") return@Rule RuleResult.Next
+        }
 
         val exposedToAir = countExposedSides(ctx.instance, ctx.blockPosition) > 0
         if (!exposedToAir) return@Rule RuleResult.Next
@@ -31,7 +43,7 @@ val COPPER_OXIDATION_RULE: Rule<RandomTickActivityContext> =
 
         ctx.replaceBlock(nextStage)
         if (isCopperDoor(block) && block.getProperty("half") == "lower") {
-            oxidizeOtherDoorHalf(ctx.instance, ctx.blockPosition, block)
+            oxidizeOtherDoorHalf(ctx.instance, ctx.blockPosition, nextStage)
         }
         RuleResult.Next
     }
@@ -48,12 +60,12 @@ private fun isCopperDoor(block: Block): Boolean = block.key().value().contains("
 private fun oxidizeOtherDoorHalf(
     instance: Instance,
     position: Point,
-    lower: Block,
+    nextLower: Block,
 ) {
     val otherPosition = position.add(0.0, 1.0, 0.0)
     val other = instance.getBlock(otherPosition)
-    if (other.key() != lower.key()) return
-    nextOxidationStage(other)?.let { instance.setBlock(otherPosition, it) }
+    if (!other.key().value().contains("copper_door")) return
+    instance.setBlock(otherPosition, nextLower.withProperty("half", "upper"))
 }
 
 private fun countExposedSides(

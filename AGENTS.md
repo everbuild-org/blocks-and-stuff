@@ -10,8 +10,9 @@ lives in the library subprojects.
 
 - `blocksandstuff-common`: shared support code used by the public block and fluid modules. This includes instance
   options, dropped item helpers, registry/tag loading, and utility functions.
-- `blocksandstuff-blocks`: vanilla-like block placement, block behavior, random ticking, block events, and block group
-  registration helpers.
+- `blocksandstuff-blocks`: vanilla-like block placement, block behavior, block events, and block group registration
+  helpers. Random ticking is provided externally by Twaddle (`org.everbuild.twaddle.random_ticking`); this module only
+  installs the global random-tick node and syncs `InstanceOptions.randomTickSpeed`.
 - `blocksandstuff-fluids`: fluid placement, replacement events, pickup handling, fluid implementations, and Minestom
   fluid integration.
 - `testserver`: local executable Minestom test harness for manual verification. Do not add production APIs here.
@@ -39,6 +40,9 @@ lives in the library subprojects.
 - `blocksandstuff-common` must stay independent of the block and fluid modules.
 - `blocksandstuff-blocks` and `blocksandstuff-fluids` may depend on `blocksandstuff-common`.
 - Production library modules should not depend on `testserver`.
+- Random ticking is not implemented in this repository. `blocksandstuff-blocks` delegates it to Twaddle's
+  `twaddle-random-ticking`; manual behaviour registration must call
+  `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` to install the external node.
 - Keep Minestom-specific behavior explicit at module boundaries. Avoid hiding world, instance, or block state mutations
   behind broad helper layers.
 

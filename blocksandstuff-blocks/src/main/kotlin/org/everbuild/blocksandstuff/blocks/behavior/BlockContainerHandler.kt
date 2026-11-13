@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.coordinate.Point
+import net.minestom.server.event.inventory.InventoryClickEvent
 import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.inventory.InventoryItemChangeEvent
 import net.minestom.server.event.inventory.InventoryOpenEvent
@@ -95,6 +96,12 @@ class BlockContainerHandler(
         inventory.eventNode().addListener(InventoryCloseEvent::class.java) { handleClose(instance, position) }
         inventory.eventNode().addListener(InventoryItemChangeEvent::class.java) {
             RedstoneRegistrations.notifyContainerChanged(instance, position)
+        }
+        inventory.eventNode().addListener(InventoryClickEvent::class.java) { event ->
+            val viewer = event.player
+            instance.scheduler().scheduleNextTick {
+                if (viewer.openInventory === inventory) inventory.update(viewer)
+            }
         }
     }
 

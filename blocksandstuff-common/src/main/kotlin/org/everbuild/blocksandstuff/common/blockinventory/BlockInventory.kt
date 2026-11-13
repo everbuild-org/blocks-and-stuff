@@ -11,6 +11,8 @@ open class BlockInventory(
     title: Component,
     protected val backend: PhysicalInventory,
 ) : Inventory(type, title) {
+    /** Shulker boxes reject shulker-box items in the GUI (see ShulkerClickGuard). */
+    var rejectsShulkerBoxes: Boolean = false
     init {
         eventNode().addListener(InventoryItemChangeEvent::class.java, this::updateItemInBackend)
     }
@@ -19,6 +21,16 @@ open class BlockInventory(
 
     private fun updateItemInBackend(event: InventoryItemChangeEvent) {
         if (syncingFromBackend) return
+        if (!backend.canPlaceItem(event.slot, event.newItem)) {
+            syncingFromBackend = true
+            try {
+                setItemStack(event.slot, event.previousItem)
+            } finally {
+                syncingFromBackend = false
+            }
+            backend.onItemRejected(event.newItem)
+            return
+        }
         syncingFromBackend = true
         try {
             backend.transact {

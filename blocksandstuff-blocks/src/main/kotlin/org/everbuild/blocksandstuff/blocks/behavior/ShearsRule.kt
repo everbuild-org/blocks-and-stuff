@@ -4,10 +4,8 @@ import net.minestom.server.instance.block.Block
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.sound.SoundEvent
-import org.everbuild.blocksandstuff.blocks.behavior.tool.ToolTransform
 import org.everbuild.blocksandstuff.blocks.behavior.tool.damageTool
 import org.everbuild.blocksandstuff.blocks.behavior.tool.playSoundFor
-import org.everbuild.blocksandstuff.blocks.behavior.tool.toolRule
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
@@ -17,19 +15,29 @@ import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityCon
 import org.everbuild.twaddle.stacked_behaviour_block.type.destroy
 import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 
-private val shearsTransforms: List<ToolTransform> =
-    listOf(
-        ToolTransform(
-            Block.PUMPKIN,
-            Material.SHEARS,
-            Block.CARVED_PUMPKIN,
-            preserveProperties = true,
-            damagesTool = true,
-            extra = { ctx, _ -> playSoundFor(ctx, SoundEvent.BLOCK_PUMPKIN_CARVE) },
-        ),
-    )
+val PUMPKIN_CARVE_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:pumpkin_carve") { ctx ->
+        if (!ctx.block.compare(Block.PUMPKIN)) return@Rule RuleResult.Next
+        if (ctx.player.itemInMainHand.material() != Material.SHEARS) return@Rule RuleResult.Next
 
-val SHEARS_RULE: Rule<InteractionActivityContext> = toolRule("blocksandstuff:shears", shearsTransforms)
+        ctx.instance.setBlock(
+            ctx.blockPosition,
+            Block.CARVED_PUMPKIN.withProperty("facing", carvingFacing(ctx.player.position.yaw())),
+        )
+        playSoundFor(ctx, SoundEvent.BLOCK_PUMPKIN_CARVE)
+        damageTool(ctx.player, ctx.player.itemInMainHand)
+        RuleResult.Consume
+    }
+
+private fun carvingFacing(yaw: Float): String {
+    val normalized = ((yaw % 360f) + 360f) % 360f
+    return when {
+        normalized < 45f || normalized >= 315f -> "north"
+        normalized < 135f -> "east"
+        normalized < 225f -> "south"
+        else -> "west"
+    }
+}
 
 val BEEHIVE_SHEAR_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:beehive_shear") { ctx ->
@@ -70,7 +78,7 @@ val SHEARS_DROP_RULE: Rule<DestroyActivityContext> =
     }
 
 fun BlockRulesetEditor.addShears() {
-    blocks(Block.PUMPKIN) { interact.append { install(SHEARS_RULE) } }
+    blocks(Block.PUMPKIN) { interact.append { install(PUMPKIN_CARVE_RULE) } }
     listOf(Block.BEE_NEST, Block.BEEHIVE).forEach { block ->
         blocks(block) { interact.append { install(BEEHIVE_SHEAR_RULE) } }
     }

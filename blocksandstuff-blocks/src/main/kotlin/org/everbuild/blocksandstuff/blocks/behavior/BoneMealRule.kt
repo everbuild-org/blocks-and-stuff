@@ -74,17 +74,58 @@ val SAPLING_BONE_MEAL_RULE: Rule<InteractionActivityContext> =
 val GRASS_BONE_MEAL_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:bone_meal_grass") { ctx ->
         val boneMeal = boneMealAvailable(ctx) ?: return@Rule RuleResult.Next
-        val target = ctx.blockPosition.add(0.0, 1.0, 0.0)
-        if (!ctx.instance.getBlock(target).air()) return@Rule RuleResult.Next
+        val random = Random()
+        var grown = false
 
-        ctx.instance.setBlock(target, randomVegetation())
+        val above = ctx.blockPosition.add(0.0, 1.0, 0.0)
+        if (growVegetation(ctx, above, random)) grown = true
+        repeat(PATCH_ATTEMPTS) {
+            val target =
+                ctx.blockPosition.add(
+                    (random.nextInt(PATCH_RADIUS * 2 + 1) - PATCH_RADIUS).toDouble(),
+                    (1 + random.nextInt(2)).toDouble(),
+                    (random.nextInt(PATCH_RADIUS * 2 + 1) - PATCH_RADIUS).toDouble(),
+                )
+            if (growVegetation(ctx, target, random)) grown = true
+        }
+
+        if (!grown) return@Rule RuleResult.Next
+
         consumeBoneMeal(ctx.player, boneMeal)
         useBoneMeal(ctx)
         RuleResult.Consume
     }
 
-private fun randomVegetation(): Block =
-    when (Random().nextInt(8)) {
+val SHORT_GRASS_BONE_MEAL_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:bone_meal_short_grass") { ctx ->
+        val boneMeal = boneMealAvailable(ctx) ?: return@Rule RuleResult.Next
+        val above = ctx.blockPosition.add(0.0, 1.0, 0.0)
+        if (!ctx.instance.getBlock(above).air()) return@Rule RuleResult.Next
+
+        ctx.instance.setBlock(ctx.blockPosition, Block.TALL_GRASS.withProperty("half", "lower"))
+        ctx.instance.setBlock(above, Block.TALL_GRASS.withProperty("half", "upper"))
+        consumeBoneMeal(ctx.player, boneMeal)
+        useBoneMeal(ctx)
+        RuleResult.Consume
+    }
+
+private const val PATCH_RADIUS = 3
+private const val PATCH_ATTEMPTS = 32
+
+private fun growVegetation(
+    ctx: InteractionActivityContext,
+    target: net.minestom.server.coordinate.Point,
+    random: Random,
+): Boolean {
+    if (!ctx.instance.getBlock(target).air()) return false
+    val ground = ctx.instance.getBlock(target.sub(0.0, 1.0, 0.0))
+    if (!ground.compare(Block.GRASS_BLOCK) && !ground.compare(Block.DIRT) && !ground.compare(Block.PODZOL)) return false
+    ctx.instance.setBlock(target, randomVegetation(random))
+    return true
+}
+
+private fun randomVegetation(random: Random): Block =
+    when (random.nextInt(12)) {
         0 -> Block.DANDELION
         1 -> Block.POPPY
         2 -> Block.CORNFLOWER
@@ -95,7 +136,6 @@ fun BlockRulesetEditor.addBoneMeal() {
     val agePlants =
         (CROP_BLOCKS +
             listOf(
-                Block.NETHER_WART,
                 Block.TORCHFLOWER_CROP,
                 Block.PITCHER_CROP,
                 Block.PUMPKIN_STEM,
@@ -106,4 +146,5 @@ fun BlockRulesetEditor.addBoneMeal() {
     blocks(Block.AZALEA) { interact.append { install(SAPLING_BONE_MEAL_RULE) } }
     blocks(Block.FLOWERING_AZALEA) { interact.append { install(SAPLING_BONE_MEAL_RULE) } }
     blocks(Block.GRASS_BLOCK) { interact.append { install(GRASS_BONE_MEAL_RULE) } }
+    blocks(Block.SHORT_GRASS) { interact.append { install(SHORT_GRASS_BONE_MEAL_RULE) } }
 }

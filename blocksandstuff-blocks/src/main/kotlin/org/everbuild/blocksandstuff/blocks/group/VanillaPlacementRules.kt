@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.group
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
 import org.everbuild.blocksandstuff.blocks.behavior.CustomPlants
+import org.everbuild.blocksandstuff.blocks.behavior.SHELF_BLOCKS
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
@@ -770,6 +771,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.GRAVEL),
                 byBlock(Block.SUSPICIOUS_SAND),
                 byBlock(Block.SUSPICIOUS_GRAVEL),
+                byBlock(Block.DRAGON_EGG),
             ),
             ::FallingBlockPlacementRule,
         )
@@ -781,6 +783,21 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.SOUL_FIRE),
             ),
             ::FirePlacementRule,
+        )
+
+    val SHELVES =
+        group(
+            byList(SHELF_BLOCKS),
+            ::ShelfPlacementRule,
+        )
+
+    val NETHER_FUNGI =
+        group(
+            all(
+                byBlock(Block.CRIMSON_FUNGUS),
+                byBlock(Block.WARPED_FUNGUS),
+            ),
+            ::NetherFungusPlacementRule,
         )
 
     override fun createGroup(

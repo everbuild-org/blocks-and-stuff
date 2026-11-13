@@ -14,6 +14,7 @@ import org.everbuild.blocksandstuff.blocks.behavior.DispenserHandler
 import org.everbuild.blocksandstuff.blocks.behavior.DropperHandler
 import org.everbuild.blocksandstuff.blocks.behavior.EnderChestHandler
 import org.everbuild.blocksandstuff.blocks.behavior.HopperHandler
+import org.everbuild.blocksandstuff.blocks.behavior.ShulkerClickGuard
 
 object ContainerRegistrations {
     private const val EJECTOR_SIZE = 9
@@ -59,6 +60,7 @@ object ContainerRegistrations {
         MinecraftServer.getBlockManager().registerHandler("minecraft:crafter") { CrafterHandler() }
         CrafterSessions.registerDefault()
         MinecraftServer.getBlockManager().registerHandler("minecraft:ender_chest") { EnderChestHandler() }
+        ShulkerClickGuard.enable()
     }
 
     private fun registerHopper() {
@@ -119,6 +121,7 @@ object ContainerRegistrations {
             SoundEvent.BLOCK_SHULKER_BOX_CLOSE,
             ContainerAnimation.BLOCK_EVENT,
             keepContentsInItem = true,
+            acceptsShulkerBoxes = false,
         )
     }
 
@@ -130,9 +133,16 @@ object ContainerRegistrations {
         closeSound: SoundEvent,
         animation: ContainerAnimation,
         keepContentsInItem: Boolean = false,
+        acceptsShulkerBoxes: Boolean = true,
     ) {
         val key = Key.key(blockKey)
-        val archetype = ContainerArchetype(Component.translatable(titleKey), inventoryType, inventoryType.size)
+        val archetype =
+            ContainerArchetype(
+                Component.translatable(titleKey),
+                inventoryType,
+                inventoryType.size,
+                acceptsShulkerBoxes,
+            )
         MinecraftServer.getBlockManager().registerHandler(blockKey) {
             BlockContainerHandler(key, archetype, openSound, closeSound, animation, keepContentsInItem)
         }

@@ -2,11 +2,11 @@ package org.everbuild.blocksandstuff.blocks.util
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
-import net.minestom.server.codec.Transcoder
 import net.minestom.server.component.DataComponents
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.component.TypedCustomData
+import org.everbuild.blocksandstuff.common.util.itemNbtTranscoder
 import net.minestom.server.tag.Tag
 
 private const val SHULKER_BOX_ENTITY = "minecraft:shulker_box"
@@ -51,9 +51,7 @@ internal fun Block.toContainerItem(): ItemStack? {
 
     val contents = decodeContainerItems(nbt())
     if (contents.isEmpty()) return item
-    return item
-        .with(DataComponents.CONTAINER, contents)
-        .with(DataComponents.LORE, contents.map(::containerLoreLine))
+    return item.with(DataComponents.LORE, contents.map(::containerLoreLine))
 }
 
 private fun decodeContainerItems(nbt: CompoundBinaryTag?): List<ItemStack> {
@@ -62,7 +60,7 @@ private fun decodeContainerItems(nbt: CompoundBinaryTag?): List<ItemStack> {
         .asSequence()
         .filterIsInstance<CompoundBinaryTag>()
         .filterNot { it.isAirItem() }
-        .map { tag -> tag.getByte("Slot").toInt() to ItemStack.CODEC.decode(Transcoder.NBT, tag).orElseThrow() }
+        .map { tag -> tag.getByte("Slot").toInt() to ItemStack.CODEC.decode(itemNbtTranscoder(), tag).orElseThrow() }
         .filter { (_, stack) -> !stack.isAir }
         .sortedBy { (slot, _) -> slot }
         .map { (_, stack) -> stack }
@@ -78,7 +76,7 @@ private fun encodeItem(
     stack: ItemStack,
     slot: Int,
 ): CompoundBinaryTag =
-    (ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() as CompoundBinaryTag)
+    (ItemStack.CODEC.encode(itemNbtTranscoder(), stack).orElseThrow() as CompoundBinaryTag)
         .putByte("Slot", slot.toByte())
 
 private fun containerLoreLine(stack: ItemStack): Component {

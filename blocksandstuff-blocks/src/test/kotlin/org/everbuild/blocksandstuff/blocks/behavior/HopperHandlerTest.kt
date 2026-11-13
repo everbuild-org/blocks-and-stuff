@@ -20,6 +20,8 @@ import org.everbuild.blocksandstuff.blocks.util.containerSignal
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.recipes.smelting.FurnaceArchetype
+import org.everbuild.blocksandstuff.recipes.smelting.furnace.FurnaceHandler
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistrations
 import org.everbuild.blocksandstuff.redstone.engine.RedstoneSimulator
 import org.junit.jupiter.api.AfterEach
@@ -42,6 +44,7 @@ class HopperHandlerTest {
     fun setup() {
         MinecraftServer.init()
         ContainerRegistrations.registerDefault()
+        MinecraftServer.getBlockManager().registerHandler("minecraft:furnace", ::FurnaceHandler)
         RedstoneRegistrations.registry.registerVanillaComponents()
         RedstoneRegistrations.enable()
         instance = MinecraftServer.getInstanceManager().createInstanceContainer()
@@ -124,6 +127,34 @@ class HopperHandlerTest {
 
         Assertions.assertEquals(2, inventoryAt(base).getItemStack(0).amount())
         Assertions.assertEquals(1, inventoryAt(base.sub(0.0, 1.0, 0.0)).getItemStack(0).amount())
+    }
+
+    @Test
+    fun sideHopperInsertsIntoFurnaceFuelSlot() {
+        placeHopper(facing = "east")
+        val furnacePosition = base.add(1.0, 0.0, 0.0)
+        placeContainer(furnacePosition, Block.FURNACE, "minecraft:furnace")
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.COAL, 3)) }
+
+        tickHopper()
+
+        val furnace = inventoryAt(furnacePosition)
+        Assertions.assertTrue(furnace.getItemStack(FurnaceArchetype.SLOT_INPUT).isAir)
+        Assertions.assertEquals(Material.COAL, furnace.getItemStack(FurnaceArchetype.SLOT_FUEL).material())
+    }
+
+    @Test
+    fun topHopperInsertsIntoFurnaceInputSlot() {
+        placeHopper(facing = "down")
+        val furnacePosition = base.sub(0.0, 1.0, 0.0)
+        placeContainer(furnacePosition, Block.FURNACE, "minecraft:furnace")
+        inventoryAt(base).transact { set -> set(0, ItemStack.of(Material.RAW_IRON, 3)) }
+
+        tickHopper()
+
+        val furnace = inventoryAt(furnacePosition)
+        Assertions.assertEquals(Material.RAW_IRON, furnace.getItemStack(FurnaceArchetype.SLOT_INPUT).material())
+        Assertions.assertTrue(furnace.getItemStack(FurnaceArchetype.SLOT_FUEL).isAir)
     }
 
     @Test

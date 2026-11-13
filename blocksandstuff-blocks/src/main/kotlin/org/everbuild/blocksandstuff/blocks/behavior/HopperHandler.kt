@@ -64,13 +64,14 @@ class HopperHandler(
         if (isPowered(tick)) return
 
         val own = backendOf(tick.instance, tick.blockPosition)
-        val targetPosition = tick.blockPosition.relative(facingOf(tick.block))
+        val facing = facingOf(tick.block)
+        val targetPosition = tick.blockPosition.relative(facing)
         val target = containerAt(tick.instance, targetPosition)
         val sourcePosition = tick.blockPosition.add(0.0, 1.0, 0.0)
         val source = containerAt(tick.instance, sourcePosition)
 
         val targetWasEmpty = target?.inventory?.let { isEmpty(it) } ?: false
-        var moved = target != null && pushOne(own, target.inventory)
+        var moved = target != null && pushOne(own, target.inventory, facing.oppositeFace)
         moved =
             if (source != null) {
                 pullOne(source.inventory, own) || moved
@@ -106,11 +107,13 @@ class HopperHandler(
     private fun pushOne(
         source: PhysicalInventory,
         target: PhysicalInventory,
+        insertionFace: BlockFace,
     ): Boolean {
+        val slots = target.insertableSlotsFor(insertionFace)
         for (slot in source.extractableSlots) {
             val stack = source.getItemStack(slot)
             if (stack.isAir) continue
-            if (!target.insertStack(stack.withAmount(1)).isAir) continue
+            if (!target.insertStack(stack.withAmount(1), slots).isAir) continue
 
             source.transact { set ->
                 val current = source.getItemStack(slot)

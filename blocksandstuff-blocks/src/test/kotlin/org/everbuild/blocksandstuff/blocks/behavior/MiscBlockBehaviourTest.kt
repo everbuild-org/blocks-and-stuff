@@ -507,7 +507,7 @@ class MiscBlockBehaviourTest {
         instance.setBlock(position.add(0.0, 1.0, 0.0), Block.FIRE.withProperty("age", "0"))
 
         var fireCount = 1
-        repeat(2000) {
+        repeat(10000) {
             val context = TickActivityContext(Block.FIRE, instance, position.add(0.0, 1.0, 0.0).asBlockVec())
             FIRE_TICK_RULE.evaluate(context)
             if (instance.getBlock(position.add(0.0, 1.0, 0.0)).compare(Block.FIRE)) {

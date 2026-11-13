@@ -1,12 +1,13 @@
 package org.everbuild.blocksandstuff.common.blockinventory
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.minestom.server.codec.Transcoder
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.ItemStack
 import net.minestom.server.tag.Tag
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.util.itemNbtTranscoder
 
 open class SingleBlockInventoryBackend protected constructor(
     override val archetype: BlockInventoryArchetype,
@@ -26,10 +27,13 @@ open class SingleBlockInventoryBackend protected constructor(
         action { slot, itemStack ->
             val old = itemStacks[slot]
             val new = itemStack ?: ItemStack.AIR
-            if (!old.equals(new)) {
-                updateSlotUnsafe(slot, new)
-                hasChanged = true
+            if (old.equals(new)) return@action
+            if (!canPlaceItem(slot, new)) {
+                onItemRejected(new)
+                return@action
             }
+            updateSlotUnsafe(slot, new)
+            hasChanged = true
         }
         if (hasChanged) save()
     }
@@ -49,7 +53,7 @@ open class SingleBlockInventoryBackend protected constructor(
             this.itemStacks
                 .mapIndexed { index, itemStack -> index to itemStack }
                 .filter { (_, stack) -> !stack.isAir }
-                .map { (i, stack) -> i.toByte() to ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() }
+                .map { (i, stack) -> i.toByte() to ItemStack.CODEC.encode(itemNbtTranscoder(), stack).orElseThrow() }
                 .map { (slot, itemNBT) -> (itemNBT as CompoundBinaryTag).putByte("Slot", slot) }
                 .toList()
         instance.setBlock(blockPos, instance.getBlock(blockPos).withTag(itemsTag, itemsNBT), false)
@@ -71,7 +75,7 @@ open class SingleBlockInventoryBackend protected constructor(
                 itemStacks[i] = ItemStack.AIR
                 continue
             }
-            itemStacks[i] = ItemStack.CODEC.decode(Transcoder.NBT, itemNBT).orElseThrow()
+            itemStacks[i] = ItemStack.CODEC.decode(itemNbtTranscoder(), itemNBT).orElseThrow()
         }
     }
 
@@ -86,6 +90,10 @@ open class SingleBlockInventoryBackend protected constructor(
     override fun readTags(): TagReader {
         val atPos = instance.getBlock(blockPos)
         return TagReader.Readable(atPos)
+    }
+
+    override fun onItemRejected(stack: ItemStack) {
+        DroppedItemFactory.maybeDrop(instance, blockPos, stack)
     }
 
     companion object {

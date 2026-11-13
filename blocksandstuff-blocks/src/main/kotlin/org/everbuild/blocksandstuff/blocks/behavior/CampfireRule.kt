@@ -20,6 +20,7 @@ import net.minestom.server.item.MaterialTags
 import net.minestom.server.sound.SoundEvent
 import net.minestom.server.tag.Tag
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import org.everbuild.blocksandstuff.common.util.itemNbtTranscoder
 import org.everbuild.blocksandstuff.recipes.smelting.campfire.CampfireCookingRecipe
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
@@ -217,7 +218,7 @@ private fun readItems(block: Block): MutableMap<Int, ItemStack> {
         val compound = tag as? CompoundBinaryTag ?: return@forEach
         val slot = compound.getByte("Slot").toInt()
         if (slot !in 0 until CAMPFIRE_SLOTS) return@forEach
-        val stack = ItemStack.CODEC.decode(Transcoder.NBT, compound).orElse(null) ?: return@forEach
+        val stack = ItemStack.CODEC.decode(itemNbtTranscoder(), compound).orElse(null) ?: return@forEach
         if (!stack.isAir) items[slot] = stack
     }
     return items
@@ -248,7 +249,7 @@ private fun Block.withCampfireState(
 
     val encodedItems =
         items.entries.sortedBy { it.key }.map { (slot, stack) ->
-            (ItemStack.CODEC.encode(Transcoder.NBT, stack).orElseThrow() as CompoundBinaryTag)
+            (ItemStack.CODEC.encode(itemNbtTranscoder(), stack).orElseThrow() as CompoundBinaryTag)
                 .putByte("Slot", slot.toByte())
         }
     return withTag(CAMPFIRE_ITEMS_TAG, encodedItems)
