@@ -22,6 +22,7 @@
 - [x] minecraft:acacia_pressure_plate
 - [x] minecraft:acacia_sapling
 - [x] minecraft:acacia_shelf
+- [x] minecraft:acacia_shelf
 - [x] minecraft:acacia_sign
 - [x] minecraft:acacia_slab
 - [x] minecraft:acacia_stairs
@@ -53,6 +54,7 @@
 - [x] minecraft:bamboo_pressure_plate
 - [x] minecraft:bamboo_sapling
 - [x] minecraft:bamboo_shelf
+- [x] minecraft:bamboo_shelf
 - [x] minecraft:bamboo_sign
 - [x] minecraft:bamboo_slab
 - [x] minecraft:bamboo_stairs
@@ -77,6 +79,7 @@
 - [x] minecraft:birch_log
 - [x] minecraft:birch_pressure_plate
 - [x] minecraft:birch_sapling
+- [x] minecraft:birch_shelf
 - [x] minecraft:birch_shelf
 - [x] minecraft:birch_sign
 - [x] minecraft:birch_slab
@@ -157,6 +160,7 @@
 - [x] minecraft:cherry_pressure_plate
 - [x] minecraft:cherry_sapling
 - [x] minecraft:cherry_shelf
+- [x] minecraft:cherry_shelf
 - [x] minecraft:cherry_sign
 - [x] minecraft:cherry_slab
 - [x] minecraft:cherry_stairs
@@ -204,9 +208,11 @@
 - [x] minecraft:crimson_door
 - [x] minecraft:crimson_fence
 - [x] minecraft:crimson_fence_gate
+- [x] minecraft:crimson_fungus
 - [x] minecraft:crimson_hanging_sign
 - [x] minecraft:crimson_hyphae
 - [x] minecraft:crimson_pressure_plate
+- [x] minecraft:crimson_shelf
 - [x] minecraft:crimson_shelf
 - [x] minecraft:crimson_sign
 - [x] minecraft:crimson_slab
@@ -242,6 +248,7 @@
 - [x] minecraft:dark_oak_log
 - [x] minecraft:dark_oak_pressure_plate
 - [x] minecraft:dark_oak_sapling
+- [x] minecraft:dark_oak_shelf
 - [x] minecraft:dark_oak_shelf
 - [x] minecraft:dark_oak_sign
 - [x] minecraft:dark_oak_slab
@@ -279,6 +286,7 @@
 - [x] minecraft:diorite_stairs
 - [x] minecraft:diorite_wall
 - [x] minecraft:dispenser
+- [x] minecraft:dragon_egg
 - [x] minecraft:dragon_head
 - [x] minecraft:dried_ghast
 - [x] minecraft:dropper
@@ -366,6 +374,7 @@
 - [x] minecraft:jungle_pressure_plate
 - [x] minecraft:jungle_sapling
 - [x] minecraft:jungle_shelf
+- [x] minecraft:jungle_shelf
 - [x] minecraft:jungle_sign
 - [x] minecraft:jungle_slab
 - [x] minecraft:jungle_stairs
@@ -446,6 +455,7 @@
 - [x] minecraft:mangrove_pressure_plate
 - [x] minecraft:mangrove_propagule
 - [x] minecraft:mangrove_shelf
+- [x] minecraft:mangrove_shelf
 - [x] minecraft:mangrove_sign
 - [x] minecraft:mangrove_slab
 - [x] minecraft:mangrove_stairs
@@ -482,6 +492,7 @@
 - [x] minecraft:oak_log
 - [x] minecraft:oak_pressure_plate
 - [x] minecraft:oak_sapling
+- [x] minecraft:oak_shelf
 - [x] minecraft:oak_shelf
 - [x] minecraft:oak_sign
 - [x] minecraft:oak_slab
@@ -530,6 +541,7 @@
 - [x] minecraft:pale_oak_log
 - [x] minecraft:pale_oak_pressure_plate
 - [x] minecraft:pale_oak_sapling
+- [x] minecraft:pale_oak_shelf
 - [x] minecraft:pale_oak_shelf
 - [x] minecraft:pale_oak_sign
 - [x] minecraft:pale_oak_slab
@@ -597,6 +609,7 @@
 - [x] minecraft:poplar_log
 - [x] minecraft:poplar_pressure_plate
 - [x] minecraft:poplar_sapling
+- [x] minecraft:poplar_shelf
 - [x] minecraft:poplar_shelf
 - [x] minecraft:poplar_sign
 - [x] minecraft:poplar_slab
@@ -739,6 +752,7 @@
 - [x] minecraft:spruce_pressure_plate
 - [x] minecraft:spruce_sapling
 - [x] minecraft:spruce_shelf
+- [x] minecraft:spruce_shelf
 - [x] minecraft:spruce_sign
 - [x] minecraft:spruce_slab
 - [x] minecraft:spruce_stairs
@@ -821,9 +835,11 @@
 - [x] minecraft:warped_door
 - [x] minecraft:warped_fence
 - [x] minecraft:warped_fence_gate
+- [x] minecraft:warped_fungus
 - [x] minecraft:warped_hanging_sign
 - [x] minecraft:warped_hyphae
 - [x] minecraft:warped_pressure_plate
+- [x] minecraft:warped_shelf
 - [x] minecraft:warped_shelf
 - [x] minecraft:warped_sign
 - [x] minecraft:warped_slab

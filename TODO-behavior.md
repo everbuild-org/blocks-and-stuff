@@ -5,7 +5,6 @@
 ## Unsupported Blocks
 - [ ] minecraft:acacia_fence
 - [ ] minecraft:acacia_planks
-- [ ] minecraft:acacia_shelf
 - [ ] minecraft:acacia_slab
 - [ ] minecraft:acacia_stairs
 - [ ] minecraft:activator_rail
@@ -26,7 +25,6 @@
 - [ ] minecraft:bamboo_mosaic_stairs
 - [ ] minecraft:bamboo_planks
 - [ ] minecraft:bamboo_sapling
-- [ ] minecraft:bamboo_shelf
 - [ ] minecraft:bamboo_slab
 - [ ] minecraft:bamboo_stairs
 - [ ] minecraft:barrel
@@ -38,7 +36,6 @@
 - [ ] minecraft:big_dripleaf_stem
 - [ ] minecraft:birch_fence
 - [ ] minecraft:birch_planks
-- [ ] minecraft:birch_shelf
 - [ ] minecraft:birch_slab
 - [ ] minecraft:birch_stairs
 - [ ] minecraft:black_banner
@@ -108,12 +105,10 @@
 - [ ] minecraft:chain_command_block
 - [ ] minecraft:cherry_fence
 - [ ] minecraft:cherry_planks
-- [ ] minecraft:cherry_shelf
 - [ ] minecraft:cherry_slab
 - [ ] minecraft:cherry_stairs
 - [ ] minecraft:chest
 - [ ] minecraft:chipped_anvil
-- [ ] minecraft:chiseled_bookshelf
 - [ ] minecraft:chiseled_cinnabar
 - [ ] minecraft:chiseled_deepslate
 - [ ] minecraft:chiseled_nether_bricks
@@ -165,10 +160,8 @@
 - [ ] minecraft:creeper_head
 - [ ] minecraft:creeper_wall_head
 - [ ] minecraft:crimson_fence
-- [ ] minecraft:crimson_fungus
 - [ ] minecraft:crimson_planks
 - [ ] minecraft:crimson_roots
-- [ ] minecraft:crimson_shelf
 - [ ] minecraft:crimson_slab
 - [ ] minecraft:crimson_stairs
 - [ ] minecraft:crying_obsidian
@@ -194,7 +187,6 @@
 - [ ] minecraft:dandelion
 - [ ] minecraft:dark_oak_fence
 - [ ] minecraft:dark_oak_planks
-- [ ] minecraft:dark_oak_shelf
 - [ ] minecraft:dark_oak_slab
 - [ ] minecraft:dark_oak_stairs
 - [ ] minecraft:dark_prismarine
@@ -256,7 +248,6 @@
 - [ ] minecraft:emerald_ore
 - [ ] minecraft:end_gateway
 - [ ] minecraft:end_portal
-- [ ] minecraft:end_portal_frame
 - [ ] minecraft:end_rod
 - [ ] minecraft:end_stone
 - [ ] minecraft:end_stone_brick_slab
@@ -332,7 +323,6 @@
 - [ ] minecraft:jigsaw
 - [ ] minecraft:jungle_fence
 - [ ] minecraft:jungle_planks
-- [ ] minecraft:jungle_shelf
 - [ ] minecraft:jungle_slab
 - [ ] minecraft:jungle_stairs
 - [ ] minecraft:kelp_plant
@@ -407,11 +397,9 @@
 - [ ] minecraft:mangrove_fence
 - [ ] minecraft:mangrove_planks
 - [ ] minecraft:mangrove_roots
-- [ ] minecraft:mangrove_shelf
 - [ ] minecraft:mangrove_slab
 - [ ] minecraft:mangrove_stairs
 - [ ] minecraft:melon
-- [ ] minecraft:moss_block
 - [ ] minecraft:moss_carpet
 - [ ] minecraft:mossy_cobblestone
 - [ ] minecraft:mossy_cobblestone_slab
@@ -440,10 +428,8 @@
 - [ ] minecraft:nether_sprouts
 - [ ] minecraft:nether_wart_block
 - [ ] minecraft:netherite_block
-- [ ] minecraft:netherrack
 - [ ] minecraft:oak_fence
 - [ ] minecraft:oak_planks
-- [ ] minecraft:oak_shelf
 - [ ] minecraft:oak_slab
 - [ ] minecraft:oak_stairs
 - [ ] minecraft:observer
@@ -475,7 +461,6 @@
 - [ ] minecraft:pale_oak_fence
 - [ ] minecraft:pale_oak_log
 - [ ] minecraft:pale_oak_planks
-- [ ] minecraft:pale_oak_shelf
 - [ ] minecraft:pale_oak_slab
 - [ ] minecraft:pale_oak_stairs
 - [ ] minecraft:pale_oak_wood
@@ -541,7 +526,6 @@
 - [ ] minecraft:poplar_fence
 - [ ] minecraft:poplar_log
 - [ ] minecraft:poplar_planks
-- [ ] minecraft:poplar_shelf
 - [ ] minecraft:poplar_slab
 - [ ] minecraft:poplar_stairs
 - [ ] minecraft:poplar_wood
@@ -602,7 +586,6 @@
 - [ ] minecraft:red_sandstone_slab
 - [ ] minecraft:red_sandstone_stairs
 - [ ] minecraft:red_sandstone_wall
-- [ ] minecraft:red_shrub
 - [ ] minecraft:red_shulker_box
 - [ ] minecraft:red_stained_glass
 - [ ] minecraft:red_stained_glass_pane
@@ -639,8 +622,6 @@
 - [ ] minecraft:sea_lantern
 - [ ] minecraft:sea_pickle
 - [ ] minecraft:shelf_mushroom
-- [ ] minecraft:short_dry_grass
-- [ ] minecraft:short_grass
 - [ ] minecraft:shroomlight
 - [ ] minecraft:shulker_box
 - [ ] minecraft:skeleton_skull
@@ -671,7 +652,6 @@
 - [ ] minecraft:spore_blossom
 - [ ] minecraft:spruce_fence
 - [ ] minecraft:spruce_planks
-- [ ] minecraft:spruce_shelf
 - [ ] minecraft:spruce_slab
 - [ ] minecraft:spruce_stairs
 - [ ] minecraft:sticky_piston
@@ -748,10 +728,8 @@
 - [ ] minecraft:void_air
 - [ ] minecraft:wall_torch
 - [ ] minecraft:warped_fence
-- [ ] minecraft:warped_fungus
 - [ ] minecraft:warped_planks
 - [ ] minecraft:warped_roots
-- [ ] minecraft:warped_shelf
 - [ ] minecraft:warped_slab
 - [ ] minecraft:warped_stairs
 - [ ] minecraft:warped_wart_block
@@ -807,6 +785,7 @@
 - [x] minecraft:acacia_log
 - [x] minecraft:acacia_pressure_plate
 - [x] minecraft:acacia_sapling
+- [x] minecraft:acacia_shelf
 - [x] minecraft:acacia_sign
 - [x] minecraft:acacia_trapdoor
 - [x] minecraft:acacia_wall_hanging_sign
@@ -823,6 +802,7 @@
 - [x] minecraft:bamboo_fence_gate
 - [x] minecraft:bamboo_hanging_sign
 - [x] minecraft:bamboo_pressure_plate
+- [x] minecraft:bamboo_shelf
 - [x] minecraft:bamboo_sign
 - [x] minecraft:bamboo_trapdoor
 - [x] minecraft:bamboo_wall_hanging_sign
@@ -839,6 +819,7 @@
 - [x] minecraft:birch_log
 - [x] minecraft:birch_pressure_plate
 - [x] minecraft:birch_sapling
+- [x] minecraft:birch_shelf
 - [x] minecraft:birch_sign
 - [x] minecraft:birch_trapdoor
 - [x] minecraft:birch_wall_hanging_sign
@@ -884,11 +865,13 @@
 - [x] minecraft:cherry_log
 - [x] minecraft:cherry_pressure_plate
 - [x] minecraft:cherry_sapling
+- [x] minecraft:cherry_shelf
 - [x] minecraft:cherry_sign
 - [x] minecraft:cherry_trapdoor
 - [x] minecraft:cherry_wall_hanging_sign
 - [x] minecraft:cherry_wall_sign
 - [x] minecraft:cherry_wood
+- [x] minecraft:chiseled_bookshelf
 - [x] minecraft:chiseled_copper
 - [x] minecraft:chorus_flower
 - [x] minecraft:coarse_dirt
@@ -908,10 +891,12 @@
 - [x] minecraft:crimson_button
 - [x] minecraft:crimson_door
 - [x] minecraft:crimson_fence_gate
+- [x] minecraft:crimson_fungus
 - [x] minecraft:crimson_hanging_sign
 - [x] minecraft:crimson_hyphae
 - [x] minecraft:crimson_nylium
 - [x] minecraft:crimson_pressure_plate
+- [x] minecraft:crimson_shelf
 - [x] minecraft:crimson_sign
 - [x] minecraft:crimson_stem
 - [x] minecraft:crimson_trapdoor
@@ -932,6 +917,7 @@
 - [x] minecraft:dark_oak_log
 - [x] minecraft:dark_oak_pressure_plate
 - [x] minecraft:dark_oak_sapling
+- [x] minecraft:dark_oak_shelf
 - [x] minecraft:dark_oak_sign
 - [x] minecraft:dark_oak_trapdoor
 - [x] minecraft:dark_oak_wall_hanging_sign
@@ -943,6 +929,7 @@
 - [x] minecraft:dirt_path
 - [x] minecraft:dragon_egg
 - [x] minecraft:enchanting_table
+- [x] minecraft:end_portal_frame
 - [x] minecraft:exposed_chiseled_copper
 - [x] minecraft:exposed_copper
 - [x] minecraft:exposed_copper_bars
@@ -994,6 +981,7 @@
 - [x] minecraft:jungle_log
 - [x] minecraft:jungle_pressure_plate
 - [x] minecraft:jungle_sapling
+- [x] minecraft:jungle_shelf
 - [x] minecraft:jungle_sign
 - [x] minecraft:jungle_trapdoor
 - [x] minecraft:jungle_wall_hanging_sign
@@ -1032,6 +1020,7 @@
 - [x] minecraft:mangrove_log
 - [x] minecraft:mangrove_pressure_plate
 - [x] minecraft:mangrove_propagule
+- [x] minecraft:mangrove_shelf
 - [x] minecraft:mangrove_sign
 - [x] minecraft:mangrove_trapdoor
 - [x] minecraft:mangrove_wall_hanging_sign
@@ -1039,8 +1028,10 @@
 - [x] minecraft:mangrove_wood
 - [x] minecraft:medium_amethyst_bud
 - [x] minecraft:melon_stem
+- [x] minecraft:moss_block
 - [x] minecraft:mycelium
 - [x] minecraft:nether_wart
+- [x] minecraft:netherrack
 - [x] minecraft:note_block
 - [x] minecraft:oak_button
 - [x] minecraft:oak_door
@@ -1050,6 +1041,7 @@
 - [x] minecraft:oak_log
 - [x] minecraft:oak_pressure_plate
 - [x] minecraft:oak_sapling
+- [x] minecraft:oak_shelf
 - [x] minecraft:oak_sign
 - [x] minecraft:oak_trapdoor
 - [x] minecraft:oak_wall_hanging_sign
@@ -1081,6 +1073,7 @@
 - [x] minecraft:pale_oak_leaves
 - [x] minecraft:pale_oak_pressure_plate
 - [x] minecraft:pale_oak_sapling
+- [x] minecraft:pale_oak_shelf
 - [x] minecraft:pale_oak_sign
 - [x] minecraft:pale_oak_trapdoor
 - [x] minecraft:pale_oak_wall_hanging_sign
@@ -1101,6 +1094,7 @@
 - [x] minecraft:poplar_hanging_sign
 - [x] minecraft:poplar_pressure_plate
 - [x] minecraft:poplar_sapling
+- [x] minecraft:poplar_shelf
 - [x] minecraft:poplar_sign
 - [x] minecraft:poplar_trapdoor
 - [x] minecraft:poplar_wall_hanging_sign
@@ -1155,12 +1149,15 @@
 - [x] minecraft:red_candle_cake
 - [x] minecraft:red_concrete_powder
 - [x] minecraft:red_poplar_leaves
+- [x] minecraft:red_shrub
 - [x] minecraft:redstone_wire
 - [x] minecraft:repeater
 - [x] minecraft:respawn_anchor
 - [x] minecraft:rooted_dirt
 - [x] minecraft:scaffolding
 - [x] minecraft:seagrass
+- [x] minecraft:short_dry_grass
+- [x] minecraft:short_grass
 - [x] minecraft:small_amethyst_bud
 - [x] minecraft:smithing_table
 - [x] minecraft:snow
@@ -1175,6 +1172,7 @@
 - [x] minecraft:spruce_log
 - [x] minecraft:spruce_pressure_plate
 - [x] minecraft:spruce_sapling
+- [x] minecraft:spruce_shelf
 - [x] minecraft:spruce_sign
 - [x] minecraft:spruce_trapdoor
 - [x] minecraft:spruce_wall_hanging_sign
@@ -1199,10 +1197,12 @@
 - [x] minecraft:warped_button
 - [x] minecraft:warped_door
 - [x] minecraft:warped_fence_gate
+- [x] minecraft:warped_fungus
 - [x] minecraft:warped_hanging_sign
 - [x] minecraft:warped_hyphae
 - [x] minecraft:warped_nylium
 - [x] minecraft:warped_pressure_plate
+- [x] minecraft:warped_shelf
 - [x] minecraft:warped_sign
 - [x] minecraft:warped_stem
 - [x] minecraft:warped_trapdoor
