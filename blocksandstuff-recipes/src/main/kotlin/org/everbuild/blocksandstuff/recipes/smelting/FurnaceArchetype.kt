@@ -14,18 +14,15 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.inventory.InventoryProperty
 import net.minestom.server.inventory.InventoryType
-import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventory
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryArchetype
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
-import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 abstract class FurnaceArchetype(
     override val title: Component,

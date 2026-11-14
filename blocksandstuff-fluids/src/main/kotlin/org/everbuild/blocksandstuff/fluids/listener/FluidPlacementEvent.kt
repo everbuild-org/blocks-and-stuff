@@ -8,7 +8,6 @@ import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.event.player.PlayerBlockInteractEvent
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler.PlayerPlacement
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
