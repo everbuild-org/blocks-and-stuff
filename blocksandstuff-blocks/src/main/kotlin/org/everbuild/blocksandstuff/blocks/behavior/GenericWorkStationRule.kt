@@ -47,7 +47,7 @@ val WORKSTATION_INTERACT_RULE: Rule<InteractionActivityContext> =
 
         val workstation = workStations[ctx.block.key()] ?: return@Rule RuleResult.Next
         val inventory = createInventory(workstation)
-        BlockInventoryTracker.track(inventory, ctx.blockPosition)
+        BlockInventoryTracker.track(inventory, ctx.instance, ctx.blockPosition)
         ctx.player.openInventory(inventory)
         RuleResult.Consume
     }

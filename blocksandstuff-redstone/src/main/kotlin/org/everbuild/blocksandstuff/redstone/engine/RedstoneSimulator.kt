@@ -47,6 +47,11 @@ class RedstoneSimulator(
         val reason: TickReason,
     )
 
+    private data class PendingPistonEffect(
+        val movementFace: BlockFace,
+        val effect: () -> Unit,
+    )
+
     private data class NeighbourChange(
         val changed: Point,
         val face: BlockFace,
@@ -64,7 +69,7 @@ class RedstoneSimulator(
     private val deltaSet = HashSet<Point>()
     private val deltaReasons = HashMap<Point, MutableSet<TickReason>>()
     private val neighbourChanges = HashMap<Point, MutableList<NeighbourChange>>()
-    private val pendingPistonEffects = ArrayList<Triple<BlockFace, Long, () -> Unit>>()
+    private val pendingPistonEffects = ArrayList<PendingPistonEffect>()
     private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
     private val suspendedTicks = HashMap<ChunkKey, MutableList<ScheduledTick>>()
@@ -284,7 +289,8 @@ class RedstoneSimulator(
             deltaReasons.getOrPut(next.position) { HashSet() }.add(next.reason)
             if (deltaSet.add(next.position)) delta.add(next.position)
         }
-        if (delta.isEmpty()) {
+        // <@AI_UNREVIEWED>
+        if (delta.isEmpty() && pendingPistonEffects.isEmpty()) {
             lastDeltaSteps = 0
             return
         }
@@ -294,43 +300,37 @@ class RedstoneSimulator(
             var guard = 0
             var steps = 0
             while (delta.isNotEmpty() || pendingPistonEffects.isNotEmpty()) {
-                while (delta.isNotEmpty()) {
-                    if (guard++ >= DELTA_LIMIT) {
-                        lastNonConvergent = true
-                        logger.warn(
-                            "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions into the next tick",
-                            DELTA_LIMIT,
-                            instance.uuid,
-                            delta.size,
-                        )
-                        break
-                    }
+                if (guard >= DELTA_LIMIT) {
+                    lastNonConvergent = true
+                    logger.warn(
+                        "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions and {} piston effects into the next tick",
+                        DELTA_LIMIT,
+                        instance.uuid,
+                        delta.size,
+                        pendingPistonEffects.size,
+                    )
+                    break
+                }
+
+                if (delta.isNotEmpty()) {
+                    guard++
                     steps++
                     val position = delta.removeFirst()
                     deltaSet.remove(position)
                     runHooks(position, deltaReasons.remove(position) ?: emptySet())
                     evaluate(position)
+                    continue
                 }
-                if (guard >= DELTA_LIMIT) break
 
-                if (pendingPistonEffects.isNotEmpty()) {
-                    val preferred = preferredMovementFace
-                    val selected =
-                        if (preferred != null && pendingPistonEffects.any { it.first == preferred }) {
-                            pendingPistonEffects.filter { it.first == preferred }
-                        } else {
-                            pendingPistonEffects.toList()
-                        }
-                    pendingPistonEffects.clear()
-                    for ((_, _, effect) in selected.sortedBy { it.second }) {
-                        if (guard++ >= DELTA_LIMIT) {
-                            lastNonConvergent = true
-                            break
-                        }
-                        steps++
-                        effect()
+                val preferredIndex =
+                    preferredMovementFace?.let { preferred ->
+                        pendingPistonEffects.indexOfFirst { it.movementFace == preferred }.takeIf { it >= 0 }
                     }
-                }
+                val nextEffectIndex = preferredIndex ?: 0
+                val effect = pendingPistonEffects.removeAt(nextEffectIndex).effect
+                guard++
+                steps++
+                effect()
             }
             lastDeltaSteps = steps
         } finally {
@@ -391,7 +391,7 @@ class RedstoneSimulator(
                     enqueueNeighbours(position)
                 }
                 if (evaluation.movementFace != null) {
-                    pendingPistonEffects.add(Triple(evaluation.movementFace, sequence++, effect))
+                    pendingPistonEffects.add(PendingPistonEffect(evaluation.movementFace, effect))
                 } else {
                     effect()
                 }

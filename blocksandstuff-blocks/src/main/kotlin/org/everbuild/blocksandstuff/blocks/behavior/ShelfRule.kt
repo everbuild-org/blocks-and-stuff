@@ -39,6 +39,7 @@ internal val SHELF_BLOCKS: List<Block> =
     )
 
 private const val SHELF_SLOTS = 3
+private const val HOTBAR_SLOT_COUNT = 9
 
 val SHELF_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:shelf") { ctx ->
@@ -81,14 +82,14 @@ val SHELF_RULE: Rule<InteractionActivityContext> =
 
         val shelfGroup = ShelfConnections.poweredGroup(ctx.instance, ctx.blockPosition, current)
         val updatedShelves = ArrayList<Pair<Point, Block>>(shelfGroup.size)
-        val firstHotbarSlot = 9 - shelfGroup.size * SHELF_SLOTS
-        var shelfSlot = 0
+        val firstHotbarSlot = HOTBAR_SLOT_COUNT - shelfGroup.size * SHELF_SLOTS
+        var hotbarOffset = 0
         var anySwapped = false
 
         for ((position, shelf) in shelfGroup) {
             val shelfItems = shelf.readBlockEntityItems().toMutableMap()
             for (slot in 0 until SHELF_SLOTS) {
-                val hotbarSlot = firstHotbarSlot + shelfSlot++
+                val hotbarSlot = firstHotbarSlot + hotbarOffset++
                 val placed = inventory.getItemStack(hotbarSlot)
                 val removed = shelfItems[slot]
                 if (!placed.isAir || removed != null) anySwapped = true
@@ -138,11 +139,9 @@ private fun targetedSlot(
 
 private fun section(
     position: Double,
-    max: Int,
+    sectionCount: Int,
 ): Int {
-    val targetedPixel = position * 16.0
-    val sectionSize = 16.0 / max
-    return floor(targetedPixel / sectionSize).toInt().coerceIn(0, max - 1)
+    return floor(position * sectionCount).toInt().coerceIn(0, sectionCount - 1)
 }
 
 fun BlockRulesetEditor.addShelves() {

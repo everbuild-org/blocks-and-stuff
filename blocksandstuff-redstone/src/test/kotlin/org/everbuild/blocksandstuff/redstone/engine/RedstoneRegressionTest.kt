@@ -5,7 +5,10 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Vec
 import net.minestom.server.instance.InstanceContainer
 import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.BlockFace
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
+import org.everbuild.blocksandstuff.redstone.MovementDirectionSource
+import org.everbuild.blocksandstuff.redstone.ReadContext
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.RedstoneRegistry
 import org.everbuild.blocksandstuff.redstone.UpdateContext
@@ -84,4 +87,54 @@ class RedstoneRegressionTest {
 
         assertEquals(componentCount, visited.size, "budget overflow must defer work rather than discard it")
     }
+
+    @Test
+    fun preferredMovementFaceOrdersEffectsWithoutDroppingOtherDirections() {
+        val effectOrder = mutableListOf<BlockFace>()
+        val registry = RedstoneRegistry()
+        registry.register(Block.REDSTONE_LAMP) { PreferredDirectionComponent() }
+        registry.register(Block.STONE) { DeferredEffectComponent(BlockFace.EAST, effectOrder) }
+        registry.register(Block.DIRT) { DeferredEffectComponent(BlockFace.NORTH, effectOrder) }
+        val simulator = RedstoneSimulator(instance, registry)
+        val preferencePosition = Vec(2.0, 64.0, 2.0)
+        val eastPosition = Vec(7.0, 64.0, 7.0)
+        val northPosition = Vec(12.0, 64.0, 12.0)
+
+        instance.setBlock(preferencePosition, Block.REDSTONE_LAMP)
+        instance.setBlock(eastPosition, Block.STONE)
+        instance.setBlock(northPosition, Block.DIRT)
+        simulator.onBlockChanged(preferencePosition)
+        simulator.onBlockChanged(eastPosition)
+        simulator.onBlockChanged(northPosition)
+
+        simulator.tick()
+
+        assertEquals(listOf(BlockFace.EAST, BlockFace.NORTH), effectOrder)
+    }
 }
+
+// <@AI_UNREVIEWED>
+private class PreferredDirectionComponent : RedstoneComponent, MovementDirectionSource {
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation =
+        if (ctx.block().getProperty("lit") == "true") {
+            ComponentEvaluation.None
+        } else {
+            ComponentEvaluation.SetState(ctx.block().withProperty("lit", "true"))
+        }
+
+    override fun movementFace(ctx: ReadContext): BlockFace = BlockFace.EAST
+}
+
+private class DeferredEffectComponent(
+    private val movementFace: BlockFace,
+    private val effectOrder: MutableList<BlockFace>,
+) : RedstoneComponent {
+    private var triggered = false
+
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
+        if (triggered) return ComponentEvaluation.None
+        triggered = true
+        return ComponentEvaluation.Trigger(movementFace) { effectOrder += movementFace }
+    }
+}
+// </<@AI_UNREVIEWED>

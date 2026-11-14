@@ -11,10 +11,11 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 abstract class BlockInventoryHandler : BlockHandler {
     protected fun trackInventory(
         inventory: Inventory,
+        instance: Instance,
         position: Point,
         stash: ItemStash? = PlayerInventoryStash,
     ) {
-        BlockInventoryTracker.track(inventory, position, stash)
+        BlockInventoryTracker.track(inventory, instance, position, stash)
     }
 
     override fun onDestroy(destroy: BlockHandler.Destroy) {
