@@ -1,4 +1,4 @@
-o<p style="text-align: center; margin-top: 40px;width: 100%;" align="center">
+<p style="text-align: center; margin-top: 40px;width: 100%;" align="center">
     <img src="./.github/blocksandstuff.png" style="width: 400px; margin: 0 auto;" />
     <p style="opacity: 90%;margin-top: -3px" align="center">Common Block & Fluid Implementations for Minestom</p>
 </p>
