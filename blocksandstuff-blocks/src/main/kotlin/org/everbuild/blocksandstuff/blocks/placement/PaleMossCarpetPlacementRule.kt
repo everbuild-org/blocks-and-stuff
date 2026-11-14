@@ -17,7 +17,7 @@ class PaleMossCarpetPlacementRule(block: Block) : BlockPlacementRule(block) {
                 collection.add(BlockFace.fromDirection(direction))
             }
         }
-        return block.withProperties(
+        return placementState.block.withProperties(
             mapOf(
                 "east" to if (collection.contains(BlockFace.EAST)) "low" else "none",
                 "west" to if (collection.contains(BlockFace.WEST)) "low" else "none",
@@ -40,7 +40,7 @@ class PaleMossCarpetPlacementRule(block: Block) : BlockPlacementRule(block) {
                 collection.add(BlockFace.fromDirection(direction))
             }
         }
-        return block.withProperties(
+        return updateState.currentBlock.withProperties(
             mapOf(
                 "east" to if (collection.contains(BlockFace.EAST)) "low" else "none",
                 "west" to if (collection.contains(BlockFace.WEST)) "low" else "none",

@@ -6,7 +6,7 @@
 ---
 
 <!-- TAG_REPLACEMENT -->
-[![Supported Block Placement Rules](https://img.shields.io/badge/Supported_Block_Placement_Rules-99%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.12.2--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
+[![Supported Block Placement Rules](https://img.shields.io/badge/Supported_Block_Placement_Rules-100%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-2.0.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
 <!-- /TAG_REPLACEMENT -->
 
 This library provides a set of common implementations for blocks and fluids tailored for the Minestom framework. Its
@@ -81,6 +81,11 @@ BlockPickup.enable()
 ```
 
 You can exclude blocks by putting a list of them as parameters to the `registerDefault` methods. You can also only register specific handlers using the `register` methods.
+
+Random ticking is provided by Twaddle's `twaddle-random-ticking` module, not by this library.
+`BlockBehaviorRuleRegistrations.registerDefault()` installs the global random-tick node and keeps
+`InstanceOptions.randomTickSpeed` in sync with Minestom. If you register behaviour groups manually via `register(...)`,
+call `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` yourself.
 
 ## Fluids API
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-fluids`

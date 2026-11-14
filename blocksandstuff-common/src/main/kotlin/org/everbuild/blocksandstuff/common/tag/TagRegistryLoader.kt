@@ -2,7 +2,6 @@ package org.everbuild.blocksandstuff.common.tag
 
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import java.io.File
 import java.net.URI
 import java.nio.file.FileSystem
 import java.nio.file.FileSystems
@@ -32,10 +31,7 @@ object TagRegistryLoader {
 
         iterateResources("/$folder/$type/", module) { path ->
             if (!path.fileName.toString().endsWith(".json")) return@iterateResources
-            val pathSpec = module.getResource(path.toString())!!
-            val file = File(pathSpec.file)
-            if (!file.extension.equals("json", true)) return@iterateResources
-            val value = gson.fromJson(pathSpec.readText(), JsonObject::class.java)
+            val value = gson.fromJson(Files.readString(path), JsonObject::class.java)
             val name = value.get("tag").asString
             val values = value.getAsJsonArray("contents").map { it.asString }.toSet()
 

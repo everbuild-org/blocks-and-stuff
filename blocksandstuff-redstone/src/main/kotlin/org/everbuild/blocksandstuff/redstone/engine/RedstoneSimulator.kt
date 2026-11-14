@@ -1,0 +1,568 @@
+@file:Suppress("UnstableApiUsage", "UnusedExpression")
+
+package org.everbuild.blocksandstuff.redstone.engine
+
+import net.kyori.adventure.key.Key
+import net.minestom.server.coordinate.Point
+import net.minestom.server.coordinate.Vec
+import net.minestom.server.instance.Chunk
+import net.minestom.server.instance.Instance
+import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
+import org.everbuild.blocksandstuff.redstone.MovementDirectionSource
+import org.everbuild.blocksandstuff.redstone.PowerQuery
+import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
+import org.everbuild.blocksandstuff.redstone.ReadContext
+import org.everbuild.blocksandstuff.redstone.RedstoneComponent
+import org.everbuild.blocksandstuff.redstone.RedstoneRegistry
+import org.everbuild.blocksandstuff.redstone.UpdateContext
+import org.slf4j.LoggerFactory
+import java.util.ArrayDeque
+import java.util.PriorityQueue
+import java.util.concurrent.ConcurrentLinkedQueue
+
+/**
+ * Per-instance event-driven redstone simulator.
+ *
+ * Block changes schedule the affected position and its neighbours for the next tick. Within a tick a
+ * delta-cycle FIFO settles combinational logic until quiescence; sequential components re-schedule
+ * themselves with their delay. Power is always derived via [weakSignal] / [directSignal], never read
+ * back from a plain block.
+ */
+class RedstoneSimulator(
+    private val instance: Instance,
+    private val registry: RedstoneRegistry,
+) : PowerQuery {
+    private enum class TickReason {
+        CHANGE,
+        SCHEDULED,
+        MOVED,
+    }
+
+    private data class ScheduledTick(
+        val tick: Long,
+        val sequence: Long,
+        val position: Point,
+        val reason: TickReason,
+    )
+
+    private data class NeighbourChange(
+        val changed: Point,
+        val face: BlockFace,
+    )
+
+    private data class Cached(
+        val blockKey: Key,
+        val component: RedstoneComponent,
+    )
+
+    private val logger = LoggerFactory.getLogger(RedstoneSimulator::class.java)
+    private val tickQueue = PriorityQueue<ScheduledTick>(compareBy({ it.tick }, { it.sequence }))
+    private val components = HashMap<Point, Cached>()
+    private val delta = ArrayDeque<Point>()
+    private val deltaSet = HashSet<Point>()
+    private val deltaReasons = HashMap<Point, MutableSet<TickReason>>()
+    private val neighbourChanges = HashMap<Point, MutableList<NeighbourChange>>()
+    private val pendingPistonEffects = ArrayList<Triple<BlockFace, Long, () -> Unit>>()
+    private val loadedChunks = ConcurrentLinkedQueue<Chunk>()
+    private val unloadedChunks = ConcurrentLinkedQueue<Chunk>()
+    private val suspendedTicks = HashMap<ChunkKey, MutableList<ScheduledTick>>()
+    private var preferredMovementFace: BlockFace? = null
+    private var currentTick = 0L
+    private var sequence = 0L
+    private var processing = false
+
+    private data class ChunkKey(
+        val x: Int,
+        val z: Int,
+    )
+
+    /** Delta-cycle steps processed by the most recent [tick]. Diagnostic hook for tests/metrics. */
+    var lastDeltaSteps: Int = 0
+        private set
+
+    /** Number of component hooks invoked by the most recent [tick]. */
+    var lastHookCalls: Int = 0
+        private set
+
+    /** Whether the most recent [tick] hit the delta-cycle guard. */
+    var lastNonConvergent: Boolean = false
+        private set
+
+    override fun weakSignal(
+        from: Point,
+        face: BlockFace,
+    ): Int {
+        val position = canonical(from)
+        val componentSignal = componentAt(position)?.emit(ReadContextImpl(position), face)?.weak ?: 0
+        val conducted = conductedSignal(position)
+        return maxOf(componentSignal, conducted).coerceIn(0, REDSTONE_MAX_POWER)
+    }
+
+    private fun conductedSignal(position: Point): Int {
+        if (!instance.isChunkLoaded(position)) return 0
+        if (!instance.getBlock(position).redstoneConductor()) return 0
+        var best = 0
+        for (face in BlockFace.entries) {
+            val neighbour = position.relative(face)
+            val signal = directSignal(neighbour, face.oppositeFace)
+            if (signal > best) {
+                best = signal
+                if (best >= REDSTONE_MAX_POWER) break
+            }
+        }
+        return best
+    }
+
+    override fun directSignal(
+        from: Point,
+        face: BlockFace,
+    ): Int {
+        val position = canonical(from)
+        val component = componentAt(position) ?: return 0
+        return component.emit(ReadContextImpl(position), face).direct.coerceIn(0, REDSTONE_MAX_POWER)
+    }
+
+    /** Called when a block in the instance changed; schedules re-evaluation for the next tick. */
+    fun onBlockChanged(
+        position: Point,
+        delayTicks: Int = 1,
+    ) {
+        val pos = canonical(position)
+        val delay = delayTicks.coerceAtLeast(1)
+        invalidate(pos)
+        schedule(pos, delay, TickReason.CHANGE)
+        for (face in BlockFace.entries) {
+            val neighbour = canonical(pos.relative(face))
+            schedule(neighbour, delay, TickReason.CHANGE)
+            if (!instance.isChunkLoaded(neighbour)) continue
+
+            neighbourChanges
+                .getOrPut(neighbour) { ArrayList() }
+                .add(NeighbourChange(pos, face.oppositeFace))
+
+            val block = instance.getBlock(neighbour)
+            if (!block.air() && componentAt(neighbour) == null) {
+                val visited = HashSet<Point>()
+                for (secondFace in BlockFace.entries) {
+                    scheduleWithConductors(neighbour.relative(secondFace), delay, visited)
+                }
+            }
+        }
+    }
+
+    private fun scheduleWithConductors(
+        position: Point,
+        delay: Int,
+        visited: MutableSet<Point>,
+    ) {
+        schedule(position, delay, TickReason.CHANGE)
+        if (!visited.add(position)) return
+        if (!instance.isChunkLoaded(position)) return
+
+        val block = instance.getBlock(position)
+        if (block.air() || componentAt(position) != null) return
+
+        if (block.key() == Block.SLIME_BLOCK.key() || block.key() == Block.HONEY_BLOCK.key()) {
+            for (face in BlockFace.entries) {
+                scheduleWithConductors(position.relative(face), delay, visited)
+            }
+        } else {
+            for (face in BlockFace.entries) schedule(position.relative(face), delay, TickReason.CHANGE)
+        }
+    }
+
+    /**
+     * Queues every redstone component in [chunk] for re-evaluation on the next [tick].
+     *
+     * Chunk events may fire off the main thread, so the scan itself is deferred to the simulator
+     * tick where all state is owned by the ticking thread.
+     */
+    fun onChunkLoaded(chunk: Chunk) {
+        loadedChunks.add(chunk)
+    }
+
+    /** Queues cached components and pending updates of [chunk] for removal on the next [tick]. */
+    fun onChunkUnloaded(chunk: Chunk) {
+        unloadedChunks.add(chunk)
+    }
+
+    private fun scanChunk(chunk: Chunk) {
+        val startX = chunk.chunkX * Chunk.CHUNK_SIZE_X
+        val startZ = chunk.chunkZ * Chunk.CHUNK_SIZE_Z
+        val minY = instance.cachedDimensionType.minY()
+
+        chunk.sections.forEachIndexed { index, section ->
+            val palette = section.blockPalette()
+            val sectionY = minY + index * Chunk.CHUNK_SECTION_SIZE
+            for (x in 0 until Chunk.CHUNK_SIZE_X) {
+                for (z in 0 until Chunk.CHUNK_SIZE_Z) {
+                    for (sectionRelativeY in 0 until Chunk.CHUNK_SECTION_SIZE) {
+                        val stateId = palette.get(x, sectionRelativeY, z)
+                        if (stateId == 0) continue
+                        if (registry.factoryFor(Block.fromStateId(stateId) ?: continue) == null) continue
+                        schedule(
+                            Vec(
+                                (startX + x).toDouble(),
+                                (sectionY + sectionRelativeY).toDouble(),
+                                (startZ + z).toDouble(),
+                            ),
+                            1,
+                        )
+                    }
+                }
+            }
+        }
+
+        val key = ChunkKey(chunk.chunkX, chunk.chunkZ)
+        suspendedTicks.remove(key)?.forEach { tick ->
+            tickQueue.add(
+                ScheduledTick(
+                    tick.tick.coerceAtLeast(currentTick + 1),
+                    sequence++,
+                    tick.position,
+                    tick.reason,
+                ),
+            )
+        }
+    }
+
+    private fun dropChunk(chunk: Chunk) {
+        val minX = chunk.chunkX * Chunk.CHUNK_SIZE_X
+        val maxX = minX + Chunk.CHUNK_SIZE_X - 1
+        val minZ = chunk.chunkZ * Chunk.CHUNK_SIZE_Z
+        val maxZ = minZ + Chunk.CHUNK_SIZE_Z - 1
+        val inChunk = { position: Point ->
+            position.blockX() in minX..maxX && position.blockZ() in minZ..maxZ
+        }
+
+        components.keys.removeIf(inChunk)
+        val suspended = ArrayList<ScheduledTick>()
+        tickQueue.removeIf { tick ->
+            if (inChunk(tick.position)) {
+                suspended.add(tick)
+                true
+            } else {
+                false
+            }
+        }
+        if (suspended.isNotEmpty()) {
+            suspendedTicks.getOrPut(ChunkKey(chunk.chunkX, chunk.chunkZ)) { ArrayList() }.addAll(suspended)
+        }
+        delta.removeIf(inChunk)
+        deltaSet.removeIf(inChunk)
+        deltaReasons.keys.removeIf(inChunk)
+        neighbourChanges.keys.removeIf(inChunk)
+    }
+
+    private fun processChunkChanges() {
+        while (true) {
+            val chunk = loadedChunks.poll() ?: break
+            scanChunk(chunk)
+        }
+        while (true) {
+            val chunk = unloadedChunks.poll() ?: break
+            dropChunk(chunk)
+        }
+    }
+
+    /** Number of positions waiting for a future tick. Diagnostic hook for tests. */
+    internal val pendingTickCount: Int get() = tickQueue.size
+
+    /** Number of cached component instances. Diagnostic hook for tests. */
+    internal val cachedComponentCount: Int get() = components.size
+
+    /** Processes all updates due for the current server tick. */
+    fun tick() {
+        currentTick++
+        processChunkChanges()
+
+        lastNonConvergent = false
+        while (tickQueue.isNotEmpty() && tickQueue.peek().tick <= currentTick) {
+            val next = tickQueue.poll()
+            deltaReasons.getOrPut(next.position) { HashSet() }.add(next.reason)
+            if (deltaSet.add(next.position)) delta.add(next.position)
+        }
+        if (delta.isEmpty()) {
+            lastDeltaSteps = 0
+            return
+        }
+
+        processing = true
+        try {
+            var guard = 0
+            var steps = 0
+            while (delta.isNotEmpty() || pendingPistonEffects.isNotEmpty()) {
+                while (delta.isNotEmpty()) {
+                    if (guard++ >= DELTA_LIMIT) {
+                        lastNonConvergent = true
+                        logger.warn(
+                            "Redstone delta cycle did not settle after {} steps in {}; carrying {} queued positions into the next tick",
+                            DELTA_LIMIT,
+                            instance.uuid,
+                            delta.size,
+                        )
+                        break
+                    }
+                    steps++
+                    val position = delta.removeFirst()
+                    deltaSet.remove(position)
+                    runHooks(position, deltaReasons.remove(position) ?: emptySet())
+                    evaluate(position)
+                }
+                if (guard >= DELTA_LIMIT) break
+
+                if (pendingPistonEffects.isNotEmpty()) {
+                    val preferred = preferredMovementFace
+                    val selected =
+                        if (preferred != null && pendingPistonEffects.any { it.first == preferred }) {
+                            pendingPistonEffects.filter { it.first == preferred }
+                        } else {
+                            pendingPistonEffects.toList()
+                        }
+                    pendingPistonEffects.clear()
+                    for ((_, _, effect) in selected.sortedBy { it.second }) {
+                        if (guard++ >= DELTA_LIMIT) {
+                            lastNonConvergent = true
+                            break
+                        }
+                        steps++
+                        effect()
+                    }
+                }
+            }
+            lastDeltaSteps = steps
+        } finally {
+            processing = false
+        }
+    }
+
+    private fun runHooks(
+        position: Point,
+        reasons: Set<TickReason>,
+    ) {
+        if (reasons.isEmpty()) return
+        val component = componentAt(position) ?: return
+        val ctx = UpdateContextImpl(position)
+
+        if (TickReason.MOVED in reasons) {
+            component.onMovementCompleted(ctx)
+        }
+        if (TickReason.SCHEDULED in reasons) {
+            component.onScheduledTick(ctx)
+        }
+        if (TickReason.CHANGE in reasons) {
+            val consumedFaces = component.consumes(ctx)
+            neighbourChanges.remove(position)?.forEach { change ->
+                if (change.face in consumedFaces) {
+                    component.onNeighbourChanged(ctx, change.changed, change.face)
+                }
+            }
+        }
+    }
+
+    private fun evaluate(position: Point) {
+        if (!instance.isChunkLoaded(position)) return
+        val block = instance.getBlock(position)
+        val component = componentAt(position) ?: return
+        val ctx = UpdateContextImpl(position)
+
+        when (val evaluation = component.evaluate(ctx)) {
+            is ComponentEvaluation.None -> {}
+
+            is ComponentEvaluation.SetState -> {
+                if (!sameState(evaluation.block, block)) {
+                    instance.setBlock(position, evaluation.block, false)
+                    invalidate(position)
+                }
+                if (component is MovementDirectionSource) {
+                    component.movementFace(ctx)?.let { preferredMovementFace = it }
+                }
+                enqueueNeighbours(position)
+                if (evaluation.scheduleTick) {
+                    schedule(position, component.delayTicks(ctx), TickReason.SCHEDULED)
+                }
+            }
+
+            is ComponentEvaluation.Trigger -> {
+                val effect = {
+                    evaluation.effect.apply(ctx)
+                    enqueueNeighbours(position)
+                }
+                if (evaluation.movementFace != null) {
+                    pendingPistonEffects.add(Triple(evaluation.movementFace, sequence++, effect))
+                } else {
+                    effect()
+                }
+            }
+
+            is ComponentEvaluation.UpdateNeighbours -> enqueueNeighbours(position)
+        }
+    }
+
+    private fun componentAt(position: Point): RedstoneComponent? {
+        val pos = canonical(position)
+        if (!instance.isChunkLoaded(pos)) return null
+        val block = instance.getBlock(pos)
+        val cached = components[pos]
+        if (cached != null && cached.blockKey == block.key()) return cached.component
+
+        val factory = registry.factoryFor(block)
+        if (factory == null) {
+            components.remove(pos)
+            return null
+        }
+
+        val component = factory(block)
+        components[pos] = Cached(block.key(), component)
+        return component
+    }
+
+    private fun sameState(
+        a: Block,
+        b: Block,
+    ): Boolean = a.stateId() == b.stateId() && a.nbt() == b.nbt()
+
+    private fun invalidate(position: Point) {
+        val pos = canonical(position)
+        val cached = components[pos] ?: return
+        if (!instance.isChunkLoaded(pos) || cached.blockKey != instance.getBlock(pos).key()) components.remove(pos)
+    }
+
+    /** Canonical block coordinates so `Pos` and `Vec` keys for the same block are treated equally. */
+    private fun canonical(position: Point): Point = position.asBlockVec()
+
+    private fun schedule(
+        position: Point,
+        delayTicks: Int,
+        reason: TickReason = TickReason.CHANGE,
+    ) {
+        val pos = canonical(position)
+        val scheduled = ScheduledTick(currentTick + delayTicks.coerceAtLeast(1), sequence++, pos, reason)
+        if (instance.isChunkLoaded(pos)) {
+            tickQueue.add(scheduled)
+            return
+        }
+        val key =
+            ChunkKey(
+                Math.floorDiv(pos.blockX(), Chunk.CHUNK_SIZE_X),
+                Math.floorDiv(pos.blockZ(), Chunk.CHUNK_SIZE_Z),
+            )
+        suspendedTicks.getOrPut(key) { ArrayList() }.add(scheduled)
+    }
+
+    private fun enqueue(position: Point) {
+        val pos = canonical(position)
+        if (!processing || !instance.isChunkLoaded(pos)) {
+            schedule(pos, 1)
+            return
+        }
+        if (deltaSet.add(pos)) delta.add(pos)
+    }
+
+    private fun enqueueMovementCompleted(position: Point) {
+        val pos = canonical(position)
+        if (!processing || !instance.isChunkLoaded(pos)) {
+            schedule(pos, 1, TickReason.MOVED)
+            return
+        }
+        deltaReasons.getOrPut(pos) { HashSet() }.add(TickReason.MOVED)
+        if (deltaSet.add(pos)) delta.add(pos)
+    }
+
+    private fun enqueueNeighbours(position: Point) {
+        val visited = HashSet<Point>()
+        for (face in BlockFace.entries) {
+            enqueueWithConductors(position.relative(face), visited)
+        }
+    }
+
+    /**
+     * Enqueues [position] and, for power-transmitting sticky blocks, the rest of their connected
+     * structure so mechanisms behind a slime/honey bridge still receive the update.
+     */
+    private fun enqueueWithConductors(
+        position: Point,
+        visited: MutableSet<Point>,
+    ) {
+        enqueue(position)
+        if (!visited.add(position)) return
+        if (!instance.isChunkLoaded(position)) return
+
+        val block = instance.getBlock(position)
+        if (block.air() || componentAt(position) != null) return
+
+        if (block.key() == Block.SLIME_BLOCK.key() || block.key() == Block.HONEY_BLOCK.key()) {
+            for (face in BlockFace.entries) {
+                enqueueWithConductors(position.relative(face), visited)
+            }
+        } else {
+            for (face in BlockFace.entries) enqueue(position.relative(face))
+        }
+    }
+
+    private open inner class ReadContextImpl(
+        override val position: Point,
+    ) : ReadContext {
+        override val instance: Instance get() = this@RedstoneSimulator.instance
+
+        override fun tick(): Long = this@RedstoneSimulator.currentTick
+
+        override fun block(pos: Point): Block = if (instance.isChunkLoaded(pos)) instance.getBlock(pos) else Block.AIR
+
+        override fun facing(block: Block): BlockFace? =
+            when (block.getProperty("facing")) {
+                "north" -> BlockFace.NORTH
+                "south" -> BlockFace.SOUTH
+                "east" -> BlockFace.EAST
+                "west" -> BlockFace.WEST
+                "up" -> BlockFace.TOP
+                "down" -> BlockFace.BOTTOM
+                else -> null
+            }
+
+        override fun power(): PowerQuery = this@RedstoneSimulator
+
+        override fun registry(): RedstoneRegistry = this@RedstoneSimulator.registry
+
+        override fun componentAt(pos: Point): RedstoneComponent? = this@RedstoneSimulator.componentAt(pos)
+
+        override fun preferredMovementFace(): BlockFace? = this@RedstoneSimulator.preferredMovementFace
+    }
+
+    private inner class UpdateContextImpl(
+        position: Point,
+    ) : ReadContextImpl(position),
+        UpdateContext {
+        override fun setState(
+            pos: Point,
+            block: Block,
+        ) {
+            if (sameState(instance.getBlock(pos), block)) return
+            instance.setBlock(pos, block, false)
+            invalidate(pos)
+            enqueue(pos)
+            enqueueNeighbours(pos)
+        }
+
+        override fun scheduleTick(
+            pos: Point,
+            delayTicks: Int,
+        ) {
+            schedule(pos, delayTicks, TickReason.SCHEDULED)
+        }
+
+        override fun markDirty(pos: Point) {
+            enqueue(pos)
+        }
+
+        override fun movementCompleted(pos: Point) {
+            enqueueMovementCompleted(pos)
+        }
+    }
+
+    private companion object {
+        private const val DELTA_LIMIT = 4096
+    }
+}

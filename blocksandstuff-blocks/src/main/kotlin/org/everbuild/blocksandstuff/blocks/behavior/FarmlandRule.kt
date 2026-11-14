@@ -1,38 +1,46 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import net.kyori.adventure.key.Key
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
-import org.everbuild.blocksandstuff.blocks.randomticking.RandomTickHandler
 import org.everbuild.blocksandstuff.common.utils.isWater
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.RandomTickActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.randomTick
 
-class FarmlandRule(private val block: Block) : BlockHandler, RandomTickHandler {
-    override fun getKey(): Key = block.key()
-    private fun hasNearbyWater(instance: Block.Getter, pos: Point): Boolean {
-        for (dy in 0..1) {
-            for (dx in -4..4) {
-                for (dz in -4..4) {
-                    if (dx == 0 && dy == 0 && dz == 0) continue
-                    val bp = pos.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
-                    if (instance.getBlock(bp).isWater()) return true
-                }
+val FARMLAND_RULE: Rule<RandomTickActivityContext> =
+    Rule("blocksandstuff:farmland") { ctx ->
+        val block = ctx.block
+        val updated =
+            if (hasNearbyWater(ctx.instance, ctx.blockPosition)) {
+                if (block.getProperty("moisture") == "7") null else block.withProperty("moisture", "7")
+            } else {
+                val moisture = (block.getProperty("moisture")?.toIntOrNull() ?: 0) - 1
+                if (moisture < 0) Block.DIRT else block.withProperty("moisture", moisture.toString())
+            }
+
+        if (updated == null) return@Rule RuleResult.Next
+        ctx.replaceBlock(updated)
+        RuleResult.Next
+    }
+
+private fun hasNearbyWater(
+    instance: Block.Getter,
+    pos: Point,
+): Boolean {
+    for (dy in 0..1) {
+        for (dx in -4..4) {
+            for (dz in -4..4) {
+                if (dx == 0 && dy == 0 && dz == 0) continue
+                val bp = pos.add(dx.toDouble(), dy.toDouble(), dz.toDouble())
+                if (instance.getBlock(bp).isWater()) return true
             }
         }
-        return false
     }
+    return false
+}
 
-    override fun onRandomTick(randomTick: RandomTickHandler.RandomTick): Block {
-        val instance = randomTick.instance
-        val blockPosition = randomTick.blockPosition
-        if (hasNearbyWater(instance, blockPosition)) {
-            return randomTick.block.withProperty("moisture", "7")
-        }
-        var moisture = randomTick.block.getProperty("moisture")?.toIntOrNull() ?: 0
-        moisture -= 1
-        if (moisture < 0) {
-            return Block.DIRT
-        }
-        return randomTick.block.withProperty("moisture", moisture.toString())
-    }
+fun BlockRulesetEditor.addFarmland() {
+    blocks(Block.FARMLAND) { randomTick.append { install(FARMLAND_RULE) } }
 }

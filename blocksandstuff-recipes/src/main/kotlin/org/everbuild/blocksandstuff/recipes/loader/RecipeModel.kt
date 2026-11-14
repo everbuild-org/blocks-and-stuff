@@ -81,6 +81,19 @@ sealed class RecipeModel {
     ) : RecipeModel()
 
     @Serializable
+    @SerialName("minecraft:campfire_cooking")
+    data class CampfireCookingRecipe(
+        override val type: String,
+        val category: String = "food",
+        val group: String? = null,
+        @SerialName("show_notification") val showNotification: Boolean = true,
+        @SerialName("cookingtime") val cookingTime: Int = 100,
+        val ingredient: IngredientOrIngredients,
+        val experience: Double = 0.0,
+        @Contextual val result: ItemStackRecipeResult
+    ) : RecipeModel()
+
+    @Serializable
     @SerialName("minecraft:blasting")
     data class BlastingRecipe(
         override val type: String,

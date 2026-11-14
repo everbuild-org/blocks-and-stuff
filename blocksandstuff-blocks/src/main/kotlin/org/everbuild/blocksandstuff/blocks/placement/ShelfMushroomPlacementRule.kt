@@ -21,7 +21,7 @@ class ShelfMushroomPlacementRule(block: Block) : BlockPlacementRule(block) {
                     BlockFace.fromDirection(direction)
                 )
             ) continue
-            return block.withProperty("facing", direction.name.lowercase())
+            return placementState.block.withProperty("facing", direction.name.lowercase())
         }
         return null
     }

@@ -46,7 +46,7 @@ class TorchPlacementRule(block: Block) : BlockPlacementRule(block) {
 
         if (blockFace == BlockFace.TOP) {
             if (!canSupportTorch(placementState.instance, supporting, blockFace)) return null
-            return block
+            return placementState.block
         }
 
         val torch = when (placementState.block.material()) {

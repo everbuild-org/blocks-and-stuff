@@ -2,6 +2,8 @@ package org.everbuild.blocksandstuff.blocks.group
 
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.blocks.behavior.CustomPlants
+import org.everbuild.blocksandstuff.blocks.behavior.SHELF_BLOCKS
 import org.everbuild.blocksandstuff.blocks.group.block.BlockGroup
 import org.everbuild.blocksandstuff.blocks.group.placement.PlacementGroup
 import org.everbuild.blocksandstuff.blocks.placement.*
@@ -141,7 +143,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
         group(
             all(
                 byTag("minecraft:beds"),
-                byBlock(Block.STRAW_BED)
+                byBlock(Block.STRAW_BED),
             ),
             ::BedPlacementRule,
         )
@@ -152,6 +154,14 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byTag("minecraft:crops"),
             ),
             ::CropPlacementRule,
+        )
+
+    val LEAVES =
+        group(
+            all(
+                byTag("minecraft:leaves"),
+            ),
+            ::LeavesPlacementRule,
         )
 
     val BELL =
@@ -182,6 +192,12 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
                 byBlock(Block.CAKE),
             ),
             ::SupportedBelowPlacementRule,
+        )
+
+    val FLOWER_POTS =
+        group(
+            byList(CustomPlants.allPottedBlocks() + Block.FLOWER_POT),
+            ::FlowerPotPlacementRule,
         )
 
     val PIN_BOTTOM_SUPPORTED =
@@ -366,9 +382,19 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val SIGNS =
         group(
             all(
-                byTag("minecraft:all_signs"),
+                byTag("minecraft:standing_signs"),
+                byTag("minecraft:wall_signs"),
             ),
             ::SignPlacementRule,
+        )
+
+    val HANGING_SIGNS =
+        group(
+            all(
+                byTag("minecraft:ceiling_hanging_signs"),
+                byTag("minecraft:wall_hanging_signs"),
+            ),
+            ::HangingSignPlacementRule,
         )
 
     val CHESTS =
@@ -473,6 +499,7 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
             all(
                 byTag("minecraft:small_flowers"),
                 byTag("minecraft:saplings"),
+                byBlock(Block.SWEET_BERRY_BUSH),
             ),
             ::GroundedPlantBlockPlacementRule,
         )
@@ -733,7 +760,44 @@ object VanillaPlacementRules : VanillaRuleset<PlacementGroup, Function<Block, Bl
     val SHELF_MUSHROOM =
         group(
             byBlock(Block.SHELF_MUSHROOM),
-            ::ShelfMushroomPlacementRule
+            ::ShelfMushroomPlacementRule,
+        )
+
+    val FALLING =
+        group(
+            all(
+                byBlock(Block.SAND),
+                byBlock(Block.RED_SAND),
+                byBlock(Block.GRAVEL),
+                byBlock(Block.SUSPICIOUS_SAND),
+                byBlock(Block.SUSPICIOUS_GRAVEL),
+                byBlock(Block.DRAGON_EGG),
+            ),
+            ::FallingBlockPlacementRule,
+        )
+
+    val FIRE =
+        group(
+            all(
+                byBlock(Block.FIRE),
+                byBlock(Block.SOUL_FIRE),
+            ),
+            ::FirePlacementRule,
+        )
+
+    val SHELVES =
+        group(
+            byList(SHELF_BLOCKS),
+            ::ShelfPlacementRule,
+        )
+
+    val NETHER_FUNGI =
+        group(
+            all(
+                byBlock(Block.CRIMSON_FUNGUS),
+                byBlock(Block.WARPED_FUNGUS),
+            ),
+            ::NetherFungusPlacementRule,
         )
 
     override fun createGroup(
