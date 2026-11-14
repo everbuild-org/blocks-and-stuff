@@ -12,7 +12,7 @@ class CartographyTableHandler : BlockInventoryHandler() {
             return true
         }
         val inventory = CartographyTableInventory()
-        trackInventory(inventory, interaction.blockPosition)
+        trackInventory(inventory, interaction.instance, interaction.blockPosition)
         interaction.player.openInventory(inventory)
         return false
     }

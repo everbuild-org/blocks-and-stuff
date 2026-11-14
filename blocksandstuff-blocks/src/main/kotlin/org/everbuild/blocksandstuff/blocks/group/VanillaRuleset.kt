@@ -11,11 +11,15 @@ import org.everbuild.blocksandstuff.blocks.group.block.ListBlockGroup
 import org.everbuild.blocksandstuff.blocks.group.block.TagBlockGroup
 
 abstract class VanillaRuleset<GroupImpl, Functor> {
-    val ALL: ArrayList<GroupImpl> = ArrayList()
+    @Suppress("PropertyName")
+    val allGroups: ArrayList<GroupImpl> = ArrayList()
+    @Deprecated("Use allGroups")
+    @Suppress("PropertyName")
+    val ALL: ArrayList<GroupImpl> get() = allGroups
 
     protected fun group(blockGroup: BlockGroup, valueFunction: Functor): GroupImpl {
         val result = createGroup(blockGroup, valueFunction)
-        ALL.add(result)
+        allGroups.add(result)
         return result
     }
 

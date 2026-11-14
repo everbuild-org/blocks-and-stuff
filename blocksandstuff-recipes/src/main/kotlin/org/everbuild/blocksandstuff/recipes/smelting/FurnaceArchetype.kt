@@ -11,6 +11,7 @@ import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.inventory.InventoryOpenEvent
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.instance.Instance
+import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.inventory.InventoryProperty
 import net.minestom.server.inventory.InventoryType
 import net.minestom.server.inventory.TransactionOption
@@ -23,7 +24,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBa
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
-import org.everbuild.blocksandstuff.recipes.util.transferInto
+import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
 
 abstract class FurnaceArchetype(
     override val title: Component,
@@ -42,7 +43,17 @@ abstract class FurnaceArchetype(
     inner class Backend(
         blockPos: Point,
         instance: Instance,
-    ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance)
+    ) : SingleBlockInventoryBackend(this@FurnaceArchetype, blockPos, instance) {
+        override val extractableSlots: Collection<Int> get() = listOf(SLOT_OUTPUT)
+        override val insertableSlots: Collection<Int> get() = listOf(SLOT_INPUT, SLOT_FUEL)
+
+        override fun insertableSlotsFor(face: BlockFace): Collection<Int> =
+            when (face) {
+                BlockFace.TOP -> listOf(SLOT_INPUT)
+                BlockFace.BOTTOM -> emptyList()
+                else -> listOf(SLOT_FUEL)
+            }
+    }
 
     inner class InventoryImpl(
         backend: PhysicalInventory,
@@ -117,37 +128,28 @@ abstract class FurnaceArchetype(
             update(event.player)
         }
 
-        override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
-            val playerInventory = player.inventory
+        override fun shiftClick(
+            player: Player,
+            slot: Int,
+            button: Int,
+        ): Boolean {
+            if (slot == SLOT_OUTPUT) {
+                val output = getItemStack(SLOT_OUTPUT)
+                if (output.isAir) return false
 
-            if (slot < size) {
-                // Shift-click inside the furnace -> move the item into the player inventory.
-                val clicked = getItemStack(slot)
-                if (clicked.isAir) return false
+                setItemStack(SLOT_OUTPUT, ItemStack.AIR)
+                val leftover = player.inventory.addItemStack(output, TransactionOption.ALL)
+                if (!leftover.isAir) DroppedItemFactory.maybeDropFromPlayer(player, leftover)
 
-                setItemStack(slot, ItemStack.AIR)
-                val leftover = playerInventory.addItemStack(clicked, TransactionOption.ALL)
-                if (!leftover.isAir) {
-                    DroppedItemFactory.maybeDropFromPlayer(player, leftover)
-                }
-
-                playerInventory.update()
+                player.inventory.update()
                 update(player)
                 return true
             }
 
-            // Shift-click from the player inventory -> route fuel to the fuel slot, everything else to the input slot.
-            val clickSlot = slot - size
-            val clicked = playerInventory.getItemStack(clickSlot)
-            if (clicked.isAir) return false
-
-            val target = if (FuelLoader.isFuel(clicked)) SLOT_FUEL else SLOT_INPUT
-            val leftover = transferInto(clicked, this, listOf(target))
-
-            playerInventory.setItemStack(clickSlot, leftover)
-            playerInventory.update()
-            update(player)
-            return true
+            return shiftClickToRoutedSlots(player, slot, SLOT_OUTPUT) { material ->
+                val stack = ItemStack.of(material)
+                if (FuelLoader.isFuel(stack)) SLOT_FUEL else SLOT_INPUT
+            }
         }
 
         fun onTick(ignored: InstanceTickEvent) {

@@ -1,26 +1,14 @@
 package org.everbuild.blocksandstuff.blocks.placement
 
-import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
+import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
 class TallFlowerPlacementRule (baseFlowerBlock: Block) : BlockPlacementRule(baseFlowerBlock) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val instance = placementState.instance
-        val placePos = placementState.placePosition
-
-        val upperPos = placePos.add(0.0, 1.0, 0.0)
-        if (!instance.getBlock(upperPos).replaceable()) {
-            return null
-        }
-
-        val lowerPos = placePos.sub(0.0, 1.0, 0.0)
-        if (!instance.getBlock(lowerPos).collisionShape().isFaceFull(BlockFace.TOP)) {
-            return null
-        }
+        val upperPos = placementState.upperHalfPositionIfSupported() ?: return null
 
         val lowerFlowerBlock = placementState.block
             .withProperty("half", "lower")
@@ -60,14 +48,7 @@ class TallFlowerPlacementRule (baseFlowerBlock: Block) : BlockPlacementRule(base
             return Block.AIR
         }
 
-        val blockBelow = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM))
-        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.collisionShape()
-                .isFaceFull(BlockFace.TOP)
-        ) {
-            DroppedItemFactory.maybeDrop(updateState)
-            (instance as Instance).setBlock(neighborPos, Block.AIR)
-            instance.setBlock(updateState.blockPosition, Block.AIR)
-        }
+        updateState.removeUnsupportedLowerHalf()
 
         return updateState.currentBlock
     }

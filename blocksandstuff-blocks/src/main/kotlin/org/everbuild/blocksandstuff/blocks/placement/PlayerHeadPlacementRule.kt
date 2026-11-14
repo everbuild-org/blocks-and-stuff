@@ -12,7 +12,7 @@ import org.everbuild.blocksandstuff.common.utils.sixteenStepRotation
 
 class PlayerHeadPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
-        val clickedFace = placementState.blockFace ?: return block
+        val clickedFace = placementState.blockFace ?: return placementState.block
         val nbt = placementState.usedItemStack?.get(DataComponents.PROFILE)?.let {
             val profile = ResolvableProfile.CODEC.encode(Transcoder.NBT, it).orElse(null) ?: return@let null
             CompoundBinaryTag.builder().put("profile", profile).build()
@@ -20,7 +20,7 @@ class PlayerHeadPlacementRule(block: Block) : BlockPlacementRule(block) {
         return when (clickedFace) {
             BlockFace.TOP, BlockFace.BOTTOM -> {
                 val rotation = placementState.sixteenStepRotation()
-                block.withProperty("rotation", rotation.toString())
+                placementState.block.withProperty("rotation", rotation.toString())
                     .let {
                         if (nbt != null) it.withNbt(nbt) else it
                     }

@@ -1,88 +1,75 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import net.kyori.adventure.key.Key
+import java.util.concurrent.ThreadLocalRandom
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
+import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.blocksandstuff.common.utils.isWater
-import java.util.concurrent.ThreadLocalRandom
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.DestroyActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.PlacementActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.TickActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.destroy
+import org.everbuild.twaddle.stacked_behaviour_block.type.place
+import org.everbuild.twaddle.stacked_behaviour_block.type.tick
 
-class ConcretePowderRule(val block: Block) : BlockHandler {
-    override fun getKey(): Key = block.key()
+private val concretePowders: Collection<Block> = BlockTags.getTaggedWith("minecraft:concrete_powders")
 
-    override fun onPlace(placement: BlockHandler.Placement) {
-        if (touchesWater(placement.instance, placement.blockPosition)) {
-            val solidBlock = solidify(placement.block)
-            placement.instance.scheduler().scheduleNextTick {
-                placement.instance.setBlock(placement.blockPosition, solidBlock)
+val CONCRETE_POWDER_PLACE_RULE: Rule<PlacementActivityContext> =
+    Rule("blocksandstuff:concrete_powder_place") { ctx ->
+        if (touchesWater(ctx.instance, ctx.blockPosition)) {
+            val solid = solidify(ctx.block)
+            ctx.instance.scheduler().scheduleNextTick {
+                ctx.instance.setBlock(ctx.blockPosition, solid)
             }
         }
+        RuleResult.Next
     }
 
-    override fun onDestroy(destroy: BlockHandler.Destroy) {
-        checkNeighboringConcretePowder(destroy.instance, destroy.blockPosition)
+val CONCRETE_POWDER_TICK_RULE: Rule<TickActivityContext> =
+    Rule("blocksandstuff:concrete_powder_tick") { ctx ->
+        if (ThreadLocalRandom.current().nextInt(5) == 0 && touchesWater(ctx.instance, ctx.blockPosition)) {
+            ctx.instance.setBlock(ctx.blockPosition, solidify(ctx.block))
+        }
+        RuleResult.Next
     }
 
-    override fun tick(tick: BlockHandler.Tick) {
-        if (ThreadLocalRandom.current().nextInt(5) == 0) {
-            if (touchesWater(tick.instance, tick.blockPosition)) {
-                val solidBlock = solidify(tick.block)
-                tick.instance.setBlock(tick.blockPosition, solidBlock)
-            }
+val CONCRETE_POWDER_DESTROY_RULE: Rule<DestroyActivityContext> =
+    Rule("blocksandstuff:concrete_powder_destroy") { ctx ->
+        checkNeighboringConcretePowder(ctx.instance, ctx.blockPosition)
+        RuleResult.Next
+    }
+
+fun BlockRulesetEditor.addConcretePowders() {
+    concretePowders.forEach { block ->
+        blocks(block) {
+            place.append { install(CONCRETE_POWDER_PLACE_RULE) }
+            tick.append { install(CONCRETE_POWDER_TICK_RULE) }
+            destroy.append { install(CONCRETE_POWDER_DESTROY_RULE) }
         }
     }
+}
 
-    override fun isTickable(): Boolean {
-        return true
-    }
+private fun neighbors(position: Point): List<Point> =
+    BlockFace.entries.map { position.add(it.toDirection().vec()) }
 
-    private fun touchesWater(instance: Instance, position: Point): Boolean {
-        val directions = arrayOf(
-            intArrayOf(1, 0, 0),   // Osten
-            intArrayOf(-1, 0, 0),  // Westen
-            intArrayOf(0, 1, 0),   // Oben
-            intArrayOf(0, -1, 0),  // Unten
-            intArrayOf(0, 0, 1),   // Süden
-            intArrayOf(0, 0, -1)   // Norden
-        )
-        
-        for (dir in directions) {
-            val neighborPos = position.add(dir[0].toDouble(), dir[1].toDouble(), dir[2].toDouble())
-            val neighborBlock = instance.getBlock(neighborPos)
-            if (neighborBlock.isWater()) {
-                return true
-            }
-        }
-        return false
-    }
+private fun touchesWater(instance: Instance, position: Point): Boolean =
+    neighbors(position).any { instance.getBlock(it).isWater() }
 
-    private fun checkNeighboringConcretePowder(instance: Instance, position: Point) {
-        val directions = arrayOf(
-            intArrayOf(1, 0, 0),   // Osten
-            intArrayOf(-1, 0, 0),  // Westen
-            intArrayOf(0, 1, 0),   // Oben
-            intArrayOf(0, -1, 0),  // Unten
-            intArrayOf(0, 0, 1),   // Süden
-            intArrayOf(0, 0, -1)   // Norden
-        )
-        
-        for (dir in directions) {
-            val neighborPos = position.add(dir[0].toDouble(), dir[1].toDouble(), dir[2].toDouble())
-            val neighborBlock = instance.getBlock(neighborPos)
-            if (neighborBlock.name().endsWith("_concrete_powder")) {
-                if (touchesWater(instance, neighborPos)) {
-                    val solidBlock = solidify(neighborBlock)
-                    instance.setBlock(neighborPos, solidBlock)
-                }
-            }
+private fun checkNeighboringConcretePowder(instance: Instance, position: Point) {
+    for (neighborPos in neighbors(position)) {
+        val neighbor = instance.getBlock(neighborPos)
+        if (neighbor.name().endsWith("_concrete_powder") && touchesWater(instance, neighborPos)) {
+            instance.setBlock(neighborPos, solidify(neighbor))
         }
     }
+}
 
-    private fun solidify(powderBlock: Block): Block {
-        val powderName = powderBlock.name()
-        val concreteName = powderName.replace("_concrete_powder", "_concrete")
-        val concreteBlock = Block.fromKey(concreteName)
-        return concreteBlock ?: powderBlock
-    }
+private fun solidify(powderBlock: Block): Block {
+    val concreteName = powderBlock.name().replace("_concrete_powder", "_concrete")
+    return Block.fromKey(concreteName) ?: powderBlock
 }

@@ -27,7 +27,7 @@ object MinestomFluids {
     val UPDATES: MutableMap<Instance, MutableMap<Long, MutableSet<Point>>> = ConcurrentHashMap()
 
     @Suppress("UnstableApiUsage")
-    val registry: DynamicRegistry<Fluid> = DynamicRegistry.create<Fluid>(Key.key("blocksandstuff:fluids"))
+    val registry: DynamicRegistry<Fluid> = DynamicRegistry.create(Key.key("blocksandstuff:fluids"))
         @JvmStatic get
 
     val EMPTY: RegistryKey<Fluid> = registry.register("minecraft:empty", EmptyFluid())
@@ -40,6 +40,19 @@ object MinestomFluids {
             }?.let { registry.getKey(it) } ?: EMPTY
 
     fun getFluidInstanceOnBlock(block: Block): Fluid = registry.values().firstOrNull { it.isInTile(block) } ?: registry[EMPTY]!!
+
+    internal fun scheduleUpdateAndNeighbors(
+        instance: Instance,
+        position: Point,
+        block: Block,
+    ) {
+        scheduleTick(instance, position, block)
+        for (face in net.minestom.server.instance.block.BlockFace.entries) {
+            val neighbor = position.relative(face)
+            val neighborBlock = instance.getBlock(neighbor)
+            if (getFluidOnBlock(neighborBlock) !== EMPTY) scheduleTick(instance, neighbor, neighborBlock)
+        }
+    }
 
     fun onTick(event: InstanceTickEvent) {
         val currentUpdate: Set<Point>? =

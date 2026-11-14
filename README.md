@@ -6,7 +6,7 @@
 ---
 
 <!-- TAG_REPLACEMENT -->
-[![Supported Block Placement Rules](https://img.shields.io/badge/Supported_Block_Placement_Rules-99%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-1.12.2--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
+[![Supported Block Placement Rules](https://img.shields.io/badge/Supported_Block_Placement_Rules-100%25-green?style=for-the-badge)](TODO.md) [![Latest Version](https://img.shields.io/badge/Latest_Version-2.0.0--SNAPSHOT-green?style=for-the-badge)](https://mvn.everbuild.org/#/public/org/everbuild/blocksandstuff)
 <!-- /TAG_REPLACEMENT -->
 
 This library provides a set of common implementations for blocks and fluids tailored for the Minestom framework. Its
@@ -31,9 +31,10 @@ See the sections below for installation instructions, versioning details, and co
 
 # Installation & Usage
 
-Blocks-and-Stuff is split into four modules:
+Blocks-and-Stuff is split into five modules:
 - `blocksandstuff-common` contains common APIs for blocksandstuff and your own code to communicate
 - `blocksandstuff-blocks` contains block implementations, both placement and interaction
+- `blocksandstuff-redstone` contains the event-driven redstone engine and vanilla components.
 - `blocksandstuff-fluids` contains fluid implementations.
 - `blocksandstuff-recipes` contains recipe implementations, although without the actual recipes themselves.
 
@@ -73,14 +74,28 @@ BlockPlacementRuleRegistrations.registerDefault()
 // Register all default block behaviors
 BlockBehaviorRuleRegistrations.registerDefault()
 
-// Register auto-adding handlers to placed blocks
-PlacedHandlerRegistration.registerDefault()
+// Register container block handlers
+ContainerRegistrations.registerDefault()
 
 // Pick-Block behaviour
-BlockPickup.enable()
+PlayerPickBlockHandler.enable()
 ```
 
 You can exclude blocks by putting a list of them as parameters to the `registerDefault` methods. You can also only register specific handlers using the `register` methods.
+
+Random ticking is provided by Twaddle's `twaddle-random-ticking` module, not by this library.
+`BlockBehaviorRuleRegistrations.registerDefault()` installs the global random-tick node and keeps
+`InstanceOptions.randomTickSpeed` in sync with Minestom. If you register behaviour groups manually via `register(...)`,
+call `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` yourself.
+
+## Redstone API
+> Artifact: `org.everbuild.blocksandstuff:blocksandstuff-redstone`
+
+Register the vanilla redstone components and enable the per-instance simulator:
+```kt
+RedstoneRegistrations.registry.registerVanillaComponents()
+RedstoneRegistrations.enable()
+```
 
 ## Fluids API
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-fluids`

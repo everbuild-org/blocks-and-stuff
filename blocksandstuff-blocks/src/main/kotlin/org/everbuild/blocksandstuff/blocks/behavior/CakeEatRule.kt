@@ -1,43 +1,42 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import net.kyori.adventure.key.Key
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.registry.TagKey
 import org.everbuild.blocksandstuff.blocks.event.CakeEatEvent
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
 
-class CakeEatRule(val block: Block) : BlockHandler {
-    private val maxSlices = 7
-    private val candles = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:candles"))!!
-    override fun getKey(): Key = block.key()
+private const val MAX_SLICES = 7
+private val candles = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:candles"))!!
 
-    override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
-        if (interaction.player.isSneaking) return super.onInteract(interaction)
-        val currentSlices = interaction.block.getProperty("bites")!!.toInt()
-        if (currentSlices == 0 && candles.contains(
-                interaction.player.getItemInHand(interaction.hand).material().block() ?: Block.AIR
-            )
-        ) {
-            return super.onInteract(interaction)
-        }
+val CAKE_EAT_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:cake_eat") { ctx ->
+        if (ctx.player.isSneaking) return@Rule RuleResult.Next
+
+        val currentSlices = ctx.block.getProperty("bites")!!.toInt()
+        val heldBlock = ctx.player.itemInMainHand.material().block() ?: Block.AIR
+        if (currentSlices == 0 && candles.contains(heldBlock)) return@Rule RuleResult.Next
 
         EventDispatcher.callCancellable(
-            CakeEatEvent(
-                interaction.player,
-                interaction.block,
-                interaction.blockPosition.asBlockVec()
-            )
+            CakeEatEvent(ctx.player, ctx.block, ctx.blockPosition.asBlockVec()),
         ) {
-            if (currentSlices < (maxSlices - 1)) {
-                interaction.instance.setBlock(
-                    interaction.blockPosition,
-                    interaction.block.withProperty("bites", (currentSlices + 1).toString())
+            if (currentSlices < MAX_SLICES - 1) {
+                ctx.instance.setBlock(
+                    ctx.blockPosition,
+                    ctx.block.withProperty("bites", (currentSlices + 1).toString()),
                 )
             } else {
-                interaction.instance.setBlock(interaction.blockPosition, Block.AIR)
+                ctx.instance.setBlock(ctx.blockPosition, Block.AIR)
             }
         }
-        return false
+
+        RuleResult.Consume
     }
+
+fun BlockRulesetEditor.addCakes() {
+    blocks(Block.CAKE) { interact.append { install(CAKE_EAT_RULE) } }
 }

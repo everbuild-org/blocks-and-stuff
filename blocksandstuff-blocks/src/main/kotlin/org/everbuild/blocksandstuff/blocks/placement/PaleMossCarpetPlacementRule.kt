@@ -9,44 +9,29 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 class PaleMossCarpetPlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         if (placementState.instance.getBlock(placementState.placePosition.add(0.0, -1.0, 0.0)).air()) return null
-        val collection = mutableListOf<BlockFace>()
-        for (direction in Direction.HORIZONTAL) {
-            if (placementState.instance.getBlock(placementState.placePosition.relative(BlockFace.fromDirection(direction)))
-                    .collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
-            ) {
-                collection.add(BlockFace.fromDirection(direction))
-            }
-        }
-        return block.withProperties(
-            mapOf(
-                "east" to if (collection.contains(BlockFace.EAST)) "low" else "none",
-                "west" to if (collection.contains(BlockFace.WEST)) "low" else "none",
-                "north" to if (collection.contains(BlockFace.NORTH)) "low" else "none",
-                "south" to if (collection.contains(BlockFace.SOUTH)) "low" else "none"
-            )
-        )
+        return withConnections(placementState.instance, placementState.placePosition, placementState.block)
     }
 
     override fun blockUpdate(updateState: UpdateState): Block {
-        val collection = mutableListOf<BlockFace>()
         if (updateState.instance.getBlock(updateState.blockPosition.add(0.0, -1.0, 0.0)).air()) {
             DroppedItemFactory.maybeDrop(updateState)
             return Block.AIR
         }
-        for (direction in Direction.HORIZONTAL) {
-            if (updateState.instance.getBlock(updateState.blockPosition.relative(BlockFace.fromDirection(direction)))
-                    .collisionShape().isFaceFull(BlockFace.fromDirection(direction).oppositeFace)
-            ) {
-                collection.add(BlockFace.fromDirection(direction))
-            }
-        }
-        return block.withProperties(
-            mapOf(
-                "east" to if (collection.contains(BlockFace.EAST)) "low" else "none",
-                "west" to if (collection.contains(BlockFace.WEST)) "low" else "none",
-                "north" to if (collection.contains(BlockFace.NORTH)) "low" else "none",
-                "south" to if (collection.contains(BlockFace.SOUTH)) "low" else "none"
-            )
-        )
+        return withConnections(updateState.instance, updateState.blockPosition, updateState.currentBlock)
+    }
+
+    private fun withConnections(
+        instance: Block.Getter,
+        position: net.minestom.server.coordinate.Point,
+        block: Block,
+    ): Block {
+        val connections =
+            Direction.HORIZONTAL.mapNotNull { direction ->
+                val face = BlockFace.fromDirection(direction)
+                face.takeIf {
+                    instance.getBlock(position.relative(face)).collisionShape().isFaceFull(face.oppositeFace)
+                }
+            }.toSet()
+        return block.withHorizontalProperties { face -> if (face in connections) "low" else "none" }
     }
 }

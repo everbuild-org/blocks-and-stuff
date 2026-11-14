@@ -1,89 +1,93 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
-import net.kyori.adventure.key.Key
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.LivingEntity
 import net.minestom.server.entity.damage.Damage
 import net.minestom.server.entity.damage.DamageType
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
-import org.everbuild.blocksandstuff.blocks.randomticking.RandomTickHandler
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
-import java.util.*
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.RandomTickActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.TouchActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
+import org.everbuild.twaddle.stacked_behaviour_block.type.randomTick
+import org.everbuild.twaddle.stacked_behaviour_block.type.touch
+import java.util.Random
 import kotlin.math.abs
 
-class SweetBerryBushRule(private val block: Block) : BlockHandler, RandomTickHandler {
-    override fun getKey(): Key = block.key()
-
-    override fun onRandomTick(randomTick: RandomTickHandler.RandomTick): Block? {
-        val instance = randomTick.instance
-        val blockPosition = randomTick.blockPosition
-        val age = randomTick.block.getProperty("age")?.toIntOrNull() ?: 0
-
-        if (instance.getSkyLight(blockPosition.blockX, blockPosition.blockY, blockPosition.blockZ) < 9)
-            return randomTick.block
-
-        if (Random().nextInt(5) == 0 && age < 3) {
-            return randomTick.block.withProperty("age", (age + 1).toString())
+val SWEET_BERRY_BUSH_RANDOM_TICK_RULE: Rule<RandomTickActivityContext> =
+    Rule("blocksandstuff:sweet_berry_bush_random_tick") { ctx ->
+        val age = ctx.block.getProperty("age")?.toIntOrNull() ?: 0
+        if (age >= 3) return@Rule RuleResult.Next
+        if (ctx.instance.getSkyLight(ctx.blockPosition.blockX, ctx.blockPosition.blockY, ctx.blockPosition.blockZ) < 9) {
+            return@Rule RuleResult.Next
         }
-
-        return randomTick.block
+        if (Random().nextInt(5) == 0) {
+            ctx.replaceBlock(ctx.block.withProperty("age", (age + 1).toString()))
+        }
+        RuleResult.Next
     }
 
-    override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
-        val player = interaction.player
+val SWEET_BERRY_BUSH_INTERACT_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:sweet_berry_bush_interact") { ctx ->
+        val player = ctx.player
         val itemInHand = player.itemInMainHand
-        val instance = interaction.instance
-        val blockPosition = interaction.blockPosition
-        val age = interaction.block.getProperty("age")?.toIntOrNull() ?: 0
+        val age = ctx.block.getProperty("age")?.toIntOrNull() ?: 0
 
-        if (age < 3) {
-            if (itemInHand.material().equals(Material.BONE_MEAL)) {
-                instance.setBlock(blockPosition, interaction.block.withProperty("age", (age + 1).toString()))
-
-                if (!player.gameMode.equals(GameMode.CREATIVE)) {
-                    player.itemInMainHand = itemInHand.withAmount(itemInHand.amount() - 1)
-                }
-            }
-        } else {
+        if (age > 1) {
+            val count = 1 + Random().nextInt(2) + if (age == 3) 1 else 0
             DroppedItemFactory.maybeDrop(
-                instance,
-                blockPosition,
-                ItemStack.of(Material.SWEET_BERRIES, Random().nextInt(2, 3))
+                ctx.instance,
+                ctx.blockPosition,
+                ItemStack.of(Material.SWEET_BERRIES, count),
             )
-
-            instance.setBlock(blockPosition, interaction.block.withProperty("age", "1"))
+            ctx.replaceBlock(ctx.block.withProperty("age", "1"))
+        } else if (itemInHand.material() == Material.BONE_MEAL) {
+            ctx.replaceBlock(ctx.block.withProperty("age", (age + 1).toString()))
+            if (player.gameMode != GameMode.CREATIVE) {
+                player.itemInMainHand = itemInHand.withAmount(itemInHand.amount() - 1)
+            }
         }
-        return super.onInteract(interaction)
+
+        RuleResult.Consume
     }
 
-    override fun onTouch(touch: BlockHandler.Touch) {
-        val entity = touch.touching
-
-        if (entity !is LivingEntity) return
-        if (entity.entityType == EntityType.FOX || entity.entityType == EntityType.BEE) return
-
-        if (touch.block.getProperty("age")?.toIntOrNull() != 0) {
-            val movementDistance = entity.previousPosition.sub(entity.position)
-            if (movementDistance.x() > 0 || movementDistance.z() > 0) {
-                val dx = abs(movementDistance.x())
-                val dz = abs(movementDistance.z())
-                if (dx >= 0.003F || dz >= 0.003F) {
-                    entity.damage(
-                        Damage(
-                            DamageType.SWEET_BERRY_BUSH,
-                            touch.touching,
-                            null,
-                            touch.blockPosition,
-                            1.0F
+val SWEET_BERRY_BUSH_TOUCH_RULE: Rule<TouchActivityContext> =
+    Rule("blocksandstuff:sweet_berry_bush_touch") { ctx ->
+        val entity = ctx.touching
+        if (entity is LivingEntity && entity.entityType != EntityType.FOX && entity.entityType != EntityType.BEE) {
+            if (ctx.block.getProperty("age")?.toIntOrNull() != 0) {
+                val movementDistance = entity.previousPosition.sub(entity.position)
+                if (movementDistance.x() > 0 || movementDistance.z() > 0) {
+                    val dx = abs(movementDistance.x())
+                    val dz = abs(movementDistance.z())
+                    if (dx >= 0.003F || dz >= 0.003F) {
+                        entity.damage(
+                            Damage(
+                                DamageType.SWEET_BERRY_BUSH,
+                                ctx.touching,
+                                null,
+                                ctx.blockPosition,
+                                1.0F,
+                            ),
                         )
-                    )
+                    }
                 }
             }
         }
-        super.onTouch(touch)
+        RuleResult.Next
+    }
+
+fun BlockRulesetEditor.addSweetBerryBushes() {
+    blocks(Block.SWEET_BERRY_BUSH) {
+        interact.append { install(SWEET_BERRY_BUSH_INTERACT_RULE) }
+        touch.append { install(SWEET_BERRY_BUSH_TOUCH_RULE) }
+        randomTick.append { install(SWEET_BERRY_BUSH_RANDOM_TICK_RULE) }
     }
 }

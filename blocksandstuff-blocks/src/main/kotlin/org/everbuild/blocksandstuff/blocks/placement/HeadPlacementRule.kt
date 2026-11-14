@@ -14,7 +14,8 @@ class HeadPlacementRule(block: Block) : BlockPlacementRule(block) {
             Block.WITHER_SKELETON_SKULL to Block.WITHER_SKELETON_WALL_SKULL,
             Block.ZOMBIE_HEAD to Block.ZOMBIE_WALL_HEAD,
             Block.CREEPER_HEAD to Block.CREEPER_WALL_HEAD,
-            Block.DRAGON_HEAD to Block.DRAGON_WALL_HEAD
+            Block.DRAGON_HEAD to Block.DRAGON_WALL_HEAD,
+            Block.PIGLIN_HEAD to Block.PIGLIN_WALL_HEAD
         )
     }
 

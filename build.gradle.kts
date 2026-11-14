@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.4.20"
+    kotlin("jvm") version "2.4.21"
 }
 
 group = "org.everbuild.blocksandstuff"
-version = "1.12.2-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 
 allprojects {
     group = rootProject.group
@@ -15,6 +15,10 @@ allprojects {
             content {
                 includeModule("net.minestom", "minestom")
             }
+        }
+        maven {
+            name = "asordaPublic"
+            url = uri("https://mvn.everbuild.org/public")
         }
         maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
         maven("https://repo.papermc.io/repository/maven-public/")
