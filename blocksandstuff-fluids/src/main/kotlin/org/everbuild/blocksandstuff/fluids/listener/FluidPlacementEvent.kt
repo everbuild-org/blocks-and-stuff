@@ -8,7 +8,6 @@ import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.event.player.PlayerBlockInteractEvent
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler.PlayerPlacement
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
@@ -71,15 +70,7 @@ fun setupFluidPlacementEvent() {
             )
 
             if (blockToPlace == Block.WATER || blockToPlace == Block.LAVA) {
-                MinestomFluids.scheduleTick(instance, placePosition, blockToPlace)
-
-                for (face in BlockFace.entries) {
-                    val neighbor = placePosition.relative(face)
-                    val neighborBlock = instance.getBlock(neighbor)
-                    if (MinestomFluids.getFluidOnBlock(neighborBlock) !== MinestomFluids.EMPTY) {
-                        MinestomFluids.scheduleTick(instance, neighbor, neighborBlock)
-                    }
-                }
+                MinestomFluids.scheduleUpdateAndNeighbors(instance, placePosition, blockToPlace)
             }
 
             if (event.player.gameMode != GameMode.CREATIVE) {

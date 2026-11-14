@@ -23,7 +23,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.isIn
-import org.everbuild.blocksandstuff.recipes.util.transferInto
+import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
 
 class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("container.loom")), BlockInventoryDrops {
     companion object {
@@ -78,40 +78,8 @@ class LoomInventory : Inventory(InventoryType.LOOM, Component.translatable("cont
             }
     }
 
-    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
-        val playerInventory = player.inventory
-
-        if (slot == RESULT_SLOT) return false
-
-        if (slot < size) {
-            // Shift-click inside the loom -> move the item into the player inventory.
-            val clicked = getItemStack(slot)
-            if (clicked.isAir) return false
-
-            setItemStack(slot, ItemStack.AIR)
-            val leftover = playerInventory.addItemStack(clicked, TransactionOption.ALL)
-            if (!leftover.isAir) {
-                DroppedItemFactory.maybeDropFromPlayer(player, leftover)
-            }
-
-            playerInventory.update()
-            update(player)
-            return true
-        }
-
-        // Shift-click from the player inventory -> route into the matching loom slot.
-        val clickSlot = slot - size
-        val clicked = playerInventory.getItemStack(clickSlot)
-        if (clicked.isAir) return false
-
-        val target = slotFor(clicked.material()) ?: return false
-        val leftover = transferInto(clicked, this, listOf(target))
-
-        playerInventory.setItemStack(clickSlot, leftover)
-        playerInventory.update()
-        update(player)
-        return true
-    }
+    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean =
+        shiftClickToRoutedSlots(player, slot, RESULT_SLOT, ::slotFor)
 
     private fun updateResult() {
         setItemStack(RESULT_SLOT, computeResult())

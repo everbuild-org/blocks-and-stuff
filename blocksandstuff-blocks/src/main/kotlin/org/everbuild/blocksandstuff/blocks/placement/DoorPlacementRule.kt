@@ -5,7 +5,6 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 import org.everbuild.blocksandstuff.common.utils.rotateL
 import org.everbuild.blocksandstuff.common.utils.rotateR
@@ -98,16 +97,7 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
     override fun blockPlace(placementState: PlacementState): Block? {
         val instance = placementState.instance
         val placePos = placementState.placePosition
-
-        val upperPos = placePos.add(0.0, 1.0, 0.0)
-        if (!instance.getBlock(upperPos).replaceable()) {
-            return null
-        }
-
-        val lowerPos = placePos.sub(0.0, 1.0, 0.0)
-        if (!instance.getBlock(lowerPos).collisionShape().isFaceFull(BlockFace.TOP)) {
-            return null
-        }
+        val upperPos = placementState.upperHalfPositionIfSupported() ?: return null
 
         val facing = placementState.getNearestHorizontalLookingDirection().opposite()
 
@@ -159,22 +149,25 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         }
 
         val neighborBlock = instance.getBlock(neighborPos)
+        val neighborHalf = neighborBlock.getProperty("half")
+        val neighborFacing = neighborBlock.getProperty("facing")
+        val neighborHinge = neighborBlock.getProperty("hinge")
+        val currentFacing = currentBlock.getProperty("facing")
+        val currentHinge = currentBlock.getProperty("hinge")
+        val neighborIsOtherHalf =
+            neighborHalf == expectedOtherHalf &&
+                neighborFacing != null &&
+                neighborFacing == currentFacing &&
+                neighborHinge == currentHinge
 
-        if (!neighborBlock.compare(updateState.currentBlock) || neighborBlock.getProperty("half") != expectedOtherHalf) {
+        if (!neighborIsOtherHalf) {
             if (neighborBlock.compare(updateState.currentBlock)) {
                 (instance as Instance).setBlock(neighborPos, Block.AIR)
             }
             return Block.AIR
         }
 
-        val blockBelow = instance.getBlock(blockPosition.relative(BlockFace.BOTTOM))
-        if (updateState.currentBlock.getProperty("half") == "lower" && !blockBelow.collisionShape()
-                .isFaceFull(BlockFace.TOP)
-        ) {
-            DroppedItemFactory.maybeDrop(updateState)
-            (instance as Instance).setBlock(neighborPos, Block.AIR)
-            instance.setBlock(updateState.blockPosition, Block.AIR)
-        }
+        updateState.removeUnsupportedLowerHalf()
 
         return updateState.currentBlock
     }

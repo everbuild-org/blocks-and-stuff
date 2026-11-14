@@ -59,9 +59,15 @@ ${supported.sorted().joinToString("\n") { "- [x] $it" }}
 
 File("TODO-placement.md").writeText(generatePlacementMarkdown())
 
+val behaviourSupported =
+    File(".github/list-producer/behaviour-supported-blocks.txt")
+        .let { if (it.exists()) it.readLines().filter(String::isNotBlank) else emptyList() }
+
 fun generateBehaviourMarkdown(): String {
-    val supported = listOf<String>()
-    val unsupported = Block.values().filter { !supported.contains(it.key().asString()) }.map { it.key().asString() }
+    val unsupported =
+        Block.values()
+            .map { it.key().asString() }
+            .filter { !behaviourSupported.contains(it) }
     return """
 # Block Behavior Implementation Status
 
@@ -71,11 +77,15 @@ fun generateBehaviourMarkdown(): String {
 ${unsupported.sorted().joinToString("\n") { "- [ ] $it" }}
 
 ## Supported Blocks
-${supported.sorted().joinToString("\n") { "- [x] $it" }}
+${behaviourSupported.sorted().joinToString("\n") { "- [x] $it" }}
     """.trimIndent()
 }
 
 File("TODO-behavior.md").writeText(generateBehaviourMarkdown())
+
+val behaviourUnsupportedWithState =
+    allWithState.filter { !behaviourSupported.contains(it) }
+println("WARN: ${behaviourUnsupportedWithState.size} blocks with state without behaviour (siehe TODO-behavior.md)")
 
 fun getVersion(): String {
     val buildGradleContent = File("build.gradle.kts").readText()

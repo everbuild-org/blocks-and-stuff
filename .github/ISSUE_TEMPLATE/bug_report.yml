@@ -33,6 +33,7 @@ body:
         - blocksandstuff-common
         - blocksandstuff-fluids
         - blocksandstuff-recipes
+        - blocksandstuff-redstone
         - testserver
         - build or publishing
         - documentation

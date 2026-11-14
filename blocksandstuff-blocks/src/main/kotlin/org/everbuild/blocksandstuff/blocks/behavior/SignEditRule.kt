@@ -1,76 +1,84 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import kotlin.math.abs
 import kotlin.math.atan2
-import net.kyori.adventure.key.Key
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.Player
 import net.minestom.server.event.EventDispatcher
 import net.minestom.server.instance.block.Block
-import net.minestom.server.instance.block.BlockHandler
+import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.SignTextSlot
 import net.minestom.server.network.packet.server.play.OpenSignEditorPacket
-import net.minestom.server.registry.TagKey
 import net.minestom.server.tag.Tag
 import org.everbuild.blocksandstuff.blocks.event.PlayerOpenSignEditorEvent
+import org.everbuild.blocksandstuff.common.tag.BlockTags
+import org.everbuild.blocksandstuff.common.utils.getYaw
+import org.everbuild.twaddle.stacked_behaviour.Rule
+import org.everbuild.twaddle.stacked_behaviour.RuleResult
+import org.everbuild.twaddle.stacked_behaviour_block.configuration.blockEntity
+import org.everbuild.twaddle.stacked_behaviour_block.ruleset.BlockRulesetEditor
+import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.PlacementActivityContext
+import org.everbuild.twaddle.stacked_behaviour_block.type.interact
+import org.everbuild.twaddle.stacked_behaviour_block.type.place
 
-class SignEditRule(private val block: Block) : BlockHandler {
-    private val wallSigns = Block.staticRegistry().getTag(TagKey.ofHash("#minecraft:wall_signs"))!!
+private val signBlocks: Collection<Block> = BlockTags.getTaggedWith("minecraft:all_signs")
 
-    override fun getKey(): Key = block.key()
-
-    override fun getBlockEntityTags(): Collection<Tag<*>> {
-        return listOf(
-            Tag.NBT("front_text"),
-            Tag.NBT("back_text"),
-            Tag.Boolean("is_waxed"),
-        )
+val SIGN_INTERACT_RULE: Rule<InteractionActivityContext> =
+    Rule("blocksandstuff:sign_interact") { ctx ->
+        if (ctx.player.isSneaking) return@Rule RuleResult.Next
+        val side = getSide(ctx.player, ctx.blockPosition, ctx.block)
+        openEditor(ctx.block, ctx.blockPosition, ctx.player, side)
+        RuleResult.Consume
     }
 
-    override fun onPlace(placement: BlockHandler.Placement) {
-        if (placement !is BlockHandler.PlayerPlacement) return
-        if (placement.player.isSneaking) return
-        val player = placement.player
-        if (wallSigns.contains(placement.block)) {
-            openEditor(placement.block, placement.blockPosition, player, SignTextSlot.FRONT)
-        } else {
-            val position = placement.blockPosition
-            val rotation = placement.block.getProperty("rotation")?.toInt() ?: 0
-            val front = getSide(player, position, rotation)
-            openEditor(placement.block, position, player, front)
+val SIGN_PLACE_RULE: Rule<PlacementActivityContext> =
+    Rule("blocksandstuff:sign_place") { ctx ->
+        val player = ctx.player ?: return@Rule RuleResult.Next
+        if (player.isSneaking) return@Rule RuleResult.Next
+        val slot = getSide(player, ctx.blockPosition, ctx.block)
+        openEditor(ctx.block, ctx.blockPosition, player, slot)
+        RuleResult.Next
+    }
+
+private fun getSide(
+    player: Player,
+    position: Point,
+    block: Block,
+): SignTextSlot {
+    val signYaw =
+        block.getProperty("rotation")?.toIntOrNull()?.times(22.5)
+            ?: block.getProperty("facing")
+                ?.let { BlockFace.valueOf(it.uppercase()).toDirection().getYaw().toDouble() }
+            ?: 0.0
+    val dx = player.position.x - (position.x() + 0.5)
+    val dz = player.position.z - (position.z() + 0.5)
+    val playerAngle = Math.toDegrees(atan2(dz, dx)) - 90.0
+    val difference = ((signYaw - playerAngle + 180.0) % 360.0 + 360.0) % 360.0 - 180.0
+    return if (abs(difference) <= 90.0) SignTextSlot.FRONT else SignTextSlot.BACK
+}
+
+private fun openEditor(
+    block: Block,
+    position: Point,
+    player: Player,
+    slot: SignTextSlot,
+) {
+    EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, position.asBlockVec(), block)) {
+        player.sendPacket(OpenSignEditorPacket(position, slot))
+    }
+}
+
+fun BlockRulesetEditor.addSigns() {
+    signBlocks.forEach { block ->
+        blocks(block) {
+            blockEntity {
+                tags += Tag.NBT("front_text")
+                tags += Tag.NBT("back_text")
+                tags += Tag.Boolean("is_waxed")
+            }
+            interact.append { install(SIGN_INTERACT_RULE) }
+            place.append { install(SIGN_PLACE_RULE) }
         }
     }
-
-    override fun onInteract(interaction: BlockHandler.Interaction): Boolean {
-        if (interaction.player.isSneaking) return super.onInteract(interaction)
-        val block = interaction.block
-        val position = interaction.blockPosition
-        val rotation = block.getProperty("rotation")?.toInt() ?: 0
-        val front = getSide(interaction.player, position, rotation)
-        if (wallSigns.contains(block)) {
-            openEditor(block, position, interaction.player, front)
-        } else {
-            val rotation = block.getProperty("rotation")?.toInt() ?: 0
-            val side = getSide(interaction.player, position, rotation)
-            openEditor(block, position, interaction.player, side)
-        }
-
-        return false
-    }
-
-    private fun getSide(player: Player, position: Point, rotation: Int): SignTextSlot {
-        val playerAngle = Math.toDegrees(
-            atan2(player.position.x - position.x(), position.z() - player.position.z)
-        ).toInt()
-        val signAngle = rotation * 22.5
-        val relativeDegrees = (playerAngle - signAngle + 360) % 360
-        return if (relativeDegrees in 0.0..180.0) SignTextSlot.FRONT else SignTextSlot.BACK
-    }
-
-    private fun openEditor(block: Block, position: Point, player: Player, slot: SignTextSlot) {
-        EventDispatcher.callCancellable(PlayerOpenSignEditorEvent(player, position.asBlockVec(), block)) {
-            player.sendPacket(OpenSignEditorPacket(position, slot))
-        }
-    }
-
-    // TODO: Write back updated signs
 }

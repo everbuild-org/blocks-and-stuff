@@ -7,6 +7,7 @@ import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
+import org.everbuild.blocksandstuff.recipes.util.applyShiftClickResult
 
 class CraftingTableInventory : Inventory(InventoryType.CRAFTING, Component.translatable("container.crafting")), BlockInventoryDrops {
     private val service = CraftingTableGridService(this)
@@ -39,16 +40,6 @@ class CraftingTableInventory : Inventory(InventoryType.CRAFTING, Component.trans
             playerInventory.cursorItem
         )
 
-        if (clickResult.isCancel) {
-            playerInventory.update()
-            update(player)
-            return false
-        }
-
-        playerInventory.setItemStack(clickSlot, clickResult.clicked)
-        playerInventory.update()
-        update(player)
-        playerInventory.cursorItem = clickResult.cursor
-        return true
+        return applyShiftClickResult(player, clickSlot, clickResult.clicked, clickResult.cursor, clickResult.isCancel)
     }
 }

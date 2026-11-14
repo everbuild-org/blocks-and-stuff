@@ -10,7 +10,7 @@ class BannerPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (placementState.blockFace == null || placementState.blockFace == BlockFace.BOTTOM) return null
 
         if (placementState.blockFace == BlockFace.TOP) {
-            return block.withProperty("rotation", ((placementState.sixteenStepRotation() + 8) % 16).toString())
+            return placementState.block.withProperty("rotation", ((placementState.sixteenStepRotation() + 8) % 16).toString())
         }
 
         val wallBanner = when (placementState.block.material()) {
