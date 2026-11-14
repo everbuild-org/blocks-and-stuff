@@ -342,8 +342,8 @@ minecraft:potted_blue_orchid
 minecraft:potted_white_tulip
 minecraft:potted_golden_dandelion
 minecraft:potted_poplar_sapling
-minecraft:potted_crimson_roots
 minecraft:potted_lily_of_the_valley
+minecraft:potted_crimson_roots
 minecraft:potted_oak_sapling
 minecraft:potted_orange_tulip
 minecraft:potted_acacia_sapling
