@@ -14,12 +14,14 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.inventory.InventoryProperty
 import net.minestom.server.inventory.InventoryType
+import net.minestom.server.inventory.TransactionOption
 import net.minestom.server.inventory.click.Click
 import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventory
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryArchetype
 import org.everbuild.blocksandstuff.common.blockinventory.PhysicalInventory
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
+import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
 import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
@@ -130,9 +132,24 @@ abstract class FurnaceArchetype(
             player: Player,
             slot: Int,
             button: Int,
-        ): Boolean = shiftClickToRoutedSlots(player, slot, SLOT_OUTPUT) { material ->
-            val stack = ItemStack.of(material)
-            if (FuelLoader.isFuel(stack)) SLOT_FUEL else SLOT_INPUT
+        ): Boolean {
+            if (slot == SLOT_OUTPUT) {
+                val output = getItemStack(SLOT_OUTPUT)
+                if (output.isAir) return false
+
+                setItemStack(SLOT_OUTPUT, ItemStack.AIR)
+                val leftover = player.inventory.addItemStack(output, TransactionOption.ALL)
+                if (!leftover.isAir) DroppedItemFactory.maybeDropFromPlayer(player, leftover)
+
+                player.inventory.update()
+                update(player)
+                return true
+            }
+
+            return shiftClickToRoutedSlots(player, slot, SLOT_OUTPUT) { material ->
+                val stack = ItemStack.of(material)
+                if (FuelLoader.isFuel(stack)) SLOT_FUEL else SLOT_INPUT
+            }
         }
 
         fun onTick(ignored: InstanceTickEvent) {
