@@ -320,13 +320,13 @@ minecraft:stone_pressure_plate
 minecraft:polished_blackstone_pressure_plate
 minecraft:cake
 minecraft:potted_jungle_sapling
-minecraft:potted_closed_eyeblossom
 minecraft:potted_torchflower
 minecraft:potted_brown_mushroom
+minecraft:potted_closed_eyeblossom
 minecraft:potted_red_mushroom
 minecraft:potted_wither_rose
-minecraft:potted_birch_sapling
 minecraft:potted_fern
+minecraft:potted_birch_sapling
 minecraft:potted_cornflower
 minecraft:potted_open_eyeblossom
 minecraft:potted_cactus
@@ -354,8 +354,8 @@ minecraft:potted_dandelion
 minecraft:potted_dark_oak_sapling
 minecraft:potted_pink_tulip
 minecraft:potted_warped_fungus
-minecraft:potted_oxeye_daisy
 minecraft:potted_mangrove_propagule
+minecraft:potted_oxeye_daisy
 minecraft:flower_pot
 minecraft:white_carpet
 minecraft:orange_carpet
