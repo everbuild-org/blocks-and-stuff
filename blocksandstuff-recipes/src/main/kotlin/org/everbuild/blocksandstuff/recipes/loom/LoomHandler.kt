@@ -12,7 +12,7 @@ class LoomHandler : BlockInventoryHandler() {
             return true
         }
         val inventory = LoomInventory()
-        trackInventory(inventory, interaction.blockPosition)
+        trackInventory(inventory, interaction.instance, interaction.blockPosition)
         interaction.player.openInventory(inventory)
         return false
     }

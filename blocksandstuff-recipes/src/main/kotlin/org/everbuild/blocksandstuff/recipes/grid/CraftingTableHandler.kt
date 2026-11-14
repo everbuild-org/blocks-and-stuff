@@ -14,7 +14,7 @@ class CraftingTableHandler : BlockInventoryHandler() {
             return true
         }
         val inventory = CraftingTableInventory()
-        trackInventory(inventory, interaction.blockPosition, stash())
+        trackInventory(inventory, interaction.instance, interaction.blockPosition, stash())
         interaction.player.openInventory(inventory)
         return false
     }

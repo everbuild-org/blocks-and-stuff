@@ -60,10 +60,10 @@ class CushionBehaviourTest {
         cushion.setInstance(instance, position.add(0.5, 0.0, 0.5)).join()
         instance.setBlock(position, Block.STONE)
 
-        repeat(100) { cushion.tick(it.toLong()) }
+        repeat(99) { cushion.tick(it.toLong()) }
         Assertions.assertFalse(cushion.isRemoved)
 
-        cushion.tick(100)
+        cushion.tick(99)
         Assertions.assertTrue(cushion.isRemoved)
     }
 

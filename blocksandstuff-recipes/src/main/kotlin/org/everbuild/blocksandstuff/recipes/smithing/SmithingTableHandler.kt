@@ -13,7 +13,7 @@ class SmithingTableHandler : BlockInventoryHandler() {
             return true
         }
         val inventory = SmithingTableInventory()
-        trackInventory(inventory, interaction.blockPosition) { player, item ->
+        trackInventory(inventory, interaction.instance, interaction.blockPosition) { player, item ->
             RecipeFactory.stashController.addToInventoryOrStash(player, item)
         }
         interaction.player.openInventory(inventory)

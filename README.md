@@ -31,9 +31,10 @@ See the sections below for installation instructions, versioning details, and co
 
 # Installation & Usage
 
-Blocks-and-Stuff is split into four modules:
+Blocks-and-Stuff is split into five modules:
 - `blocksandstuff-common` contains common APIs for blocksandstuff and your own code to communicate
 - `blocksandstuff-blocks` contains block implementations, both placement and interaction
+- `blocksandstuff-redstone` contains the event-driven redstone engine and vanilla components.
 - `blocksandstuff-fluids` contains fluid implementations.
 - `blocksandstuff-recipes` contains recipe implementations, although without the actual recipes themselves.
 
@@ -66,6 +67,7 @@ options.randomTickSpeed = 10
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-blocks`
 
 Use the following code-snippet to initialize all implemented vanilla behaviour:
+<!-- <@AI_UNREVIEWED> -->
 ```kt
 // Register all default block placement rules
 BlockPlacementRuleRegistrations.registerDefault()
@@ -73,12 +75,13 @@ BlockPlacementRuleRegistrations.registerDefault()
 // Register all default block behaviors
 BlockBehaviorRuleRegistrations.registerDefault()
 
-// Register auto-adding handlers to placed blocks
-PlacedHandlerRegistration.registerDefault()
+// Register container block handlers
+ContainerRegistrations.registerDefault()
 
 // Pick-Block behaviour
-BlockPickup.enable()
+PlayerPickBlockHandler.enable()
 ```
+<!-- </<@AI_UNREVIEWED> -->
 
 You can exclude blocks by putting a list of them as parameters to the `registerDefault` methods. You can also only register specific handlers using the `register` methods.
 
@@ -86,6 +89,17 @@ Random ticking is provided by Twaddle's `twaddle-random-ticking` module, not by 
 `BlockBehaviorRuleRegistrations.registerDefault()` installs the global random-tick node and keeps
 `InstanceOptions.randomTickSpeed` in sync with Minestom. If you register behaviour groups manually via `register(...)`,
 call `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` yourself.
+
+## Redstone API
+> Artifact: `org.everbuild.blocksandstuff:blocksandstuff-redstone`
+
+Register the vanilla redstone components and enable the per-instance simulator:
+<!-- <@AI_UNREVIEWED> -->
+```kt
+RedstoneRegistrations.registry.registerVanillaComponents()
+RedstoneRegistrations.enable()
+```
+<!-- </<@AI_UNREVIEWED> -->
 
 ## Fluids API
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-fluids`

@@ -14,26 +14,37 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
  * player on close or dropped when the block is destroyed.
  */
 object BlockInventoryTracker {
-    private val openInventories = mutableMapOf<Inventory, Point>()
+    private data class InventoryLocation(
+        val instance: Instance,
+        val position: Point,
+    )
 
+    private val openInventories = mutableMapOf<Inventory, InventoryLocation>()
     fun track(
         inventory: Inventory,
+        instance: Instance,
         position: Point,
         stash: ItemStash? = PlayerInventoryStash,
     ) {
-        openInventories[inventory] = position
+        val location = InventoryLocation(instance, position)
+        openInventories[inventory] = location
         inventory.eventNode().addListener(InventoryCloseEvent::class.java) {
             openInventories.remove(inventory)
-            returnItemsOnClose(inventory, it.player, position, stash)
+            returnItemsOnClose(inventory, it.player, location.position, stash)
         }
     }
 
-    fun onDestroy(instance: Instance, position: Point, oldBlock: Block, newBlock: Block) {
+    fun onDestroy(
+        instance: Instance,
+        position: Point,
+        oldBlock: Block,
+        newBlock: Block,
+    ) {
         if (newBlock.key() == oldBlock.key()) return
 
         val affected =
             openInventories.entries
-                .filter { it.value.samePoint(position) }
+                .filter { (_, location) -> location.instance === instance && location.position.samePoint(position) }
                 .map { it.key }
         affected.forEach { openInventories.remove(it) }
         BlockInventoryHandler.closeAndDrop(affected, instance, position)

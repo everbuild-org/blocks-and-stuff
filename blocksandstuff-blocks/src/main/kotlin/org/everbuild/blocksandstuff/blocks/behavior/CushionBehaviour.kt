@@ -13,7 +13,6 @@ import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.entity.metadata.other.CushionMeta
-import net.minestom.server.event.Event
 import net.minestom.server.event.EventNode
 import net.minestom.server.event.entity.EntityAttackEvent
 import net.minestom.server.event.instance.InstanceChunkLoadEvent
@@ -31,6 +30,12 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import kotlin.math.abs
 import kotlin.math.floor
 
+private const val CUSHION_WIDTH = 1.0
+private const val CUSHION_HEIGHT = 0.25
+private const val CHECK_INTERVAL_TICKS = 100
+private const val SHAPE_EPSILON = 1.0E-6
+private val CUSHION_BOUNDS = BoundingBox(CUSHION_WIDTH, CUSHION_HEIGHT, CUSHION_WIDTH)
+
 class CushionEntity(
     val color: DyeColor,
 ) : Entity(EntityType.CUSHION) {
@@ -39,7 +44,7 @@ class CushionEntity(
     init {
         editEntityMeta(CushionMeta::class.java) { it.color = color }
         setNoGravity(true)
-        setBoundingBox(1.0, 0.25, 1.0)
+        setBoundingBox(CUSHION_WIDTH, CUSHION_HEIGHT, CUSHION_WIDTH)
     }
 
     override fun preventBlockPlacement(): Boolean = false
@@ -47,7 +52,8 @@ class CushionEntity(
     override fun tick(time: Long) {
         super.tick(time)
         val currentInstance = instance ?: return
-        if (ticksSinceLastCheck++ < CHECK_INTERVAL_TICKS) return
+        ticksSinceLastCheck++
+        if (ticksSinceLastCheck < CHECK_INTERVAL_TICKS) return
         ticksSinceLastCheck = 0
         if (!isSupported(currentInstance)) {
             CushionBehaviour.drop(this, currentInstance)
@@ -56,10 +62,6 @@ class CushionEntity(
 
     private fun isSupported(instance: Instance): Boolean = CushionBehaviour.supports(instance, position)
 }
-
-private val CUSHION_BOUNDS = BoundingBox(1.0, 0.25, 1.0)
-private const val SHAPE_EPSILON = 1.0E-6
-private const val CHECK_INTERVAL_TICKS = 100
 
 private val CUSHIONS_TAG: Tag<List<String>> = Tag.String("blocksandstuff:cushions").list()
 
@@ -83,7 +85,7 @@ object CushionBehaviour {
             val cushion = CushionEntity(color)
             cushion.setInstance(instance, spawnPosition)
             addRecord(instance, spawnPosition, color)
-            consume(event.player, event.hand, event.itemStack)
+            consume(event.player, event.hand)
         }
         handler.addListener(PlayerEntityInteractEvent::class.java) { event ->
             val cushion = event.target as? CushionEntity ?: return@addListener
@@ -96,7 +98,7 @@ object CushionBehaviour {
                 val current = instance.getBlock(target)
                 if (current.air() || current.replaceable()) {
                     instance.setBlock(target, block)
-                    consume(event.player, event.hand, held)
+                    consume(event.player, event.hand)
                     return@addListener
                 }
             }
@@ -144,8 +146,8 @@ object CushionBehaviour {
         instance: Instance,
         position: Point,
     ): Boolean {
-        val at = instance.getBlock(position)
-        if (coversCushion(at)) return false
+        val occupiedBlock = instance.getBlock(position)
+        if (coversCushion(occupiedBlock)) return false
         val blockX = floor(position.x()).toInt()
         val blockZ = floor(position.z()).toInt()
         val blockY = floor(position.y()).toInt()
@@ -220,8 +222,8 @@ object CushionBehaviour {
     ): Point? {
         var candidate = position
         repeat(4) {
-            val supportingBlock = supportBlockPosition.takeIf { candidate == position }
-            if (isFree(instance, candidate, supportingBlock)) return candidate
+            val ignoredBlock = if (candidate == position) supportBlockPosition else null
+            if (isFree(instance, candidate, ignoredBlock)) return candidate
             candidate = candidate.add(0.0, 1.0, 0.0)
         }
         return null
@@ -245,7 +247,7 @@ object CushionBehaviour {
         localY: Double,
     ): Boolean {
         if (block.air() || block.liquid()) return false
-        return collisionBoxes(block).any { kotlin.math.abs(it.maxY() - localY) < SHAPE_EPSILON }
+        return collisionBoxes(block).any { abs(it.maxY() - localY) < SHAPE_EPSILON }
     }
 
     private fun collisionBoxes(block: Block): List<BoundingBox> {
@@ -281,7 +283,12 @@ object CushionBehaviour {
                     }
                     val block = instance.getBlock(Vec(blockX.toDouble(), blockY.toDouble(), blockZ.toDouble()))
                     if (block.air() || block.replaceable()) continue
-                    val relativePosition = Vec(position.x() - blockX, position.y() - blockY + SHAPE_EPSILON, position.z() - blockZ)
+                    val relativePosition =
+                        Vec(
+                            position.x() - blockX,
+                            position.y() - blockY + SHAPE_EPSILON,
+                            position.z() - blockZ,
+                        )
                     if (block.collisionShape().intersectBox(relativePosition, CUSHION_BOUNDS)) return false
                 }
             }
@@ -320,7 +327,6 @@ object CushionBehaviour {
     private fun consume(
         player: Player,
         hand: PlayerHand,
-        item: ItemStack,
     ) {
         if (player.gameMode == GameMode.CREATIVE) return
         val current = player.getItemInHand(hand)
