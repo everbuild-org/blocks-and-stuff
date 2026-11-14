@@ -129,20 +129,14 @@ private fun spreadPlantLine(
     val directions = listOf(0 to 1, 0 to -1, 1 to 0, -1 to 0).shuffled(random)
 
     for ((dx, dz) in directions) {
-        var placed = 0
-        for (step in 1..3) {
-            val target = ctx.blockPosition.add((dx * step).toDouble(), 0.0, (dz * step).toDouble())
-            if (!ctx.instance.getBlock(target).air()) break
-            val ground = ctx.instance.getBlock(target.sub(0.0, 1.0, 0.0))
-            if (ground.air() || ground.liquid()) break
-            ctx.instance.setBlock(target, plant)
-            placed++
-        }
-        if (placed > 0) {
-            consumeBoneMeal(ctx, item)
-            playSoundFor(ctx, SoundEvent.ITEM_BONE_MEAL_USE)
-            return RuleResult.Consume
-        }
+        val target = ctx.blockPosition.add(dx.toDouble(), 0.0, dz.toDouble())
+        if (!ctx.instance.getBlock(target).air()) continue
+        val ground = ctx.instance.getBlock(target.sub(0.0, 1.0, 0.0))
+        if (ground.air() || ground.liquid()) continue
+        ctx.instance.setBlock(target, plant)
+        consumeBoneMeal(ctx, item)
+        playSoundFor(ctx, SoundEvent.ITEM_BONE_MEAL_USE)
+        return RuleResult.Consume
     }
     return RuleResult.Next
 }

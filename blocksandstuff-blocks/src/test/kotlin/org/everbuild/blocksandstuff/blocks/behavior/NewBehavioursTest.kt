@@ -52,7 +52,7 @@ class NewBehavioursTest {
     private fun interaction(
         block: Block,
         player: Player,
-    ): InteractionActivityContext = InteractionActivityContext(block, instance, BlockFace.TOP, position.asBlockVec(), position.asBlockVec(), player, PlayerHand.MAIN)
+    ): InteractionActivityContext = InteractionActivityContext(block, instance, BlockFace.TOP, position.asBlockVec(), net.minestom.server.coordinate.Vec(0.8, 0.8, 0.8), player, PlayerHand.MAIN)
 
     @Test
     fun pumpkinCarvingRespectsPlayerFacing() {
@@ -111,15 +111,71 @@ class NewBehavioursTest {
     }
 
     @Test
-    fun shelfStoresAndReturnsItems() {
-        instance.setBlock(position, Block.OAK_SHELF)
-        val player = player(Material.STONE)
+    fun shelfSwapsWithHeldItem() {
+        instance.setBlock(position, Block.OAK_SHELF.withProperty("facing", "north"))
+        val inventory = net.minestom.server.inventory.PlayerInventory()
+        val player =
+            mock<Player> {
+                on { gameMode } doReturn net.minestom.server.entity.GameMode.SURVIVAL
+                on { getInventory() } doReturn inventory
+                on { getHeldSlot() } doReturn 0
+                on { position } doReturn position
+            }
+        inventory.setItemStack(0, ItemStack.of(Material.STONE, 2))
+        val context =
+            InteractionActivityContext(
+                Block.OAK_SHELF,
+                instance,
+                BlockFace.NORTH,
+                position.asBlockVec(),
+                net.minestom.server.coordinate.Vec(0.2, 0.5, 0.0),
+                player,
+                PlayerHand.MAIN,
+            )
 
-        SHELF_RULE.evaluate(interaction(Block.OAK_SHELF, player))
+        SHELF_RULE.evaluate(context)
         Assertions.assertEquals(1, instance.getBlock(position).readBlockEntityItemCount())
+        Assertions.assertTrue(inventory.getItemStack(0).isAir)
 
-        SHELF_RULE.evaluate(interaction(Block.OAK_SHELF, player(  Material.AIR)))
+        SHELF_RULE.evaluate(context)
         Assertions.assertEquals(0, instance.getBlock(position).readBlockEntityItemCount())
+        Assertions.assertEquals(Material.STONE, inventory.getItemStack(0).material())
+    }
+
+    @Test
+    fun shelfPickupUsesLookedAtSlot() {
+        instance.setBlock(position, Block.OAK_SHELF.withProperty("facing", "north"))
+        val inventory = net.minestom.server.inventory.PlayerInventory()
+        val player =
+            mock<Player> {
+                on { gameMode } doReturn net.minestom.server.entity.GameMode.SURVIVAL
+                on { getInventory() } doReturn inventory
+                on { getHeldSlot() } doReturn 0
+                on { position } doReturn position
+            }
+        inventory.setItemStack(0, ItemStack.of(Material.STONE, 2))
+
+        fun clickOn(x: Double) {
+            SHELF_RULE.evaluate(
+                InteractionActivityContext(
+                    Block.OAK_SHELF,
+                    instance,
+                    BlockFace.NORTH,
+                    position.asBlockVec(),
+                    net.minestom.server.coordinate.Vec(x, 0.5, 0.5),
+                    player,
+                    PlayerHand.MAIN,
+                ),
+            )
+        }
+
+        clickOn(0.1)
+        Assertions.assertEquals(setOf(2), instance.getBlock(position).readBlockEntityItems().keys)
+        Assertions.assertTrue(inventory.getItemStack(0).isAir)
+
+        clickOn(0.1)
+        Assertions.assertTrue(instance.getBlock(position).readBlockEntityItems().isEmpty())
+        Assertions.assertEquals(Material.STONE, inventory.getItemStack(0).material())
     }
 
     @Test

@@ -389,9 +389,8 @@ class MiscBlockBehaviourTest {
         for (attempt in 0 until 5000) {
             val context = RandomTickActivityContext(instance.getBlock(position), instance, position.asBlockVec())
             COPPER_OXIDATION_RULE.evaluate(context)
-            val next = context.newBlock ?: continue
-            instance.setBlock(position, next)
-            if (next.key() == Block.EXPOSED_COPPER_DOOR.key()) break
+            context.newBlock?.let { instance.setBlock(position, it) }
+            if (instance.getBlock(position).key() == Block.EXPOSED_COPPER_DOOR.key()) break
         }
 
         Assertions.assertEquals(Block.EXPOSED_COPPER_DOOR.key(), instance.getBlock(position).key())
@@ -507,7 +506,7 @@ class MiscBlockBehaviourTest {
         instance.setBlock(position.add(0.0, 1.0, 0.0), Block.FIRE.withProperty("age", "0"))
 
         var fireCount = 1
-        repeat(10000) {
+        repeat(50000) {
             val context = TickActivityContext(Block.FIRE, instance, position.add(0.0, 1.0, 0.0).asBlockVec())
             FIRE_TICK_RULE.evaluate(context)
             if (instance.getBlock(position.add(0.0, 1.0, 0.0)).compare(Block.FIRE)) {

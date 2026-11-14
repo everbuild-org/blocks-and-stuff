@@ -211,8 +211,27 @@ class PotentSulfurHandler : BlockHandler {
     ) {
         val surface = position.add(0.0, water.toDouble(), 0.0)
         for (entity in instance.getNearbyEntities(surface.add(0.5, 0.0, 0.5), 3.0)) {
+            if (!isInWater(instance, entity, position, surface)) continue
             entity.addEffect(Potion(NAUSEA, 0, 4 * 20))
         }
+    }
+
+    private fun isInWater(
+        instance: Instance,
+        entity: Entity,
+        source: Point,
+        surface: Point,
+    ): Boolean {
+        val block = instance.getBlock(entity.position)
+        val wet = block.key().value() == "water" || block.getProperty("waterlogged") == "true"
+        if (!wet) return false
+
+        val y = entity.position.y()
+        if (y < source.y() || y > surface.y() + 1.0) return false
+
+        val dx = entity.position.x() - (source.x() + 0.5)
+        val dz = entity.position.z() - (source.z() + 0.5)
+        return dx * dx + dz * dz <= 9.0
     }
 
     private fun spawnGasParticles(

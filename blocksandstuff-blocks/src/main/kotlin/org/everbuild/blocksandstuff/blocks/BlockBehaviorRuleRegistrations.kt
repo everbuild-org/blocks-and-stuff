@@ -11,6 +11,7 @@ import org.everbuild.blocksandstuff.blocks.behavior.BeaconMenus
 import org.everbuild.blocksandstuff.blocks.behavior.BedSleepTracker
 import org.everbuild.blocksandstuff.blocks.behavior.BookUseListener
 import org.everbuild.blocksandstuff.blocks.behavior.CushionBehaviour
+import org.everbuild.blocksandstuff.blocks.behavior.CopperDoorSync
 import org.everbuild.blocksandstuff.blocks.behavior.IceBreakListener
 import org.everbuild.blocksandstuff.blocks.behavior.FireStarterListener
 import org.everbuild.blocksandstuff.blocks.behavior.PotentSulfurHandler
@@ -73,6 +74,7 @@ object BlockBehaviorRuleRegistrations {
         SignEditListener.enable()
         BookUseListener.enable()
         CushionBehaviour.enable()
+        CopperDoorSync.enable()
     }
 
     @JvmStatic

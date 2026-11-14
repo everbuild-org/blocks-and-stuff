@@ -159,8 +159,18 @@ class DoorPlacementRule(baseDoorBlock: Block) : BlockPlacementRule(baseDoorBlock
         }
 
         val neighborBlock = instance.getBlock(neighborPos)
+        val neighborHalf = neighborBlock.getProperty("half")
+        val neighborFacing = neighborBlock.getProperty("facing")
+        val neighborHinge = neighborBlock.getProperty("hinge")
+        val currentFacing = currentBlock.getProperty("facing")
+        val currentHinge = currentBlock.getProperty("hinge")
+        val neighborIsOtherHalf =
+            neighborHalf == expectedOtherHalf &&
+                neighborFacing != null &&
+                neighborFacing == currentFacing &&
+                neighborHinge == currentHinge
 
-        if (!neighborBlock.compare(updateState.currentBlock) || neighborBlock.getProperty("half") != expectedOtherHalf) {
+        if (!neighborIsOtherHalf) {
             if (neighborBlock.compare(updateState.currentBlock)) {
                 (instance as Instance).setBlock(neighborPos, Block.AIR)
             }

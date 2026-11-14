@@ -1,21 +1,28 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.MinecraftServer
+import net.minestom.server.collision.BoundingBox
 import net.minestom.server.color.DyeColor
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
+import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType
 import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.Player
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.entity.metadata.other.CushionMeta
+import net.minestom.server.event.Event
+import net.minestom.server.event.EventNode
 import net.minestom.server.event.entity.EntityAttackEvent
 import net.minestom.server.event.instance.InstanceChunkLoadEvent
+import net.minestom.server.event.instance.InstanceTickEvent
 import net.minestom.server.event.player.PlayerEntityInteractEvent
 import net.minestom.server.event.player.PlayerInputEvent
 import net.minestom.server.event.player.PlayerUseItemOnBlockEvent
 import net.minestom.server.instance.Instance
+import net.minestom.server.instance.block.Block
+import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
@@ -24,44 +31,42 @@ import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 class CushionEntity(
     val color: DyeColor,
 ) : Entity(EntityType.CUSHION) {
-    private var unsupportedTicks = 0
+    private var ticksSinceLastCheck = 0
 
     init {
         editEntityMeta(CushionMeta::class.java) { it.color = color }
         setNoGravity(true)
+        setBoundingBox(1.0, 0.25, 1.0)
     }
+
+    override fun preventBlockPlacement(): Boolean = false
 
     override fun tick(time: Long) {
         super.tick(time)
         val currentInstance = instance ?: return
-        if (isSupported(currentInstance)) {
-            unsupportedTicks = 0
-            return
-        }
-        unsupportedTicks++
-        if (unsupportedTicks >= 20) {
+        if (ticksSinceLastCheck++ < CHECK_INTERVAL_TICKS) return
+        ticksSinceLastCheck = 0
+        if (!isSupported(currentInstance)) {
             CushionBehaviour.drop(this, currentInstance)
         }
     }
 
-    private fun isSupported(instance: Instance): Boolean {
-        val at = instance.getBlock(position)
-        if (!at.air() && !at.replaceable()) return false
-        val below = instance.getBlock(position.sub(0.0, 1.0, 0.0))
-        return !below.air() && !below.liquid()
-    }
+    private fun isSupported(instance: Instance): Boolean = CushionBehaviour.supports(instance, position)
 }
+
+private val ANCHOR_SLICE = BoundingBox(1.0, 1.0 / 16.0, 1.0, Vec(0.0, 15.0 / 16.0, 0.0))
+private const val CHECK_INTERVAL_TICKS = 100
 
 private val CUSHIONS_TAG: Tag<List<String>> = Tag.String("blocksandstuff:cushions").list()
 
 object CushionBehaviour {
-    private var enabled = false
+    private const val NODE_NAME = "blocksandstuff:cushions"
 
     fun enable() {
-        if (enabled) return
-        enabled = true
-
-        val handler = MinecraftServer.getGlobalEventHandler()
+        val global = MinecraftServer.getGlobalEventHandler()
+        global.removeChildren(NODE_NAME)
+        val handler = EventNode.all(NODE_NAME)
+        global.addChild(handler)
         handler.addListener(PlayerUseItemOnBlockEvent::class.java) { event ->
             val color = cushionColor(event.itemStack.material()) ?: return@addListener
             if (event.player.gameMode == GameMode.SPECTATOR) return@addListener
@@ -69,19 +74,47 @@ object CushionBehaviour {
 
             val direction = event.blockFace.toDirection().vec()
             val adjacent = event.position.add(direction.x(), direction.y(), direction.z())
-            val target =
-                when {
-                    isFree(instance, adjacent) -> adjacent
-                    isFree(instance, event.position.add(0.0, 1.0, 0.0)) -> event.position.add(0.0, 1.0, 0.0)
-                    else -> return@addListener
+            val spawn =
+                if (event.blockFace == net.minestom.server.instance.block.BlockFace.TOP) {
+                    event.position.add(0.5, 1.0, 0.5)
+                } else {
+                    val target =
+                        when {
+                            isFree(instance, adjacent) -> adjacent
+                            isFree(instance, event.position.add(0.0, 1.0, 0.0)) -> event.position.add(0.0, 1.0, 0.0)
+                            else -> return@addListener
+                        }
+                    target.asVec().add(0.5, 0.0, 0.5)
                 }
-            val spawn = target.asVec().add(0.5, 0.0, 0.5)
-            CushionEntity(color).setInstance(instance, spawn)
-            addRecord(instance, spawn, color)
+            var spawnPosition = spawn
+            var attempts = 0
+            while (attempts < 3 && !isFree(instance, spawnPosition.asBlockVec())) {
+                spawnPosition = spawnPosition.add(0.0, 1.0, 0.0)
+                attempts++
+            }
+            if (!isFree(instance, spawnPosition.asBlockVec())) return@addListener
+
+            val cushion = CushionEntity(color)
+            cushion.setInstance(instance, spawnPosition)
+            addRecord(instance, spawnPosition, color)
             consume(event.player, event.hand, event.itemStack)
         }
         handler.addListener(PlayerEntityInteractEvent::class.java) { event ->
             val cushion = event.target as? CushionEntity ?: return@addListener
+            val instance = cushion.instance ?: return@addListener
+            val held = event.player.getItemInHand(event.hand)
+            val block = held.material().block()
+
+            if (block != null && !held.isAir) {
+                val target = cushion.position.asBlockVec()
+                val current = instance.getBlock(target)
+                if (current.air() || current.replaceable()) {
+                    instance.setBlock(target, block)
+                    consume(event.player, event.hand, held)
+                    return@addListener
+                }
+            }
+
             cushion.addPassenger(event.player)
         }
         handler.addListener(EntityAttackEvent::class.java) { event ->
@@ -105,8 +138,51 @@ object CushionBehaviour {
                 val z = parts[2].toIntOrNull() ?: return@forEach
                 if ((x shr 4) != event.chunkX || (z shr 4) != event.chunkZ) return@forEach
                 val color = runCatching { DyeColor.valueOf(parts[3].uppercase()) }.getOrNull() ?: return@forEach
-                CushionEntity(color).setInstance(event.instance, Pos(x + 0.5, y.toDouble(), z + 0.5))
+                val cushion = CushionEntity(color)
+                cushion.setInstance(event.instance, Pos(x + 0.5, y.toDouble(), z + 0.5))
             }
+        }
+        handler.addListener(InstanceTickEvent::class.java) { event ->
+            if (event.instance.worldAge % CHECK_INTERVAL_TICKS != 0L) return@addListener
+            event.instance.getEntities()
+                .filter { it.entityType == EntityType.CUSHION && !it.isRemoved }
+                .forEach { cushion ->
+                    if (!supports(event.instance, cushion.position)) {
+                        dropAny(cushion, event.instance)
+                    }
+                }
+        }
+    }
+
+    internal fun supports(
+        instance: Instance,
+        position: Point,
+    ): Boolean {
+        val at = instance.getBlock(position)
+        if (coversCushion(at)) return false
+        val below = instance.getBlock(position.sub(0.0, 1.0, 0.0))
+        return !below.air() && !below.liquid()
+    }
+
+    private fun coversCushion(block: Block): Boolean {
+        if (block.key().value().contains("copper_grate")) return false
+        val shape = block.collisionShape()
+        return shape.isFaceFull(BlockFace.TOP) && shape.isFaceFull(BlockFace.BOTTOM)
+    }
+
+    private fun dropAny(
+        entity: Entity,
+        instance: Instance,
+    ) {
+        if (entity is CushionEntity) {
+            drop(entity, instance)
+            return
+        }
+        val color = runCatching { (entity.entityMeta as? CushionMeta)?.color }.getOrNull() ?: DyeColor.WHITE
+        val position = entity.position
+        entity.remove()
+        cushionItem(color)?.let {
+            DroppedItemFactory.maybeDrop(instance, position, ItemStack.of(it))
         }
     }
 

@@ -41,9 +41,10 @@ val COPPER_OXIDATION_RULE: Rule<RandomTickActivityContext> =
         EventDispatcher.call(event)
         if (event.isCancelled) return@Rule RuleResult.Next
 
-        ctx.replaceBlock(nextStage)
-        if (isCopperDoor(block) && block.getProperty("half") == "lower") {
+        ctx.instance.setBlock(ctx.blockPosition, nextStage)
+        if (isCopperDoor(block)) {
             oxidizeOtherDoorHalf(ctx.instance, ctx.blockPosition, nextStage)
+            return@Rule RuleResult.Next
         }
         RuleResult.Next
     }
