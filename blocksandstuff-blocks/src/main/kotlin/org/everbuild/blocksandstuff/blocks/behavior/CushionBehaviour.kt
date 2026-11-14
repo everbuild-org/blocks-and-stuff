@@ -2,6 +2,7 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.MinecraftServer
 import net.minestom.server.collision.BoundingBox
+import net.minestom.server.collision.ShapeImpl
 import net.minestom.server.color.DyeColor
 import net.minestom.server.coordinate.Point
 import net.minestom.server.coordinate.Pos
@@ -27,6 +28,8 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import net.minestom.server.tag.Tag
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
+import kotlin.math.abs
+import kotlin.math.floor
 
 class CushionEntity(
     val color: DyeColor,
@@ -54,7 +57,8 @@ class CushionEntity(
     private fun isSupported(instance: Instance): Boolean = CushionBehaviour.supports(instance, position)
 }
 
-private val ANCHOR_SLICE = BoundingBox(1.0, 1.0 / 16.0, 1.0, Vec(0.0, 15.0 / 16.0, 0.0))
+private val CUSHION_BOUNDS = BoundingBox(1.0, 0.25, 1.0)
+private const val SHAPE_EPSILON = 1.0E-6
 private const val CHECK_INTERVAL_TICKS = 100
 
 private val CUSHIONS_TAG: Tag<List<String>> = Tag.String("blocksandstuff:cushions").list()
@@ -72,27 +76,9 @@ object CushionBehaviour {
             if (event.player.gameMode == GameMode.SPECTATOR) return@addListener
             val instance = event.player.instance ?: return@addListener
 
-            val direction = event.blockFace.toDirection().vec()
-            val adjacent = event.position.add(direction.x(), direction.y(), direction.z())
-            val spawn =
-                if (event.blockFace == net.minestom.server.instance.block.BlockFace.TOP) {
-                    event.position.add(0.5, 1.0, 0.5)
-                } else {
-                    val target =
-                        when {
-                            isFree(instance, adjacent) -> adjacent
-                            isFree(instance, event.position.add(0.0, 1.0, 0.0)) -> event.position.add(0.0, 1.0, 0.0)
-                            else -> return@addListener
-                        }
-                    target.asVec().add(0.5, 0.0, 0.5)
-                }
-            var spawnPosition = spawn
-            var attempts = 0
-            while (attempts < 3 && !isFree(instance, spawnPosition.asBlockVec())) {
-                spawnPosition = spawnPosition.add(0.0, 1.0, 0.0)
-                attempts++
-            }
-            if (!isFree(instance, spawnPosition.asBlockVec())) return@addListener
+            val spawn = placementPosition(instance, event.position, event.cursorPosition, event.blockFace) ?: return@addListener
+            val supportBlock = event.position.takeIf { event.blockFace == BlockFace.TOP }
+            val spawnPosition = findFreePosition(instance, spawn, supportBlock) ?: return@addListener
 
             val cushion = CushionEntity(color)
             cushion.setInstance(instance, spawnPosition)
@@ -134,12 +120,12 @@ object CushionBehaviour {
                 val parts = record.split(",")
                 if (parts.size != 4) return@forEach
                 val x = parts[0].toIntOrNull() ?: return@forEach
-                val y = parts[1].toIntOrNull() ?: return@forEach
+                val y = parts[1].toDoubleOrNull()?.takeIf { it.isFinite() } ?: return@forEach
                 val z = parts[2].toIntOrNull() ?: return@forEach
                 if ((x shr 4) != event.chunkX || (z shr 4) != event.chunkZ) return@forEach
                 val color = runCatching { DyeColor.valueOf(parts[3].uppercase()) }.getOrNull() ?: return@forEach
                 val cushion = CushionEntity(color)
-                cushion.setInstance(event.instance, Pos(x + 0.5, y.toDouble(), z + 0.5))
+                cushion.setInstance(event.instance, Pos(x + 0.5, y, z + 0.5))
             }
         }
         handler.addListener(InstanceTickEvent::class.java) { event ->
@@ -160,8 +146,14 @@ object CushionBehaviour {
     ): Boolean {
         val at = instance.getBlock(position)
         if (coversCushion(at)) return false
-        val below = instance.getBlock(position.sub(0.0, 1.0, 0.0))
-        return !below.air() && !below.liquid()
+        val blockX = floor(position.x()).toInt()
+        val blockZ = floor(position.z()).toInt()
+        val blockY = floor(position.y()).toInt()
+        for (supportY in blockY downTo blockY - 2) {
+            val support = instance.getBlock(Vec(blockX.toDouble(), supportY.toDouble(), blockZ.toDouble()))
+            if (hasSurfaceAt(support, position.y() - supportY)) return true
+        }
+        return false
     }
 
     private fun coversCushion(block: Block): Boolean {
@@ -199,12 +191,102 @@ object CushionBehaviour {
         }
     }
 
+    internal fun placementPosition(
+        instance: Instance,
+        blockPosition: Point,
+        cursorPosition: Point,
+        blockFace: BlockFace,
+    ): Point? {
+        if (blockFace == BlockFace.TOP) {
+            val block = instance.getBlock(blockPosition)
+            val surface = surfaceHeightAt(block, cursorPosition.x(), cursorPosition.y(), cursorPosition.z()) ?: return null
+            return Pos(blockPosition.blockX() + 0.5, blockPosition.blockY() + surface, blockPosition.blockZ() + 0.5)
+        }
+
+        val adjacent = blockPosition.add(blockFace.toDirection().vec())
+        val target =
+            when {
+                isFree(instance, adjacent.asVec().add(0.5, 0.0, 0.5)) -> adjacent
+                isFree(instance, blockPosition.add(0.0, 1.0, 0.0).asVec().add(0.5, 0.0, 0.5)) -> blockPosition.add(0.0, 1.0, 0.0)
+                else -> return null
+            }
+        return target.asVec().add(0.5, 0.0, 0.5)
+    }
+
+    internal fun findFreePosition(
+        instance: Instance,
+        position: Point,
+        supportBlockPosition: Point? = null,
+    ): Point? {
+        var candidate = position
+        repeat(4) {
+            val supportingBlock = supportBlockPosition.takeIf { candidate == position }
+            if (isFree(instance, candidate, supportingBlock)) return candidate
+            candidate = candidate.add(0.0, 1.0, 0.0)
+        }
+        return null
+    }
+
+    private fun surfaceHeightAt(
+        block: Block,
+        localX: Double,
+        hitY: Double,
+        localZ: Double,
+    ): Double? {
+        if (block.air() || block.liquid()) return null
+        return collisionBoxes(block)
+            .asSequence()
+            .filter { localX >= it.minX() && localX <= it.maxX() && localZ >= it.minZ() && localZ <= it.maxZ() }
+            .map { it.maxY() }.firstOrNull { abs(it - hitY) < SHAPE_EPSILON }
+    }
+
+    private fun hasSurfaceAt(
+        block: Block,
+        localY: Double,
+    ): Boolean {
+        if (block.air() || block.liquid()) return false
+        return collisionBoxes(block).any { kotlin.math.abs(it.maxY() - localY) < SHAPE_EPSILON }
+    }
+
+    private fun collisionBoxes(block: Block): List<BoundingBox> {
+        val shape = block.collisionShape()
+        return when (shape) {
+            is BoundingBox -> listOf(shape)
+            is ShapeImpl -> shape.boundingBoxes()
+            else -> listOf(BoundingBox.fromPoints(shape.relativeStart(), shape.relativeEnd()))
+        }
+    }
+
     private fun isFree(
         instance: Instance,
         position: Point,
+        ignoredBlock: Point? = null,
     ): Boolean {
-        val block = instance.getBlock(position)
-        return block.air() || block.replaceable()
+        val minX = position.x() - 0.5
+        val maxX = position.x() + 0.5 - SHAPE_EPSILON
+        val minY = position.y() + SHAPE_EPSILON
+        val maxY = position.y() + CUSHION_BOUNDS.height() - SHAPE_EPSILON
+        val minZ = position.z() - 0.5
+        val maxZ = position.z() + 0.5 - SHAPE_EPSILON
+
+        for (blockX in floor(minX).toInt()..floor(maxX).toInt()) {
+            for (blockY in floor(minY).toInt()..floor(maxY).toInt()) {
+                for (blockZ in floor(minZ).toInt()..floor(maxZ).toInt()) {
+                    if (ignoredBlock != null &&
+                        blockX == ignoredBlock.blockX() &&
+                        blockY == ignoredBlock.blockY() &&
+                        blockZ == ignoredBlock.blockZ()
+                    ) {
+                        continue
+                    }
+                    val block = instance.getBlock(Vec(blockX.toDouble(), blockY.toDouble(), blockZ.toDouble()))
+                    if (block.air() || block.replaceable()) continue
+                    val relativePosition = Vec(position.x() - blockX, position.y() - blockY + SHAPE_EPSILON, position.z() - blockZ)
+                    if (block.collisionShape().intersectBox(relativePosition, CUSHION_BOUNDS)) return false
+                }
+            }
+        }
+        return true
     }
 
     private fun addRecord(
@@ -212,7 +294,7 @@ object CushionBehaviour {
         position: Point,
         color: DyeColor,
     ) {
-        val record = "${position.blockX()},${position.blockY()},${position.blockZ()},${color.name.lowercase()}"
+        val record = cushionRecord(position, color)
         val records = instance.getTag(CUSHIONS_TAG) ?: emptyList()
         if (record !in records) instance.setTag(CUSHIONS_TAG, records + record)
     }
@@ -222,9 +304,17 @@ object CushionBehaviour {
         position: Point,
         color: DyeColor,
     ) {
-        val record = "${position.blockX()},${position.blockY()},${position.blockZ()},${color.name.lowercase()}"
+        val record = cushionRecord(position, color)
         val records = instance.getTag(CUSHIONS_TAG) ?: return
         instance.setTag(CUSHIONS_TAG, records - record)
+    }
+
+    private fun cushionRecord(
+        position: Point,
+        color: DyeColor,
+    ): String {
+        val y = if (position.y() % 1.0 == 0.0) position.blockY().toString() else position.y().toString()
+        return "${position.blockX()},$y,${position.blockZ()},${color.name.lowercase()}"
     }
 
     private fun consume(
@@ -243,6 +333,8 @@ object CushionBehaviour {
         val color = value.removeSuffix("_cushion").uppercase()
         return runCatching { DyeColor.valueOf(color) }.getOrNull()
     }
+
+    internal fun isCushionItem(material: Material): Boolean = cushionColor(material) != null
 
     private fun cushionItem(color: DyeColor): Material? =
         Material.fromKey("minecraft:${color.name.lowercase()}_cushion")

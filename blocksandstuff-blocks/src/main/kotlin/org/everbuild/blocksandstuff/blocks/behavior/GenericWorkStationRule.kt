@@ -2,6 +2,7 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.text.Component
+import net.minestom.server.entity.PlayerHand
 import net.minestom.server.instance.block.Block
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
@@ -40,6 +41,8 @@ private val workStations =
 
 val WORKSTATION_INTERACT_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:workstation_interact") { ctx ->
+        val heldItem = if (ctx.hand == PlayerHand.MAIN) ctx.player.itemInMainHand else ctx.player.itemInOffHand
+        if (CushionBehaviour.isCushionItem(heldItem.material())) return@Rule RuleResult.Next
         if (ctx.player.isSneaking && !ctx.player.itemInMainHand.isAir) return@Rule RuleResult.Next
 
         val workstation = workStations[ctx.block.key()] ?: return@Rule RuleResult.Next

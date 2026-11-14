@@ -3,6 +3,7 @@ package org.everbuild.blocksandstuff.blocks.placement
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
+import org.everbuild.blocksandstuff.blocks.behavior.ShelfConnections
 import org.everbuild.blocksandstuff.common.utils.isWater
 
 class ShelfPlacementRule(block: Block) : BlockPlacementRule(block) {
@@ -16,6 +17,9 @@ class ShelfPlacementRule(block: Block) : BlockPlacementRule(block) {
         if (result.getProperty("waterlogged") != null) {
             result = result.withProperty("waterlogged", placementState.instance.getBlock(placementState.placePosition).isWater().toString())
         }
-        return result
+        return ShelfConnections.updateSideChain(placementState.instance, placementState.placePosition, result)
     }
+
+    override fun blockUpdate(updateState: UpdateState): Block =
+        ShelfConnections.updateSideChain(updateState.instance, updateState.blockPosition, updateState.currentBlock)
 }

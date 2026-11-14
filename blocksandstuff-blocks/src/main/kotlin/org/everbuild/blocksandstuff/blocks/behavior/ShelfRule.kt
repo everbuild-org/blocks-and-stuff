@@ -1,5 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
+import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.GameMode
 import net.minestom.server.entity.PlayerHand
 import net.minestom.server.instance.block.Block
@@ -78,18 +79,28 @@ val SHELF_RULE: Rule<InteractionActivityContext> =
             return@Rule RuleResult.Consume
         }
 
+        val shelfGroup = ShelfConnections.poweredGroup(ctx.instance, ctx.blockPosition, current)
+        val updatedShelves = ArrayList<Pair<Point, Block>>(shelfGroup.size)
+        val firstHotbarSlot = 9 - shelfGroup.size * SHELF_SLOTS
+        var shelfSlot = 0
         var anySwapped = false
-        for (offset in 0 until SHELF_SLOTS) {
-            val hotbarSlot = SHELF_SLOTS * 2 + offset
-            val placed = inventory.getItemStack(hotbarSlot)
-            val removed = items[offset]
-            if (!placed.isAir || removed != null) anySwapped = true
-            items.remove(offset)
-            if (!placed.isAir) items[offset] = placed
-            inventory.setItemStack(hotbarSlot, removed ?: ItemStack.AIR)
+
+        for ((position, shelf) in shelfGroup) {
+            val shelfItems = shelf.readBlockEntityItems().toMutableMap()
+            for (slot in 0 until SHELF_SLOTS) {
+                val hotbarSlot = firstHotbarSlot + shelfSlot++
+                val placed = inventory.getItemStack(hotbarSlot)
+                val removed = shelfItems[slot]
+                if (!placed.isAir || removed != null) anySwapped = true
+                shelfItems.remove(slot)
+                if (!placed.isAir) shelfItems[slot] = placed
+                inventory.setItemStack(hotbarSlot, removed ?: ItemStack.AIR)
+            }
+            updatedShelves += position to shelf.withBlockEntityItems(shelfItems)
         }
+
         if (anySwapped) {
-            ctx.instance.setBlock(ctx.blockPosition, current.withBlockEntityItems(items))
+            updatedShelves.forEach { (position, shelf) -> ctx.instance.setBlock(position, shelf) }
             playSoundFor(ctx, SoundEvent.BLOCK_SHELF_MULTI_SWAP)
         }
         RuleResult.Consume

@@ -12,6 +12,7 @@ import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.blocks.util.readBlockEntityItems
+import org.everbuild.blocksandstuff.blocks.util.withBlockEntityItems
 import org.everbuild.twaddle.stacked_behaviour_block.type.DestroyActivityContext
 import org.everbuild.twaddle.stacked_behaviour_block.type.InteractionActivityContext
 import org.junit.jupiter.api.AfterEach
@@ -179,6 +180,133 @@ class NewBehavioursTest {
     }
 
     @Test
+    fun poweredConnectedShelvesSwapTheMatchingHotbarRange() {
+        val leftShelfPosition = position.add(1.0, 0.0, 0.0)
+        val shelf = Block.OAK_SHELF.withProperty("facing", "north").withProperty("powered", "true")
+        instance.setBlock(
+            leftShelfPosition,
+            shelf.withProperty("side_chain", "left").withBlockEntityItems(
+                mapOf(
+                    0 to ItemStack.of(Material.DIRT),
+                    1 to ItemStack.of(Material.DIAMOND),
+                    2 to ItemStack.of(Material.GOLD_INGOT),
+                ),
+            ),
+        )
+        instance.setBlock(
+            position,
+            shelf.withProperty("side_chain", "right").withBlockEntityItems(
+                mapOf(
+                    0 to ItemStack.of(Material.APPLE),
+                    1 to ItemStack.of(Material.STONE),
+                    2 to ItemStack.of(Material.TORCH),
+                ),
+            ),
+        )
+
+        val inventory = net.minestom.server.inventory.PlayerInventory()
+        for (slot in 0..8) inventory.setItemStack(slot, ItemStack.of(Material.STICK, slot + 1))
+        val player =
+            mock<Player> {
+                on { gameMode } doReturn net.minestom.server.entity.GameMode.SURVIVAL
+                on { getInventory() } doReturn inventory
+                on { getHeldSlot() } doReturn 0
+                on { position } doReturn position
+            }
+        val context =
+            InteractionActivityContext(
+                instance.getBlock(position),
+                instance,
+                BlockFace.NORTH,
+                position.asBlockVec(),
+                net.minestom.server.coordinate.Vec(0.2, 0.5, 0.0),
+                player,
+                PlayerHand.MAIN,
+            )
+
+        SHELF_RULE.evaluate(context)
+
+        Assertions.assertEquals(Material.STICK, inventory.getItemStack(0).material())
+        Assertions.assertEquals(Material.STICK, inventory.getItemStack(2).material())
+        Assertions.assertEquals(Material.DIRT, inventory.getItemStack(3).material())
+        Assertions.assertEquals(Material.DIAMOND, inventory.getItemStack(4).material())
+        Assertions.assertEquals(Material.GOLD_INGOT, inventory.getItemStack(5).material())
+        Assertions.assertEquals(Material.APPLE, inventory.getItemStack(6).material())
+        Assertions.assertEquals(Material.STONE, inventory.getItemStack(7).material())
+        Assertions.assertEquals(Material.TORCH, inventory.getItemStack(8).material())
+        Assertions.assertEquals(Material.STICK, instance.getBlock(leftShelfPosition).readBlockEntityItems().getValue(0).material())
+        Assertions.assertEquals(Material.STICK, instance.getBlock(position).readBlockEntityItems().getValue(2).material())
+    }
+
+    @Test
+    fun poweredThreeShelfGroupSwapsTheWholeHotbar() {
+        val leftShelfPosition = position.add(1.0, 0.0, 0.0)
+        val rightShelfPosition = position.add(-1.0, 0.0, 0.0)
+        val shelf = Block.OAK_SHELF.withProperty("facing", "north").withProperty("powered", "true")
+        instance.setBlock(
+            leftShelfPosition,
+            shelf.withProperty("side_chain", "left").withBlockEntityItems(
+                mapOf(0 to ItemStack.of(Material.DIRT), 1 to ItemStack.of(Material.DIAMOND), 2 to ItemStack.of(Material.GOLD_INGOT)),
+            ),
+        )
+        instance.setBlock(
+            position,
+            shelf.withProperty("side_chain", "center").withBlockEntityItems(
+                mapOf(0 to ItemStack.of(Material.APPLE), 1 to ItemStack.of(Material.STONE), 2 to ItemStack.of(Material.TORCH)),
+            ),
+        )
+        instance.setBlock(
+            rightShelfPosition,
+            shelf.withProperty("side_chain", "right").withBlockEntityItems(
+                mapOf(0 to ItemStack.of(Material.STICK), 1 to ItemStack.of(Material.EMERALD), 2 to ItemStack.of(Material.IRON_INGOT)),
+            ),
+        )
+
+        val inventory = net.minestom.server.inventory.PlayerInventory()
+        for (slot in 0..8) inventory.setItemStack(slot, ItemStack.of(Material.COBBLESTONE, slot + 1))
+        val player =
+            mock<Player> {
+                on { gameMode } doReturn net.minestom.server.entity.GameMode.SURVIVAL
+                on { getInventory() } doReturn inventory
+                on { getHeldSlot() } doReturn 0
+                on { position } doReturn position
+            }
+        val context =
+            InteractionActivityContext(
+                instance.getBlock(position),
+                instance,
+                BlockFace.NORTH,
+                position.asBlockVec(),
+                net.minestom.server.coordinate.Vec(0.2, 0.5, 0.0),
+                player,
+                PlayerHand.MAIN,
+            )
+
+        SHELF_RULE.evaluate(context)
+
+        Assertions.assertEquals(
+            listOf(Material.DIRT, Material.DIAMOND, Material.GOLD_INGOT, Material.APPLE, Material.STONE, Material.TORCH, Material.STICK, Material.EMERALD, Material.IRON_INGOT),
+            (0..8).map { inventory.getItemStack(it).material() },
+        )
+    }
+
+    @Test
+    fun cushionUseIsNotConsumedByAnvilWorkstation() {
+        val cushion = ItemStack.of(requireNotNull(Material.fromKey("minecraft:black_cushion")))
+        val player =
+            mock<Player> {
+                on { gameMode } doReturn net.minestom.server.entity.GameMode.SURVIVAL
+                on { itemInMainHand } doReturn cushion
+                on { getItemInHand(PlayerHand.MAIN) } doReturn cushion
+                on { position } doReturn position
+            }
+
+        val result = WORKSTATION_INTERACT_RULE.evaluate(interaction(Block.ANVIL, player))
+
+        Assertions.assertEquals(org.everbuild.twaddle.stacked_behaviour.RuleResult.Next, result)
+    }
+
+    @Test
     fun potentSulfurOverLavaBecomesContinuous() {
         val handler = PotentSulfurHandler()
         instance.setBlock(position, Block.POTENT_SULFUR.withHandler(handler))
@@ -214,7 +342,7 @@ class NewBehavioursTest {
     fun dragonEggBreakTeleports() {
         instance.setBlock(position, Block.DRAGON_EGG)
 
-        DRAGON_EGG_BREAK_TELEPORT_RULE.evaluate(
+        val result = DRAGON_EGG_BREAK_TELEPORT_RULE.evaluate(
             DestroyActivityContext(
                 Block.DRAGON_EGG,
                 Block.AIR,
@@ -224,6 +352,7 @@ class NewBehavioursTest {
             ),
         )
 
+        Assertions.assertEquals(org.everbuild.twaddle.stacked_behaviour.RuleResult.Consume, result)
         Assertions.assertTrue(instance.getBlock(position).air())
         val fell =
             instance.getNearbyEntities(position, 10.0).any {
@@ -238,6 +367,32 @@ class NewBehavioursTest {
             }
         }
         Assertions.assertTrue(found, "dragon egg should teleport nearby")
+    }
+
+    @Test
+    fun dragonEggCannotBeBrokenInSurvivalWhenTeleportHasNoDestination() {
+        for (dx in -7..7) {
+            for (dy in -3..3) {
+                for (dz in -7..7) {
+                    instance.setBlock(position.add(dx.toDouble(), dy.toDouble(), dz.toDouble()), Block.STONE)
+                }
+            }
+        }
+        instance.setBlock(position, Block.DRAGON_EGG)
+
+        val result =
+            DRAGON_EGG_BREAK_TELEPORT_RULE.evaluate(
+                DestroyActivityContext(
+                    Block.DRAGON_EGG,
+                    Block.AIR,
+                    instance,
+                    position.asBlockVec(),
+                    player(gameMode = net.minestom.server.entity.GameMode.SURVIVAL),
+                ),
+            )
+
+        Assertions.assertEquals(org.everbuild.twaddle.stacked_behaviour.RuleResult.Consume, result)
+        Assertions.assertTrue(instance.getBlock(position).compare(Block.DRAGON_EGG))
     }
 
     @Test

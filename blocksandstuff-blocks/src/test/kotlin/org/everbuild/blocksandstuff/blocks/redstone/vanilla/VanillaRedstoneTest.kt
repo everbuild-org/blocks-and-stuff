@@ -1350,6 +1350,39 @@ class VanillaRedstoneTest {
     }
 
     @Test
+    fun poweredShelvesUpdateTheirConnectionStates() {
+        val rightShelf = base.add(-1.0, 0.0, 0.0)
+        val centerShelf = base
+        val leftShelf = base.add(1.0, 0.0, 0.0)
+        val shelves = listOf(rightShelf, centerShelf, leftShelf)
+        shelves.forEach { position ->
+            instance.setBlock(
+                position,
+                Block.OAK_SHELF
+                    .withProperty("facing", "north")
+                    .withProperty("powered", "false")
+                    .withProperty("side_chain", "unconnected"),
+            )
+            instance.setBlock(position.sub(0.0, 1.0, 0.0), Block.REDSTONE_BLOCK)
+        }
+
+        settle(8)
+
+        Assertions.assertEquals("left", instance.getBlock(leftShelf).getProperty("side_chain"))
+        Assertions.assertEquals("center", instance.getBlock(centerShelf).getProperty("side_chain"))
+        Assertions.assertEquals("right", instance.getBlock(rightShelf).getProperty("side_chain"))
+        shelves.forEach { position -> Assertions.assertEquals("true", instance.getBlock(position).getProperty("powered")) }
+
+        shelves.forEach { position -> instance.setBlock(position.sub(0.0, 1.0, 0.0), Block.AIR) }
+        settle(8)
+
+        shelves.forEach { position ->
+            Assertions.assertEquals("false", instance.getBlock(position).getProperty("powered"))
+            Assertions.assertEquals("unconnected", instance.getBlock(position).getProperty("side_chain"))
+        }
+    }
+
+    @Test
     fun activatorRailFollowsRedstonePower() {
         val rail = base
         instance.setBlock(rail, Block.ACTIVATOR_RAIL.withProperty("powered", "false"))

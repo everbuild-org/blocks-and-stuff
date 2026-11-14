@@ -1,6 +1,7 @@
 package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.minestom.server.coordinate.Point
+import net.minestom.server.entity.GameMode
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.network.packet.server.play.ParticlePacket
@@ -30,12 +31,12 @@ val DRAGON_EGG_TELEPORT_RULE: Rule<InteractionActivityContext> =
 
 val DRAGON_EGG_BREAK_TELEPORT_RULE: Rule<DestroyActivityContext> =
     Rule("blocksandstuff:dragon_egg_break_teleport") { ctx ->
-        if (ctx.player == null) return@Rule RuleResult.Next
-        if (ctx.player!!.gameMode == net.minestom.server.entity.GameMode.CREATIVE) return@Rule RuleResult.Next
+        val player = ctx.player ?: return@Rule RuleResult.Next
+        if (player.gameMode == GameMode.CREATIVE) return@Rule RuleResult.Next
         if (!ctx.block.compare(Block.DRAGON_EGG)) return@Rule RuleResult.Next
         if (ctx.newBlock.key() == ctx.block.key()) return@Rule RuleResult.Next
         teleportEgg(ctx.instance, ctx.blockPosition, Random())
-        RuleResult.Next
+        RuleResult.Consume
     }
 
 val DRAGON_EGG_PARTICLE_RULE: Rule<TickActivityContext> =
