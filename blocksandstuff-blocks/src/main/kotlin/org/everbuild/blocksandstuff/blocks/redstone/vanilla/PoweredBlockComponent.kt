@@ -1,6 +1,5 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
-import net.minestom.server.instance.block.Block
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext

@@ -24,6 +24,7 @@ import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBa
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.loader.FuelLoader
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
+import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
 import org.everbuild.blocksandstuff.recipes.util.transferInto
 
 abstract class FurnaceArchetype(
@@ -132,37 +133,9 @@ abstract class FurnaceArchetype(
             player: Player,
             slot: Int,
             button: Int,
-        ): Boolean {
-            val playerInventory = player.inventory
-
-            if (slot < size) {
-                // Shift-click inside the furnace -> move the item into the player inventory.
-                val clicked = getItemStack(slot)
-                if (clicked.isAir) return false
-
-                setItemStack(slot, ItemStack.AIR)
-                val leftover = playerInventory.addItemStack(clicked, TransactionOption.ALL)
-                if (!leftover.isAir) {
-                    DroppedItemFactory.maybeDropFromPlayer(player, leftover)
-                }
-
-                playerInventory.update()
-                update(player)
-                return true
-            }
-
-            // Shift-click from the player inventory -> route fuel to the fuel slot, everything else to the input slot.
-            val clickSlot = slot - size
-            val clicked = playerInventory.getItemStack(clickSlot)
-            if (clicked.isAir) return false
-
-            val target = if (FuelLoader.isFuel(clicked)) SLOT_FUEL else SLOT_INPUT
-            val leftover = transferInto(clicked, this, listOf(target))
-
-            playerInventory.setItemStack(clickSlot, leftover)
-            playerInventory.update()
-            update(player)
-            return true
+        ): Boolean = shiftClickToRoutedSlots(player, slot, SLOT_OUTPUT) { material ->
+            val stack = ItemStack.of(material)
+            if (FuelLoader.isFuel(stack)) SLOT_FUEL else SLOT_INPUT
         }
 
         fun onTick(ignored: InstanceTickEvent) {

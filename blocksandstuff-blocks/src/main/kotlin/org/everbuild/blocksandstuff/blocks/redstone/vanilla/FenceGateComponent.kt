@@ -2,7 +2,6 @@
 
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.instance.block.Block
-import net.minestom.server.sound.SoundEvent
 import org.everbuild.blocksandstuff.blocks.behavior.fenceGateSound
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent

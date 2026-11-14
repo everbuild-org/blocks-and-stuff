@@ -7,7 +7,6 @@ import org.everbuild.blocksandstuff.common.utils.forEachResource
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.net.URL
-import java.nio.file.Path
 
 object RecipeLoader {
 

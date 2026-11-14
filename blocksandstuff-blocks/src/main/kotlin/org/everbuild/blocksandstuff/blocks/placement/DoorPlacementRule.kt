@@ -5,7 +5,6 @@ import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.rule.BlockPlacementRule
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.getNearestHorizontalLookingDirection
 import org.everbuild.blocksandstuff.common.utils.rotateL
 import org.everbuild.blocksandstuff.common.utils.rotateR

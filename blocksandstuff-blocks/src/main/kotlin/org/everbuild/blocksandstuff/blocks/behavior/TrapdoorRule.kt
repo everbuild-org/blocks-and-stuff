@@ -53,10 +53,6 @@ private fun trapdoorSound(
 
 fun BlockRulesetEditor.addTrapdoors() {
     trapdoorBlocks.forEach { block ->
-        if (isWaxableCopper(block)) {
-            blocks(block) { interact.append { install(TRAPDOOR_RULE) } }
-        } else {
-            blocks(block) { interact.append { install(TRAPDOOR_RULE) } }
-        }
+        blocks(block) { interact.append { install(TRAPDOOR_RULE) } }
     }
 }
