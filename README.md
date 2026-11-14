@@ -1,4 +1,4 @@
-<p style="text-align: center; margin-top: 40px;width: 100%;" align="center">
+o<p style="text-align: center; margin-top: 40px;width: 100%;" align="center">
     <img src="./.github/blocksandstuff.png" style="width: 400px; margin: 0 auto;" />
     <p style="opacity: 90%;margin-top: -3px" align="center">Common Block & Fluid Implementations for Minestom</p>
 </p>
@@ -67,7 +67,6 @@ options.randomTickSpeed = 10
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-blocks`
 
 Use the following code-snippet to initialize all implemented vanilla behaviour:
-<!-- <@AI_UNREVIEWED> -->
 ```kt
 // Register all default block placement rules
 BlockPlacementRuleRegistrations.registerDefault()
@@ -81,7 +80,6 @@ ContainerRegistrations.registerDefault()
 // Pick-Block behaviour
 PlayerPickBlockHandler.enable()
 ```
-<!-- </<@AI_UNREVIEWED> -->
 
 You can exclude blocks by putting a list of them as parameters to the `registerDefault` methods. You can also only register specific handlers using the `register` methods.
 
@@ -94,12 +92,10 @@ call `BlockBehaviorRuleRegistrations.registerRandomTickingGlobally()` yourself.
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-redstone`
 
 Register the vanilla redstone components and enable the per-instance simulator:
-<!-- <@AI_UNREVIEWED> -->
 ```kt
 RedstoneRegistrations.registry.registerVanillaComponents()
 RedstoneRegistrations.enable()
 ```
-<!-- </<@AI_UNREVIEWED> -->
 
 ## Fluids API
 > Artifact: `org.everbuild.blocksandstuff:blocksandstuff-fluids`

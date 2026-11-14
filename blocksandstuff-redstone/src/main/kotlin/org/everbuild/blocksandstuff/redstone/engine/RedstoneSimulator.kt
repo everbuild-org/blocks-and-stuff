@@ -289,7 +289,6 @@ class RedstoneSimulator(
             deltaReasons.getOrPut(next.position) { HashSet() }.add(next.reason)
             if (deltaSet.add(next.position)) delta.add(next.position)
         }
-        // <@AI_UNREVIEWED>
         if (delta.isEmpty() && pendingPistonEffects.isEmpty()) {
             lastDeltaSteps = 0
             return
