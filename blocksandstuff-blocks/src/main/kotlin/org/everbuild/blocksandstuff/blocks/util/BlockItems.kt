@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.util
 
 import net.kyori.adventure.nbt.CompoundBinaryTag
-import net.minestom.server.codec.Transcoder
 import net.minestom.server.instance.block.Block
 import net.minestom.server.item.ItemStack
 import net.minestom.server.tag.Tag

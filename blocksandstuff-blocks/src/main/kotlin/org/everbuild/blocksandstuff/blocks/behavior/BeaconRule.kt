@@ -52,7 +52,7 @@ val BEACON_RULE: Rule<InteractionActivityContext> =
         val level = beaconLevel(ctx.instance, ctx.blockPosition)
         val menu = BeaconMenu(ctx.instance, ctx.blockPosition, level)
         ctx.player.openInventory(menu)
-        menu.setPowerLevel(level.toShort())
+        menu.powerLevel = level.toShort()
         RuleResult.Consume
     }
 
@@ -71,7 +71,7 @@ class BeaconMenu(
     val level: Int,
 ) : BeaconInventory(Component.translatable("container.beacon")) {
     init {
-        setPowerLevel(level.toShort())
+        powerLevel = level.toShort()
     }
 }
 
@@ -106,8 +106,8 @@ object BeaconMenus {
         if (!isValidPrimary(primary, menu.level)) return
         val secondary = packet.secondaryEffect?.takeIf { menu.level >= MAX_BEACON_LEVEL && isValidSecondary(it, menu.level) }
 
-        menu.setFirstPotionEffect(primary)
-        menu.setSecondPotionEffect(secondary)
+        menu.firstPotionEffect = primary
+        menu.secondPotionEffect = secondary
 
         if (player.gameMode != GameMode.CREATIVE) {
             consumePayment(menu)
@@ -115,7 +115,7 @@ object BeaconMenus {
 
         val duration = (11 + (menu.level - 1) * 10) * 20
         val range = 10.0 + menu.level * 10.0
-        menu.instance.getPlayers().forEach { target ->
+        menu.instance.players.forEach { target ->
             if (target.position.distance(menu.position) > range) return@forEach
             target.addEffect(Potion(primary, 0, duration, 0.toByte()))
             secondary?.let { target.addEffect(Potion(it, if (it == primary) 1 else 0, duration, 0.toByte())) }
@@ -175,8 +175,7 @@ internal fun beaconLevel(
     var level = 0
     for (layer in 1..MAX_BEACON_LEVEL) {
         val y = position.blockY() - layer
-        val radius = layer
-        if (!layerIsValid(instance, position.blockX(), y, position.blockZ(), radius)) break
+        if (!layerIsValid(instance, position.blockX(), y, position.blockZ(), layer)) break
         level = layer
     }
     return level

@@ -49,7 +49,7 @@ object FireStarterListener {
         val soulFire = below.compare(Block.SOUL_SAND) || below.compare(Block.SOUL_SOIL)
         if (!soulFire && !canFireSurviveAt(instance, target)) return false
 
-        val fire = if (soulFire) Block.SOUL_FIRE else fireState(instance, target)
+        val fire = if (soulFire) Block.SOUL_FIRE else fireFor(instance, target)
         instance.setBlock(target, fire)
         instance.playSoundExcept(
             null,
@@ -77,21 +77,6 @@ object FireStarterListener {
             block.compare(Block.TNT) ||
             block.name().contains("candle")
 
-    private fun fireState(
-        instance: Instance,
-        position: Point,
-    ): Block {
-        var fire = Block.FIRE.withProperty("age", "0")
-        fire = fire.withProperty("up", isFlammableBlock(instance.getBlock(position.add(0.0, 1.0, 0.0))).toString())
-        for (face in HORIZONTAL_FACES) {
-            fire = fire.withProperty(
-                face.name.lowercase(),
-                isFlammableBlock(instance.getBlock(position.relative(face))).toString(),
-            )
-        }
-        return fire
-    }
-
     private fun canFireSurviveAt(
         instance: Instance,
         position: Point,
@@ -99,28 +84,6 @@ object FireStarterListener {
         val below = instance.getBlock(position.add(0.0, -1.0, 0.0))
         if (below.liquid()) return false
         if (below.collisionShape().isFaceFull(BlockFace.TOP)) return true
-        return BlockFace.entries.any { isFlammableBlock(instance.getBlock(position.relative(it))) }
+        return BlockFace.entries.any { isFlammable(instance.getBlock(position.relative(it))) }
     }
-
-    private fun isFlammableBlock(block: Block): Boolean {
-        if (block.air()) return false
-        val name = block.name()
-        return name.contains("planks") ||
-            name.contains("_log") ||
-            name.contains("_wood") ||
-            name.contains("leaves") ||
-            name.contains("wool") ||
-            name.contains("carpet") ||
-            name.contains("bamboo") ||
-            name.contains("fence") ||
-            name.contains("bookshelf") ||
-            name == "minecraft:hay_block" ||
-            name == "minecraft:coal_block" ||
-            name == "minecraft:dead_bush" ||
-            name == "minecraft:short_grass" ||
-            name == "minecraft:tall_grass"
-    }
-
-    private val HORIZONTAL_FACES =
-        listOf(BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST)
 }

@@ -4,6 +4,7 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.blocks.util.intersectsBlock
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.Emit
 import org.everbuild.blocksandstuff.redstone.REDSTONE_MAX_POWER
@@ -107,29 +108,8 @@ class DetectorRailComponent : RedstoneComponent {
     private fun hasMinecart(
         instance: Instance,
         position: Point,
-    ): Boolean {
-        val minX = position.x()
-        val minY = position.y()
-        val minZ = position.z()
-        val maxX = minX + 1.0
-        val maxY = minY + 1.0
-        val maxZ = minZ + 1.0
-
-        return instance.entities.any { entity ->
-            if (!entity.entityType.key().value().endsWith("minecart")) return@any false
-            val box = entity.boundingBox
-            val origin = entity.position
-            val entityMinX = origin.x() + box.minX()
-            val entityMaxX = origin.x() + box.maxX()
-            val entityMinY = origin.y() + box.minY()
-            val entityMaxY = origin.y() + box.maxY()
-            val entityMinZ = origin.z() + box.minZ()
-            val entityMaxZ = origin.z() + box.maxZ()
-
-            entityMaxX > minX && entityMinX < maxX &&
-                entityMaxY > minY && entityMinY < maxY &&
-                entityMaxZ > minZ && entityMinZ < maxZ
-        }
+    ): Boolean = instance.entities.any { entity ->
+        entity.entityType.key().value().endsWith("minecart") && entity.intersectsBlock(position)
     }
 
     private companion object {
@@ -139,10 +119,5 @@ class DetectorRailComponent : RedstoneComponent {
 
 /** Activator rail. Mirrors redstone power in its `powered` block state. */
 class ActivatorRailComponent : RedstoneComponent {
-    override fun evaluate(ctx: UpdateContext): ComponentEvaluation {
-        val block = ctx.block()
-        val powered = isPowered(ctx)
-        if ((block.getProperty("powered") == "true") == powered) return ComponentEvaluation.None
-        return ComponentEvaluation.SetState(block.withProperty("powered", powered.toString()))
-    }
+    override fun evaluate(ctx: UpdateContext): ComponentEvaluation = poweredBlockState(ctx)
 }

@@ -23,21 +23,12 @@ object PlacedHandlerRegistration {
         }
 
         eventHandler.addListener(InstanceBlockUpdateEvent::class.java) {
-            val block = it.block
-            val existing = block.handler()
-            if (existing != null && existing !is BlockHandler.Dummy) return@addListener
-
-            val handler = MinecraftServer.getBlockManager().getHandler(block.key().asString()) ?: return@addListener
-            it.instance.setBlock(it.blockPosition, block.withHandler(handler), false)
+            installHandler(it.instance, it.blockPosition, it.block)
         }
 
         eventHandler.addListener(PlayerBlockInteractEvent::class.java) { event ->
             val block = event.block
-            val existing = block.handler()
-            if (existing != null && existing !is BlockHandler.Dummy) return@addListener
-
-            val handler = MinecraftServer.getBlockManager().getHandler(block.key().asString()) ?: return@addListener
-            event.instance.setBlock(event.blockPosition, block.withHandler(handler), false)
+            val handler = installHandler(event.instance, event.blockPosition, block) ?: return@addListener
             val handled =
                 !handler.onInteract(
                     BlockHandler.Interaction(
@@ -52,5 +43,18 @@ object PlacedHandlerRegistration {
                 )
             if (handled) event.isBlockingItemUse = true
         }
+    }
+
+    private fun installHandler(
+        instance: net.minestom.server.instance.Instance,
+        position: net.minestom.server.coordinate.Point,
+        block: net.minestom.server.instance.block.Block,
+    ): BlockHandler? {
+        val existing = block.handler()
+        if (existing != null && existing !is BlockHandler.Dummy) return null
+
+        val handler = MinecraftServer.getBlockManager().getHandler(block.key().asString()) ?: return null
+        instance.setBlock(position, block.withHandler(handler), false)
+        return handler
     }
 }

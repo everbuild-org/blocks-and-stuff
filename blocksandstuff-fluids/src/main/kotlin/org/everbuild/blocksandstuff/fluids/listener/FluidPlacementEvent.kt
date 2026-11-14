@@ -71,15 +71,7 @@ fun setupFluidPlacementEvent() {
             )
 
             if (blockToPlace == Block.WATER || blockToPlace == Block.LAVA) {
-                MinestomFluids.scheduleTick(instance, placePosition, blockToPlace)
-
-                for (face in BlockFace.entries) {
-                    val neighbor = placePosition.relative(face)
-                    val neighborBlock = instance.getBlock(neighbor)
-                    if (MinestomFluids.getFluidOnBlock(neighborBlock) !== MinestomFluids.EMPTY) {
-                        MinestomFluids.scheduleTick(instance, neighbor, neighborBlock)
-                    }
-                }
+                MinestomFluids.scheduleUpdateAndNeighbors(instance, placePosition, blockToPlace)
             }
 
             if (event.player.gameMode != GameMode.CREATIVE) {

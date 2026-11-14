@@ -9,6 +9,17 @@ import net.minestom.server.item.ItemStack
 import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 
 abstract class BlockInventoryHandler : BlockHandler {
+    protected fun closeAndDropOnDestroy(
+        destroy: BlockHandler.Destroy,
+        inventory: () -> SingleBlockInventoryBackend,
+    ): Boolean {
+        if (destroy.newBlock.key() == destroy.block.key()) return false
+
+        val destroyed = inventory().also { it.load(destroy.block) }
+        closeAndDrop(listOf(destroyed.getViewableInventory()), destroy.instance, destroy.blockPosition)
+        return true
+    }
+
     protected fun trackInventory(
         inventory: Inventory,
         instance: Instance,

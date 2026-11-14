@@ -3,6 +3,7 @@
 import net.kyori.adventure.sound.Sound
 import net.minestom.server.instance.block.Block
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.blocks.behavior.fenceGateSound
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.RedstoneComponent
 import org.everbuild.blocksandstuff.redstone.UpdateContext
@@ -30,25 +31,9 @@ class FenceGateComponent : RedstoneComponent {
     ) {
         ctx.instance.playSoundExcept(
             null,
-            Sound.sound(soundEvent(block, opening), Sound.Source.BLOCK, 1.0f, 1.0f),
+            Sound.sound(fenceGateSound(block, opening), Sound.Source.BLOCK, 1.0f, 1.0f),
             ctx.position,
         )
     }
 
-    private fun soundEvent(
-        block: Block,
-        opening: Boolean,
-    ): SoundEvent {
-        val key = block.key().value()
-        return when {
-            key.startsWith("bamboo") ->
-                if (opening) SoundEvent.BLOCK_BAMBOO_WOOD_FENCE_GATE_OPEN else SoundEvent.BLOCK_BAMBOO_WOOD_FENCE_GATE_CLOSE
-            key.startsWith("cherry") ->
-                if (opening) SoundEvent.BLOCK_CHERRY_WOOD_FENCE_GATE_OPEN else SoundEvent.BLOCK_CHERRY_WOOD_FENCE_GATE_CLOSE
-            key.startsWith("crimson") || key.startsWith("warped") ->
-                if (opening) SoundEvent.BLOCK_NETHER_WOOD_FENCE_GATE_OPEN else SoundEvent.BLOCK_NETHER_WOOD_FENCE_GATE_CLOSE
-            else ->
-                if (opening) SoundEvent.BLOCK_FENCE_GATE_OPEN else SoundEvent.BLOCK_FENCE_GATE_CLOSE
-        }
-    }
 }

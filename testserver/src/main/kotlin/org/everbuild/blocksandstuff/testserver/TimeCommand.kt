@@ -36,14 +36,14 @@ class TimeCommand : Command("time") {
                 sender.sendMessage("Unknown time: $value")
                 return@addSyntax
             }
-            instance.setTime(time)
+            instance.time = time
             sender.sendMessage("Time set to $time")
         }, ArgumentType.Literal("set"), name)
 
         addSyntax({ sender, context ->
             val instance = sender.resolveInstance() ?: return@addSyntax sender.sendInstanceError()
             val value = context.get(ticks)
-            instance.setTime(instance.time + value)
+            instance.time += value
             sender.sendMessage("Time added: $value (now ${instance.time})")
         }, ArgumentType.Literal("add"), ticks)
 

@@ -607,7 +607,7 @@ private class DarkOakTrunkPlacer(
 
         for (l2 in -1..2) {
             for (i3 in -1..2) {
-                if ((l2 < 0 || l2 > 1 || i3 < 0 || i3 > 1) && random.nextInt(3) <= 0) {
+                if ((l2 !in 0..1 || i3 !in 0..1) && random.nextInt(3) <= 0) {
                     val j3 = random.nextInt(3) + 2
                     for (k2 in 0 until j3) {
                         ctx.placeLog(BlockVec(k + l2, l1 - k2 - 1, i1 + i3))
@@ -890,15 +890,14 @@ private class DarkOakFoliagePlacer(
         offset: Int,
     ) {
         val pos = attachment.pos.above(offset)
-        val double = attachment.doubleTrunk
-        if (double) {
-            placeLeavesRow(ctx, random, pos, foliageRadius + 2, -1, double)
-            placeLeavesRow(ctx, random, pos, foliageRadius + 3, 0, double)
-            placeLeavesRow(ctx, random, pos, foliageRadius + 2, 1, double)
-            if (random.nextBoolean()) placeLeavesRow(ctx, random, pos, foliageRadius, 2, double)
+        if (attachment.doubleTrunk) {
+            placeLeavesRow(ctx, random, pos, foliageRadius + 2, -1, true)
+            placeLeavesRow(ctx, random, pos, foliageRadius + 3, 0, true)
+            placeLeavesRow(ctx, random, pos, foliageRadius + 2, 1, true)
+            if (random.nextBoolean()) placeLeavesRow(ctx, random, pos, foliageRadius, 2, true)
         } else {
-            placeLeavesRow(ctx, random, pos, foliageRadius + 2, -1, double)
-            placeLeavesRow(ctx, random, pos, foliageRadius + 1, 0, double)
+            placeLeavesRow(ctx, random, pos, foliageRadius + 2, -1, false)
+            placeLeavesRow(ctx, random, pos, foliageRadius + 1, 0, false)
         }
     }
 
@@ -1194,19 +1193,10 @@ private class PoplarTree : TreeGenerator {
     ): Boolean {
         val leaves = POPLAR_LEAVES[random.nextInt(POPLAR_LEAVES.size)]
         val ctx = TreePlacerContext(instance, Block.POPLAR_LOG) { leaves }
-        val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
         val trunk = PoplarTrunkPlacer(7, 4, 0, trunkHeightAboveBranches = 4, branchAmount = UniformInt(1, 4))
         val radius = WeightedIntProvider(listOf(5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 7, 8))
         val foliage = PoplarFoliagePlacer(radius, ConstantInt(0), UniformInt(5, 6), 0.15f)
-        val height = trunk.treeHeight(random)
-        val foliageHeight = foliage.foliageHeight(random, height)
-        val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
-        val offset = foliage.offset(random)
-        if (!ctx.hasClearance(origin, height, 0)) return false
-        trunk.placeTrunk(ctx, random, height, origin).forEach {
-            foliage.createFoliage(ctx, random, it, foliageHeight, foliageRadius, offset)
-        }
-        return true
+        return generateWithPlacers(ctx, base, random, trunk, foliage)
     }
 }
 
@@ -1223,20 +1213,34 @@ private class AzaleaTree : TreeGenerator {
         val ctx = TreePlacerContext(instance, Block.OAK_LOG) { r ->
             if (r.nextInt(4) == 0) Block.FLOWERING_AZALEA_LEAVES else Block.AZALEA_LEAVES
         }
-        val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
         val trunk = BendingTrunkPlacer(4, 2, 0, minHeightForLeaves = 3, bendLength = UniformInt(1, 2))
         val foliage = RandomSpreadFoliagePlacer(ConstantInt(3), ConstantInt(0), ConstantInt(2), 50)
-        val height = trunk.treeHeight(random)
-        val foliageHeight = foliage.foliageHeight(random, height)
-        val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
-        val offset = foliage.offset(random)
-        if (!ctx.hasClearance(origin, height, 0)) return false
-        instance.setBlock(origin.offset(0, -1, 0), Block.ROOTED_DIRT)
-        trunk.placeTrunk(ctx, random, height, origin).forEach {
-            foliage.createFoliage(ctx, random, it, foliageHeight, foliageRadius, offset)
+        return generateWithPlacers(ctx, base, random, trunk, foliage) { origin ->
+            instance.setBlock(origin.offset(0, -1, 0), Block.ROOTED_DIRT)
         }
-        return true
     }
+}
+
+private fun generateWithPlacers(
+    ctx: TreePlacerContext,
+    base: Point,
+    random: Random,
+    trunk: TrunkPlacer,
+    foliage: FoliagePlacer,
+    beforePlacement: (BlockVec) -> Unit = {},
+): Boolean {
+    val origin = BlockVec(base.blockX(), base.blockY(), base.blockZ())
+    val height = trunk.treeHeight(random)
+    val foliageHeight = foliage.foliageHeight(random, height)
+    val foliageRadius = foliage.foliageRadius(random, height - foliageHeight)
+    val offset = foliage.offset(random)
+    if (!ctx.hasClearance(origin, height, 0)) return false
+
+    beforePlacement(origin)
+    trunk.placeTrunk(ctx, random, height, origin).forEach { attachment ->
+        foliage.createFoliage(ctx, random, attachment, foliageHeight, foliageRadius, offset)
+    }
+    return true
 }
 
 private val POPLAR_LEAVES = listOf(Block.RED_POPLAR_LEAVES, Block.ORANGE_POPLAR_LEAVES, Block.YELLOW_POPLAR_LEAVES)

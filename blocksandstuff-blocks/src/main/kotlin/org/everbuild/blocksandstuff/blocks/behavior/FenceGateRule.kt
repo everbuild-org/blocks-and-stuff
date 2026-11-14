@@ -43,7 +43,7 @@ val FENCE_GATE_RULE: Rule<InteractionActivityContext> =
         RuleResult.Consume
     }
 
-private fun fenceGateSound(
+internal fun fenceGateSound(
     block: Block,
     open: Boolean,
 ): SoundEvent {

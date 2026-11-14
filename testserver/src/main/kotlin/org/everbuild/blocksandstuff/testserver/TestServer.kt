@@ -84,7 +84,7 @@ class TestServer(
 
         if (generateElements) {
             val allPlacementRuleBlockKeys =
-                VanillaPlacementRules.ALL
+                VanillaPlacementRules.allGroups
                     .flatMap { it.blockGroup.allMatching() }
                     .map { it.key().asString() }
 
@@ -93,7 +93,7 @@ class TestServer(
 
             val allBehaviourBlockKeys =
                 buildSet {
-                    VanillaBlockBehaviour.ALL.forEach { group ->
+                    VanillaBlockBehaviour.allGroups.forEach { group ->
                         group.blockGroup.allMatching().forEach { add(it.key().asString()) }
                     }
                     VanillaBlockBehaviour.RULESET.blocks.keys

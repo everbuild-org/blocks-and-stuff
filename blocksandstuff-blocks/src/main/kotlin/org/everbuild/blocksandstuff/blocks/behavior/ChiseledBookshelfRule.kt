@@ -37,7 +37,7 @@ val CHISELED_BOOKSHELF_RULE: Rule<InteractionActivityContext> =
 
         if (held.isAir) {
             val slot =
-                targetedSlot(ctx, current)?.takeIf { items.containsKey(it) }
+                targetedSlot(ctx, current).takeIf { items.containsKey(it) }
                     ?: (BOOK_SLOTS - 1 downTo 0).firstOrNull { items.containsKey(it) }
                     ?: return@Rule RuleResult.Next
             val stored = items.getValue(slot)
@@ -54,7 +54,7 @@ val CHISELED_BOOKSHELF_RULE: Rule<InteractionActivityContext> =
 
         if (!isBook(held.material())) return@Rule RuleResult.Next
         val slot =
-            targetedSlot(ctx, current)?.takeIf { !items.containsKey(it) }
+            targetedSlot(ctx, current).takeIf { !items.containsKey(it) }
                 ?: (0 until BOOK_SLOTS).firstOrNull { !items.containsKey(it) }
                 ?: return@Rule RuleResult.Next
 
@@ -94,7 +94,7 @@ private fun slotProperty(slot: Int): String = "slot_${slot}_occupied"
 private fun targetedSlot(
     ctx: InteractionActivityContext,
     block: Block,
-): Int? {
+): Int {
     val facing = block.getProperty("facing") ?: "north"
     val cursor = ctx.cursorPosition
     val along =

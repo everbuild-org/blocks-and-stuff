@@ -54,7 +54,7 @@ object BlockBehaviorRuleRegistrations {
 
     @JvmStatic
     fun registerDefault(exclude: List<Block>) {
-        register(exclude, *VanillaBlockBehaviour.ALL.toTypedArray<BehaviourGroup>())
+        register(exclude, *VanillaBlockBehaviour.allGroups.toTypedArray())
         BlockRuleset.applyRulesAsDefault(
             if (exclude.isEmpty()) {
                 VanillaBlockBehaviour.RULESET

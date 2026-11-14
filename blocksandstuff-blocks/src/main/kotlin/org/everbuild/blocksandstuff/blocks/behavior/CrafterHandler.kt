@@ -2,19 +2,16 @@ package org.everbuild.blocksandstuff.blocks.behavior
 
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.sound.Sound
-import net.kyori.adventure.text.Component
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryCloseEvent
 import net.minestom.server.event.player.PlayerDisconnectEvent
-import net.minestom.server.event.player.PlayerPacketEvent
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
 import net.minestom.server.instance.block.BlockHandler
 import net.minestom.server.inventory.Inventory
-import net.minestom.server.inventory.InventoryType
 import net.minestom.server.item.ItemStack
 import net.minestom.server.network.ConnectionState
 import net.minestom.server.network.packet.client.play.ClientWindowSlotStatePacket
@@ -26,7 +23,6 @@ import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHandler
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryHolder
 import org.everbuild.blocksandstuff.common.blockinventory.SingleBlockInventoryBackend
 import org.everbuild.blocksandstuff.common.blockinventory.insertStack
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.common.utils.handlerOrRegistered
 import org.everbuild.blocksandstuff.recipes.grid.CraftingGridRecipe
 import org.everbuild.blocksandstuff.recipes.grid.GridPattern
@@ -65,15 +61,7 @@ class CrafterHandler : BlockInventoryHandler(),
     }
 
     override fun onDestroy(destroy: BlockHandler.Destroy) {
-        if (destroy.newBlock.key() == destroy.block.key()) return
-
-        val destroyed = backendOf(destroy.instance, destroy.blockPosition).also { it.load(destroy.block) }
-        BlockInventoryHandler.closeAndDrop(
-            listOf(destroyed.getViewableInventory()),
-            destroy.instance,
-            destroy.blockPosition,
-        )
-        backend = null
+        if (closeAndDropOnDestroy(destroy) { backendOf(destroy.instance, destroy.blockPosition) }) backend = null
     }
 
     fun craft(

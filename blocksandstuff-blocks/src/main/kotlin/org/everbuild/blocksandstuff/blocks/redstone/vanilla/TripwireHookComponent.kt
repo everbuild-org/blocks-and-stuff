@@ -4,6 +4,7 @@ import net.kyori.adventure.sound.Sound
 import net.minestom.server.MinecraftServer
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.EntityType
+import org.everbuild.blocksandstuff.blocks.util.intersectsBlock
 import net.minestom.server.event.instance.InstanceUnregisterEvent
 import net.minestom.server.event.player.PlayerBlockBreakEvent
 import net.minestom.server.instance.Instance
@@ -203,32 +204,12 @@ class TripwireHookComponent : RedstoneComponent {
     private fun hasEntity(
         instance: Instance,
         position: Point,
-    ): Boolean {
-        val minX = position.x()
-        val minY = position.y()
-        val minZ = position.z()
-        val maxX = minX + 1.0
-        val maxY = minY + 1.0
-        val maxZ = minZ + 1.0
-
-        return instance.entities.any { entity ->
+    ): Boolean = instance.entities.any { entity ->
             if (entity.entityType == EntityType.AREA_EFFECT_CLOUD || entity.entityType == EntityType.MARKER) {
                 return@any false
             }
-            val box = entity.boundingBox
-            val origin = entity.position
-            val entityMinX = origin.x() + box.minX()
-            val entityMaxX = origin.x() + box.maxX()
-            val entityMinY = origin.y() + box.minY()
-            val entityMaxY = origin.y() + box.maxY()
-            val entityMinZ = origin.z() + box.minZ()
-            val entityMaxZ = origin.z() + box.maxZ()
-
-            entityMaxX > minX && entityMinX < maxX &&
-                entityMaxY > minY && entityMinY < maxY &&
-                entityMaxZ > minZ && entityMinZ < maxZ
+            entity.intersectsBlock(position)
         }
-    }
 
     private data class Segment(
         val position: Point,

@@ -6,7 +6,6 @@ import net.minestom.server.instance.Instance
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.math.abs
 import kotlin.math.ceil
-import kotlin.math.floor
 import kotlin.math.sqrt
 
 /** A vibration emitted in the world, identified by its frequency (1-15). */
@@ -82,14 +81,15 @@ object VibrationBus {
         var tMaxY = if (deltaY == 0) Double.POSITIVE_INFINITY else 0.5 / abs(deltaY)
         var tMaxZ = if (deltaZ == 0) Double.POSITIVE_INFINITY else 0.5 / abs(deltaZ)
 
-        while (x != endX || y != endY || z != endZ) {
+        while (true) {
+            if (x == endX && y == endY && z == endZ) break
             when {
-                tMaxX < tMaxY && tMaxX < tMaxZ -> {
+                tMaxX <= tMaxY && tMaxX <= tMaxZ -> {
                     x += stepX
                     tMaxX += tDeltaX
                 }
 
-                tMaxY < tMaxZ -> {
+                tMaxY <= tMaxZ -> {
                     y += stepY
                     tMaxY += tDeltaY
                 }
@@ -99,7 +99,6 @@ object VibrationBus {
                     tMaxZ += tDeltaZ
                 }
             }
-            if (x == endX && y == endY && z == endZ) break
             val key = instance.getBlock(Vec(x.toDouble(), y.toDouble(), z.toDouble())).key().value()
             if (key.contains("wool") || key.contains("carpet")) return true
         }

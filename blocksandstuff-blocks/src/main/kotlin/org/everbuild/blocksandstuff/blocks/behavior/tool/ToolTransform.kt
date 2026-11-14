@@ -27,7 +27,7 @@ fun toolRule(
     id: String,
     transforms: List<ToolTransform>,
 ): Rule<InteractionActivityContext> =
-    Rule<InteractionActivityContext>(id) { ctx ->
+    Rule(id) { ctx ->
         val held = ctx.player.itemInMainHand
         val match =
             transforms.firstOrNull {

@@ -5,13 +5,10 @@ import net.minestom.server.entity.Player
 import net.minestom.server.event.inventory.InventoryPreClickEvent
 import net.minestom.server.inventory.Inventory
 import net.minestom.server.inventory.InventoryType
-import net.minestom.server.inventory.TransactionOption
-import net.minestom.server.item.ItemStack
 import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
-import org.everbuild.blocksandstuff.common.item.DroppedItemFactory
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
-import org.everbuild.blocksandstuff.recipes.util.transferInto
+import org.everbuild.blocksandstuff.recipes.util.shiftClickToRoutedSlots
 
 class CartographyTableInventory :
     Inventory(InventoryType.CARTOGRAPHY, Component.translatable("container.cartography_table")),
@@ -46,40 +43,8 @@ class CartographyTableInventory :
         }
     }
 
-    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean {
-        val playerInventory = player.inventory
-
-        if (slot == RESULT_SLOT) return false
-
-        if (slot < size) {
-            // Shift-click inside the cartography table -> move the item into the player inventory.
-            val clicked = getItemStack(slot)
-            if (clicked.isAir) return false
-
-            setItemStack(slot, ItemStack.AIR)
-            val leftover = playerInventory.addItemStack(clicked, TransactionOption.ALL)
-            if (!leftover.isAir) {
-                DroppedItemFactory.maybeDropFromPlayer(player, leftover)
-            }
-
-            playerInventory.update()
-            update(player)
-            return true
-        }
-
-        // Shift-click from the player inventory -> route into the matching cartography slot.
-        val clickSlot = slot - size
-        val clicked = playerInventory.getItemStack(clickSlot)
-        if (clicked.isAir) return false
-
-        val target = slotFor(clicked.material()) ?: return false
-        val leftover = transferInto(clicked, this, listOf(target))
-
-        playerInventory.setItemStack(clickSlot, leftover)
-        playerInventory.update()
-        update(player)
-        return true
-    }
+    override fun shiftClick(player: Player, slot: Int, button: Int): Boolean =
+        shiftClickToRoutedSlots(player, slot, RESULT_SLOT, ::slotFor)
 
     private fun slotFor(material: Material): Int? = when {
         material == Material.FILLED_MAP -> MAP_SLOT

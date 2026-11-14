@@ -105,7 +105,7 @@ private fun stopJukeboxSound(
     val soundEvent = MinecraftServer.getJukeboxSongRegistry().get(songKey)?.soundEvent() ?: return
     val stop = SoundStop.namedOnSource(soundEvent.key(), Sound.Source.RECORD)
     val rangeSquared = JUKEBOX_SOUND_RANGE * JUKEBOX_SOUND_RANGE
-    instance.getPlayers().forEach { player ->
+    instance.players.forEach { player ->
         if (player.position.distanceSquared(position) <= rangeSquared) {
             player.stopSound(stop)
         }

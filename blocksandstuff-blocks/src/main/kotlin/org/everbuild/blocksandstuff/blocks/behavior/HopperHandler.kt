@@ -157,7 +157,7 @@ class HopperHandler(
             if (leftover.amount() == stack.amount()) continue
 
             moved = true
-            if (leftover.isAir) entity.remove() else entity.setItemStack(leftover)
+            if (leftover.isAir) entity.remove() else entity.itemStack = leftover
         }
         return moved
     }

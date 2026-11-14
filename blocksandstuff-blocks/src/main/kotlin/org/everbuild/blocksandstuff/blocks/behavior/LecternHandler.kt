@@ -3,7 +3,6 @@ package org.everbuild.blocksandstuff.blocks.behavior
 import net.kyori.adventure.key.Key
 import net.kyori.adventure.nbt.CompoundBinaryTag
 import net.kyori.adventure.text.Component
-import net.minestom.server.codec.Transcoder
 import net.minestom.server.component.DataComponents
 import net.minestom.server.coordinate.Point
 import net.minestom.server.entity.GameMode

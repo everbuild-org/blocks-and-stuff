@@ -3,19 +3,11 @@ package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.common.utils.blockFacing
 import org.everbuild.blocksandstuff.redstone.ReadContext
 
 internal object Facing {
-    fun of(block: Block): BlockFace? =
-        when (block.getProperty("facing")) {
-            "north" -> BlockFace.NORTH
-            "south" -> BlockFace.SOUTH
-            "east" -> BlockFace.EAST
-            "west" -> BlockFace.WEST
-            "up" -> BlockFace.TOP
-            "down" -> BlockFace.BOTTOM
-            else -> null
-        }
+    fun of(block: Block): BlockFace? = blockFacing(block)
 
     fun sides(facing: BlockFace): List<BlockFace> =
         BlockFace.entries.filter { it.toDirection().horizontal() && it != facing && it != facing.oppositeFace }

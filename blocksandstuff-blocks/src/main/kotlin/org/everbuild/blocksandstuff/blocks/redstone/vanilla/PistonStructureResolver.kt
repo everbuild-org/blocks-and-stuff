@@ -152,7 +152,7 @@ class PistonStructureResolver(
         if (block.air()) return true
         if (block.key() in immovableKeys) return false
 
-        val dimension = MinecraftServer.getRegistries().dimensionType().get(instance.getDimensionType())
+        val dimension = MinecraftServer.getRegistries().dimensionType().get(instance.dimensionType)
         if (dimension != null) {
             if (pushDirection == BlockFace.BOTTOM && position.blockY() <= dimension.minY()) return false
             if (pushDirection == BlockFace.TOP && position.blockY() >= dimension.maxY() - 1) return false

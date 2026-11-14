@@ -1,7 +1,6 @@
 package org.everbuild.blocksandstuff.blocks.redstone.vanilla
 
 import net.kyori.adventure.sound.Sound
-import net.kyori.adventure.text.Component
 import net.minestom.server.coordinate.Vec
 import net.minestom.server.entity.Entity
 import net.minestom.server.entity.EntityType

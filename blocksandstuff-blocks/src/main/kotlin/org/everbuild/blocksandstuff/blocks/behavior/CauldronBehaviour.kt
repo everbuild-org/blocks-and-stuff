@@ -185,7 +185,7 @@ val CAULDRON_TOUCH_RULE: Rule<TouchActivityContext> =
         if (!ctx.block.compare(Block.WATER_CAULDRON)) return@Rule RuleResult.Next
         val entity = ctx.touching
         if (entity is LivingEntity && entity.fireTicks > 0) {
-            entity.setFireTicks(0)
+            entity.fireTicks = 0
         }
         RuleResult.Next
     }

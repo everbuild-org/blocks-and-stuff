@@ -18,7 +18,7 @@ object BlockPlacementRuleRegistrations {
 
     @JvmStatic
     fun registerDefault(exclude: List<Block>) {
-        register(exclude, *VanillaPlacementRules.ALL.toTypedArray<PlacementGroup>())
+        register(exclude, *VanillaPlacementRules.allGroups.toTypedArray())
     }
 
     @JvmStatic

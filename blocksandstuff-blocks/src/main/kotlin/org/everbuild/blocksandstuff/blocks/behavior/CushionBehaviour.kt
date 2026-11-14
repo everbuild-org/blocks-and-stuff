@@ -132,7 +132,7 @@ object CushionBehaviour {
         }
         handler.addListener(InstanceTickEvent::class.java) { event ->
             if (event.instance.worldAge % CHECK_INTERVAL_TICKS != 0L) return@addListener
-            event.instance.getEntities()
+            event.instance.entities
                 .filter { it.entityType == EntityType.CUSHION && !it.isRemoved }
                 .forEach { cushion ->
                     if (!supports(event.instance, cushion.position)) {
@@ -251,8 +251,7 @@ object CushionBehaviour {
     }
 
     private fun collisionBoxes(block: Block): List<BoundingBox> {
-        val shape = block.collisionShape()
-        return when (shape) {
+        return when (val shape = block.collisionShape()) {
             is BoundingBox -> listOf(shape)
             is ShapeImpl -> shape.boundingBoxes()
             else -> listOf(BoundingBox.fromPoints(shape.relativeStart(), shape.relativeEnd()))

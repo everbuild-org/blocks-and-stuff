@@ -51,9 +51,8 @@ val BED_RULE: Rule<InteractionActivityContext> =
             return@Rule RuleResult.Consume
         }
 
-        ctx.player.setRespawnPoint(
-            Pos(ctx.blockPosition.x() + 0.5, ctx.blockPosition.y() + 1.0, ctx.blockPosition.z() + 0.5),
-        )
+        ctx.player.respawnPoint =
+            Pos(ctx.blockPosition.x() + 0.5, ctx.blockPosition.y() + 1.0, ctx.blockPosition.z() + 0.5)
         ctx.player.enterBed(ctx.blockPosition)
 
         if (BedSleepTracker.shouldSkipNight(ctx.instance)) {
@@ -109,7 +108,7 @@ object BedSleepTracker {
     }
 
     fun skipNight(instance: Instance) {
-        instance.setTime(MORNING_TIME)
+        instance.time = MORNING_TIME
         val beds = sleepers.remove(instance) ?: return
         beds.values.toSet().forEach { player ->
             if (player.isOnline) player.leaveBed()

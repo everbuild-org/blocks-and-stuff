@@ -36,15 +36,7 @@ open class StorageBlockHandler(
     }
 
     override fun onDestroy(destroy: BlockHandler.Destroy) {
-        if (destroy.newBlock.key() == destroy.block.key()) return
-
-        val destroyed = backendOf(destroy.instance, destroy.blockPosition).also { it.load(destroy.block) }
-        BlockInventoryHandler.closeAndDrop(
-            listOf(destroyed.getViewableInventory()),
-            destroy.instance,
-            destroy.blockPosition,
-        )
-        backend = null
+        if (closeAndDropOnDestroy(destroy) { backendOf(destroy.instance, destroy.blockPosition) }) backend = null
     }
 
     private fun viewableInventory(

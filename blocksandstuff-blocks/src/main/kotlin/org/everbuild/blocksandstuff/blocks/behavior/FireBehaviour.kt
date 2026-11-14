@@ -70,7 +70,7 @@ private fun spreadFire(
     instance.setBlock(target, fireFor(instance, target))
 }
 
-private fun fireFor(
+internal fun fireFor(
     instance: Instance,
     position: Point,
 ): Block {

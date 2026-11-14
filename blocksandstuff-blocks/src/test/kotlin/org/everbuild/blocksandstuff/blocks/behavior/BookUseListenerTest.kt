@@ -91,7 +91,8 @@ class BookUseListenerTest {
         var updated = book
         val player =
             mock<Player> {
-                on { getItemInHand(any()) } doReturn book
+                on { itemInMainHand } doReturn book
+                on { itemInOffHand } doReturn ItemStack.AIR
                 on { username } doReturn "tester"
                 on { setItemInHand(any(), any()) } doAnswer {
                     updated = it.getArgument(1)

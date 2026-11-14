@@ -76,11 +76,11 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
 
     val FLOWER_POTS: BehaviourGroup =
         BehaviourGroup(byList(CustomPlants.allPottedBlocks() + Block.FLOWER_POT)) { FlowerPotHandler(it.key()) }
-            .also { ALL.add(it) }
+            .also { allGroups.add(it) }
 
     val LECTERN: BehaviourGroup =
         BehaviourGroup(byBlock(Block.LECTERN)) { LecternHandler() }
-            .also { ALL.add(it) }
+            .also { allGroups.add(it) }
 
     override fun createGroup(
         blockGroup: BlockGroup,
@@ -92,6 +92,6 @@ object VanillaBlockBehaviour : VanillaRuleset<BehaviourGroup, (Block) -> BlockHa
         handler: BlockHandler,
     ): BehaviourGroup =
         BehaviourGroup(blockGroup) { handler }.also {
-            ALL.add(it)
+            allGroups.add(it)
         }
 }

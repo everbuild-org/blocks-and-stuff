@@ -24,7 +24,7 @@ class CrafterComponent : RedstoneComponent {
         }
         lastPowered = powered
 
-        if (triggerAt >= 0 && now >= triggerAt) {
+        if (triggerAt in 0L..now) {
             triggerAt = -1
             val crafted =
                 (ctx.instance.getBlock(ctx.position).handlerOrRegistered() as? CrafterHandler)
@@ -36,7 +36,7 @@ class CrafterComponent : RedstoneComponent {
             }
         }
 
-        if (craftingUntil >= 0 && now >= craftingUntil) {
+        if (craftingUntil in 0L..now) {
             craftingUntil = -1
             crafting = false
         }

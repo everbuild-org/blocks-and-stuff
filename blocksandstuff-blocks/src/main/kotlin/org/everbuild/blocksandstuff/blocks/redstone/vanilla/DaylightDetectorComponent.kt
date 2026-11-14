@@ -49,7 +49,7 @@ class DaylightDetectorComponent : RedstoneComponent {
 
     private fun powerAt(ctx: ReadContext): Int {
         val dimension =
-            MinecraftServer.getRegistries().dimensionType().get(ctx.instance.getDimensionType()) ?: return 0
+            MinecraftServer.getRegistries().dimensionType().get(ctx.instance.dimensionType) ?: return 0
         val skyLight = if (dimension.hasSkylight()) skyLightAbove(ctx, dimension.maxY()) else 0
         val skyDarken = if (dimension.hasSkylight()) skyDarken(ctx) else 0
 
@@ -81,7 +81,7 @@ class DaylightDetectorComponent : RedstoneComponent {
     }
 
     private fun skyDarken(ctx: ReadContext): Int {
-        val weather = ctx.instance.getWeather()
+        val weather = ctx.instance.weather
         val rain = weather.rainLevel.coerceIn(0.0f, 1.0f).toDouble()
         val thunder = (weather.thunderLevel * weather.rainLevel).coerceIn(0.0f, 1.0f).toDouble()
         val rainFactor = 1.0 - rain * 5.0 / 16.0
@@ -90,7 +90,7 @@ class DaylightDetectorComponent : RedstoneComponent {
         return ((1.0 - daylight * rainFactor * thunderFactor) * 11.0).toInt().coerceIn(0, 11)
     }
 
-    private fun sunAngle(ctx: ReadContext): Float = timeOfDay(ctx.instance.getTime()) * (2 * PI).toFloat()
+    private fun sunAngle(ctx: ReadContext): Float = timeOfDay(ctx.instance.time) * (2 * PI).toFloat()
 
     private fun timeOfDay(dayTime: Long): Float {
         val fraction = frac(dayTime / 24000.0 - 0.25)

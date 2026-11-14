@@ -12,9 +12,9 @@ class PointedDripstonePlacementRule(block: Block) : BlockPlacementRule(block) {
     override fun blockPlace(placementState: PlacementState): Block? {
         val blockFace = placementState.blockFace()
         val direction =
-            when {
-                blockFace == BlockFace.TOP -> "up"
-                blockFace == BlockFace.BOTTOM -> "down"
+            when (blockFace) {
+                BlockFace.TOP -> "up"
+                BlockFace.BOTTOM -> "down"
                 else -> return null
             }
 

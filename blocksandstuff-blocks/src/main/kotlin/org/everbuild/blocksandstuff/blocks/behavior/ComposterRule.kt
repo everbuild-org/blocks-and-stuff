@@ -58,8 +58,8 @@ val COMPOSTER_INTERACT_RULE: Rule<InteractionActivityContext> =
     Rule("blocksandstuff:composter_interact") { ctx ->
         val level = ctx.block.getProperty("level")?.toIntOrNull() ?: return@Rule RuleResult.Next
 
-        when {
-            level == READY_LEVEL -> {
+        when (level) {
+            READY_LEVEL -> {
                 DroppedItemFactory.maybeDrop(ctx.instance, ctx.blockPosition, ItemStack.of(Material.BONE_MEAL))
                 readyTimers.remove(ComposterKey(ctx.instance, ctx.blockPosition))
                 ctx.instance.setBlock(ctx.blockPosition, ctx.block.withProperty("level", "0"))
@@ -67,7 +67,7 @@ val COMPOSTER_INTERACT_RULE: Rule<InteractionActivityContext> =
                 RuleResult.Consume
             }
 
-            level == FULL_LEVEL -> {
+            FULL_LEVEL -> {
                 RuleResult.Next
             }
 

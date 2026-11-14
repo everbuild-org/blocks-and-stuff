@@ -32,7 +32,7 @@ val PUMPKIN_CARVE_RULE: Rule<InteractionActivityContext> =
 private fun carvingFacing(yaw: Float): String {
     val normalized = ((yaw % 360f) + 360f) % 360f
     return when {
-        normalized < 45f || normalized >= 315f -> "north"
+        normalized !in 45f..<315f -> "north"
         normalized < 135f -> "east"
         normalized < 225f -> "south"
         else -> "west"

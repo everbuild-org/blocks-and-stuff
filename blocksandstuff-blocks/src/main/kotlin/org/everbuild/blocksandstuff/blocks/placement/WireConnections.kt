@@ -74,13 +74,13 @@ object WireConnections {
 
         val connections =
             horizontalFaces.associate { face ->
-                when {
+                when (face) {
                     // Vanilla priority: a same-level neighbour wins over an up/down staircase.
-                    face in sideConnections -> face to ConnectionType.DIRECT
+                    in sideConnections -> face to ConnectionType.DIRECT
 
-                    face in topSideConnections -> face to ConnectionType.UP
+                    in topSideConnections -> face to ConnectionType.UP
 
-                    face in bottomSideConnections -> face to ConnectionType.DOWN
+                    in bottomSideConnections -> face to ConnectionType.DOWN
 
                     else -> face to ConnectionType.NONE
                 }
@@ -134,10 +134,10 @@ object WireConnections {
 
         return horizontalFaces
             .mapNotNull { face ->
-                when {
-                    face in sideConnections -> position.relative(face).takeIf { isWire(instance, it) }
-                    face in topSideConnections -> position.relative(face).add(0.0, 1.0, 0.0)
-                    face in bottomSideConnections -> position.relative(face).sub(0.0, 1.0, 0.0)
+                when (face) {
+                    in sideConnections -> position.relative(face).takeIf { isWire(instance, it) }
+                    in topSideConnections -> position.relative(face).add(0.0, 1.0, 0.0)
+                    in bottomSideConnections -> position.relative(face).sub(0.0, 1.0, 0.0)
                     else -> null
                 }
             }.toSet()

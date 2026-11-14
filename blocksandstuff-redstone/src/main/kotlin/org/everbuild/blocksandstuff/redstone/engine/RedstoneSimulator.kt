@@ -9,6 +9,7 @@ import net.minestom.server.instance.Chunk
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.instance.block.BlockFace
+import org.everbuild.blocksandstuff.common.utils.blockFacing
 import org.everbuild.blocksandstuff.redstone.ComponentEvaluation
 import org.everbuild.blocksandstuff.redstone.MovementDirectionSource
 import org.everbuild.blocksandstuff.redstone.PowerQuery
@@ -510,16 +511,7 @@ class RedstoneSimulator(
 
         override fun block(pos: Point): Block = if (instance.isChunkLoaded(pos)) instance.getBlock(pos) else Block.AIR
 
-        override fun facing(block: Block): BlockFace? =
-            when (block.getProperty("facing")) {
-                "north" -> BlockFace.NORTH
-                "south" -> BlockFace.SOUTH
-                "east" -> BlockFace.EAST
-                "west" -> BlockFace.WEST
-                "up" -> BlockFace.TOP
-                "down" -> BlockFace.BOTTOM
-                else -> null
-            }
+        override fun facing(block: Block): BlockFace? = blockFacing(block)
 
         override fun power(): PowerQuery = this@RedstoneSimulator
 

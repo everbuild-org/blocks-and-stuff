@@ -14,6 +14,7 @@ import net.minestom.server.item.Material
 import org.everbuild.blocksandstuff.common.blockinventory.BlockInventoryDrops
 import org.everbuild.blocksandstuff.recipes.RecipeFactory.stashController
 import org.everbuild.blocksandstuff.recipes.util.excludeResultSlotsFromDrag
+import org.everbuild.blocksandstuff.recipes.util.applyShiftClickResult
 import org.everbuild.blocksandstuff.recipes.util.trimPatterns
 import kotlin.math.min
 
@@ -97,17 +98,7 @@ class SmithingTableInventory : Inventory(InventoryType.SMITHING, Component.trans
                 playerInventory.cursorItem,
             )
 
-        if (clickResult.isCancel) {
-            playerInventory.update()
-            update(player)
-            return false
-        }
-
-        playerInventory.setItemStack(clickSlot, clickResult.clicked)
-        playerInventory.update()
-        update(player)
-        playerInventory.cursorItem = clickResult.cursor
-        return true
+        return applyShiftClickResult(player, clickSlot, clickResult.clicked, clickResult.cursor, clickResult.isCancel)
     }
 
     private fun smithingSlotFor(item: ItemStack): Int? {

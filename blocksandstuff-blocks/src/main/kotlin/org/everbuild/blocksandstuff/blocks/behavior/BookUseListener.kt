@@ -83,9 +83,10 @@ object BookUseListener {
         original: ItemStack,
         updated: ItemStack,
     ) {
-        when {
-            player.getItemInHand(PlayerHand.MAIN) == original -> player.setItemInHand(PlayerHand.MAIN, updated)
-            player.getItemInHand(PlayerHand.OFF) == original -> player.setItemInHand(PlayerHand.OFF, updated)
+        when (original) {
+            player.itemInMainHand -> player.setItemInHand(PlayerHand.MAIN, updated)
+            player.itemInOffHand -> player.setItemInHand(PlayerHand.OFF, updated)
+            else -> Unit
         }
     }
 }

@@ -44,9 +44,8 @@ val RESPAWN_ANCHOR_RULE: Rule<InteractionActivityContext> =
             return@Rule RuleResult.Consume
         }
 
-        ctx.player.setRespawnPoint(
-            Pos(ctx.blockPosition.x() + 0.5, ctx.blockPosition.y() + 1.0, ctx.blockPosition.z() + 0.5),
-        )
+        ctx.player.respawnPoint =
+            Pos(ctx.blockPosition.x() + 0.5, ctx.blockPosition.y() + 1.0, ctx.blockPosition.z() + 0.5)
         playSoundFor(ctx, SoundEvent.BLOCK_RESPAWN_ANCHOR_SET_SPAWN)
         RuleResult.Consume
     }

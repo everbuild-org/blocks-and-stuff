@@ -5,6 +5,7 @@ import net.minestom.server.coordinate.Point
 import net.minestom.server.instance.Instance
 import net.minestom.server.instance.block.Block
 import net.minestom.server.sound.SoundEvent
+import org.everbuild.blocksandstuff.blocks.util.intersectsBlock
 import org.everbuild.blocksandstuff.common.tag.BlockTags
 import org.everbuild.twaddle.stacked_behaviour.Rule
 import org.everbuild.twaddle.stacked_behaviour.RuleResult
@@ -52,29 +53,7 @@ fun BlockRulesetEditor.addPressurePlates() {
 private fun entitiesOnBlock(
     instance: Instance,
     position: Point,
-): Int {
-    val minX = position.x()
-    val minY = position.y()
-    val minZ = position.z()
-    val maxX = minX + 1.0
-    val maxY = minY + 1.0
-    val maxZ = minZ + 1.0
-
-    return instance.entities.count { entity ->
-        val box = entity.boundingBox
-        val origin = entity.position
-        val entityMinX = origin.x() + box.minX()
-        val entityMaxX = origin.x() + box.maxX()
-        val entityMinY = origin.y() + box.minY()
-        val entityMaxY = origin.y() + box.maxY()
-        val entityMinZ = origin.z() + box.minZ()
-        val entityMaxZ = origin.z() + box.maxZ()
-
-        entityMaxX > minX && entityMinX < maxX &&
-            entityMaxY > minY && entityMinY < maxY &&
-            entityMaxZ > minZ && entityMinZ < maxZ
-    }
-}
+): Int = instance.entities.count { it.intersectsBlock(position) }
 
 private fun maxWeight(block: Block): Int = if (block.key().value().startsWith("heavy_weighted")) 150 else 15
 
