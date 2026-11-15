@@ -337,8 +337,8 @@ minecraft:potted_azure_bluet
 minecraft:potted_bamboo
 minecraft:potted_allium
 minecraft:potted_dead_bush
-minecraft:potted_blue_orchid
 minecraft:potted_cherry_sapling
+minecraft:potted_blue_orchid
 minecraft:potted_white_tulip
 minecraft:potted_golden_dandelion
 minecraft:potted_poplar_sapling
